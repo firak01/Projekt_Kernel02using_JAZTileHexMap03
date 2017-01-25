@@ -1,0 +1,53 @@
+<?xml version='1.0' encoding='utf-8'?>
+<!DOCTYPE hibernate-configuration PUBLIC "-//Hibernate/Hibernate Configuration DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-configuration-3.0.dtd">
+
+<hibernate-configuration>
+
+	<session-factory>
+		<!-- Im Code wird die Konfigurtion aber durch Java-Befehle erstellt und 
+			diese hier nicht verwendet -->
+
+		<!-- Echo all SQL to stdout -->
+		<property name="show_sql">true</property>
+		<property name="format_sql">true</property>
+
+		<!-- <property name="dialect">org.hibernate.dialect.SQLiteDialect</property> -->
+		<property name="dialect">tryout.hibernate.SQLiteDialect</property>
+
+		<!-- Database Connection settings -->
+		<property name="connection.driver_class">org.sqlite.JDBC</property>
+		<property name="connection.url">jdbc:sqlite:c:\\server\\SQLite\\TileHexMap03.sqlite</property>
+		<property name="connection.username"></property>
+		<property name="connection.password"></property>
+
+		<!-- Enable Hibernates automatic session context management -->
+		<property name="current_session_context_class">thread</property>
+
+		<!-- disable the second-level cache -->
+		<property name="cache.provider_class">org.hibernate.cache.NoCacheProvider</property>
+
+		<!-- drop and recreate database schema on startup -->
+		<!-- FGL 20131124: Umgeändert auf create, erstellt damit automatisch die 
+			Datenbank, ABER: keine Updates. Daher im Code (...main... -Klasse) die Konfiguration 
+			"übersteuert" mit dem Parameter UPDATE -->
+		<property name="hibernate.hbm2ddl.auto">create</property>
+
+
+		<mapping class="tryout.hibernate.HexCell"></mapping>
+
+		<!-- FGL: So werden die Klassen für das Mapping herangezogen, aber: Dabei 
+			werden Annotations verwendet. -->
+		<!-- <mapping class="tryout.hibernate.Shape"></mapping> <mapping class="tryout.hibernate.Rectangle"></mapping> 
+			<mapping class="tryout.hibernate.Circle"></mapping> -->
+		<!-- FGL 20131124: Darun unterscheidet sich dieses Beispiel von den vorherigen, 
+			es wird einen Konigurationsdatei für das Mapping verwendet -->
+		<!-- <mapping resource="tryout/hibernate/Person.hbm.xml"/> -->
+
+		<!-- es dürfen hier nur Klassen genannt werden, die auch gefunden werden 
+			<mapping class="tryout.hibernate.Person"/> <mapping class="tryout.hibernate.Employee"/> 
+			<mapping class="tryout.hibernate.Owner"/> -->
+
+	</session-factory>
+
+
+</hibernate-configuration>

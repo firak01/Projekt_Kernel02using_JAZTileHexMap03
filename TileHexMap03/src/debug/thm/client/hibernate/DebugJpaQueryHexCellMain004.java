@@ -44,7 +44,7 @@ public class DebugJpaQueryHexCellMain004 {
 		}else{
 			System.out.println("objFound.class: " +  objResultFind.getClass().getName());
 			AreaCell objCellFound = (AreaCell) objResultFind;
-			System.out.println("Der Typ dieser Zelle ist: " + objCellFound.getAreaType().name());
+			System.out.println("Der Typ dieser Zelle ist: " + objCellFound.getAreaTypeObject().name());
 			System.out.println("Die Beschreibung für den Zelltyp ist: " + objCellFound.getAreaType().toString());
 		}
 		} catch (ExceptionZZZ e) {

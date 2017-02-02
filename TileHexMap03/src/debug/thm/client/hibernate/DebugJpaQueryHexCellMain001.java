@@ -38,7 +38,7 @@ public class DebugJpaQueryHexCellMain001 {
 			
 			//Nein, die Objekte der Resultlist sind vom Typ AreaCell AreaType enumAreaType = (AreaType) obj;
 			AreaCell objCell = (AreaCell) obj;
-			Enum<AreaType> enumAreaType = objCell.getAreaType();
+			Enum<AreaType> enumAreaType = objCell.getAreaTypeObject();
 			System.out.println("x / y / Name / Bezeichnung / Abkürzung: " + objCell.getMapX() + "/" + objCell.getMapY() + "/" + enumAreaType.name() + "/" + enumAreaType.toString() + "/" + ((AreaType) enumAreaType).getAbbreviation());
 		}
 		

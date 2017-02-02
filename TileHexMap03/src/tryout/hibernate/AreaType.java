@@ -1,5 +1,7 @@
 package tryout.hibernate;
 
+import javax.persistence.Embeddable;
+
 /* alte VErsion, hier funktioniert nicht das deserialisieren 
  public enum AreaType {
  	OCEAN, LAND
@@ -41,6 +43,8 @@ public static USState fromAbbreviation(String s) {
 }
 */
 
+//20170201: Mache diesen AreaType embeddable. Ziel: Es soll nicht mehr als BLOB in der Datenbank (SQLITE) gespeichert werden.
+@Embeddable
 public enum AreaType { 
 OCEAN("Ozean", "OC"),
 LAND("Land", "LA");
@@ -68,7 +72,7 @@ public static AreaType fromAbbreviation(String s) {
         if (s.equals(state.getAbbreviation()))
             return state;
     }
-    throw new IllegalArgumentException("Not a correct state: " + s);
+    throw new IllegalArgumentException("Not a correct abbreviation: " + s);
 }
 
 }

@@ -68,7 +68,7 @@ public class AreaCellTHM  extends HexCellTHM implements IListenerTileMetaTHM{
 //		this.getAreaCellObject().setAreaType(sAreaType);
 //	}
 	public String getAreaType(){
-		return this.getAreaCellObject().getAreaType().name();
+		return this.getAreaCellObject().getAreaTypeObject().name();
 	}
 	/** Darf der Spielstein die Area betreten.
 	 *  Voraussetzungen sind momentan:

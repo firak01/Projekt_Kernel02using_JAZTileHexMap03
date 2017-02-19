@@ -78,6 +78,8 @@ public class HibernateContextProviderTHM extends KernelUseObjectZZZ{
 	public boolean fillConfigurationGlobal(){
 				//TODO: Die hier verwendeten Werte aus der Kernel-Konfiguration auslesen.
 				//Programmatisch das erstellen, das in der hibernate.cfg.xml Datei beschrieben steht.
+				//Merke: Irgendwie funktioniert es nicht die Werte in der hibernate.cfg.xml Datei zu überschreiben.
+		 		//			Darum muss z.B. hibernate.hbm2ddl.auto in der Konfigurationdatei auskommentiert werden, sonst ziehen hier die Änderungen nicht.
 				this.getConfiguration().setProperty("hiberate.show_sql", "true");
 				this.getConfiguration().setProperty("hiberate.format_sql", "true");
 				this.getConfiguration().setProperty("hibernate.dialect","tryout.hibernate.SQLiteDialect" );
@@ -85,8 +87,17 @@ public class HibernateContextProviderTHM extends KernelUseObjectZZZ{
 				this.getConfiguration().setProperty("hibernate.connection.url", "jdbc:sqlite:c:\\server\\SQLite\\TileHexMap03.sqlite");
 				this.getConfiguration().setProperty("hibernate.connection.username", "");
 				this.getConfiguration().setProperty("hibernate.connection.password", "");
-				this.getConfiguration().setProperty("hibernate.hbm2ddl.auto", "create"); //! Damti wird die Datenbank und sogar die Tabellen darin automatisch erstellt.
-				this.getConfiguration().setProperty("cache.provider_class", "org.hibernate.cache.NoCacheProvider");
+
+				/*
+				 * So the list of possible options are,
+    validate: validate the schema, makes no changes to the database.
+    update: update the schema.
+    create: creates the schema, destroying previous data.
+    create-drop: drop the schema when the SessionFactory is closed explicitly, typically when the application is stopped.
+				 */
+				this.getConfiguration().setProperty("hibernate.hbm2ddl.auto", "create"); //! Damit wird die Datenbank und sogar die Tabellen darin automatisch erstellt, aber: Sie wird am Anwendungsende geleert.
+				//this.getConfiguration().setProperty("hibernate.hbm2ddl.auto", "update");  //! Jetzt erst wird jede Tabelle über den Anwendungsstart hinaus gepseichert.
+				this.getConfiguration().setProperty("cache.provider_class", "org.hiberniate.cache.NoCacheProvider");
 				this.getConfiguration().setProperty("current_session_context_class", "thread");
 				
 				return true;

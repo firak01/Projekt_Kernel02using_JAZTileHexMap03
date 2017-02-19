@@ -29,8 +29,9 @@
 		<!-- drop and recreate database schema on startup -->
 		<!-- FGL 20131124: Umgeändert auf create, erstellt damit automatisch die 
 			Datenbank, ABER: keine Updates. Daher im Code (...main... -Klasse) die Konfiguration 
-			"übersteuert" mit dem Parameter UPDATE -->
-		<property name="hibernate.hbm2ddl.auto">create</property>
+			"übersteuert" mit dem Parameter UPDATE 
+			FGL 20170215: Das übersteuern klappt nicht, darum hier auskommentiert-->
+<!-- 		<property name="hibernate.hbm2ddl.auto">create</property> -->
 
 
 		<mapping class="tryout.hibernate.HexCell"></mapping>

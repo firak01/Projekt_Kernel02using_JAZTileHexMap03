@@ -83,7 +83,7 @@ public class HexMapTHM extends KernelUseObjectZZZ implements ITileEventUserTHM {
 	}
 	
 	/** Anzahl der Hex-Zeilen. 
-	 * Wird im Konstruktor �bergeben
+	 * Wird im Konstruktor übergeben
 	* @return
 	* 
 	 */
@@ -151,7 +151,7 @@ public class HexMapTHM extends KernelUseObjectZZZ implements ITileEventUserTHM {
 			this.setTileMetaEventBroker(objTileMetaEventBroker);
 			
 			//TODO GOON: Die MapInformationen und die Informationen für Hexfelder sollen aus einer SQL Tabelle kommen. Das legt dann auch die Größe der Karte fest fest....
-			//TODO GOON: Wenn es schon Mapinformationen gibt (ggf. neu "Map Alias" beachten) dann soll die KArten nicht neu aufgebaut, sondern aus der SQL Datenbank ausgelesen werden.
+			//TODO GOON: Wenn es schon Mapinformationen gibt (ggf. neu "Map Alias" beachten) dann soll die Karten nicht neu aufgebaut, sondern aus der SQL Datenbank ausgelesen werden.
 			//Verwende eine Komfortklasse:
 			HibernateContextProviderTHM objContextHibernate = new HibernateContextProviderTHM(this.getKernelObject());
 			
@@ -167,9 +167,22 @@ public class HexMapTHM extends KernelUseObjectZZZ implements ITileEventUserTHM {
 			//Query objQuery = em.createQuery("SELECT MAX(c.x) FROM HexCell c");//Fehler: could not resolve property: x of: tryout.hibernate.HexCell
 			//Query objQuery = em.createQuery("SELECT MAX(c.X) FROM HexCell c");//Fehler: could not resolve property: X of: tryout.hibernate.HexCell
 			
+			//TODO: Prüfe die Existenz der Datenbank ab. Ohne die erstellte Datenbank und die Erstellte Datenbanktabelle kommt es hier zu einem Fehler.
+			//           Darum muss ich den Code immer erst auskommentieren, nachdem ich die Datenbank gelöscht habe.
+			
+			//TODO: Mache ein DAO Objekt und dort diesen HQL String hinterlegen.
 			//TODO: Anzahl der echten Elemente aus einer noch zu erstellenden Hibernate-ZKernelUtility-Methode holen, sowie eine ResultList OHNE NULL Objekte.
-			String sQueryTemp = "SELECT MAX(c.id.sMapX) FROM HexCell c";
+			//String sQueryTemp = "SELECT MAX(c.id.sMapX) FROM HexCell c";
+			//um einen Integer Wert zu bekommen die Propert naxh HexCell geholt und nicht mehr über id gehen.
+			String sQueryTemp = "SELECT MAX(c.mapX) FROM HexCell c";
 			Query objQuery = em.createQuery(sQueryTemp);
+			Object objSingle =objQuery.getSingleResult();
+			if(objSingle!=null){
+				System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": Objekt als Single Result der Query " + objSingle.hashCode());
+			}else{
+				System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": NULL Objekt als Single Result der Query " + sQueryTemp);
+			}
+			
 			List objResult = objQuery.getResultList();
 			
 			//TODO: WENN Die Anzahl der Zellen in der Datenbank leer ist, dann diese neu aufbauen/füllen
@@ -180,6 +193,7 @@ public class HexMapTHM extends KernelUseObjectZZZ implements ITileEventUserTHM {
 					System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": Gefundenes Objekt obj.class= " + obj.getClass().getName());
 				}
 			}
+			
 			/*++++++++++++++
 			//Hibernate Beispiel für einfaches Erzeugen der Entities
 			SessionFactory sf = HibernateUtil.getSessionFactory();
@@ -223,7 +237,7 @@ public class HexMapTHM extends KernelUseObjectZZZ implements ITileEventUserTHM {
 					//OZEAN					
 					//Aretype nun als ENUMERATION objCellTemp = new AreaCell(new CellId("EINS", sX, sY), AreaTypeTHM.OZEAN);
 					objCellTemp = new AreaCell(new CellId("EINS", sX, sY), AreaType.OCEAN);
-					objCellThmTemp = new  AreaCellTHM(this.getKernelObject(), this,  objCellTemp, this.getSideLength());  //ToDo: Dass sollen dann erst "Areas" werden, dh. mit Geländeinformationen, Danach "Provinzen" mit Geb�udeinfos/Armeeinfos
+					objCellThmTemp = new  AreaCellTHM(this.getKernelObject(), this,  objCellTemp, this.getSideLength());  //ToDo: Das sollen dann erst "Areas" werden, dh. mit Geländeinformationen, Danach "Provinzen" mit Gebäudeinfos/Armeeinfos
 					/*TODO Hintergrundbild
 					 *  ImageIcon background = new ImageIcon("Water.png");
         				objCellTemp.setIcon(background);
@@ -251,8 +265,8 @@ public class HexMapTHM extends KernelUseObjectZZZ implements ITileEventUserTHM {
 				
 			
 				
-			/* !!! Alte Version, nicht L�schen: So werden Truppen ohne einen Event hinzugef�gt	
-			//TEST: TRUPPEN Komponente(n) in eine bestimmte Zelle hinzuf�gen
+			/* !!! Alte Version, nicht Löschen: So werden Truppen ohne einen Event hinzugef�gt	
+			//TEST: TRUPPEN Komponente(n) in eine bestimmte Zelle hinzufügen
 			if(sX.equals("1") && sY.equals("1")){
 				objCellTemp.setOpaque(false);
 				//TEST, MUSS DAS SEIN ? Nein, nicht notwendig. Die Steuerung/Auswahl der Komponentent funktioniert reibungslos, auch wenn ander Komponenten dar�ber liegen.  objCellTemp.setJComponentContentDraggable(false);  //Also: Wenn andere "draggable Componenten" darin sind, dann hiermit das Fenster nicht ziehen.
@@ -281,9 +295,9 @@ public class HexMapTHM extends KernelUseObjectZZZ implements ITileEventUserTHM {
 					
                     //Die Zelle in eine HashMap packen, die für´s UI verwendet wird				
 					hmCell.put(sX, sY, objCellThmTemp);
-					iReturn++; //Zelle zur Summe hinzuf�gen
+					iReturn++; //Zelle zur Summe hinzufügen
 					
-					//TEST: FALSCHES PLATZIEREN DER TRUPPEN Komponente in einer bestimmten Zelle per Event hinzuf�gen
+					//TEST: FALSCHES PLATZIEREN DER TRUPPEN Komponente in einer bestimmten Zelle per Event hinzufügen
 					boolean bUseTestArea = false;
 					if(bUseTestArea && sX.equals("1") && sY.equals("2")){
 						FleetTileTHM objFleetTemp = new FleetTileTHM(panelMap, objTileMoveEventBroker, sX, sY, this.getSideLength());
@@ -335,7 +349,7 @@ public class HexMapTHM extends KernelUseObjectZZZ implements ITileEventUserTHM {
 		return iReturn;
 	}
 	
-	/** Anhand der in fillMap() hinzugef�gten Zellen und der Anzahl der Zellen pro Zeile, kann die Gesamtanzahl der Zeilen berechnet werden.
+	/** Anhand der in fillMap() hinzugefügten Zellen und der Anzahl der Zellen pro Zeile, kann die Gesamtanzahl der Zeilen berechnet werden.
 	* @return
 	* 
 	* lindhaueradmin; 12.09.2008 12:21:46

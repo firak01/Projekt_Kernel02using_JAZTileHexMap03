@@ -73,7 +73,7 @@ public class HexCellTHM extends KernelJPanelCascadedZZZ implements IMapFixedTHM,
 	 EventCellAffectedTHM objEventPrevious;
 	 
 	 //Effekte werden beim Zeichnen der Komponente ber�cksichtig
-	 //boolean bFlagEffectDragTile=false; //beim Drag Drop ins aktuelle Feld (das zuletzt g�ltige Feld)
+	 //boolean bFlagEffectDragTile=false; //beim Drag Drop ins aktuelle Feld (das zuletzt gültige Feld)
 	 //boolean bFlagEffectPathTile=false; //Falls Feld im Pfad der Drag Droop Bewegung ist
 	//20130721: Flags werden nun als Enum hier hinterlegt.
 		public enum FLAGZ{
@@ -89,7 +89,7 @@ public class HexCellTHM extends KernelJPanelCascadedZZZ implements IMapFixedTHM,
 	 
 		/** Konstruktor
 		* lindhaueradmin; 11.09.2008 09:20:22
-		 * @param iSideLength: Die Seitenl�nge des Hexagons. Sie ist grundlage f�r alle anderen mathematisch zu berechneneden Punkte.
+		 * @param iSideLength: Die Seitenlänge des Hexagons. Sie ist grundlage für alle anderen mathematisch zu berechneneden Punkte.
 		 * @throws ExceptionZZZ 
 		 */
 	 public HexCellTHM(KernelZZZ objKernel, HexMapTHM mapParent, HexCell objHexCell, int iSideLength) throws ExceptionZZZ{
@@ -99,14 +99,13 @@ public class HexCellTHM extends KernelJPanelCascadedZZZ implements IMapFixedTHM,
 			 this.setHexCellObject(objHexCell);
 			this.mapParent = mapParent;
 			
-			//Die Seitenl�nge als Grundlage aller Berechnungen
+			//Die Seitenlänge als Grundlage aller Berechnungen
 			this.iSideLength = iSideLength;
 			
 			//Die Koordinaten, mit denen das Hexagon in die Komponente gezeichnet wird
-			this.iXLeftUpperCorner = 0;
-			this.iYLeftUpperCorner = HexCellTHM.getYUpperLeftCorner(iSideLength);
+			this.iXLeftUpperCorner = 0;		this.iYLeftUpperCorner = HexCellTHM.getYUpperLeftCorner(iSideLength);
 			
-			//Bevorzugte Gr��e der Komponente. Wird vom Layout-Manager ben�tigt, um das Panel richtig gr��enm��ig zu gestalten
+			//Bevorzugte Größe der Komponente. Wird vom Layout-Manager benötigt, um das Panel richtig größenmäßig zu gestalten
 			int iWidth = HexCellTHM.getRectWidth(iSideLength) + 1;
 			int iHeigth = HexCellTHM.getRectHeight(iSideLength)+1;
 			Dimension dim = new Dimension(iWidth, iHeigth);
@@ -120,7 +119,7 @@ public class HexCellTHM extends KernelJPanelCascadedZZZ implements IMapFixedTHM,
 		}
 
 	
-	/** Die Seitenl�nge des Hexagons. Wird im Konstruktor �bergeben.
+	/** Die Seitenlänge des Hexagons. Wird im Konstruktor übergeben.
 	* @return
 	* 
 	* lindhaueradmin; 11.09.2008 09:21:12
@@ -170,13 +169,13 @@ public class HexCellTHM extends KernelJPanelCascadedZZZ implements IMapFixedTHM,
 		 	
 		 	
 		 	
-		 	//zu Testzwecken ein Rechteck zeichnen, das angibt wie gro� die JComponent ist.
+		 	//zu Testzwecken ein Rechteck zeichnen, das angibt wie groß die JComponent ist.
 		 	/*
 		 	this.setOpaque(true);
 		 	Rectangle re = po.getBounds();
 		 	g.drawRect((int)re.getX(), (int) re.getY(), re.width, re.height);
 		 	*/
-		 	// nicht sofrot f�llen, dies soll in den Unterklassen geschehen, wenn z.B. die Gel�ndeart bekannt ist fillPolygon(xEcke, yEcke, 6);
+		 	// nicht sofrot f�llen, dies soll in den Unterklassen geschehen, wenn z.B. die Geländeart bekannt ist fillPolygon(xEcke, yEcke, 6);
 	 }
 	 
 	 /** Die errechnete horizontale Breite eines auf einer Spitze stehenden gleichseitigen Sechsecks (also von Seite zu Seite).
@@ -243,7 +242,7 @@ public class HexCellTHM extends KernelJPanelCascadedZZZ implements IMapFixedTHM,
 		 return iReturn;
 	 }
 	 
-	 /** Das Polygon, als graphische Grundlage f�r das Sechseck.
+	 /** Das Polygon, als graphische Grundlage für das Sechseck.
 	  *   In dieser Klasse wird es nur gezeichnet, d.h. mit einem Schwarzen Rand versehen. 
 	  *   In Unterklassen soll das wieder aufgeriffen werden k�nnen und so z.B. mit einer anderen Farbe gef�llt werden. 
 	* @return
@@ -291,10 +290,12 @@ public class HexCellTHM extends KernelJPanelCascadedZZZ implements IMapFixedTHM,
 	
 	//### Interface: IMapPositionable ####################################
 	public String getMapX(){
-		return this.getHexCellObject().getMapX();
+		int itemp = this.getHexCellObject().getMapX();
+		return new Integer(itemp).toString();
 	}
 	public String getMapY(){
-		return this.getHexCellObject().getMapY();
+		int itemp =  this.getHexCellObject().getMapY();
+		return new Integer(itemp).toString();
 	}
 	
 	public KernelJPanelCascadedZZZ getMapPanel() {

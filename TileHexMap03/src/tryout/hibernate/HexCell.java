@@ -2,6 +2,8 @@ package tryout.hibernate;
 
 import java.io.Serializable;
 
+import javax.persistence.Access;
+import javax.persistence.AccessType;
 import javax.persistence.AttributeOverride;
 import javax.persistence.AttributeOverrides;
 import javax.persistence.Column;
@@ -26,6 +28,7 @@ import javax.persistence.Transient;
 
 //Vgl. Buch "Java Persistence API 2", Seite 34ff. für @Table, @UniqueConstraint
 @Entity
+@Access(AccessType.FIELD)
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @DiscriminatorColumn(name="Disc", discriminatorType = DiscriminatorType.STRING)
 @Table(name="HEXCELL")
@@ -35,13 +38,17 @@ public class HexCell implements Serializable{
 	//Realisierung eines Zusammengesetzten Schlüssels
 	//Siehe Buch "Java Persistence API 2", Seite 48ff.
 	@EmbeddedId
-	@AttributeOverrides({
-			@AttributeOverride(name = "sMapAlias", column= @Column(name="MAPALIAS")),
-			@AttributeOverride(name = "sMapX", column= @Column(name="X", length = 2)),
-			@AttributeOverride(name = "sMapY", column= @Column(name="Y", length = 2))
-	})
+	
+	//Merke: Attribut Access über FIELD.
+//	@AttributeOverrides({
+//			@AttributeOverride(name = "sMapAlias", column= @Column(name="MAPALIAS")),
+//			@AttributeOverride(name = "sMapX", column= @Column(name="X", length = 2)),
+//			@AttributeOverride(name = "sMapY", column= @Column(name="Y", length = 2))
+//	})
+	//TODO: Berücksictigung des Access über PROPERTY
+	//@AttributeOverrides({ ....
 	private CellId id;
-
+	
 	//Der Default Contruktor wird für JPA - Abfragen wohl benötigt
 	 public HexCell(){
 	 }
@@ -67,13 +74,33 @@ public class HexCell implements Serializable{
 		
 		
 		//Versuch mit MAX(X) darauf zuzugreifen aus der Methode fillMap(..)
-		@Column(name="X")
-	    public String getMapX(){
-	    	return this.getId().getMapX();
+		//ABER: Da das String ist, wird "9" als maximaler Wert zurückgeliefert und kein Integerwert.	
+		@Access(AccessType.PROPERTY)
+		@Column(name="XX", nullable=false, columnDefinition="integer default 0")
+	    public int getMapX(){
+	    	String stemp = this.getId().getMapX();
+	    	Integer objReturn = new Integer(stemp);
+	    	return objReturn.intValue();
+	    	//return objReturn;
 	    }
+		public void setMapX(int iValue){
+			Integer intValue = new Integer(iValue);
+			String sX = intValue.toString();
+			this.getId().setMapX(sX);
+		}
 	    
-	    public String getMapY(){
-	    	return this.getId().getMapY();
+		@Access(AccessType.PROPERTY)
+		@Column(name="YY", nullable=false, columnDefinition="integer default 0")
+	    public int getMapY(){
+			String stemp =  this.getId().getMapY();
+	    	Integer objReturn = new Integer(stemp);
+	    	return objReturn.intValue();
+	    	//return objReturn;
 	    }
+		public void setMapY(int iValue){
+			Integer intValue = new Integer(iValue);
+			String sY = intValue.toString();
+			this.getId().setMapY(sY);
+		}
 	    
 }

@@ -40,24 +40,24 @@ public class PanelFrmMapSingletonTHM  extends KernelJPanelCascadedZZZ implements
 		//### PANEL CENTER
 		//Merke: Das Panel Center muss erst definiert werden, da das Panel West dies anschliessend schon als DROP-Ziel verwendet.
 		HashMap<String, Boolean> hmFlag = new HashMap<String, Boolean>();
-		//hmFlag.put("isKernelProgram", true); //2013-07-08: Damit wird angezeigt, das es in der Kernel .ini - Konfigurationsdatei einen entsprechenden Abschnitt gibt, in dem Parameter hierfür hinterlegt sind.
+		//hmFlag.put("isKernelProgram", true); //2013-07-08: Damit wird angezeigt, das es in der Kernel .ini - Konfigurationsdatei einen entsprechenden Abschnitt gibt, in dem Parameter hierfï¿½r hinterlegt sind.
 		hmFlag.put(FLAGZ.COMPONENT_KERNEL_PROGRAM.name(), true);
 		PanelMain_CENTERTHM objPanelCenter = new PanelMain_CENTERTHM(objKernel, this, hmFlag);  
-		this.setPanelSub("CENTER", objPanelCenter);//Backend Hashtable hinzufügen
+		this.setPanelSub("CENTER", objPanelCenter);//Backend Hashtable hinzufï¿½gen
 		
-		//FGL 20130627: Das Panel nicht mehr direkt, sondern über den JScrollPane einbinden this.add(objPanelCenter, BorderLayout.CENTER); //Frontend hinzufügen
-		JScrollPane scrollPaneCenter = new JScrollPane(objPanelCenter); //Frontend hinzufügen
+		//FGL 20130627: Das Panel nicht mehr direkt, sondern ï¿½ber den JScrollPane einbinden this.add(objPanelCenter, BorderLayout.CENTER); //Frontend hinzufï¿½gen
+		JScrollPane scrollPaneCenter = new JScrollPane(objPanelCenter); //Frontend hinzufï¿½gen
 		this.add(scrollPaneCenter, BorderLayout.CENTER);
 		
 		//FGL 20130627: Als Drop Ziel nun den JScrollPane. Das Panel als Drop Ziel funktioniert nicht immer, wenn gescrollt wurde.
 		//GhostDropListener listener = new GhostDropManagerHexMapPanelTHM(objPanelCenter); //Funktioniert nicht, wenn mit den ScrollBars gescrollt worden ist.
-		//Probleme bei zu großen Hexes GhostDropListener listener = new GhostDropManagerHexMapPanelTHM(this.getKernelObject(), scrollPaneCenter, objPanelCenter.getHexMap());  
+		//Probleme bei zu groï¿½en Hexes GhostDropListener listener = new GhostDropManagerHexMapPanelTHM(this.getKernelObject(), scrollPaneCenter, objPanelCenter.getHexMap());  
 		GhostDropListener listener = new GhostDropManagerHexMapPanelTHM(this.getKernelObject(), scrollPaneCenter, objPanelCenter.getHexMap());
 
 		 
 	    //Es muss das pictureAdapter-Objekt der gleich sein, der das DRAGGEN bereitstellt, wie auch das DROPPEN!!!!
-		//TODO GOON: Diese pictureAdapter-Objekte in einer HashMap verwalten, so dass über ein Schlüsselwort der korrekte Picture Adapter
-		//           sowohl für die zu DRAGGENDE Komponente als auch für die den DROP empfangende Komponente 
+		//TODO GOON: Diese pictureAdapter-Objekte in einer HashMap verwalten, so dass Ã¼ber ein SchlÃ¼sselwort der korrekte Picture Adapter
+		//           sowohl fÃ¼r die zu DRAGGENDE Komponente als auch fÃ¼r die den DROP empfangende Komponente 
 		//           geholt werden kann.
 		 //Eclipse Worspace
 		 File f = new File("");
@@ -70,8 +70,8 @@ public class PanelFrmMapSingletonTHM  extends KernelJPanelCascadedZZZ implements
 		//### PANEL WEST
 	    //Es muss das pictureAdapter-Objekt der gleich sein, der das DRAGGEN bereitstellt, wie auch das DROPPEN!!!!
 		PanelMain_WESTTHM objPanelWest = new PanelMain_WESTTHM(objKernel, this, pictureAdapter);				
-		this.setPanelSub("WEST", objPanelWest);       //Backend Hashtable hinzufügen
-		this.add(objPanelWest, BorderLayout.WEST); //Frontend hinzufügen
+		this.setPanelSub("WEST", objPanelWest);       //Backend Hashtable hinzufï¿½gen
+		this.add(objPanelWest, BorderLayout.WEST); //Frontend hinzufï¿½gen
 	}
 	
 	//#### Interface Methoden #####################

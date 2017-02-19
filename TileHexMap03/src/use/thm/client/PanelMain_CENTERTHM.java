@@ -62,7 +62,7 @@ public class PanelMain_CENTERTHM extends KernelJPanelCascadedZZZ implements IHex
 			HexMapTHM objMap = new HexMapTHM(objKernel, this, iNumberOfColumn, iNumberOfRow, iHexSideLength);
 			this.setHexMap(objMap);
 			
-			//+++ Das Ziel ist, beim Fallenlassen eines Objekts aus dem glassPane, reagieren zu k�nnen
+			//+++ Das Ziel ist, beim Fallenlassen eines Objekts aus dem glassPane, reagieren zu können
 			//ABER: HexMap ist keine JComponent, sondern ein KernelUseObject. Nur die einzelnen Zellen sind JPanels (und damit JComponents) und k�nnen direkter als Drop-Ziel verwendet werden.
 			//GhostDropListener listener = new GhostDropManagerHexMapTHM(objMap);
 		

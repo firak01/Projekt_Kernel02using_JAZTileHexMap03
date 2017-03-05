@@ -9,10 +9,12 @@ import javax.persistence.Embeddable;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Id;
 
+import use.thm.persistence.interfaces.IPrimaryKeys;
+
 //Buch "Java Persistence API", S. 48
 @Embeddable
 @Access(AccessType.PROPERTY)
-public class CellId implements Serializable{
+public class CellId implements IPrimaryKeys{ //IPrimaryKeys hat zwar @Embeddable aber das wird scheinbar nicht vererbt.
 
 	/** Diese Klasse hat den Zweck eine ID zur Verfügung zu stellen.
 	 *   @Id ist nicht erlaubt. Alle Properties bilden automatisch den Schlüssel.

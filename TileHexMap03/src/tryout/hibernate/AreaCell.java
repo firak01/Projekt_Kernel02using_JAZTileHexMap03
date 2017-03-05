@@ -6,17 +6,12 @@ import javax.persistence.Access;
 import javax.persistence.AccessType;
 import javax.persistence.Column;
 import javax.persistence.DiscriminatorValue;
-import javax.persistence.Embedded;
 import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
 import javax.persistence.Transient;
 
-import org.hibernate.annotations.Type;
-import org.hibernate.annotations.Parameter;
-
 @Entity
-@DiscriminatorValue("area")
+@DiscriminatorValue("area") //Wird es wg. der Vererbung(!) von HEXCell zu AreaType immer geben. Ohne Annotation ist das DTYPE und der wert ist gleich dem Klassennamen.
+                                      //Das muss in dem Root Entity, also in HEXCELL defniert werden. @DiscriminatorColumn(name="Disc", discriminatorType = DiscriminatorType.STRING)
 public class AreaCell extends HexCell implements Serializable{
 
 
@@ -64,23 +59,18 @@ public class AreaCell extends HexCell implements Serializable{
 		this.enumAreaType = enumAreaType;	
 	}
 	
-	//20170201: Versuche den Textwert in der Tabelle zu speichern, damit es kein BLOB ist. Das scheint nicht auszureichen 
-	@Column(name="AREATYPE")
+	//Versuche den Textwert in der Tabelle zu speichern, damit es kein BLOB ist, wie bei einem Enumeration-Objekt. 
+	@Column(name="SUBTYPE")
 	@Access(AccessType.PROPERTY)
-	//@Enumerated(EnumType.STRING)
 	public String getAreaType(){
 		//das ist die Langbeschreibung return this.getAreaTypeObject().name();
 		String sName = this.getAreaTypeObject().name();	
 		AreaType at =  this.getAreaTypeObject().valueOf(AreaType.class, sName);
 		return at.getAbbreviation();
 	}	
-//	public void setAreaTypeString(String sAreaType){
-//		this.sAreaType = sAreaType;
-//	}
 	public void setAreaType(String sAreaType){
 		AreaType objType = AreaType.fromAbbreviation(sAreaType);
 		this.setAreaTypeObject(objType);
-//		this.setAreaTypeString(sAreaType);
 	}
 	
 	

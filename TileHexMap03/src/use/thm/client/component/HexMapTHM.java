@@ -14,6 +14,7 @@ import org.hibernate.Session;
 import tryout.hibernate.AreaCell;
 import tryout.hibernate.AreaType;
 import tryout.hibernate.CellId;
+import tryout.hibernate.SQLiteUtilZZZ;
 import use.thm.ITileEventUserTHM;
 import use.thm.client.event.EventTileCreatedInCellTHM;
 import use.thm.client.event.TileMetaEventBrokerTHM;
@@ -137,7 +138,7 @@ public class HexMapTHM extends KernelUseObjectZZZ implements ITileEventUserTHM {
 		main:{
 			HashMapMultiZZZ hmCell = this.getMapCell();
 			hmCell.clear();
-			this.iNrOfHexes = 0;  //Die gasamtzahl der Hexes wird hochgez�hlt beim F�llen UND IST DER R�CKGABEWERT.
+			this.iNrOfHexes = 0;  //Die gasamtzahl der Hexes wird hochgezählt beim Füllen UND IST DER RÜCKGABEWERT.
 			
 			//Kernel Objekt
 			KernelZZZ objKernel = this.getKernelObject();
@@ -146,30 +147,33 @@ public class HexMapTHM extends KernelUseObjectZZZ implements ITileEventUserTHM {
 			TileMoveEventBrokerTHM objTileMoveEventBroker = new TileMoveEventBrokerTHM(objKernel);
 			this.setTileMoveEventBroker(objTileMoveEventBroker);
 			
-			//20130630: MetaEventBroker f�r Ereignisse wie Erstellen, Vernichten, etc. am Spielstein
+			//20130630: MetaEventBroker für Ereignisse wie Erstellen, Vernichten, etc. am Spielstein
 			TileMetaEventBrokerTHM objTileMetaEventBroker = new TileMetaEventBrokerTHM(objKernel);
 			this.setTileMetaEventBroker(objTileMetaEventBroker);
 			
 			//TODO GOON: Die MapInformationen und die Informationen für Hexfelder sollen aus einer SQL Tabelle kommen. Das legt dann auch die Größe der Karte fest fest....
 			//TODO GOON: Wenn es schon Mapinformationen gibt (ggf. neu "Map Alias" beachten) dann soll die Karten nicht neu aufgebaut, sondern aus der SQL Datenbank ausgelesen werden.
 			//Verwende eine Komfortklasse:
-			HibernateContextProviderTHM objContextHibernate = new HibernateContextProviderTHM(this.getKernelObject());
-			
-			//Erzeuge den Entity Manager als Ausgangspunkt für die Abfragen. !!! Damit Hibernate mit JPA funktioniert, braucht man die Datei META-INF\persistence.xml. Darin wird die persistence-unit angegeben.		
 			//TODO GOON: Den Namen der Datenbank/des Schemas aus der Kernelkonfiguration holen.
-			//EntityManager em = objContextHibernate.getEntityManager("TileHexMap03");
-			//EntityManager em = objContextHibernate.getEntityManager("c:\\server\\SQLite\\TileHexMap03.sqlite");
-			//EntityManager em = objContextHibernate.getEntityManager("jdbc:sqlite:c:\\server\\SQLite\\TileHexMap03.sqlite");
-			//EntityManager em = objContextHibernate.getEntityManager("TileHexMap03"); 
-			EntityManager em = objContextHibernate.getEntityManager("TileHexMap03");
-			//Query objQuery = em.createQuery("SELECT MAX(c.sMapX) FROM HexCell c");//Fehler: could not resolve property: sMapX of: tryout.hibernate.HexCell 
-			//Query objQuery = em.createQuery("SELECT MAX(c.MapX) FROM HexCell c");//Fehler: could not resolve property: MapX of: tryout.hibernate.HexCell
-			//Query objQuery = em.createQuery("SELECT MAX(c.x) FROM HexCell c");//Fehler: could not resolve property: x of: tryout.hibernate.HexCell
-			//Query objQuery = em.createQuery("SELECT MAX(c.X) FROM HexCell c");//Fehler: could not resolve property: X of: tryout.hibernate.HexCell
+			HibernateContextProviderTHM objContextHibernate = new HibernateContextProviderTHM(this.getKernelObject());
+			EntityManager em = null;
+			
 			
 			//TODO: Prüfe die Existenz der Datenbank ab. Ohne die erstellte Datenbank und die Erstellte Datenbanktabelle kommt es hier zu einem Fehler.
 			//           Darum muss ich den Code immer erst auskommentieren, nachdem ich die Datenbank gelöscht habe.
-			
+			boolean bDbExists = SQLiteUtilZZZ.databaseFileExists(objContextHibernate);
+			if(bDbExists){
+				//Erzeuge den Entity Manager als Ausgangspunkt für die Abfragen. !!! Damit Hibernate mit JPA funktioniert, braucht man die Datei META-INF\persistence.xml. Darin wird die persistence-unit angegeben.	
+				//Wichtig: Das darf erst NACH dem Überprüfen auf die Datenbankexistenz passieren, da hierdurch die Datei erzeugt wird (wenn auch noch ohne Tabellen)
+				
+				//EntityManager em = objContextHibernate.getEntityManager("c:\\server\\SQLite\\TileHexMap03.sqlite");
+				//EntityManager em = objContextHibernate.getEntityManager("jdbc:sqlite:c:\\server\\SQLite\\TileHexMap03.sqlite");				
+				if(em==null)em = objContextHibernate.getEntityManager("TileHexMap03");
+				//Query objQuery = em.createQuery("SELECT MAX(c.sMapX) FROM HexCell c");//Fehler: could not resolve property: sMapX of: tryout.hibernate.HexCell 
+				//Query objQuery = em.createQuery("SELECT MAX(c.MapX) FROM HexCell c");//Fehler: could not resolve property: MapX of: tryout.hibernate.HexCell
+				//Query objQuery = em.createQuery("SELECT MAX(c.x) FROM HexCell c");//Fehler: could not resolve property: x of: tryout.hibernate.HexCell
+				//Query objQuery = em.createQuery("SELECT MAX(c.X) FROM HexCell c");//Fehler: could not resolve property: X of: tryout.hibernate.HexCell
+				
 			//TODO: Mache ein DAO Objekt und dort diesen HQL String hinterlegen.
 			//TODO: Anzahl der echten Elemente aus einer noch zu erstellenden Hibernate-ZKernelUtility-Methode holen, sowie eine ResultList OHNE NULL Objekte.
 			//String sQueryTemp = "SELECT MAX(c.id.sMapX) FROM HexCell c";
@@ -193,6 +197,12 @@ public class HexMapTHM extends KernelUseObjectZZZ implements ITileEventUserTHM {
 					System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": Gefundenes Objekt obj.class= " + obj.getClass().getName());
 				}
 			}
+			}//end if bDbExists
+			
+			//Erzeuge den Entity Manager als Ausgangspunkt für die Abfragen. !!! Damit Hibernate mit JPA funktioniert, braucht man die Datei META-INF\persistence.xml. Darin wird die persistence-unit angegeben.	
+			//Wichtig: Das darf erst NACH dem Überprüfen auf die Datenbankexistenz passieren, da hierdurch die Datei erzeugt wird (wenn auch noch ohne Tabellen)
+			if(em==null) em = objContextHibernate.getEntityManager("TileHexMap03");
+			
 			
 			/*++++++++++++++
 			//Hibernate Beispiel für einfaches Erzeugen der Entities
@@ -265,7 +275,7 @@ public class HexMapTHM extends KernelUseObjectZZZ implements ITileEventUserTHM {
 				
 			
 				
-			/* !!! Alte Version, nicht Löschen: So werden Truppen ohne einen Event hinzugef�gt	
+			/* !!! Alte Version, nicht Löschen: So werden Truppen ohne einen Event hinzugefügt	
 			//TEST: TRUPPEN Komponente(n) in eine bestimmte Zelle hinzufügen
 			if(sX.equals("1") && sY.equals("1")){
 				objCellTemp.setOpaque(false);

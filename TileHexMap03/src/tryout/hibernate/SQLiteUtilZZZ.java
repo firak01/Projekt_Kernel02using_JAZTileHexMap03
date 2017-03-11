@@ -8,6 +8,8 @@ import use.thm.client.hibernate.HibernateContextProviderTHM;
 import basic.zBasic.ExceptionZZZ;
 import basic.zBasic.ObjectZZZ;
 import basic.zBasic.ReflectCodeZZZ;
+import basic.zBasic.util.abstractEnum.EnumSetMappedUtilZZZ;
+import basic.zBasic.util.abstractEnum.IEnumSetMappedZZZ;
 import basic.zBasic.util.datatype.string.StringZZZ;
 import basic.zBasic.util.file.FileEasyZZZ;
 import basic.zBasic.util.persistence.jdbc.JdbcDatabaseTypeZZZ;
@@ -77,44 +79,26 @@ public class SQLiteUtilZZZ  extends ObjectZZZ{
 
 				 */
 				
-				//TODO Goon: Verwende hier eine Methode aus EnumSetMappedUtitlityZZZ
-				//                  .
-				Set<JdbcDriverClassTypeZZZ> drivers = EnumSet.allOf(JdbcDriverClassTypeZZZ.class);
-				for(JdbcDriverClassTypeZZZ driver : drivers) {
-//				  System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": Driver ALIAS  als driver.name() from Enumeration="+driver.name());
-//				  System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": Driver als driver.toString() from Enumeration="+driver.toString());
-//				  System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": Driver als driver.abbreviaton from Enumeration="+driver.getAbbreviation());
-				  if(!StringZZZ.isEmpty(driver.getAbbreviation())){
-					  if(sDatabaseUrl.startsWith(driver.getAbbreviation())){
-						  System.out.println("Bingo einen Treiber gefunden.");
-						  sDatabaseUrl = StringZZZ.right(sDatabaseUrl, driver.getAbbreviation() + UrlLogicZZZ.sURL_PROTOCOL_PERSISTENCE_SEPARATOR_PROTOCOL, true);
-						  
-						  break;
-					  }
-				  }
+				//Verwende hier eine Methode aus EnumSetMappedUtitlityZZZ				
+				EnumSetMappedUtilZZZ objUtil = new EnumSetMappedUtilZZZ(JdbcDriverClassTypeZZZ.class);
+
+				IEnumSetMappedZZZ driverType = objUtil.startsWithAnyAlias_EnumMappedObject(sDatabaseUrl);
+				if(driverType!=null){
+					String sDescription = driverType.getDescription(); //Die Description soll das sein, was in der URL steht..., darum..
+					sDatabaseUrl = StringZZZ.rightback((UrlLogicZZZ.sURL_PROTOCOL_PERSISTENCE_SEPARATOR_PROTOCOL + sDatabaseUrl), sDescription + UrlLogicZZZ.sURL_PROTOCOL_PERSISTENCE_SEPARATOR_PROTOCOL); //Damit bei einem Leerstring von sDescription auch passend abgeschnitten wird
 				}
-				
+								
 				//Vom Rest dann Enumeration Datenbankaliasse durchgehen.
-				String sDatabaseFound="";
-				Set<JdbcDatabaseTypeZZZ> databases = EnumSet.allOf(JdbcDatabaseTypeZZZ.class);
-				for(JdbcDatabaseTypeZZZ database : databases) {
-//				   System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": Database ALIAS als database.name() from Enumeration="+database.name());
-//				   System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": Database als database.toString() from Enumeration="+database.toString());
-//				   System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": Database als database.abbreviation from Enumeration="+database.getAbbreviation());
-				   if(!StringZZZ.isEmpty(database.getAbbreviation())){
-					   if(sDatabaseUrl.startsWith(database.getAbbreviation())){						  
-						  sDatabaseFound=database.getAbbreviation();
-						  System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": Bingo eine Datenbank gefunden '"+ sDatabaseFound +"'");
-						  						  
-						  sDatabaseUrl = StringZZZ.right(sDatabaseUrl, sDatabaseFound+UrlLogicZZZ.sURL_PROTOCOL_PERSISTENCE_SEPARATOR_PROTOCOL, true);
-						  System.out.println((ReflectCodeZZZ.getPositionCurrent() + ": Datenbank string '" + sDatabaseUrl + "'"));
-						  break;
-					  }
-				   }
-				}
+				objUtil = new EnumSetMappedUtilZZZ(JdbcDatabaseTypeZZZ.class);
 				
+				IEnumSetMappedZZZ databaseType = objUtil.startsWithAnyAlias_EnumMappedObject(sDatabaseUrl);
+				if(databaseType!=null){
+					String sDatabaseFound= databaseType.getAbbreviation();
+					  sDatabaseUrl = StringZZZ.rightback((UrlLogicZZZ.sURL_PROTOCOL_PERSISTENCE_SEPARATOR_PROTOCOL + sDatabaseUrl), sDatabaseFound+UrlLogicZZZ.sURL_PROTOCOL_PERSISTENCE_SEPARATOR_PROTOCOL);
+					  System.out.println((ReflectCodeZZZ.getPositionCurrent() + ": Datenbank string '" + sDatabaseUrl + "'"));
+								
 				//TODO: Wie die Existenz anderer Datenbanken , die per IP Adresse und nicht per einfacher lokaler Datei erreichbar sind prüfen?
-				if(sDatabaseFound.equalsIgnoreCase("sqlite")){
+				if(databaseType.getAbbreviation().equalsIgnoreCase("sqlite")){
 					 //Merke: SQLIte Datenbanken könne theoretisch auch InMemory sein.  :memory					
 					System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": SQLITE Datenbank gefunden. Prüfe auf in Memory.");
 					if(sDatabaseUrl.startsWith(":memory")){
@@ -126,7 +110,12 @@ public class SQLiteUtilZZZ  extends ObjectZZZ{
 						System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": Prüfe Datei Existenz: " + sDatabaseUrl);
 						bReturn = FileEasyZZZ.exists(sDatabaseUrl);
 					}
-				}												
+				}
+				}else{
+					//databaseType nicht gefunden
+					ExceptionZZZ ez  = new ExceptionZZZ("Datenbanktyp nicht gefunden, der im Konfigurationsstring genannt wird: '" + sUrl +"'", iERROR_PARAMETER_VALUE, FileEasyZZZ.class.getName(), ReflectCodeZZZ.getMethodCurrentName());
+					throw ez;
+				}//end if databaseType != null
 			//}
 		}//end main:		
 		return bReturn;

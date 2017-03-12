@@ -54,7 +54,7 @@ public class TileTHM extends JPanel implements IMapPositionableTHM {
 			this.addMouseListener(objMotionHandler);
 			this.addMouseMotionListener(objMotionHandler);
 //			.addFocusListener()
-		} catch (Exception e) {
+		} catch (Exception e) { 
 			// FGL: Anders als im Buch, werden hier die Klassen nicht als Bestandteil der anderen Klassen definiert, sondern müssen über Properties kommunizieren.
 			e.printStackTrace();
 		}

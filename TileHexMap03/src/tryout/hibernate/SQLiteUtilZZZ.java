@@ -50,10 +50,24 @@ public class SQLiteUtilZZZ  extends ObjectZZZ{
 			//.setProperty("hibernate.connection.url", "jdbc:sqlite:c:\\server\\SQLite\\TileHexMap03.sqlite");
 			//Merke: Das jdbc: muss als Protokoll erkannt werden. jdbc:sqlite::memory wäre auch eine alternative, die erlaubt ist. 
 			//                                                                       und jdbc:mysql://localhost .... wäre dann auch möglich.
-				String sDatabaseUrl = UrlLogicZZZ.getUrlWithoutProtocol(sUrl); 
-				System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": DatabaseUrl="+sDatabaseUrl);
+			String sDatabaseUrl = UrlLogicZZZ.getUrlWithoutProtocol(sUrl); 
+			System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": DatabaseUrl="+sDatabaseUrl);
+					
+			/* so durchläuft man eine Enumeration, EnumSet importieren.
+			 * If you don't care about the order this should work:
+				Set<Direction> directions = EnumSet.allOf(Direction.class);
+				for(Direction direction : directions) {
+				    // do stuff
+				}
 
-				//Enumeration objEnum = objHtValue.keys(); //code aus KernelFileIniZZZ - hier Enumeration aus HashMap
+			//Alternative:
+			for (Direction  d : Direction.values()) {
+		       //your code here   
+		    }//ABER: .values() existiert  wohl nur im Compiler, wird also auch nicht vorgeschlagen.
+			 */
+			
+			//Hier ein Beispiel wie man eine Enumeration aus einer Hashmap holt.
+			//Enumeration objEnum = objHtValue.keys(); //code aus KernelFileIniZZZ - hier Enumeration aus HashMap
 //				Enumeration objEnum = 
 //				while(objEnum.hasMoreElements()){
 //					String sProperty = (String) objEnum.nextElement();
@@ -64,39 +78,23 @@ public class SQLiteUtilZZZ  extends ObjectZZZ{
 //						this.setPropertyValue(sSection, sProperty, sValue, false);
 //					}
 //				} //end while
-								
-				/* so durchläuft man eine Enumeration, EnumSet importieren.
-				 * If you don't care about the order this should work:
-					Set<Direction> directions = EnumSet.allOf(Direction.class);
-					for(Direction direction : directions) {
-					    // do stuff
-					}
-
-				//Alternative:
-				for (Direction  d : Direction.values()) {
-			       //your code here   
-			    }//ABER: .values() existiert  wohl nur im Compiler, wird also auch nicht vorgeschlagen.
-
-				 */
-				
-				//Verwende hier eine Methode aus EnumSetMappedUtitlityZZZ				
-				EnumSetMappedUtilZZZ objUtil = new EnumSetMappedUtilZZZ(JdbcDriverClassTypeZZZ.class);
-
-				IEnumSetMappedZZZ driverType = objUtil.startsWithAnyAlias_EnumMappedObject(sDatabaseUrl);
-				if(driverType!=null){
-					String sDescription = driverType.getDescription(); //Die Description soll das sein, was in der URL steht..., darum..
-					sDatabaseUrl = StringZZZ.rightback((UrlLogicZZZ.sURL_PROTOCOL_PERSISTENCE_SEPARATOR_PROTOCOL + sDatabaseUrl), sDescription + UrlLogicZZZ.sURL_PROTOCOL_PERSISTENCE_SEPARATOR_PROTOCOL); //Damit bei einem Leerstring von sDescription auch passend abgeschnitten wird
-				}
-								
-				//Vom Rest dann Enumeration Datenbankaliasse durchgehen.
-				objUtil = new EnumSetMappedUtilZZZ(JdbcDatabaseTypeZZZ.class);
-				
-				IEnumSetMappedZZZ databaseType = objUtil.startsWithAnyAlias_EnumMappedObject(sDatabaseUrl);
-				if(databaseType!=null){
-					String sDatabaseFound= databaseType.getAbbreviation();
-					  sDatabaseUrl = StringZZZ.rightback((UrlLogicZZZ.sURL_PROTOCOL_PERSISTENCE_SEPARATOR_PROTOCOL + sDatabaseUrl), sDatabaseFound+UrlLogicZZZ.sURL_PROTOCOL_PERSISTENCE_SEPARATOR_PROTOCOL);
-					  System.out.println((ReflectCodeZZZ.getPositionCurrent() + ": Datenbank string '" + sDatabaseUrl + "'"));
-								
+			
+			//Verwende hier eine Methode aus EnumSetMappedUtitlityZZZ				
+			EnumSetMappedUtilZZZ objUtil = new EnumSetMappedUtilZZZ(JdbcDriverClassTypeZZZ.class);
+			IEnumSetMappedZZZ driverType = objUtil.startsWithAnyAlias_EnumMappedObject(sDatabaseUrl);
+			if(driverType!=null){
+				String sDescription = driverType.getDescription(); //Die Description soll das sein, was in der URL steht..., darum..
+				sDatabaseUrl = StringZZZ.rightback((UrlLogicZZZ.sURL_PROTOCOL_PERSISTENCE_SEPARATOR_PROTOCOL + sDatabaseUrl), sDescription + UrlLogicZZZ.sURL_PROTOCOL_PERSISTENCE_SEPARATOR_PROTOCOL); //Damit bei einem Leerstring von sDescription auch passend abgeschnitten wird
+			}
+							
+			//Vom Rest dann Enumeration Datenbankaliasse durchgehen.
+			objUtil = new EnumSetMappedUtilZZZ(JdbcDatabaseTypeZZZ.class);				
+			IEnumSetMappedZZZ databaseType = objUtil.startsWithAnyAlias_EnumMappedObject(sDatabaseUrl);
+			if(databaseType!=null){
+				String sDatabaseFound= databaseType.getAbbreviation();
+				  sDatabaseUrl = StringZZZ.rightback((UrlLogicZZZ.sURL_PROTOCOL_PERSISTENCE_SEPARATOR_PROTOCOL + sDatabaseUrl), sDatabaseFound+UrlLogicZZZ.sURL_PROTOCOL_PERSISTENCE_SEPARATOR_PROTOCOL);
+				  System.out.println((ReflectCodeZZZ.getPositionCurrent() + ": DatabasePath = '" + sDatabaseUrl + "'"));
+							
 				//TODO: Wie die Existenz anderer Datenbanken , die per IP Adresse und nicht per einfacher lokaler Datei erreichbar sind prüfen?
 				if(databaseType.getAbbreviation().equalsIgnoreCase("sqlite")){
 					 //Merke: SQLIte Datenbanken könne theoretisch auch InMemory sein.  :memory					
@@ -106,17 +104,16 @@ public class SQLiteUtilZZZ  extends ObjectZZZ{
 						bReturn = true;
 						break main;
 					}else{
-						System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": SQLITE Datenbank NICHT in Memory");
+						System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": SQLITE Datenbank NICHT in Memory sondern als lokale Datei.");
 						System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": Prüfe Datei Existenz: " + sDatabaseUrl);
 						bReturn = FileEasyZZZ.exists(sDatabaseUrl);
 					}
 				}
-				}else{
-					//databaseType nicht gefunden
-					ExceptionZZZ ez  = new ExceptionZZZ("Datenbanktyp nicht gefunden, der im Konfigurationsstring genannt wird: '" + sUrl +"'", iERROR_PARAMETER_VALUE, FileEasyZZZ.class.getName(), ReflectCodeZZZ.getMethodCurrentName());
-					throw ez;
-				}//end if databaseType != null
-			//}
+			}else{
+				//databaseType nicht gefunden
+				ExceptionZZZ ez  = new ExceptionZZZ("Datenbanktyp nicht gefunden, der im Konfigurationsstring genannt wird: '" + sUrl +"'", iERROR_PARAMETER_VALUE, FileEasyZZZ.class.getName(), ReflectCodeZZZ.getMethodCurrentName());
+				throw ez;
+			}//end if databaseType != null
 		}//end main:		
 		return bReturn;
 	}

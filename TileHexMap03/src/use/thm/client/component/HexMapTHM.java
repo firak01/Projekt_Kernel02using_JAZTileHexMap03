@@ -66,7 +66,8 @@ public class HexMapTHM extends KernelUseObjectZZZ implements ITileEventUserTHM {
 		this.iColumnMax = iColumnMax;
 		this.iSideLength = iSideLength;
 		this.setPanelParent(panelParent);
-		fillMap();
+		boolean bSuccess = fillMap();
+		
 	}
 	
 	/** Anzahl der Hexes in einer Zeile. 
@@ -129,16 +130,17 @@ public class HexMapTHM extends KernelUseObjectZZZ implements ITileEventUserTHM {
 		return this.hmCell;
 	}
 	
-	public int fillMap() throws ExceptionZZZ{
+	public boolean fillMap() throws ExceptionZZZ{
 		return this.fillMap_(this.getPanelParent());
 	}
 	
-	private int fillMap_(KernelJPanelCascadedZZZ panelMap) throws ExceptionZZZ{
-		int iReturn = 0;
+	private boolean fillMap_(KernelJPanelCascadedZZZ panelMap) throws ExceptionZZZ{
+		boolean bReturn = false;
 		main:{
 			HashMapMultiZZZ hmCell = this.getMapCell();
 			hmCell.clear();
-			this.iNrOfHexes = 0;  //Die gasamtzahl der Hexes wird hochgezählt beim Füllen UND IST DER RÜCKGABEWERT.
+			boolean bFillDatabaseNew = true;
+			this.iNrOfHexes = 0;  //Die Gesamtzahl der Hexes wird hochgezählt beim Füllen UND IST DER RÜCKGABEWERT.
 			
 			//Kernel Objekt
 			KernelZZZ objKernel = this.getKernelObject();
@@ -156,53 +158,115 @@ public class HexMapTHM extends KernelUseObjectZZZ implements ITileEventUserTHM {
 			//Verwende eine Komfortklasse:
 			//TODO GOON: Den Namen der Datenbank/des Schemas aus der Kernelkonfiguration holen.
 			HibernateContextProviderTHM objContextHibernate = new HibernateContextProviderTHM(this.getKernelObject());
-			EntityManager em = null;
-			
-			
-			//TODO: Prüfe die Existenz der Datenbank ab. Ohne die erstellte Datenbank und die Erstellte Datenbanktabelle kommt es hier zu einem Fehler.
-			//           Darum muss ich den Code immer erst auskommentieren, nachdem ich die Datenbank gelöscht habe.
+									
+			//Prüfe die Existenz der Datenbank ab. Ohne die erstellte Datenbank und die Erstellte Datenbanktabelle kommt es hier zu einem Fehler.			
 			boolean bDbExists = SQLiteUtilZZZ.databaseFileExists(objContextHibernate);
-			if(bDbExists){
-				//Erzeuge den Entity Manager als Ausgangspunkt für die Abfragen. !!! Damit Hibernate mit JPA funktioniert, braucht man die Datei META-INF\persistence.xml. Darin wird die persistence-unit angegeben.	
-				//Wichtig: Das darf erst NACH dem Überprüfen auf die Datenbankexistenz passieren, da hierdurch die Datei erzeugt wird (wenn auch noch ohne Tabellen)
-				
-				//EntityManager em = objContextHibernate.getEntityManager("c:\\server\\SQLite\\TileHexMap03.sqlite");
-				//EntityManager em = objContextHibernate.getEntityManager("jdbc:sqlite:c:\\server\\SQLite\\TileHexMap03.sqlite");				
-				if(em==null)em = objContextHibernate.getEntityManager("TileHexMap03");
-				//Query objQuery = em.createQuery("SELECT MAX(c.sMapX) FROM HexCell c");//Fehler: could not resolve property: sMapX of: tryout.hibernate.HexCell 
-				//Query objQuery = em.createQuery("SELECT MAX(c.MapX) FROM HexCell c");//Fehler: could not resolve property: MapX of: tryout.hibernate.HexCell
-				//Query objQuery = em.createQuery("SELECT MAX(c.x) FROM HexCell c");//Fehler: could not resolve property: x of: tryout.hibernate.HexCell
-				//Query objQuery = em.createQuery("SELECT MAX(c.X) FROM HexCell c");//Fehler: could not resolve property: X of: tryout.hibernate.HexCell
-				
-			//TODO: Mache ein DAO Objekt und dort diesen HQL String hinterlegen.
-			//TODO: Anzahl der echten Elemente aus einer noch zu erstellenden Hibernate-ZKernelUtility-Methode holen, sowie eine ResultList OHNE NULL Objekte.
-			//String sQueryTemp = "SELECT MAX(c.id.sMapX) FROM HexCell c";
-			//um einen Integer Wert zu bekommen die Propert naxh HexCell geholt und nicht mehr über id gehen.
-			String sQueryTemp = "SELECT MAX(c.mapX) FROM HexCell c";
-			Query objQuery = em.createQuery(sQueryTemp);
-			Object objSingle =objQuery.getSingleResult();
-			if(objSingle!=null){
-				System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": Objekt als Single Result der Query " + objSingle.hashCode());
-			}else{
-				System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": NULL Objekt als Single Result der Query " + sQueryTemp);
-			}
-			
-			List objResult = objQuery.getResultList();
-			
-			//TODO: WENN Die Anzahl der Zellen in der Datenbank leer ist, dann diese neu aufbauen/füllen
-			for(Object obj : objResult){
-				if(obj==null){										
-					System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": NULL Objekt in ResultList der Query " + sQueryTemp);
-				}else{					
-					System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": Gefundenes Objekt obj.class= " + obj.getClass().getName());
-				}
-			}
-			}//end if bDbExists
 			
 			//Erzeuge den Entity Manager als Ausgangspunkt für die Abfragen. !!! Damit Hibernate mit JPA funktioniert, braucht man die Datei META-INF\persistence.xml. Darin wird die persistence-unit angegeben.	
 			//Wichtig: Das darf erst NACH dem Überprüfen auf die Datenbankexistenz passieren, da hierdurch die Datei erzeugt wird (wenn auch noch ohne Tabellen)
-			if(em==null) em = objContextHibernate.getEntityManager("TileHexMap03");
+			//EntityManager em = objContextHibernate.getEntityManager("c:\\server\\SQLite\\TileHexMap03.sqlite");
+			//EntityManager em = objContextHibernate.getEntityManager("jdbc:sqlite:c:\\server\\SQLite\\TileHexMap03.sqlite");				
+			EntityManager em = objContextHibernate.getEntityManager("TileHexMap03");
+			if(bDbExists){
+				
+				
+				//Fall: Datenbank existiert
+				boolean bSuccess = fillMap_readCreated(objContextHibernate, em, panelMap);				
+				bFillDatabaseNew = !bSuccess;
+			}else{
+				//Fall: Datenbank existiert noch nicht
+				bFillDatabaseNew=true;
+			}//end if bDbExists
 			
+			if(bFillDatabaseNew){
+				//Erzeuge neuen Datenbankinhalt
+				bReturn = fillMap_createNew(objContextHibernate, panelMap);
+			}else{
+				//Lade bestehenden Datenbankinhalt
+				bReturn = fillMap_loadCreated(objContextHibernate, panelMap);
+			}
+		}//end main:		
+		return bReturn;
+	}
+	
+	private boolean fillMap_readCreated(HibernateContextProviderTHM objContextHibernate, EntityManager em, KernelJPanelCascadedZZZ panelMap) throws ExceptionZZZ{
+		boolean bReturn = false;
+		main:{
+			int iNrOfHexes = 0;	
+			
+			//Query objQuery = em.createQuery("SELECT MAX(c.sMapX) FROM HexCell c");//Fehler: could not resolve property: sMapX of: tryout.hibernate.HexCell 
+			//Query objQuery = em.createQuery("SELECT MAX(c.MapX) FROM HexCell c");//Fehler: could not resolve property: MapX of: tryout.hibernate.HexCell
+			//Query objQuery = em.createQuery("SELECT MAX(c.x) FROM HexCell c");//Fehler: could not resolve property: x of: tryout.hibernate.HexCell
+			//Query objQuery = em.createQuery("SELECT MAX(c.X) FROM HexCell c");//Fehler: could not resolve property: X of: tryout.hibernate.HexCell
+			
+		//TODO: Mache ein DAO Objekt und dort diesen HQL String hinterlegen.
+		//TODO: Anzahl der echten Elemente aus einer noch zu erstellenden Hibernate-ZKernelUtility-Methode holen, sowie eine ResultList OHNE NULL Objekte.
+		//String sQueryTemp = "SELECT MAX(c.id.sMapX) FROM HexCell c";
+		//um einen Integer Wert zu bekommen die Propert naxh HexCell geholt und nicht mehr über id gehen.
+		String sQueryTemp = "SELECT MAX(c.mapX) FROM HexCell c";
+		Query objQuery = em.createQuery(sQueryTemp);
+		Object objSingle =objQuery.getSingleResult();
+		if(objSingle!=null){
+			System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": Objekt als Single Result der Query " + objSingle.hashCode());
+		}else{
+			System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": NULL Objekt als Single Result der Query " + sQueryTemp);
+		}
+		
+		List objResult = objQuery.getResultList();
+		
+		//TODO: WENN Die Anzahl der Zellen in der Datenbank leer ist, dann diese neu aufbauen/füllen
+		for(Object obj : objResult){
+			if(obj==null){										
+				System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": NULL Objekt in ResultList der Query " + sQueryTemp);
+				bReturn = false;
+			}else{					
+				System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": Gefundenes Objekt obj.class= " + obj.getClass().getName());
+				bReturn = false;
+			}
+		}
+		
+		
+		
+		
+		//Zwei verschachtelte Schleifen, Aussen: Solange wie es "Provinzen" gibt...
+		//                                                  Innen:   von 1 bis maximaleSpaltenanzahl...
+		int iY = 0;
+		do{//die maximale Zeilenzahl ist noch hart verdrahtet, soll sich aber später automatisch ergeben.....
+		iY++;
+		Integer intY = new Integer(iY);
+		String sY = intY.toString();
+		
+		for(int iX=1; iX <= this.getColumnMax(); iX++){
+			Integer intX = new Integer(iX);				
+			String sX = intX.toString();
+			
+		}//End for iX
+		}while(iY< this.getRowMax());
+		
+		
+		
+		
+		bReturn = false;// ist ja noch nix ausgelesen worden
+		
+		}//main:
+		return bReturn;
+}
+	
+	
+	private boolean fillMap_loadCreated(HibernateContextProviderTHM objContextHibernate, KernelJPanelCascadedZZZ panelMap) throws ExceptionZZZ{
+		boolean bReturn = false;
+		main:{
+			int iNrOfHexes = 0;
+			
+			
+		}//end main:
+		return bReturn;
+	}
+	
+	private boolean fillMap_createNew(HibernateContextProviderTHM objContextHibernate, KernelJPanelCascadedZZZ panelMap) throws ExceptionZZZ{
+		boolean bReturn = false;
+		main:{
+			int iNrOfHexes = 0;
 			
 			/*++++++++++++++
 			//Hibernate Beispiel für einfaches Erzeugen der Entities
@@ -305,7 +369,7 @@ public class HexMapTHM extends KernelUseObjectZZZ implements ITileEventUserTHM {
 					
                     //Die Zelle in eine HashMap packen, die für´s UI verwendet wird				
 					hmCell.put(sX, sY, objCellThmTemp);
-					iReturn++; //Zelle zur Summe hinzufügen
+					iNrOfHexes++; //Zelle zur Summe hinzufügen
 					
 					//TEST: FALSCHES PLATZIEREN DER TRUPPEN Komponente in einer bestimmten Zelle per Event hinzufügen
 					boolean bUseTestArea = false;
@@ -354,9 +418,10 @@ public class HexMapTHM extends KernelUseObjectZZZ implements ITileEventUserTHM {
 			//Werte endgültig in die Datenbank übernehmen, per Hibernate
 			session.getTransaction().commit();
 			session.close();
-		}
-		this.iNrOfHexes = iReturn;
-		return iReturn;
+			
+			this.iNrOfHexes = iNrOfHexes;
+		}//end main:
+		return bReturn;
 	}
 	
 	/** Anhand der in fillMap() hinzugefügten Zellen und der Anzahl der Zellen pro Zeile, kann die Gesamtanzahl der Zeilen berechnet werden.

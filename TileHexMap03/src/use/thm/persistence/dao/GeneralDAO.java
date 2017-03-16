@@ -21,8 +21,10 @@ import org.hibernate.PropertyAccessException;
 import org.hibernate.PropertyValueException;
 import org.hibernate.Query;
 import org.hibernate.Session;
+import org.hibernate.SessionFactory;
 import org.hibernate.StaleObjectStateException;
 
+import tryout.hibernate.AreaCell;
 import use.thm.persistence.interfaces.IDaoInterface;
 import use.thm.persistence.interfaces.IPrimaryKeys;
 import use.thm.persistence.type.IntLongTupel;
@@ -67,15 +69,58 @@ public abstract class GeneralDAO<T> implements IDaoInterface<T>{
 	 */
 	public Session getSession() {
 		//if session is not installed -> open once (and only once!)
-		if(session == null && HibernateUtil.getHibernateUtil().getCurrentSession()!=null) {
+		if(session==null){
+			
 			//open session in view
 			session = HibernateUtil.getHibernateUtil().getCurrentSession();
 		}
+		
+		
 		//empty or closed? make a new session
 		if(session==null || !session.isOpen()) {
-			session = HibernateUtil.getHibernateUtil().getSessionFactory().openSession();
+			SessionFactory sf = HibernateUtil.getHibernateUtil().getSessionFactory();
+			if (sf!=null){
+				sf.openSession();
+			}else{
+				System.out.println("SessionFactory kann nicht erstellt werden. Tip: Alternativ den EntityManager verwenden oder ... (Need to specify class name in environment or system property, or as an applet parameter, or in an application resource file:  java.naming.factory.initial). ");
+			}
+		}
+		
+		return session;
+	}
+	
+	/** Erweitert von FGL, weil der HibernateContextProvider (per ZKernel) auch die Session holen kann.
+	 * 
+	 */
+	public static Session getSessionObject(){
+		Session session = HibernateUtil.getHibernateUtil().getCurrentSession();
+		//empty or closed? make a new session
+		if(session==null || !session.isOpen()) {
+			SessionFactory sf = HibernateUtil.getHibernateUtil().getSessionFactory();
+			if (sf!=null){
+				sf.openSession();
+			}else{
+				System.out.println("SessionFactory kann nicht erstellt werden. Tip: Alternativ den EntityManager verwenden oder ... (Need to specify class name in environment or system property, or as an applet parameter, or in an application resource file:  java.naming.factory.initial). ");
+			}
 		}
 		return session;
+	}
+	
+	/** Erweitert von FGL, weil der HibernateContextProvider (per ZKernel) auch die Session holen kann.
+	 * 
+	 *  
+	 * 
+	 * @param session
+	 */
+	public void setSession(Session session){
+		this.session = session;
+	}
+	
+	public Log getLog(){
+		if(this.log==null){
+			this.installLoger(this.getClass());			
+		}
+		return this.log;
 	}
 	
 	/**
@@ -85,7 +130,7 @@ public abstract class GeneralDAO<T> implements IDaoInterface<T>{
 		try {
 			this.getSession().beginTransaction();
 		} catch (Exception e) {
-			log.error("Method begin failed +\n" + session.hashCode() + "\n ThreadID:" + Thread.currentThread().getId() +"\n", e);
+			this.getLog().error("Method begin failed +\n" + session.hashCode() + "\n ThreadID:" + Thread.currentThread().getId() +"\n", e);
 		}
 	}
 
@@ -100,7 +145,7 @@ public abstract class GeneralDAO<T> implements IDaoInterface<T>{
 			}
 			getSession().flush();
 		} catch (Exception e) {
-			log.error("Method commit failed +\n" + session.hashCode() + "\n ThreadID:" + Thread.currentThread().getId() + "\n", e);
+			this.getLog().error("Method commit failed +\n" + session.hashCode() + "\n ThreadID:" + Thread.currentThread().getId() + "\n", e);
 		}
 //		this.session = null;
 	}
@@ -1728,6 +1773,22 @@ public abstract class GeneralDAO<T> implements IDaoInterface<T>{
 
 	private void setDatabaseObject(T databaseObject) {
 		this.databaseObject = databaseObject;
+	}
+
+	public int count() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	public int countByCriteria(Map<String, Object> whereBy,
+			Map<String, String> filter) {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	public Map<String, Object> getID(AreaCell instance) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 	
 	

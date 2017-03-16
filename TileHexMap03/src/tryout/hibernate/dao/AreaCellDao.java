@@ -1,129 +1,81 @@
 package tryout.hibernate.dao;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import tryout.hibernate.AreaCell;
-import use.thm.persistence.dao.GeneralDAO;
+import org.hibernate.Query;
+import org.hibernate.Session;
 
-public class AreaCellDao extends GeneralDAO<AreaCell> {
-	
+import basic.zBasic.ExceptionZZZ;
+import basic.zBasic.IObjectZZZ;
+import basic.zBasic.ReflectCodeZZZ;
+import basic.zBasic.persistence.GeneralDaoZZZ;
+import basic.zBasic.persistence.interfaces.IHibernateContextProviderUserZZZ;
+import basic.zBasic.persistence.interfaces.IHibernateContextProviderZZZ;
+import tryout.hibernate.AreaCell;
+import use.thm.client.hibernate.HibernateContextProviderTHM;
+import use.thm.persistence.dao.GeneralDAO;
+import use.thm.persistence.interfaces.IDaoInterface;
+import use.thm.persistence.interfaces.IOptimisticLocking;
+import use.thm.persistence.interfaces.IPrimaryKeys;
+public class AreaCellDao extends GeneralDaoZZZ<AreaCell> {
+//public class AreaCellDao extends GeneralDAO<AreaCell> implements IObjectZZZ, IHibernateContextProviderUserZZZ{	
 	private static final long serialVersionUID = 1L;
 	
+	
+	
 	/* Constructor */
-	public AreaCellDao(){
-		this.installLoger(AreaCell.class);
+	public AreaCellDao() throws ExceptionZZZ{
+		super();
+	}
+	public AreaCellDao(HibernateContextProviderTHM objContextHibernate) throws ExceptionZZZ{
+		super(objContextHibernate);		
+	}
+	public AreaCellDao(HibernateContextProviderTHM objContextHibernate, String sFlagControl) throws ExceptionZZZ{
+		super(objContextHibernate, sFlagControl);		
+	}
+	public AreaCellDao(HibernateContextProviderTHM objContextHibernate, String[] saFlagControl) throws ExceptionZZZ{
+		super(objContextHibernate, saFlagControl);		
 	}
 	
-	/**
-	 * Find all BusinessProvider
-	 * 
-	 * @param businessProviderID
-	 * @param first
-	 * @param max
-	 * @return
-	 */
-	public List<Consumer> findFirstConsumerDependingOnBusinessProvider(int businessProviderID,int first, int max){
-		log.debug("find all BusinessProvider");
-		Query q = getSession().createQuery("from Consumer c where c.businessProvider.businessProviderNo = :id").setParameter("id", businessProviderID);	
-		
-		q.setFirstResult(first);
-		q.setMaxResults(max);
-		
-		@SuppressWarnings("unchecked")
-		List<Consumer> allConsumer = q.list();
-		
-		return allConsumer;
-	}
-	
-		
-	/*
-	 * (non-Javadoc)
-	 * @see de.betzemeier.serviceportal.persistence.interfaces.DaoInterface#findByCriteria(java.util.Map, java.util.List)
-	 */
-	@Override
-	public List<Consumer> findByCriteria(Map<String,Object> criteria, List<String> orderByList, Map<String, String> filter){
-		log.debug("findByCriteria Portaluserser Dao");
-		return this.findByCriteria("Consumer", 0, -1, criteria, orderByList, filter);
-	}
-	
-	/*
-	 * (non-Javadoc)
-	 * @see de.betzemeier.serviceportal.persistence.interfaces.DaoInterface#findByCriteria(java.util.Map, java.util.List, int, int)
-	 */
-	@Override
-	public List<Consumer> findByCriteria(Map<String, Object> whereBy,
-			List<String> orderByList, Map<String, String> filter, int first, int max) {
-		return this.findByCriteria("Consumer", first, max, whereBy, orderByList, filter);
-	}
-    
-	/*
-	 * (non-Javadoc)
-	 * @see de.betzemeier.serviceportal.persistence.interfaces.DaoInterface#findLazyAll(int, int)
-	 */
-    @Override
-    public List<Consumer> findLazyAll(int first, int max){
-    	return this.findLazyAll("Consumer", first, max);
+    public List<AreaCell> findLazyAll(int first, int max){
+    	return this.findLazyAll("AreaCell", first, max);
     }
     
-    /*
-     * (non-Javadoc)
-     * @see de.betzemeier.serviceportal.persistence.interfaces.DaoInterface#count()
-     */
 	@Override
 	public int count(){
-		log.debug("count Consumer");
-		Query q = getSession().createQuery("select count(c) from Consumer c");
+		//log.debug("count AreaCell");
+		this.getLog().debug("counting AreaCells");
+		Query q = getSession().createQuery("select count(c) from AreaCell c");
 		int count = ((Long)q.uniqueResult()).intValue();
 		return count;
 	}
 	
-	
-	/**
-	 * Count only the Consumer, which depending on a BusinessProvider.
-	 * @param businessProviderID
-	 * @return
-	 */
-	public int countDependingOnBusinessProviderID(int businessProviderID) {
-		log.debug("count Consumer");
-		Query q = getSession().createQuery("select count(c) from Consumer c where c.businessProvider.businessProviderNo = :id").setParameter("id", businessProviderID);	
-		int count = ((Long)q.uniqueResult()).intValue();
-		return count;
-	}
 
-	
-	/*
-	 * (non-Javadoc)
-	 * @see de.betzemeier.serviceportal.persistence.interfaces.DaoInterface#countByCriteria(java.util.Map, java.util.Map)
+
+	/* (non-Javadoc)
+	 * @see use.thm.persistence.dao.GeneralDAO#countByCriteria(java.util.Map, java.util.Map)
 	 */
 	@Override
-	public int countByCriteria(Map<String, Object> whereBy,
-			Map<String, String> filter) {
-		return this.countByCriteria("Consumer", whereBy, filter);
+	public int countByCriteria(Map<String, Object> whereBy, 	Map<String, String> filter) {
+		return this.countByCriteria("AreaCell", whereBy, filter);
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see de.applicodata.serviceportal.persistence.interfaces.DaoInterface#getID(java.lang.Object)
+
+	/* (non-Javadoc)
+	 * @see use.thm.persistence.dao.GeneralDAO#getID(tryout.hibernate.AreaCell)
 	 */
 	@Override
-	public Map<String, Object> getID(Consumer instance) {
+	public Map<String, Object> getID(AreaCell instance) {
 		Map<String, Object> id = new HashMap<String, Object>();
-		id.put("consumerNo", instance.getConsumerNo());
+		id.put("fieldAlias", instance.getFieldAlias());
 		
 		return id;
 	}
 	
-	/**
-	 * Read all E-Mails from Service Provider List.
-	 * @return
-	 */
-	@SuppressWarnings("unchecked")
-	public List<String> getAllEMails(){
-		return (List<String>) this.getColumn("email","Consumer");
-	}
 	
-	public List<Consumer> findByHQL(String hql, int first, int max) {
+	public List<AreaCell> findByHQL(String hql, int first, int max) {
 		return this.findByHQLGeneral(hql, first, max);
 	}
 
@@ -139,21 +91,85 @@ public class AreaCellDao extends GeneralDAO<AreaCell> {
 		// TODO Auto-generated method stub
 		return null;
 	}
-
-	public List<AreaCell> findLazyAll(int first, int max) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	public int countByCriteria(Map<String, Object> whereBy,
-			Map<String, String> filter) {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
-	public Map<String, Object> getID(AreaCell instance) {
-		// TODO Auto-generated method stub
-		return null;
+	
+	
+	//####### EIGENE METHODEN ###########
+	public int computeMaxMapX(){
+		int iReturn = -1;
+		main:{
+			try {
+			String sQueryTemp = "SELECT MAX(c.mapX) FROM HexCell c";
+			
+			//VARIANTE 1)
+//			List<Integer> listResult = this.executeHQLBySession(sQueryTemp);
+			
+			//VARIANTE 2A:
+//			@SuppressWarnings("unchecked")
+//			List<Integer> listResult = (List<Integer>) this.executeHQLByEntityManager(sQueryTemp);
+//			for(Object obj : listResult){
+//				if(obj==null){										
+//					System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": NULL Objekt in ResultList der Query " + sQueryTemp);
+//					break main;
+//				}else{					
+//					System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": Gefundenes Objekt obj.class= " + obj.getClass().getName());
+//					System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": Wert im Objekt ist = " + obj.toString());
+//					
+//					Integer intResult = (Integer) obj;
+//				}
+//			}
+			
+			//VARIANTE 2B 
+			@SuppressWarnings("unused")
+			Integer intResult = (Integer) this.executeHQLByEntityManager_singleResult(sQueryTemp);
+			iReturn = intResult.intValue();
+		
+									
+			} catch (ExceptionZZZ e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
+		}//end main:
+		return iReturn;			
 	}
 	
+	
+	public int computeMaxMapY(){
+		int iReturn = -1;
+		main:{
+			try {
+			String sQueryTemp = "SELECT MAX(c.mapY) FROM HexCell c";
+			
+			//VARIANTE 1)
+//			List<Integer> listResult = this.executeHQLBySession(sQueryTemp);
+			
+			//VARIANTE 2A:
+//			@SuppressWarnings("unchecked")
+//			List<Integer> listResult = (List<Integer>) this.executeHQLByEntityManager(sQueryTemp);
+//			for(Object obj : listResult){
+//				if(obj==null){										
+//					System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": NULL Objekt in ResultList der Query " + sQueryTemp);
+//					break main;
+//				}else{					
+//					System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": Gefundenes Objekt obj.class= " + obj.getClass().getName());
+//					System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": Wert im Objekt ist = " + obj.toString());
+//					
+//					Integer intResult = (Integer) obj;
+//				}
+//			}
+			
+			//VARIANTE 2B 
+			@SuppressWarnings("unused")
+			Integer intResult = (Integer) this.executeHQLByEntityManager_singleResult(sQueryTemp);
+			iReturn = intResult.intValue();
+		
+									
+			} catch (ExceptionZZZ e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
+		}//end main:
+		return iReturn;			
+	}
 }

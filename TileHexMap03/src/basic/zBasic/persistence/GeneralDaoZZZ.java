@@ -21,6 +21,7 @@ import basic.zUtil.io.KernelFileZZZ.FLAGZ;
 import tryout.hibernate.AreaCell;
 import use.thm.client.hibernate.HibernateContextProviderTHM;
 import use.thm.persistence.dao.GeneralDAO;
+import use.thm.persistence.interfaces.IPrimaryKeys;
 
 public abstract class GeneralDaoZZZ<T> extends GeneralDAO<T> implements IObjectZZZ, IFlagZZZ, IHibernateContextProviderUserZZZ{
 	private static final long serialVersionUID = 1L;
@@ -65,8 +66,8 @@ public abstract class GeneralDaoZZZ<T> extends GeneralDAO<T> implements IObjectZ
 				}
 			}
 			if(this.getFlag("init")) break main;
-		}
-
+		}	
+			
 		this.setHibernateContextProvider(objContextHibernate);	
 		}//end main:
 	}
@@ -94,6 +95,7 @@ public abstract class GeneralDaoZZZ<T> extends GeneralDAO<T> implements IObjectZ
 		}
 		return this.session;		
 	}
+	
 	
 	//#### GETTER / SETTER 
 	public void setHibernateContextProvider(IHibernateContextProviderZZZ objContextHibernate){
@@ -206,40 +208,7 @@ public abstract class GeneralDaoZZZ<T> extends GeneralDAO<T> implements IObjectZ
 			return bFunction;	
 		}
 		
-		
-		
-		//++++++++++++++++++++++++++++++++++++++++++
-//			public boolean getFlag(String sFlagAlias){
-//				boolean bFunction = false;
-//				
-//				main:{
-//					String sTemp = sFlagAlias.toLowerCase();
-//					if(sTemp.equals("expansionappend")){
-//							bFunction = this.bFlagExpansionAppend;
-//					}
-//				}
-//				end:{
-//					return bFunction;	
-//				}		
-//			} // end function
-//			
-//			//+++++++++++++++++++++++++++++++++++++++++++
-//			public boolean setFlag(String sFlagAlias, boolean bValue){
-//				boolean bFunction = false;
-//				
-//				main:{
-//					String sTemp = sFlagAlias.toLowerCase();
-//					if(sTemp.equals("expansionappend")){
-//						this.bFlagExpansionAppend = bValue;
-//						bFunction = true;
-//					}			
-//				}
-//				end:{
-//					return bFunction;	
-//				}	
-//			}
-		
-		
+				
 		public boolean getFlag(String sFlagName) {
 //			boolean bFunction = false;
 //		main:{
@@ -341,8 +310,7 @@ public abstract class GeneralDaoZZZ<T> extends GeneralDAO<T> implements IObjectZ
 				//Schon die oberste IObjectZZZ nutzende Klasse, darum ist der Aufruf einer Elternklasse mit der Methode nicht möglich. 
 				//boolean bReturn = super.proofFlagZExists(sFlagName);
 			
-				if(!bReturn){			
-					Class<FLAGZ> enumClass = FLAGZ.class;				
+				if(!bReturn){						
 					for(Object obj : FLAGZ.class.getEnumConstants()){
 						//System.out.println(obj + "; "+obj.getClass().getName());
 						if(sFlagName.equalsIgnoreCase(obj.toString())) {

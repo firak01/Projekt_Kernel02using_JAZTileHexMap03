@@ -167,28 +167,21 @@ public class HexMapTHM extends KernelUseObjectZZZ implements ITileEventUserTHM {
 			HibernateContextProviderTHM objContextHibernate = new HibernateContextProviderTHM(this.getKernelObject());
 									
 			//Prüfe die Existenz der Datenbank ab. Ohne die erstellte Datenbank und die Erstellte Datenbanktabelle kommt es hier zu einem Fehler.			
-			boolean bDbExists = SQLiteUtilZZZ.databaseFileExists(objContextHibernate);
-			
-			EntityManager em = null;
-			
-			//20170316: Steuere das über die DAO-Klassen
-			AreaCellDao daoAreaCell = new AreaCellDao(objContextHibernate);
-			
+			boolean bDbExists = SQLiteUtilZZZ.databaseFileExists(objContextHibernate);									
 			if(bDbExists){
 				System.out.println("Datenbank existiert als Datei.");
 				objContextHibernate.getConfiguration().setProperty("hibernate.hbm2ddl.auto", "update");  //! Jetzt erst wird jede Tabelle über den Anwendungsstart hinaus gepseichert.				
 							
-				//Erzeuge den Entity Manager als Ausgangspunkt für die Abfragen. !!! Damit Hibernate mit JPA funktioniert, braucht man die Datei META-INF\persistence.xml. Darin wird die persistence-unit angegeben.	
+				//Erzeuge den Entity Manager als Ausgangspunkt für die Abfragen. !!! Damit Hibernate mit JPA funktioniert, braucht man die Datei META-INF\persistence.xml. Darin wird die persistence-unit angegeben.
+				//EntityManager em = null;
 				//Wichtig: Das darf erst NACH dem Überprüfen auf die Datenbankexistenz passieren, da hierdurch die Datei erzeugt wird (wenn auch noch ohne Tabellen)
 				//EntityManager em = objContextHibernate.getEntityManager("c:\\server\\SQLite\\TileHexMap03.sqlite");
 				//EntityManager em = objContextHibernate.getEntityManager("jdbc:sqlite:c:\\server\\SQLite\\TileHexMap03.sqlite");				
 				
 				
 				//20170316: Steuere über die DAO-Klassen
-				//Fall: Datenbank existiert
-				//em = objContextHibernate.getEntityManager("TileHexMap03");
-				//boolean bSuccess = fillMap_readCreated(objContextHibernate, em, panelMap);				
-				boolean bSuccess = fillMap_readCreated(daoAreaCell, panelMap);
+				//Fall: Datenbank existiert, aber sind da auch alle Zellen drin enthalten?
+				boolean bSuccess = fillMap_readCreated(objContextHibernate, panelMap);
 				
 				bFillDatabaseNew = !bSuccess;
 			}else{
@@ -200,21 +193,27 @@ public class HexMapTHM extends KernelUseObjectZZZ implements ITileEventUserTHM {
 			}//end if bDbExists
 			
 			if(bFillDatabaseNew){
+				if(bDbExists){
+					//	TODO ggfs. zur Sicherheit die gesamte Datenbankdatei löschen
+				}
+				
 				//Erzeuge neuen Datenbankinhalt
 				bReturn = fillMap_createNew(objContextHibernate, panelMap);
 			}else{
-				//Lade bestehenden Datenbankinhalt
-				bReturn = fillMap_loadCreated(objContextHibernate, panelMap);
+				bReturn = true;
 			}
 		}//end main:		
 		return bReturn;
 	}
 	
 	//20170316: Steuere über die DAO-Klassen
-	private boolean fillMap_readCreated(AreaCellDao daoAreaCell, KernelJPanelCascadedZZZ panelMap) throws ExceptionZZZ{
+	private boolean fillMap_readCreated(HibernateContextProviderTHM objContextHibernate, KernelJPanelCascadedZZZ panelMap) throws ExceptionZZZ{
 		boolean bReturn = false;
 		main:{
-			int iNrOfHexes = 0;	
+			int iNrOfHexes = 0;
+			int iNrOfHexesX = 0;	
+			int iNrOfHexesY = 0;
+			boolean bBuildNew = true;
 			
 			//Query objQuery = em.createQuery("SELECT MAX(c.sMapX) FROM HexCell c");//Fehler: could not resolve property: sMapX of: tryout.hibernate.HexCell 
 			//Query objQuery = em.createQuery("SELECT MAX(c.MapX) FROM HexCell c");//Fehler: could not resolve property: MapX of: tryout.hibernate.HexCell
@@ -239,19 +238,26 @@ public class HexMapTHM extends KernelUseObjectZZZ implements ITileEventUserTHM {
 				
 		//List objResult = objQuery.getResultList();
 		
+		//20170316: Steuere das über die DAO-Klassen
+		AreaCellDao daoAreaCell = new AreaCellDao(objContextHibernate);			
 		int iMaxMapX = daoAreaCell.computeMaxMapX(); 
 		System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": iMaxMapX = " + iMaxMapX);
-		this.setColumnMax(iMaxMapX);
-		
+				
 		int iMaxMapY = daoAreaCell.computeMaxMapY(); 
 		System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": iMaxMapY = " + iMaxMapY);
-		this.setRowMax(iMaxMapY);
-		
-		//TODO: WENN Die Anzahl der Zellen in der Datenbank leer ist, dann diese neu aufbauen/füllen
 		
 		
+		//WENN Die Anzahl der Zellen in der Datenbank leer ist, dann diese neu aufbauen/füllen
+		if(iMaxMapX<=0 || iMaxMapY <=0){
+			bBuildNew = true;
+		}else{
+			bBuildNew = false;
+			this.setColumnMax(iMaxMapX);
+			this.setRowMax(iMaxMapY);
+		}
 		
 		
+		if(!bBuildNew){
 		//Zwei verschachtelte Schleifen, Aussen: Solange wie es "Provinzen" gibt...
 		//                                                  Innen:   von 1 bis maximaleSpaltenanzahl...
 		int iY = 0;
@@ -264,14 +270,77 @@ public class HexMapTHM extends KernelUseObjectZZZ implements ITileEventUserTHM {
 			Integer intX = new Integer(iX);				
 			String sX = intX.toString();
 			
+			//################			
+			//20170319: Nun wird eine "Landschaft ausgelesen und anschliessend gebaut"   HexCellTHM objCellTemp = new HexCellTHM(this.getKernelObject(), panelMap,  sX, sY, this.getSideLength());  //ToDo: Dass sollen dann erst "Areas" werden, dh. mit Gel�ndeinformationen, Danach "Provinzen" mit Geb�udeinfos/Armeeinfos
+			AreaCellTHM objCellThmTemp; //Die Zelle für das UI
+			
+			CellId primaryKey = new CellId("EINS", sX, sY);//Die vorhandenen Schlüssel Klasse
+			AreaCell objCellTemp = daoAreaCell.findByKey(primaryKey);			
+			if(objCellTemp==null){
+				System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": Zelle mit x/Y in Tabelle EINS NICHT gefunden (" + sX + "/" + sY + ")");
+				
+				//Wieder erwarten, da es doch die Datenbank gibt die neue Zelle erstellen.
+				//Das ist momentan noch so wie beim erstmaligen Erstellen.
+				if((sX.equals("5") & sY.equals("5")) | (sX.equals("4") & sY.equals("5")) | (sX.equals("4") & sY.equals("6")) | (sX.equals("4") & sY.equals("7"))  ){
+					//OZEAN					
+					//Aretype nun als ENUMERATION objCellTemp = new AreaCell(new CellId("EINS", sX, sY), AreaTypeTHM.OZEAN);
+					objCellTemp = new AreaCell(new CellId("EINS", sX, sY), AreaType.OCEAN);
+					objCellThmTemp = new  AreaCellTHM(this.getKernelObject(), this,  objCellTemp, this.getSideLength());  //ToDo: Das sollen dann erst "Areas" werden, dh. mit Geländeinformationen, Danach "Provinzen" mit Gebäudeinfos/Armeeinfos
+					/*TODO Hintergrundbild
+					 *  ImageIcon background = new ImageIcon("Water.png");
+	    				objCellTemp.setIcon(background);
+					 */
+				}else{
+					//LAND
+					objCellTemp = new AreaCell(new CellId("EINS", sX, sY), AreaType.LAND);
+					objCellThmTemp = new  AreaCellTHM(this.getKernelObject(), this,  objCellTemp, this.getSideLength());  //ToDo: Dass sollen dann erst "Areas" werden, dh. mit Gel�ndeinformationen, Danach "Provinzen" mit Geb�udeinfos/Armeeinfos
+					/*TODO Hintergrundbild
+					 *  ImageIcon background = new ImageIcon("Grass.png");
+	    				objCellTemp.setIcon(background);
+					 */
+				}
+				
+			}else{
+				System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": Zelle mit x/Y in Tabelle EINS GEFUNDEN (" + sX + "/" + sY + ")");
+				
+				//Die in der Datenbank gefundenen Zelle in das UI bringen
+				objCellThmTemp = new  AreaCellTHM(this.getKernelObject(), this,  objCellTemp, this.getSideLength());  //ToDo: Das sollen dann erst "Areas" werden, dh. mit Geländeinformationen, Danach "Provinzen" mit Gebäudeinfos/Armeeinfos
+				/*TODO Hintergrundbild. Das muss natürlich abhängt vom Typ der Zelle sein.
+				 *  ImageIcon background = new ImageIcon("Grass.png");
+    				objCellTemp.setIcon(background);
+				 */
+				
+			}
+					
+			//TODO: Die Zelle soll ein eigenes Layout bekommen, das die Spielsteine automatisch anordnet.
+			objCellThmTemp.setLayout(null);
+			
+			//Am MoveEventBroker registrieren
+			objTileMoveEventBroker.addListenerTileMoved(objCellThmTemp);
+			
+			//20130630: Hier am MetaEventBroker registrieren
+			objTileMetaEventBroker.addListenerTileMeta(objCellThmTemp);
+			
+			//###############
+			  //Die Zelle in eine HashMap packen, die für´s UI verwendet wird				
+			  hmCell.put(sX, sY, objCellThmTemp);
+			  
+			  iNrOfHexesX++;
+			  iNrOfHexes++; //Zelle zur Summe hinzufügen			
 		}//End for iX
+		iNrOfHexesY++;
 		}while(iY< this.getRowMax());
 		
 		
+		this.setColumnMax(iNrOfHexesX);
+		this.setRowMax(iNrOfHexesY);
+		}//end if !bBuildNew
 		
-		
-		bReturn = false;// ist ja noch nix ausgelesen worden
-		
+		if(iNrOfHexes<=0){
+			bReturn = false;// ist ja noch nix ausgelesen worden, warum auch immer a) Datenbank existiert ohne Inhalt, b) Keine Objekte für den Schlüssel gefunden.
+		}else{
+			bReturn = true;
+		}
 		}//main:
 		return bReturn;
 }
@@ -344,18 +413,7 @@ public class HexMapTHM extends KernelUseObjectZZZ implements ITileEventUserTHM {
 		}//main:
 		return bReturn;
 }
-	
-	
-	private boolean fillMap_loadCreated(HibernateContextProviderTHM objContextHibernate, KernelJPanelCascadedZZZ panelMap) throws ExceptionZZZ{
-		boolean bReturn = false;
-		main:{
-			int iNrOfHexes = 0;
-			
-			
-		}//end main:
-		return bReturn;
-	}
-	
+		
 	private boolean fillMap_createNew(HibernateContextProviderTHM objContextHibernate, KernelJPanelCascadedZZZ panelMap) throws ExceptionZZZ{
 		boolean bReturn = false;
 		main:{
@@ -487,7 +545,7 @@ public class HexMapTHM extends KernelUseObjectZZZ implements ITileEventUserTHM {
 						objTileMetaEventBroker.fireEvent(objEventTileCreated);
 					}
 					
-					//TEST: FALSCHES PLATZIEREN DER TRUPPEN Komponente in einer bestimmten Zelle, die schon besetzt ist per Event hinzuf�gen
+					//TEST: FALSCHES PLATZIEREN DER TRUPPEN Komponente in einer bestimmten Zelle, die schon besetzt ist per Event hinzufügen
 					boolean bUseTestOccupied = false;
 					if(bUseTestOccupied && sX.equals("1") && sY.equals("2")){
 						ArmyTileTHM objArmyTemp = new ArmyTileTHM(panelMap, objTileMoveEventBroker, sX, sY, this.getSideLength());
@@ -509,6 +567,9 @@ public class HexMapTHM extends KernelUseObjectZZZ implements ITileEventUserTHM {
 			//Exception in thread "main" org.hibernate.NonUniqueObjectException: a different object with the same identifier value was already associated with the session: [tryout.hibernate.AreaCell#tryout.hibernate.CellId@2079d3]
 			
 			//Werte endgültig in die Datenbank übernehmen, per Hibernate
+			//Merke: Fehler "Caused by: java.sql.SQLException: [SQLITE_CONSTRAINT]  Abort due to constraint violation (columns mapAlias, mapX, mapY are not unique)"
+			//           Hier wird versucht ein NEUES Objekt mit dem gleichen Schlüsselwerten in die Tabelle zu schreiben. 
+			//           Daher sollte man vorher prüfen, ob es nicht schon solch ein Objekt gibt.
 			session.getTransaction().commit();
 			session.close();
 			

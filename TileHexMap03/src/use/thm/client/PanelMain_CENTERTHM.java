@@ -77,10 +77,7 @@ public class PanelMain_CENTERTHM extends KernelJPanelCascadedZZZ implements IHex
 			HashMapMultiZZZ hmCell = objMap.getMapCell();
 			
 			HexCellTHM cellTemp = null;
-			int iY=0;
-			do{
-				iY++;
-				
+			for(int iY=1; iY <= objMap.getRowMax(); iY++){			
 				Integer intY=new Integer(iY);
 				String sY = intY.toString();
 				
@@ -90,13 +87,11 @@ public class PanelMain_CENTERTHM extends KernelJPanelCascadedZZZ implements IHex
 					
 					cellTemp = (HexCellTHM) hmCell.get(sX,sY);
 					if(cellTemp!=null){
-					cellTemp.setVisible(true);
-					this.add(cellTemp);
-					}else{
-						break;
-					};
+						cellTemp.setVisible(true);
+						this.add(cellTemp);
+					}
 				} //end for iX
-			}while(cellTemp !=null);
+			} //end for iY
 			
 		} catch (ExceptionZZZ ez) {				
 			this.getLogObject().WriteLineDate(ez.getDetailAllLast());

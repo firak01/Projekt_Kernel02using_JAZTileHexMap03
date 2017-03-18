@@ -5,38 +5,30 @@ import java.util.List;
 import java.util.Map;
 
 import org.hibernate.Query;
-import org.hibernate.Session;
 
-import basic.zBasic.ExceptionZZZ;
-import basic.zBasic.IObjectZZZ;
-import basic.zBasic.ReflectCodeZZZ;
-import basic.zBasic.persistence.GeneralDaoZZZ;
-import basic.zBasic.persistence.interfaces.IHibernateContextProviderUserZZZ;
-import basic.zBasic.persistence.interfaces.IHibernateContextProviderZZZ;
 import tryout.hibernate.AreaCell;
 import use.thm.client.hibernate.HibernateContextProviderTHM;
-import use.thm.persistence.dao.GeneralDAO;
-import use.thm.persistence.interfaces.IDaoInterface;
-import use.thm.persistence.interfaces.IOptimisticLocking;
-import use.thm.persistence.interfaces.IPrimaryKeys;
+import basic.zBasic.ExceptionZZZ;
+import basic.zBasic.persistence.GeneralDaoZZZ;
 public class AreaCellDao extends GeneralDaoZZZ<AreaCell> {
-//public class AreaCellDao extends GeneralDAO<AreaCell> implements IObjectZZZ, IHibernateContextProviderUserZZZ{	
 	private static final long serialVersionUID = 1L;
-	
-	
-	
+
 	/* Constructor */
 	public AreaCellDao() throws ExceptionZZZ{
 		super();
+		this.installLoger(AreaCell.class);
 	}
 	public AreaCellDao(HibernateContextProviderTHM objContextHibernate) throws ExceptionZZZ{
 		super(objContextHibernate);		
+		this.installLoger(AreaCell.class);
 	}
 	public AreaCellDao(HibernateContextProviderTHM objContextHibernate, String sFlagControl) throws ExceptionZZZ{
-		super(objContextHibernate, sFlagControl);		
+		super(objContextHibernate, sFlagControl);
+		this.installLoger(AreaCell.class);
 	}
 	public AreaCellDao(HibernateContextProviderTHM objContextHibernate, String[] saFlagControl) throws ExceptionZZZ{
-		super(objContextHibernate, saFlagControl);		
+		super(objContextHibernate, saFlagControl);
+		this.installLoger(AreaCell.class);
 	}
 	
     public List<AreaCell> findLazyAll(int first, int max){
@@ -45,15 +37,13 @@ public class AreaCellDao extends GeneralDaoZZZ<AreaCell> {
     
 	@Override
 	public int count(){
-		//log.debug("count AreaCell");
 		this.getLog().debug("counting AreaCells");
 		Query q = getSession().createQuery("select count(c) from AreaCell c");
 		int count = ((Long)q.uniqueResult()).intValue();
 		return count;
 	}
 	
-
-
+	
 	/* (non-Javadoc)
 	 * @see use.thm.persistence.dao.GeneralDAO#countByCriteria(java.util.Map, java.util.Map)
 	 */
@@ -69,11 +59,9 @@ public class AreaCellDao extends GeneralDaoZZZ<AreaCell> {
 	@Override
 	public Map<String, Object> getID(AreaCell instance) {
 		Map<String, Object> id = new HashMap<String, Object>();
-		id.put("fieldAlias", instance.getFieldAlias());
-		
+		id.put("fieldAlias", instance.getFieldAlias());		
 		return id;
 	}
-	
 	
 	public List<AreaCell> findByHQL(String hql, int first, int max) {
 		return this.findByHQLGeneral(hql, first, max);
@@ -119,7 +107,6 @@ public class AreaCellDao extends GeneralDaoZZZ<AreaCell> {
 //			}
 			
 			//VARIANTE 2B 
-			@SuppressWarnings("unused")
 			Integer intResult = (Integer) this.executeHQLByEntityManager_singleResult(sQueryTemp);
 			iReturn = intResult.intValue();
 		
@@ -159,7 +146,6 @@ public class AreaCellDao extends GeneralDaoZZZ<AreaCell> {
 //			}
 			
 			//VARIANTE 2B 
-			@SuppressWarnings("unused")
 			Integer intResult = (Integer) this.executeHQLByEntityManager_singleResult(sQueryTemp);
 			iReturn = intResult.intValue();
 		

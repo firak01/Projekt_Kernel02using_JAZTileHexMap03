@@ -22,8 +22,8 @@ public class HexagonalLayoutTHM extends KernelUseObjectZZZ implements LayoutMana
 	private int iMinimalWidth = 0;
 	private int iMinimalHeigth = 0; //dito 
 	
-	private int iGapLeftBase = 90; //Bundsteg. Eingeführt, damit die Karte richtig reagiert, wenn von aussen gezogene Objekte GEDROPPT werden. Basiswert, weil der Bundsteg ggf. verkleinert werden kann, wenn die Zellen kleiner werden, bzw. es mehr Zellen in einer Zeile gibt.
-	private int iGapDownBase = 10; //Bundsteg nach unten, eingeführt, damit die Spitzen der Hexecke in der untersten Reihe auch gezeichnet werden. 
+	private int iGapLeftBase = 90; //Bundsteg. Eingefï¿½hrt, damit die Karte richtig reagiert, wenn von aussen gezogene Objekte GEDROPPT werden. Basiswert, weil der Bundsteg ggf. verkleinert werden kann, wenn die Zellen kleiner werden, bzw. es mehr Zellen in einer Zeile gibt.
+	private int iGapDownBase = 10; //Bundsteg nach unten, eingefï¿½hrt, damit die Spitzen der Hexecke in der untersten Reihe auch gezeichnet werden. 
 	
 	public HexagonalLayoutTHM(KernelZZZ objKernel, HexMapTHM map){
 		super(objKernel);
@@ -50,14 +50,14 @@ public class HexagonalLayoutTHM extends KernelUseObjectZZZ implements LayoutMana
 		}
 	}
 	
-	/** Berechne ausgehend von der Seitenlänge der Sechsecke und der Anzahl der Sechsecke pro Zeile die Breite des Panels
+	/** Berechne ausgehend von der Seitenlï¿½nge der Sechsecke und der Anzahl der Sechsecke pro Zeile die Breite des Panels
 	* @param parent
 	* 
 	* lindhaueradmin; 11.09.2008 09:43:26
 	 */
 	public void computeSizes(Container parent){
 		//int iCompTotal = parent.getComponentCount(); //Gesamtzahl der Sechsecke im Panel
-		//!!! Achtung: Was tun, wenn die Spielfiguren auch hinzugefügt werden ??? Dann ggf. die Gesamtzahl im Konstruktor des Layout Managers mitgeben !!!
+		//!!! Achtung: Was tun, wenn die Spielfiguren auch hinzugefï¿½gt werden ??? Dann ggf. die Gesamtzahl im Konstruktor des Layout Managers mitgeben !!!
 		HexMapTHM objMap = this.getHexMap();
 		int iCompTotal = objMap.getTotalNumberOfCell();
 		
@@ -70,24 +70,24 @@ public class HexagonalLayoutTHM extends KernelUseObjectZZZ implements LayoutMana
 		this.iMinimalHeigth = 0;
 		
  		for (int i = 0; i < iCompTotal; i++){
-			//!!! Vielleicht ist es eine Lösung auf den Namen der Komponente/ Classe der Komponente zuzugreifen und nur bestimmten Komponenten
+			//!!! Vielleicht ist es eine Lï¿½sung auf den Namen der Komponente/ Classe der Komponente zuzugreifen und nur bestimmten Komponenten
 			//     in die Berechnung aufzunehmen.
 			Component c = parent.getComponent(i);
 			if(c.isVisible()){
 				d=c.getPreferredSize();
 			}
 			
-			if(d!=null) break; //Es reicht eine gültige Sechseck - Komponente zu finden. Alle Sechseck-Komponenten sind gleich groß.
+			if(d!=null) break; //Es reicht eine gï¿½ltige Sechseck - Komponente zu finden. Alle Sechseck-Komponenten sind gleich groï¿½.
 		} //end for
 		
 		if(d!=null){
 			//Berechnung der Breite			
 			this.iPreferredWidth += d.width/2;  //in der zweiten Reihe erfolgt ein Versatz um eine Halbe breite. Dies muss zu gesamtbreite hinzugerechnete werden.
 			//FGL VOR 20130625 this.iPreferredWidth += (d.width * this.getColumnMax());
-			//FGL 20130626 Füge den Bundsteg hinzu, der notwendig geworden ist, damit das Panel auf das DROP Event eines von außen reingezogenen Objekts reagiert.
+			//FGL 20130626 Fï¿½ge den Bundsteg hinzu, der notwendig geworden ist, damit das Panel auf das DROP Event eines von auï¿½en reingezogenen Objekts reagiert.
 			this.iPreferredWidth += (d.width * this.getColumnMax())+ this.getGapLeft();
 			
-			//Berechnung der Höhe über die Anzahl der Zeilen. Achtung: Es gibt einen Versatz			
+			//Berechnung der Hï¿½he ï¿½ber die Anzahl der Zeilen. Achtung: Es gibt einen Versatz			
 			int iRow = objMap.getRowTotal();
 			int iOffset = HexCellTHM.getRowHeightOffset(this.getSideLength()) * iRow;
 			this.iPreferredHeigth += (d.height*iRow)- iOffset + this.getGapDown();
@@ -113,7 +113,7 @@ public class HexagonalLayoutTHM extends KernelUseObjectZZZ implements LayoutMana
 	public void layoutContainer(Container parent) {
 		main:{
 			try{
-				//1. HashMap der hinzuzufügenden Sechsecke/Areas/Provinzen
+				//1. HashMap der hinzuzufÃ¼genden Sechsecke/Areas/Provinzen
 				HexMapTHM objMap = this.getHexMap();
 				HashMapMultiZZZ hmCell = objMap.getMapCell();
 				if(hmCell.size()==0){
@@ -125,42 +125,37 @@ public class HexagonalLayoutTHM extends KernelUseObjectZZZ implements LayoutMana
 				int iRectWidthHalf = iRectWidth/2;
 				int iRectHeight = HexCellTHM.getRectHeight(this.getSideLength());
 				int iRowOffset = HexCellTHM.getRowHeightOffset(this.getSideLength());
-				int iGapLeft = this.getGapLeft();  //für den linken Rand iGapLeft als Bundsteg einfügen. Dann reagieren die Zellen dort auf das DROP eines von aussen reingezogenen Objekts
+				int iGapLeft = this.getGapLeft();  //fï¿½r den linken Rand iGapLeft als Bundsteg einfï¿½gen. Dann reagieren die Zellen dort auf das DROP eines von aussen reingezogenen Objekts
 				
 				HexCellTHM cell = null;
-				int iY=0;
-				do{
-				iY++;
-				
-				Integer intY=new Integer(iY);
-				String sY = intY.toString();
-				
-				for(int iX=1; iX <= objMap.getColumnMax(); iX++){
-					Integer intX = new Integer(iX);
-					String sX = intX.toString();
+				for(int iY=1; iY <= objMap.getRowMax(); iY++){				
+					Integer intY=new Integer(iY);
+					String sY = intY.toString();
 					
-					cell = (HexCellTHM) hmCell.get(sX, sY);
-					if(cell!=null){
-						if(! MathZZZ.isEven(iY)){
-							//!!! damit das auch in der 3., 5., 7. Reihe etc. funktioniert muss der RowOffset berücksichtigt werden: (iRowOffset*(iY-1))
-							//FGL Vor 20130625: cell.setBounds((iX-1)*iRectWidth,(iY-1)*iRectHeight - (iRowOffset*(iY-1)),iRectWidth+1, iRectHeight); //+1, damit auch der rechte Rand des Sechsecks gezeichnet wird
-							
-							//FGL 20130625: Weil beim ReinDRAGGEN der linke Rand nicht reagiert...
-							//für den linken Rand iGapLeft als Bundsteg einfügen
-							cell.setBounds(((iX-1)*iRectWidth)+ iGapLeft ,(iY-1)*iRectHeight - (iRowOffset*(iY-1)),iRectWidth+1, iRectHeight); //, iRectWidth+1, damit auch der rechte Rand des Sechsecks gezeichnet wird
-						}else{
-							//FGL Vor 20130625: Die zweite Reihe ist um eine halbe Länge nach rechts verschoben und um das RowOffset (für jede Zeile)  nach oben
-							//cell.setBounds(((iX-1)*iRectWidth) + iRectWidthHalf,((iY-1)*iRectHeight) - (iRowOffset*(iY-1)),iRectWidth +1, iRectHeight); //+1, damit auch der rechte Rand des Sechsecks gezeichnet wird
-							
-							//FGL 20130625: Weil beim ReinDRAGGEN der linke Rand nicht reagiert...
-							//für den linken Rand iGapLeft als Bundsteg einfügen
-							cell.setBounds(((iX-1)*iRectWidth)+ iGapLeft + iRectWidthHalf,((iY-1)*iRectHeight) - (iRowOffset*(iY-1)),iRectWidth +1, iRectHeight); //+1, damit auch der rechte Rand des Sechsecks gezeichnet wird
+					for(int iX=1; iX <= objMap.getColumnMax(); iX++){
+						Integer intX = new Integer(iX);
+						String sX = intX.toString();
+						
+						cell = (HexCellTHM) hmCell.get(sX, sY);
+						if(cell!=null){
+							if(! MathZZZ.isEven(iY)){
+								//!!! damit das auch in der 3., 5., 7. Reihe etc. funktioniert muss der RowOffset berï¿½cksichtigt werden: (iRowOffset*(iY-1))
+								//FGL Vor 20130625: cell.setBounds((iX-1)*iRectWidth,(iY-1)*iRectHeight - (iRowOffset*(iY-1)),iRectWidth+1, iRectHeight); //+1, damit auch der rechte Rand des Sechsecks gezeichnet wird
+								
+								//FGL 20130625: Weil beim ReinDRAGGEN der linke Rand nicht reagiert...
+								//fï¿½r den linken Rand iGapLeft als Bundsteg einfï¿½gen
+								cell.setBounds(((iX-1)*iRectWidth)+ iGapLeft ,(iY-1)*iRectHeight - (iRowOffset*(iY-1)),iRectWidth+1, iRectHeight); //, iRectWidth+1, damit auch der rechte Rand des Sechsecks gezeichnet wird
+							}else{
+								//FGL Vor 20130625: Die zweite Reihe ist um eine halbe Lï¿½nge nach rechts verschoben und um das RowOffset (fï¿½r jede Zeile)  nach oben
+								//cell.setBounds(((iX-1)*iRectWidth) + iRectWidthHalf,((iY-1)*iRectHeight) - (iRowOffset*(iY-1)),iRectWidth +1, iRectHeight); //+1, damit auch der rechte Rand des Sechsecks gezeichnet wird
+								
+								//FGL 20130625: Weil beim ReinDRAGGEN der linke Rand nicht reagiert...
+								//fï¿½r den linken Rand iGapLeft als Bundsteg einfï¿½gen
+								cell.setBounds(((iX-1)*iRectWidth)+ iGapLeft + iRectWidthHalf,((iY-1)*iRectHeight) - (iRowOffset*(iY-1)),iRectWidth +1, iRectHeight); //+1, damit auch der rechte Rand des Sechsecks gezeichnet wird
+							}
 						}
-					}else{
-						break;
-					}
-				}
-				}while(cell !=null);
+					}//end for iX
+				}//end for iY
 			} catch (ExceptionZZZ e) {
 				ReportLogZZZ.write(ReportLogZZZ.ERROR, "ExceptionZZZ: " + e.getDetailAllLast());
 			}
@@ -172,7 +167,7 @@ public class HexagonalLayoutTHM extends KernelUseObjectZZZ implements LayoutMana
 		return null;
 	}
 
-	/**Berechnet die bevorzugten Größenmaße für das angegebene Panel
+	/**Berechnet die bevorzugten Grï¿½ï¿½enmaï¿½e fï¿½r das angegebene Panel
 	 *  bei den gegebenen Komponenten in dem angegebenen Eltern Container
 	 */ 
 	public Dimension preferredLayoutSize(Container parent) {
@@ -181,7 +176,7 @@ public class HexagonalLayoutTHM extends KernelUseObjectZZZ implements LayoutMana
 		this.computeSizes(parent);
 		
 		
-		//Always add the container´s insets !
+		//Always add the containerï¿½s insets !
 		Insets insets = parent.getInsets();
 		dim.width = this.getPreferredWidth() + insets.left + insets.right;
 		dim.height = this.getPreferredHeight() + insets.top + insets.bottom;
@@ -204,7 +199,7 @@ public class HexagonalLayoutTHM extends KernelUseObjectZZZ implements LayoutMana
 	}
 	
 	public int getGapDown(){
-		//TODO: ggf. Mathematisch ausrechenbar, z.B. auf Basis der Seitenlänge des Hexecks.
+		//TODO: ggf. Mathematisch ausrechenbar, z.B. auf Basis der Seitenlï¿½nge des Hexecks.
 		return this.iGapDownBase;
 	}
 	public void setGapDown(int iGapDownBase){

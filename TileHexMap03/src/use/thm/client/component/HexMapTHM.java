@@ -15,6 +15,7 @@ import tryout.hibernate.AreaCell;
 import tryout.hibernate.AreaType;
 import tryout.hibernate.CellId;
 import tryout.hibernate.SQLiteUtilZZZ;
+import tryout.hibernate.dao.AreaCellDao;
 import use.thm.ITileEventUserTHM;
 import use.thm.client.event.EventTileCreatedInCellTHM;
 import use.thm.client.event.TileMetaEventBrokerTHM;
@@ -62,8 +63,8 @@ public class HexMapTHM extends KernelUseObjectZZZ implements ITileEventUserTHM {
 			throw ez;
 		}
 		 		
-		this.iRowMax = iRowMax;
-		this.iColumnMax = iColumnMax;
+		this.setRowMax(iRowMax); 
+		this.setColumnMax(iColumnMax);
 		this.iSideLength = iSideLength;
 		this.setPanelParent(panelParent);
 		boolean bSuccess = fillMap();
@@ -83,6 +84,9 @@ public class HexMapTHM extends KernelUseObjectZZZ implements ITileEventUserTHM {
 			return this.iColumnMax;
 		}
 	}
+	public void setColumnMax(int iColumnMax){
+		this.iColumnMax = iColumnMax;
+	}
 	
 	/** Anzahl der Hex-Zeilen. 
 	 * Wird im Konstruktor übergeben
@@ -95,6 +99,9 @@ public class HexMapTHM extends KernelUseObjectZZZ implements ITileEventUserTHM {
 		}else{
 			return this.iRowMax;
 		}
+	}
+	public void setRowMax(int iRowMax){
+		this.iRowMax = iRowMax;
 	}
 	
 	/** Seitenlänge der Hexes. Dient als Mathematische Grundlage für alle Berechnungen.
@@ -162,19 +169,33 @@ public class HexMapTHM extends KernelUseObjectZZZ implements ITileEventUserTHM {
 			//Prüfe die Existenz der Datenbank ab. Ohne die erstellte Datenbank und die Erstellte Datenbanktabelle kommt es hier zu einem Fehler.			
 			boolean bDbExists = SQLiteUtilZZZ.databaseFileExists(objContextHibernate);
 			
-			//Erzeuge den Entity Manager als Ausgangspunkt für die Abfragen. !!! Damit Hibernate mit JPA funktioniert, braucht man die Datei META-INF\persistence.xml. Darin wird die persistence-unit angegeben.	
-			//Wichtig: Das darf erst NACH dem Überprüfen auf die Datenbankexistenz passieren, da hierdurch die Datei erzeugt wird (wenn auch noch ohne Tabellen)
-			//EntityManager em = objContextHibernate.getEntityManager("c:\\server\\SQLite\\TileHexMap03.sqlite");
-			//EntityManager em = objContextHibernate.getEntityManager("jdbc:sqlite:c:\\server\\SQLite\\TileHexMap03.sqlite");				
-			EntityManager em = objContextHibernate.getEntityManager("TileHexMap03");
+			EntityManager em = null;
+			
+			//20170316: Steuere das über die DAO-Klassen
+			AreaCellDao daoAreaCell = new AreaCellDao(objContextHibernate);
+			
 			if(bDbExists){
+				System.out.println("Datenbank existiert als Datei.");
+				objContextHibernate.getConfiguration().setProperty("hibernate.hbm2ddl.auto", "update");  //! Jetzt erst wird jede Tabelle über den Anwendungsstart hinaus gepseichert.				
+							
+				//Erzeuge den Entity Manager als Ausgangspunkt für die Abfragen. !!! Damit Hibernate mit JPA funktioniert, braucht man die Datei META-INF\persistence.xml. Darin wird die persistence-unit angegeben.	
+				//Wichtig: Das darf erst NACH dem Überprüfen auf die Datenbankexistenz passieren, da hierdurch die Datei erzeugt wird (wenn auch noch ohne Tabellen)
+				//EntityManager em = objContextHibernate.getEntityManager("c:\\server\\SQLite\\TileHexMap03.sqlite");
+				//EntityManager em = objContextHibernate.getEntityManager("jdbc:sqlite:c:\\server\\SQLite\\TileHexMap03.sqlite");				
 				
 				
+				//20170316: Steuere über die DAO-Klassen
 				//Fall: Datenbank existiert
-				boolean bSuccess = fillMap_readCreated(objContextHibernate, em, panelMap);				
+				//em = objContextHibernate.getEntityManager("TileHexMap03");
+				//boolean bSuccess = fillMap_readCreated(objContextHibernate, em, panelMap);				
+				boolean bSuccess = fillMap_readCreated(daoAreaCell, panelMap);
+				
 				bFillDatabaseNew = !bSuccess;
 			}else{
 				//Fall: Datenbank existiert noch nicht
+				System.out.println("Datenbank existiert nicht als Datei");
+				objContextHibernate.getConfiguration().setProperty("hibernate.hbm2ddl.auto", "create");  //! Damit wird die Datenbank und sogar die Tabellen darin automatisch erstellt, aber: Sie wird am Anwendungsende geleert.
+			
 				bFillDatabaseNew=true;
 			}//end if bDbExists
 			
@@ -189,6 +210,74 @@ public class HexMapTHM extends KernelUseObjectZZZ implements ITileEventUserTHM {
 		return bReturn;
 	}
 	
+	//20170316: Steuere über die DAO-Klassen
+	private boolean fillMap_readCreated(AreaCellDao daoAreaCell, KernelJPanelCascadedZZZ panelMap) throws ExceptionZZZ{
+		boolean bReturn = false;
+		main:{
+			int iNrOfHexes = 0;	
+			
+			//Query objQuery = em.createQuery("SELECT MAX(c.sMapX) FROM HexCell c");//Fehler: could not resolve property: sMapX of: tryout.hibernate.HexCell 
+			//Query objQuery = em.createQuery("SELECT MAX(c.MapX) FROM HexCell c");//Fehler: could not resolve property: MapX of: tryout.hibernate.HexCell
+			//Query objQuery = em.createQuery("SELECT MAX(c.x) FROM HexCell c");//Fehler: could not resolve property: x of: tryout.hibernate.HexCell
+			//Query objQuery = em.createQuery("SELECT MAX(c.X) FROM HexCell c");//Fehler: could not resolve property: X of: tryout.hibernate.HexCell
+			
+		//TODO: Mache ein DAO Objekt und dort diesen HQL String hinterlegen.
+		//TODO: Anzahl der echten Elemente aus einer noch zu erstellenden Hibernate-ZKernelUtility-Methode holen, sowie eine ResultList OHNE NULL Objekte.
+		//String sQueryTemp = "SELECT MAX(c.id.sMapX) FROM HexCell c";
+		//um einen Integer Wert zu bekommen die Propert naxh HexCell geholt und nicht mehr über id gehen.
+		//String sQueryTemp = "SELECT MAX(c.mapX) FROM HexCell c";
+		
+		
+		//20170316: Steuere über DAO-Klassen
+		//Query objQuery = em.createQuery(sQueryTemp);		
+		//Object objSingle =objQuery.getSingleResult();
+//		if(objSingle!=null){
+//			System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": Objekt als Single Result der Query " + objSingle.hashCode());
+//		}else{
+//			System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": NULL Objekt als Single Result der Query " + sQueryTemp);
+//		}
+				
+		//List objResult = objQuery.getResultList();
+		
+		int iMaxMapX = daoAreaCell.computeMaxMapX(); 
+		System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": iMaxMapX = " + iMaxMapX);
+		this.setColumnMax(iMaxMapX);
+		
+		int iMaxMapY = daoAreaCell.computeMaxMapY(); 
+		System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": iMaxMapY = " + iMaxMapY);
+		this.setRowMax(iMaxMapY);
+		
+		//TODO: WENN Die Anzahl der Zellen in der Datenbank leer ist, dann diese neu aufbauen/füllen
+		
+		
+		
+		
+		//Zwei verschachtelte Schleifen, Aussen: Solange wie es "Provinzen" gibt...
+		//                                                  Innen:   von 1 bis maximaleSpaltenanzahl...
+		int iY = 0;
+		do{//die maximale Zeilenzahl ist noch hart verdrahtet, soll sich aber später automatisch ergeben.....
+		iY++;
+		Integer intY = new Integer(iY);
+		String sY = intY.toString();
+		
+		for(int iX=1; iX <= this.getColumnMax(); iX++){
+			Integer intX = new Integer(iX);				
+			String sX = intX.toString();
+			
+		}//End for iX
+		}while(iY< this.getRowMax());
+		
+		
+		
+		
+		bReturn = false;// ist ja noch nix ausgelesen worden
+		
+		}//main:
+		return bReturn;
+}
+	
+	
+	//LÖSCHEN, STEUERE ÜBER DIE DAO KLASSEN
 	private boolean fillMap_readCreated(HibernateContextProviderTHM objContextHibernate, EntityManager em, KernelJPanelCascadedZZZ panelMap) throws ExceptionZZZ{
 		boolean bReturn = false;
 		main:{
@@ -203,6 +292,9 @@ public class HexMapTHM extends KernelUseObjectZZZ implements ITileEventUserTHM {
 		//TODO: Anzahl der echten Elemente aus einer noch zu erstellenden Hibernate-ZKernelUtility-Methode holen, sowie eine ResultList OHNE NULL Objekte.
 		//String sQueryTemp = "SELECT MAX(c.id.sMapX) FROM HexCell c";
 		//um einen Integer Wert zu bekommen die Propert naxh HexCell geholt und nicht mehr über id gehen.
+			
+			
+		//BEACHTE: VERWENDE HIER DEN ENTITY MANAGER
 		String sQueryTemp = "SELECT MAX(c.mapX) FROM HexCell c";
 		Query objQuery = em.createQuery(sQueryTemp);
 		Object objSingle =objQuery.getSingleResult();
@@ -221,6 +313,7 @@ public class HexMapTHM extends KernelUseObjectZZZ implements ITileEventUserTHM {
 				bReturn = false;
 			}else{					
 				System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": Gefundenes Objekt obj.class= " + obj.getClass().getName());
+				System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": Wert im Objekt ist = " + obj.toString());
 				bReturn = false;
 			}
 		}

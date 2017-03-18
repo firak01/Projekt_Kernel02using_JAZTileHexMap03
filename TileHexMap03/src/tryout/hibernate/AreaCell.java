@@ -9,10 +9,12 @@ import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 import javax.persistence.Transient;
 
+import use.thm.persistence.interfaces.IOptimisticLocking;
+
 @Entity
 @DiscriminatorValue("area") //Wird es wg. der Vererbung(!) von HEXCell zu AreaType immer geben. Ohne Annotation ist das DTYPE und der wert ist gleich dem Klassennamen.
                                       //Das muss in dem Root Entity, also in HEXCELL defniert werden. @DiscriminatorColumn(name="Disc", discriminatorType = DiscriminatorType.STRING)
-public class AreaCell extends HexCell implements Serializable{
+public class AreaCell extends HexCell implements Serializable, IOptimisticLocking{
 
 
 	/**

@@ -1,4 +1,4 @@
-package use.thm.client.hibernate;
+package use.thm.persistence.hibernate;
 
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
@@ -11,15 +11,15 @@ import org.hibernate.cfg.Configuration;
 import org.hibernate.service.ServiceRegistry;
 import org.hibernate.service.ServiceRegistryBuilder;
 
-import tryout.hibernate.AreaCell;
-import tryout.hibernate.HexCell;
-import tryout.hibernate.SQLiteUtilZZZ;
 import use.thm.client.component.AreaCellTHM;
 import use.thm.client.component.HexCellTHM;
+import use.thm.persistence.model.AreaCell;
+import use.thm.persistence.model.HexCell;
 import basic.zBasic.ExceptionZZZ;
 import basic.zBasic.ObjectZZZ;
 import basic.zBasic.ReflectCodeZZZ;
 import basic.zBasic.persistence.HibernateContextProviderZZZ;
+import basic.zBasic.persistence.SQLiteUtilZZZ;
 import basic.zBasic.util.abstractList.HashMapExtendedZZZ;
 import basic.zBasic.util.datatype.string.StringZZZ;
 import basic.zKernel.KernelUseObjectZZZ;
@@ -85,7 +85,7 @@ public class HibernateContextProviderTHM extends HibernateContextProviderZZZ{
 		 		//			Darum muss z.B. hibernate.hbm2ddl.auto in der Konfigurationdatei auskommentiert werden, sonst ziehen hier die Änderungen nicht.
 				this.getConfiguration().setProperty("hiberate.show_sql", "true");
 				this.getConfiguration().setProperty("hiberate.format_sql", "true");
-				this.getConfiguration().setProperty("hibernate.dialect","tryout.hibernate.SQLiteDialect" );
+				this.getConfiguration().setProperty("hibernate.dialect","basic.persistence.hibernate.SQLiteDialect" );
 				this.getConfiguration().setProperty("hibernate.connection.driver_class", "org.sqlite.JDBC");
 				this.getConfiguration().setProperty("hibernate.connection.url", "jdbc:sqlite:c:\\server\\SQLite\\TileHexMap03.sqlite");
 				this.getConfiguration().setProperty("hibernate.connection.username", "");

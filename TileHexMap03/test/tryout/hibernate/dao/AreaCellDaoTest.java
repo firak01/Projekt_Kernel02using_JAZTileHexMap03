@@ -6,10 +6,11 @@ import java.util.Set;
 import javax.persistence.EntityManager;
 
 import custom.zUtil.io.FileZZZ;
-import tryout.hibernate.SQLiteUtilZZZ;
-import use.thm.client.hibernate.HibernateContextProviderTHM;
+import use.thm.persistence.dao.AreaCellDao;
+import use.thm.persistence.hibernate.HibernateContextProviderTHM;
 import junit.framework.TestCase;
 import basic.zBasic.ExceptionZZZ;
+import basic.zBasic.persistence.SQLiteUtilZZZ;
 import basic.zBasic.util.abstractList.HashMapExtendedZZZ;
 import basic.zBasic.util.datatype.string.StringZZZ;
 import basic.zBasic.util.persistence.jdbc.JdbcDriverClassTypeZZZ;

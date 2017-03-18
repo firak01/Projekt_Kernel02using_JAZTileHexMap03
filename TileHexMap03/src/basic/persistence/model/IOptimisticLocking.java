@@ -1,6 +1,6 @@
-package use.thm.persistence.interfaces;
+package basic.persistence.model;
 
-import use.thm.persistence.annotation.LockingMode;
+import basic.persistence.annotation.LockingMode;
 
 /**
  * Inherince the LockingMode for the Editor

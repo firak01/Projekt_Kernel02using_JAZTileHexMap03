@@ -1,4 +1,4 @@
-package tryout.hibernate;
+package use.thm.persistence.model;
 
 import java.io.Serializable;
 
@@ -9,7 +9,7 @@ import javax.persistence.Embeddable;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Id;
 
-import use.thm.persistence.interfaces.IPrimaryKeys;
+import basic.persistence.model.IPrimaryKeys;
 
 //Buch "Java Persistence API", S. 48
 @Embeddable

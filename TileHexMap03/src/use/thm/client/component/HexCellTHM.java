@@ -20,7 +20,6 @@ import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.Table;
 
-import tryout.hibernate.HexCell;
 import use.thm.IMapFixedTHM;
 import use.thm.IMapPositionableTHM;
 import use.thm.client.event.EventCellAffectedTHM;
@@ -28,6 +27,7 @@ import use.thm.client.event.EventCellEnteredTHM;
 import use.thm.client.event.EventCellLeavedTHM;
 import use.thm.client.event.EventTileDroppedToCellTHM;
 import use.thm.client.event.IListenerTileMovedTHM;
+import use.thm.persistence.model.HexCell;
 import basic.zBasic.ExceptionZZZ;
 import basic.zBasic.ReflectCodeZZZ;
 import basic.zBasic.util.datatype.string.StringZZZ;

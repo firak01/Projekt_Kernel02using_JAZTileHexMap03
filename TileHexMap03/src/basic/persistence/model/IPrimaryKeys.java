@@ -1,9 +1,9 @@
-package use.thm.persistence.interfaces;
+package basic.persistence.model;
 
 
 import java.io.Serializable;
 
-import use.thm.persistence.annotation.EmbeddablePK;
+import basic.persistence.annotation.EmbeddablePK;
 
 /**
  * @author DKatzberg

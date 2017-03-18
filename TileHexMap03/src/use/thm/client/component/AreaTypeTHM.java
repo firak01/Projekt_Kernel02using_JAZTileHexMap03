@@ -2,7 +2,7 @@ package use.thm.client.component;
 
 import java.awt.Color;
 
-import tryout.hibernate.AreaType;
+import use.thm.persistence.model.AreaType;
 import basic.zKernel.KernelUseObjectZZZ;
 import basic.zKernel.KernelZZZ;
 

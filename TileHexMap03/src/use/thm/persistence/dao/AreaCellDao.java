@@ -1,4 +1,4 @@
-package tryout.hibernate.dao;
+package use.thm.persistence.dao;
 
 import java.util.HashMap;
 import java.util.List;
@@ -6,8 +6,8 @@ import java.util.Map;
 
 import org.hibernate.Query;
 
-import tryout.hibernate.AreaCell;
-import use.thm.client.hibernate.HibernateContextProviderTHM;
+import use.thm.persistence.hibernate.HibernateContextProviderTHM;
+import use.thm.persistence.model.AreaCell;
 import basic.zBasic.ExceptionZZZ;
 import basic.zBasic.persistence.GeneralDaoZZZ;
 public class AreaCellDao extends GeneralDaoZZZ<AreaCell> {

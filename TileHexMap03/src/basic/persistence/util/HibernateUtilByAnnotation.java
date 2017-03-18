@@ -1,4 +1,4 @@
-package use.thm.persistence.util;
+package basic.persistence.util;
 
 
 
@@ -19,12 +19,12 @@ import org.hibernate.stat.Statistics;
  * 
  * @author DKatzberg
  */
-public class HibernateUtil implements Serializable{
+public class HibernateUtilByAnnotation implements Serializable{
 	
 	private static final long serialVersionUID = 1L;
 
 	//singleton
-	private static HibernateUtil hibernateUtil;
+	private static HibernateUtilByAnnotation hibernateUtil;
 	
 	//holds config elements
 	private SessionFactory sessionFactory;
@@ -34,7 +34,7 @@ public class HibernateUtil implements Serializable{
 	
 	
 	/* Singleton Constructor */
-	private HibernateUtil() {
+	private HibernateUtilByAnnotation() {
 		try {
 			//Create the SessionFactory
 			new Configuration().configure().buildSessionFactory();
@@ -63,14 +63,14 @@ public class HibernateUtil implements Serializable{
 	}
 	
 	/* Getter / Setter */
-	public static HibernateUtil getHibernateUtil() {
+	public static HibernateUtilByAnnotation getHibernateUtil() {
 		
 		//singleton pattern, with optimize synchronization performance
 		if(hibernateUtil==null){
-			synchronized(HibernateUtil.class){
+			synchronized(HibernateUtilByAnnotation.class){
 				//2nd check in synchronized area
 				if(hibernateUtil==null){
-					hibernateUtil = new HibernateUtil();
+					hibernateUtil = new HibernateUtilByAnnotation();
 				}
 			}
 		}

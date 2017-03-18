@@ -1,4 +1,4 @@
-package tryout.hibernate;
+package use.thm.persistence.model;
 
 import javax.persistence.Embeddable;
 

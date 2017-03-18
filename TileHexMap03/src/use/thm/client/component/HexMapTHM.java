@@ -11,18 +11,18 @@ import javax.swing.JPanel;
 
 import org.hibernate.Session;
 
-import tryout.hibernate.AreaCell;
-import tryout.hibernate.AreaType;
-import tryout.hibernate.CellId;
-import tryout.hibernate.SQLiteUtilZZZ;
-import tryout.hibernate.dao.AreaCellDao;
 import use.thm.ITileEventUserTHM;
 import use.thm.client.event.EventTileCreatedInCellTHM;
 import use.thm.client.event.TileMetaEventBrokerTHM;
 import use.thm.client.event.TileMoveEventBrokerTHM;
-import use.thm.client.hibernate.HibernateContextProviderTHM;
+import use.thm.persistence.dao.AreaCellDao;
+import use.thm.persistence.hibernate.HibernateContextProviderTHM;
+import use.thm.persistence.model.AreaCell;
+import use.thm.persistence.model.AreaType;
+import use.thm.persistence.model.CellId;
 import basic.zBasic.ExceptionZZZ;
 import basic.zBasic.ReflectCodeZZZ;
+import basic.zBasic.persistence.SQLiteUtilZZZ;
 import basic.zBasic.util.abstractList.HashMapMultiZZZ;
 import basic.zBasic.util.datatype.string.StringZZZ;
 import basic.zBasicUI.glassPane.dragDropTranslucent.GhostDropListener;

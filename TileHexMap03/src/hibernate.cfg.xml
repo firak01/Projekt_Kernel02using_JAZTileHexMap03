@@ -12,7 +12,7 @@
 		<property name="format_sql">true</property>
 
 		<!-- <property name="dialect">org.hibernate.dialect.SQLiteDialect</property> -->
-		<property name="dialect">tryout.hibernate.SQLiteDialect</property>
+		<property name="dialect">basic.persistence.hibernate.SQLiteDialect</property>
 
 		<!-- Database Connection settings -->
 		<property name="connection.driver_class">org.sqlite.JDBC</property>
@@ -34,7 +34,7 @@
 <!-- 		<property name="hibernate.hbm2ddl.auto">create</property> -->
 
 
-		<mapping class="tryout.hibernate.HexCell"></mapping>
+		<mapping class="use.thm.persistence.model.HexCell"></mapping>
 
 		<!-- FGL: So werden die Klassen für das Mapping herangezogen, aber: Dabei 
 			werden Annotations verwendet. -->

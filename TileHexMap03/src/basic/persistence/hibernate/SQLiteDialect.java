@@ -1,4 +1,4 @@
-package tryout.hibernate;
+package basic.persistence.hibernate;
 
 /*
  * The author disclaims copyright to this source code. In place of

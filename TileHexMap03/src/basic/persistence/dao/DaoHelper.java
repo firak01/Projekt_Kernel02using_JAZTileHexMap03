@@ -1,7 +1,7 @@
 /**
  * 
  */
-package use.thm.persistence.util;
+package basic.persistence.dao;
 
 /**
  * @author DKatzberg

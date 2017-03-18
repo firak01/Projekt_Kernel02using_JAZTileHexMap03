@@ -1,7 +1,7 @@
 /**
  * 
  */
-package use.thm.persistence.dao;
+package basic.persistence.dao;
 
 import java.math.BigInteger;
 import java.sql.Timestamp;
@@ -24,12 +24,10 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.StaleObjectStateException;
 
-import tryout.hibernate.AreaCell;
-import use.thm.persistence.interfaces.IDaoInterface;
-import use.thm.persistence.interfaces.IPrimaryKeys;
-import use.thm.persistence.type.IntLongTupel;
-import use.thm.persistence.util.DaoHelper;
-import use.thm.persistence.util.HibernateUtil;
+import basic.persistence.model.IPrimaryKeys;
+import basic.persistence.type.IntLongTupel;
+import basic.persistence.util.HibernateUtilByAnnotation;
+import use.thm.persistence.model.AreaCell;
 
 /**
  * 
@@ -72,13 +70,13 @@ public abstract class GeneralDAO<T> implements IDaoInterface<T>{
 		if(session==null){
 			
 			//open session in view
-			session = HibernateUtil.getHibernateUtil().getCurrentSession();
+			session = HibernateUtilByAnnotation.getHibernateUtil().getCurrentSession();
 		}
 		
 		
 		//empty or closed? make a new session
 		if(session==null || !session.isOpen()) {
-			SessionFactory sf = HibernateUtil.getHibernateUtil().getSessionFactory();
+			SessionFactory sf = HibernateUtilByAnnotation.getHibernateUtil().getSessionFactory();
 			if (sf!=null){
 				sf.openSession();
 			}else{
@@ -93,10 +91,10 @@ public abstract class GeneralDAO<T> implements IDaoInterface<T>{
 	 * 
 	 */
 	public static Session getSessionObject(){
-		Session session = HibernateUtil.getHibernateUtil().getCurrentSession();
+		Session session = HibernateUtilByAnnotation.getHibernateUtil().getCurrentSession();
 		//empty or closed? make a new session
 		if(session==null || !session.isOpen()) {
-			SessionFactory sf = HibernateUtil.getHibernateUtil().getSessionFactory();
+			SessionFactory sf = HibernateUtilByAnnotation.getHibernateUtil().getSessionFactory();
 			if (sf!=null){
 				sf.openSession();
 			}else{

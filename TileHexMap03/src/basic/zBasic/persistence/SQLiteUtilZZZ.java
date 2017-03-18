@@ -1,10 +1,10 @@
-package tryout.hibernate;
+package basic.zBasic.persistence;
 
 import java.util.EnumSet;
 import java.util.Enumeration;
 import java.util.Set;
 
-import use.thm.client.hibernate.HibernateContextProviderTHM;
+import use.thm.persistence.hibernate.HibernateContextProviderTHM;
 import basic.zBasic.ExceptionZZZ;
 import basic.zBasic.ObjectZZZ;
 import basic.zBasic.ReflectCodeZZZ;

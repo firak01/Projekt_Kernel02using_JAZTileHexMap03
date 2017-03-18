@@ -1,7 +1,7 @@
 /**
  * 
  */
-package use.thm.persistence.type;
+package basic.persistence.type;
 
 import java.io.Serializable;
 

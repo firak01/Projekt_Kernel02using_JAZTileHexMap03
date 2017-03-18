@@ -1,11 +1,13 @@
 /**
  * 
  */
-package use.thm.persistence.interfaces;
+package basic.persistence.dao;
 
 import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
+
+import basic.persistence.model.IPrimaryKeys;
 
 /**
  * @author DKatzberg

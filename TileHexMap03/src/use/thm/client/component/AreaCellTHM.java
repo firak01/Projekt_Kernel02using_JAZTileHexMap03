@@ -10,14 +10,14 @@ import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 import javax.swing.JOptionPane;
 
-import tryout.hibernate.AreaCell;
-import tryout.hibernate.AreaType;
 import use.thm.client.common.AreaEffectTHM;
 import use.thm.client.event.EventCellEnteredTHM;
 import use.thm.client.event.EventCellLeavedTHM;
 import use.thm.client.event.EventTileCreatedInCellTHM;
 import use.thm.client.event.EventTileDroppedToCellTHM;
 import use.thm.client.event.IListenerTileMetaTHM;
+import use.thm.persistence.model.AreaCell;
+import use.thm.persistence.model.AreaType;
 import basic.zBasic.ExceptionZZZ;
 import basic.zBasic.ReflectCodeZZZ;
 import basic.zBasic.util.datatype.string.StringZZZ;

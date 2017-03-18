@@ -1,7 +1,7 @@
 /**
  * 
  */
-package use.thm.persistence.annotation;
+package basic.persistence.annotation;
 
 import java.lang.annotation.Inherited;
 

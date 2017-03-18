@@ -1,4 +1,4 @@
-package tryout.hibernate;
+package use.thm.persistence.model;
 
 import java.io.Serializable;
 
@@ -9,7 +9,7 @@ import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 import javax.persistence.Transient;
 
-import use.thm.persistence.interfaces.IOptimisticLocking;
+import basic.persistence.model.IOptimisticLocking;
 
 @Entity
 @DiscriminatorValue("area") //Wird es wg. der Vererbung(!) von HEXCell zu AreaType immer geben. Ohne Annotation ist das DTYPE und der wert ist gleich dem Klassennamen.

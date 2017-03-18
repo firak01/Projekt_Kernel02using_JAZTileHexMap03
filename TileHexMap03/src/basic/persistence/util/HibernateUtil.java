@@ -1,4 +1,4 @@
-package tryout.hibernate;
+package basic.persistence.util;
  
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.AnnotationConfiguration;

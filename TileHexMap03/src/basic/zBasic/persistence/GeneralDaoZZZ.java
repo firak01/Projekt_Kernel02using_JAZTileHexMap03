@@ -9,6 +9,8 @@ import org.apache.commons.logging.LogFactory;
 import org.hibernate.Query;
 import org.hibernate.Session;
 
+import basic.persistence.dao.GeneralDAO;
+import basic.persistence.model.IPrimaryKeys;
 import basic.zBasic.ExceptionZZZ;
 import basic.zBasic.IFlagZZZ;
 import basic.zBasic.IObjectZZZ;
@@ -18,10 +20,8 @@ import basic.zBasic.persistence.interfaces.IHibernateContextProviderUserZZZ;
 import basic.zBasic.persistence.interfaces.IHibernateContextProviderZZZ;
 import basic.zBasic.util.datatype.string.StringZZZ;
 import basic.zUtil.io.KernelFileZZZ.FLAGZ;
-import tryout.hibernate.AreaCell;
-import use.thm.client.hibernate.HibernateContextProviderTHM;
-import use.thm.persistence.dao.GeneralDAO;
-import use.thm.persistence.interfaces.IPrimaryKeys;
+import use.thm.persistence.hibernate.HibernateContextProviderTHM;
+import use.thm.persistence.model.AreaCell;
 
 public abstract class GeneralDaoZZZ<T> extends GeneralDAO<T> implements IObjectZZZ, IFlagZZZ, IHibernateContextProviderUserZZZ{
 	private static final long serialVersionUID = 1L;

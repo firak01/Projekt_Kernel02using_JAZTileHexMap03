@@ -1,4 +1,4 @@
-package tryout.hibernate;
+package use.thm.persistence.model;
 
 import java.io.Serializable;
 
@@ -21,7 +21,7 @@ import javax.persistence.InheritanceType;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
-import use.thm.persistence.interfaces.IOptimisticLocking;
+import basic.persistence.model.IOptimisticLocking;
 
 /**Klasse für eine HexEck Zelle - persistierbar per JPA. Wird von AreaCell geerbt. 
  * Die Klasse HexCellTHM hat darüber hinaus noch weitere Aufgaben deiner Swing - Komponente.

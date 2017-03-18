@@ -1,4 +1,4 @@
-package tryout.hibernate;
+package use.thm.persistence.model;
 
 public enum HexType {
 	AREA("AREA","AR");

@@ -19,12 +19,12 @@ import java.util.HashMap;
 
 import javax.swing.JLabel;
 
-import tryout.hibernate.HexCell;
 import use.thm.IHexMapUserTHM;
 import use.thm.client.component.HexCellTHM;
 import use.thm.client.component.HexMapTHM;
 import use.thm.client.component.HexagonalLayoutTHM;
 import use.thm.client.component.HexagonalCellLayoutTHM;
+import use.thm.persistence.model.HexCell;
 import basic.zBasic.util.abstractList.HashMapMultiZZZ;
 import basic.zBasicUI.glassPane.dragDropTranslucent.GhostDropListener;
 import basic.zBasicUI.glassPane.dragDropTranslucent.GhostDropManagerDemo;

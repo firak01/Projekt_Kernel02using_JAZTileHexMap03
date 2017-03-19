@@ -23,9 +23,9 @@ import javax.persistence.Transient;
 
 import basic.persistence.model.IOptimisticLocking;
 
-/**Klasse für eine HexEck Zelle - persistierbar per JPA. Wird von AreaCell geerbt. 
- * Die Klasse HexCellTHM hat darüber hinaus noch weitere Aufgaben deiner Swing - Komponente.
- * Wegen nicht zu persistierender Eigenschaften wurde dann diese speziell nur mit zu persistierenden Eigenschaften erstellt.
+/**Klasse für eine HexEck Zelle - persistierbar per JPA. Wird nach AreaCell vererbt. 
+ * Die Klasse HexCellTHM hat im Vergleich zu dieser Klassen noch weitere Aufgaben einer Swing - Komponente.
+ * Wegen nicht zu persistierender Eigenschaften wurde dann diese Klasse HexCell speziell nur mit zu persistierenden Eigenschaften erstellt.
  * @author lindhaueradmin
  *
  */
@@ -110,7 +110,7 @@ public class HexCell implements Serializable, IOptimisticLocking{
 		@Column(name="CELLTYPE")
 		@Access(AccessType.PROPERTY)
 		public String getHexType(){
-			//das ist die Langbeschreibung return this.getAreaTypeObject().name();
+			//das wäre die Langbeschreibung return this.getAreaTypeObject().name();
 			String sName = this.getHexTypeObject().name();	
 			HexType at =HexType.valueOf(HexType.class, sName);
 			return at.getAbbreviation();

@@ -35,6 +35,8 @@
 
 
 		<mapping class="use.thm.persistence.model.HexCell"></mapping>
+		<mapping class="use.thm.persistence.model.TroopArmy"></mapping>
+		<mapping class="use.thm.persistence.model.TroopFleet"></mapping>
 
 		<!-- FGL: So werden die Klassen für das Mapping herangezogen, aber: Dabei 
 			werden Annotations verwendet. -->

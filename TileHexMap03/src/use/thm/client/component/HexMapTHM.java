@@ -20,6 +20,9 @@ import use.thm.persistence.hibernate.HibernateContextProviderTHM;
 import use.thm.persistence.model.AreaCell;
 import use.thm.persistence.model.AreaType;
 import use.thm.persistence.model.CellId;
+import use.thm.persistence.model.TileId;
+import use.thm.persistence.model.TroopArmy;
+import use.thm.persistence.model.TroopFleet;
 import basic.zBasic.ExceptionZZZ;
 import basic.zBasic.ReflectCodeZZZ;
 import basic.zBasic.persistence.SQLiteUtilZZZ;
@@ -525,6 +528,7 @@ public class HexMapTHM extends KernelUseObjectZZZ implements ITileEventUserTHM {
 					//TEST: FALSCHES PLATZIEREN DER TRUPPEN Komponente in einer bestimmten Zelle per Event hinzufügen
 					boolean bUseTestArea = false;
 					if(bUseTestArea && sX.equals("1") && sY.equals("2")){
+						
 						FleetTileTHM objFleetTemp = new FleetTileTHM(panelMap, objTileMoveEventBroker, sX, sY, this.getSideLength());
 						
 						EventTileCreatedInCellTHM objEventTileCreated = new EventTileCreatedInCellTHM(objFleetTemp, 1, sX, sY);
@@ -534,11 +538,17 @@ public class HexMapTHM extends KernelUseObjectZZZ implements ITileEventUserTHM {
 					//Anfangsaufstellung: TRUPPEN Komponente in einer bestimmten Zelle per Event hinzufügen
 					//TODO: Die Truppenaufstellung soll wie die Karte auch in einer Tabelle hinterlegt werden. 
 					if(sX.equals("1") && sY.equals("2")){
+						TroopArmy objTroopTemp = new TroopArmy(new TileId("EINS", sX, sY));
+													
+						//TODO: Die TroopArmy noch an das UI-verwendete Objekt weitergeben ################
 						ArmyTileTHM objArmyTemp = new ArmyTileTHM(panelMap, objTileMoveEventBroker, sX, sY, this.getSideLength());
 						
 						EventTileCreatedInCellTHM objEventTileCreated = new EventTileCreatedInCellTHM(objArmyTemp, 1, sX, sY);
 						objTileMetaEventBroker.fireEvent(objEventTileCreated);
 					}else if(sX.equals("5")&& sY.equals("5")){
+						TroopFleet objTroopTemp = new TroopFleet(new TileId("EINS", sX, sY));
+						
+						//TODO: Die TroopArmy noch an das UI-verwendete Objekt weitergeben ################											
 						FleetTileTHM objFleetTemp = new FleetTileTHM(panelMap, objTileMoveEventBroker, sX, sY, this.getSideLength());
 						
 						EventTileCreatedInCellTHM objEventTileCreated = new EventTileCreatedInCellTHM(objFleetTemp, 1, sX, sY);

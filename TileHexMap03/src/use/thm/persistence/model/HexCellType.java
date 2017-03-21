@@ -1,12 +1,12 @@
 package use.thm.persistence.model;
 
-public enum HexType {
+public enum HexCellType {
 	AREA("AREA","AR");
 	
 
 private String name, abbr;
 
-HexType(String fullName, String abbr) {
+HexCellType(String fullName, String abbr) {
     this.name = fullName;
     this.abbr = abbr;
 }
@@ -22,8 +22,8 @@ public String getAbbreviation() {
 }
 
 // the valueOfMethod <--- Translating from DB
-public static HexType fromAbbreviation(String s) {
-    for (HexType state : values()) {
+public static HexCellType fromAbbreviation(String s) {
+    for (HexCellType state : values()) {
         if (s.equals(state.getAbbreviation()))
             return state;
     }

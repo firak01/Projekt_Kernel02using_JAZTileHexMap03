@@ -17,7 +17,7 @@ import use.thm.client.event.EventTileCreatedInCellTHM;
 import use.thm.client.event.EventTileDroppedToCellTHM;
 import use.thm.client.event.IListenerTileMetaTHM;
 import use.thm.persistence.model.AreaCell;
-import use.thm.persistence.model.AreaType;
+import use.thm.persistence.model.AreaCellType;
 import basic.zBasic.ExceptionZZZ;
 import basic.zBasic.ReflectCodeZZZ;
 import basic.zBasic.util.datatype.string.StringZZZ;
@@ -83,9 +83,9 @@ public class AreaCellTHM  extends HexCellTHM implements IListenerTileMetaTHM{
 		boolean bReturn = true;
 		main:{
 			String sAreaType = this.getAreaType();
-			if(sAreaType.equals(AreaType.OCEAN.name())){
+			if(sAreaType.equals(AreaCellType.OCEAN.name())){
 				bReturn = AreaTypeOceanTHM.isAccessibleBy(tileTHM);
-			}else if(sAreaType.equals(AreaType.LAND.name())){
+			}else if(sAreaType.equals(AreaCellType.LAND.name())){
 				bReturn = AreaTypeLandTHM.isAccessibleBy(tileTHM);
 			}
 		}
@@ -130,9 +130,9 @@ public class AreaCellTHM  extends HexCellTHM implements IListenerTileMetaTHM{
 		Color colorReturn = null;
 		main:{ 
 		    String sAreaType = this.getAreaType();
-			if(sAreaType.equals(AreaType.OCEAN.name())){
+			if(sAreaType.equals(AreaCellType.OCEAN.name())){
 				colorReturn = AreaTypeOceanTHM.getColor();
-			}else if(sAreaType.equals(AreaType.LAND.name())){
+			}else if(sAreaType.equals(AreaCellType.LAND.name())){
 				colorReturn = AreaTypeLandTHM.getColor();
 			}
 		}

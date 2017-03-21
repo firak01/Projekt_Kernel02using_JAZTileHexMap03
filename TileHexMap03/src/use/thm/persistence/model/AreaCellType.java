@@ -10,13 +10,13 @@ import javax.persistence.Embeddable;
 
 //20170201: Mache diesen AreaType embeddable. Ziel: Es soll nicht mehr als BLOB in der Datenbank (SQLITE) gespeichert werden.
 @Embeddable
-public enum AreaType { 
+public enum AreaCellType { 
 OCEAN("Ozean", "OC"),
 LAND("Land", "LA");
 
 private String name, abbr;
 
-AreaType(String fullName, String abbr) {
+AreaCellType(String fullName, String abbr) {
     this.name = fullName;
     this.abbr = abbr;
 }
@@ -32,8 +32,8 @@ public String getAbbreviation() {
 }
 
 // the valueOfMethod <--- Translating from DB
-public static AreaType fromAbbreviation(String s) {
-    for (AreaType state : values()) {
+public static AreaCellType fromAbbreviation(String s) {
+    for (AreaCellType state : values()) {
         if (s.equals(state.getAbbreviation()))
             return state;
     }

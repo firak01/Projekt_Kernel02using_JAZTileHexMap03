@@ -18,6 +18,8 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
@@ -31,11 +33,11 @@ import basic.persistence.model.IOptimisticLocking;
 */
 
 //Vgl. Buch "Java Persistence API 2", Seite 34ff. für @Table, @UniqueConstraint
-@Entity
+@Entity  //Ich will eigentlich  keine Tabelle für TILE haben, geht aber nicht. 
 @Access(AccessType.PROPERTY)
-//@Inheritance(strategy = InheritanceType.SINGLE_TABLE) 
-@DiscriminatorColumn(name="Disc", discriminatorType = DiscriminatorType.STRING) //Voraussetzung für DiscriminatorValue in der AreaCell-Klasse. //Wird es wg. der Vererbung von HEXCell zu AreaType immer geben. Ohne Annotation ist das DTYPE und der wert ist gleich dem Klassennamen.
-@Table(name="Tile")
+@Inheritance(strategy =  InheritanceType.JOINED )//ZIEL: Nur bestimmte Entiteis in einer eigenen Klasse //InheritanceType.TABEL_PER_CLASS) //Ziel: Jedes Entity der Vererbungshierarchie in einer eigenen Tabelle // InheritanceType.SINGLE_TABLE) //Hiermit werden alle Datensätze der Vererbungshierarchieklassen in einer Tabelle zusammengafasst und nur anhan ddes Discriminator Wertes unterschieden 
+//Bei InheritanceType.TABLE_PER_CLASS gilt, es darf keinen Discriminator geben ... @DiscriminatorColumn(name="Disc", discriminatorType = DiscriminatorType.STRING) //Bei InheritanceType.SINGLE_TABLE) gilt: Voraussetzung für DiscriminatorValue in der AreaCell-Klasse. //Wird es wg. der Vererbung von HEXCell zu AreaType immer geben. Ohne Annotation ist das DTYPE und der wert ist gleich dem Klassennamen.
+@Table(name="TILE")
 public class Tile implements Serializable, IOptimisticLocking{
 	private static final long serialVersionUID = 1113434456411176970L;
 	
@@ -53,7 +55,7 @@ public class Tile implements Serializable, IOptimisticLocking{
 	@AttributeOverrides({
 			@AttributeOverride(name = "mapAlias", column= @Column(name="MAPALIAS")),
 			@AttributeOverride(name = "player", column= @Column(name="PLAYER", length = 2)),
-			@AttributeOverride(name = "uniquename", column= @Column(name="UNIQUE", length = 6))			
+			@AttributeOverride(name = "uniquename", column= @Column(name="UNIQUENAME", length = 6))	//Merke UNIQUE ist ein Schlüsselwort		
 	})
 	private TileId id;
 	
@@ -65,6 +67,13 @@ public class Tile implements Serializable, IOptimisticLocking{
 	@Transient
 	private Enum<TileType> enumTileType = null; //weil der EnumType nun String ist. @Column wird verwendet, da sonst der technische Name enumAreaType als Tabellenspalte herhalten muss.
 
+	
+	//1:1 Beziehung aufbauen
+	//Siehe Buch "Java Persistence API 2", Seite 90ff.	
+	@OneToOne
+	@JoinColumn(name="lid", nullable = false)
+	@Transient //Ich will kein BLOB speichern
+	private HexCell objHexCell;
 	
 	//Der Default Contruktor wird für JPA - Abfragen wohl benötigt
 	 public Tile(){
@@ -79,7 +88,7 @@ public class Tile implements Serializable, IOptimisticLocking{
 	 //Siehe Buch "Java Persistence API", Seite 37ff
 	 @Transient
 	 public String getTileAlias(){
-		return this.getMapAlias() + "#" + this.getPlayer() + "-" + this.getUnique(); 
+		return this.getMapAlias() + "#" + this.getPlayer() + "-" + this.getUniquename(); 
 	 }
 	 
 	 
@@ -143,16 +152,28 @@ public class Tile implements Serializable, IOptimisticLocking{
 	    
 		//Um zu versuchen das Maximum zu bekommen und einfach um +1 zu erhöhen
 		@Access(AccessType.PROPERTY)
-		@Column(name="UNIQUE", nullable=false, columnDefinition="integer default 0")
-	    public int getUnique(){	
+		@Column(name="UNIQUENAME", nullable=false, columnDefinition="integer default 0")  //Merke UNIQUE ist ein Datenbankschlüsselwort
+	    public int getUniquename(){	
 			String stemp = this.getId().getUniquename();
 	    	Integer objReturn = new Integer(stemp);
 	    	return objReturn.intValue();		
 	    }
-		public void setUnique(int iValue){
+		public void setUniquename(int iValue){
 			Integer intValue = new Integer(iValue);
 			String sUniquename = intValue.toString();
 			this.getId().setUniquename(sUniquename);
 		}
-	    
+		
+		//1:1 Beziehung aufbauen
+		//Siehe Buch "Java Persistence API 2", Seite 90ff.	
+		@Access(AccessType.PROPERTY)
+		@OneToOne
+		@JoinColumn(name="LID", nullable = false)
+		@Transient //Ich will kein BLOB speichern
+		public void setHexCell(HexCell objHexCell){
+			this.objHexCell = objHexCell;
+		}
+	    public HexCell getHexCell(){
+	    	return this.objHexCell;
+	    }
 }

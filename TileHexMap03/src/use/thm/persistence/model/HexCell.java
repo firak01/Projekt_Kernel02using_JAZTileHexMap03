@@ -18,6 +18,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
+import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
@@ -33,7 +34,7 @@ import basic.persistence.model.IOptimisticLocking;
 //Vgl. Buch "Java Persistence API 2", Seite 34ff. für @Table, @UniqueConstraint
 @Entity
 @Access(AccessType.PROPERTY)
-//@Inheritance(strategy = InheritanceType.SINGLE_TABLE) 
+@Inheritance(strategy =  InheritanceType.JOINED )//ZIEL: Nur bestimmte Entiteis in einer eigenen Klasse //InheritanceType.TABEL_PER_CLASS) //Ziel: Jedes Entity der Vererbungshierarchie in einer eigenen Tabelle // InheritanceType.SINGLE_TABLE) //Hiermit werden alle Datensätze der Vererbungshierarchieklassen in einer Tabelle zusammengafasst und nur anhan ddes Discriminator Wertes unterschieden
 @DiscriminatorColumn(name="Disc", discriminatorType = DiscriminatorType.STRING) //Voraussetzung für DiscriminatorValue in der AreaCell-Klasse. //Wird es wg. der Vererbung von HEXCell zu AreaType immer geben. Ohne Annotation ist das DTYPE und der wert ist gleich dem Klassennamen.
 @Table(name="HEXCELL")
 public class HexCell implements Serializable, IOptimisticLocking{
@@ -63,8 +64,11 @@ public class HexCell implements Serializable, IOptimisticLocking{
 	//	@Type(type = "tryout.hibernate.AreaType", parameters = @Parameter(name = "type", value = "tryout.hibernate.AreaType"))
 	// @Embedded  aber geht nicht, da ENUM-Type 
 	@Transient
-	private Enum<HexType> enumHexType = null; //weil der EnumType nun String ist. @Column wird verwendet, da sonst der technische Name enumAreaType als Tabellenspalte herhalten muss.
+	private Enum<HexCellType> enumHexType = null; //weil der EnumType nun String ist. @Column wird verwendet, da sonst der technische Name enumAreaType als Tabellenspalte herhalten muss.
 
+	//ist notNULL, darum darf es wohl nicht transient sein... @Transient
+	//private Integer intLid;  //klappt beim IntegerObjekt wohl nicht mit dem Generator
+	private int iLid;  
 	
 	//Der Default Contruktor wird für JPA - Abfragen wohl benötigt
 	 public HexCell(){
@@ -73,7 +77,7 @@ public class HexCell implements Serializable, IOptimisticLocking{
 		 this.id = objId;
 		 
 		 //bisher nur die eine Sorte des HexType vorhanden, darum nicht im Konstruktor aufgenommen
-		 this.enumHexType = HexType.AREA;
+		 this.enumHexType = HexCellType.AREA;
 	 }
 	 
 	 //Siehe Buch "Java Persistence API", Seite 37ff
@@ -97,12 +101,33 @@ public class HexCell implements Serializable, IOptimisticLocking{
 		   	return this.getId().getMapAlias();
 		}
 	 
+	 //wg. 1:1 Beziehung zwischen Tile und HexCell
+	 @Access(AccessType.PROPERTY)
+	 
+	// @GeneratedValue(strategy= GenerationType.AUTO) //Klappt leider nicht
+	@GeneratedValue(strategy=GenerationType.SEQUENCE, generator="seq") //Vorausgesetzt man hat einen SequenceGenerator
+	 
+	//TODO GOON 201703: Klappt so nicht, darum folgende Strategie
+	//1. Versuche einen eigenen Generator zu erstellen als eigene Klasse
+	//2. Nimm als Verbindungswert einen zusammengesetzten AliasString der Schlüsse.
+	//3. Probiere eine andere Datenbank als SQLite aus... Postgres?
+	@SequenceGenerator(name="seq",allocationSize=1,initialValue=1)//Ziel soll es sein über die ID-Felder hinaus eine automtisch initial berechnete Spalte anzubieten, diese soll verwendet werden um Tabellen miteinander zu verknüpfen.
+	 
+	 //@Column(name="LID", nullable=false, unique=true) //long lasting ID, aber so wird weder unique noch der Default wert gesetzt.
+	 @Column(name="LID", nullable=false, unique=true, columnDefinition="INTEGER NOT NULL UNIQUE  DEFAULT 1") //long lasting ID, jetzt funktioniert UNIQUE, DEFAULTWERT funktioniert nicht. Der Ausdruck muss so sein, wie im SQL Statement vorgesehen, aber klappt irgendwie nicht.	 
+	 public int getLid(){
+		 return this.iLid;
+	 }
+	 public void setLid(int iLid){
+		 this.iLid = iLid;
+	 }
+	 
 	 //Enumeration werden als BLOB gespeichert, insbesondere, wenn sie eine Liste sind, darum den Stringwert der Enumeration holen und das Objekt selbst nicht persisiteren.
 		@Transient
-		public Enum<HexType> getHexTypeObject(){
+		public Enum<HexCellType> getHexTypeObject(){
 			return this.enumHexType;
 		}	
-		public void setHexTypeObject(Enum<HexType> enumHexType){
+		public void setHexTypeObject(Enum<HexCellType> enumHexType){
 			this.enumHexType = enumHexType;	
 		}
 		
@@ -112,12 +137,12 @@ public class HexCell implements Serializable, IOptimisticLocking{
 		public String getHexType(){
 			//das wäre die Langbeschreibung return this.getAreaTypeObject().name();
 			String sName = this.getHexTypeObject().name();	
-			HexType at =HexType.valueOf(HexType.class, sName);
+			HexCellType at =HexCellType.valueOf(HexCellType.class, sName);
 			return at.getAbbreviation();
 		}	
 
 		public void setHexType(String sHexType){
-			HexType objType = HexType.fromAbbreviation(sHexType);
+			HexCellType objType = HexCellType.fromAbbreviation(sHexType);
 			this.setHexTypeObject(objType);
 		}
 		

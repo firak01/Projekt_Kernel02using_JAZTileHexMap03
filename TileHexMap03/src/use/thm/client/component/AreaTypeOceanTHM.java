@@ -2,13 +2,13 @@ package use.thm.client.component;
 
 import java.awt.Color;
 
-import use.thm.persistence.model.AreaType;
+import use.thm.persistence.model.AreaCellType;
 import basic.zKernel.KernelZZZ;
 
 public class AreaTypeOceanTHM extends AreaTypeTHM{
 
 	public AreaTypeOceanTHM(KernelZZZ objKernel) {
-		super(objKernel, AreaType.OCEAN);
+		super(objKernel, AreaCellType.OCEAN);
 	}
 	public static String getTerm(){
 		return "Ozean";

@@ -8,7 +8,7 @@ import javax.persistence.Query;
 import basic.zBasic.ExceptionZZZ;
 import use.thm.persistence.hibernate.HibernateContextProviderTHM;
 import use.thm.persistence.model.AreaCell;
-import use.thm.persistence.model.AreaType;
+import use.thm.persistence.model.AreaCellType;
 import use.thm.persistence.model.CellId;
 
 public class DebugJpaQueryHexCellMain003 {

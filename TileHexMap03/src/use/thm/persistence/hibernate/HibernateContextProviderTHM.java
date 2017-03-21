@@ -14,7 +14,13 @@ import org.hibernate.service.ServiceRegistryBuilder;
 import use.thm.client.component.AreaCellTHM;
 import use.thm.client.component.HexCellTHM;
 import use.thm.persistence.model.AreaCell;
+import use.thm.persistence.model.AreaCellLand;
+import use.thm.persistence.model.AreaCellOcean;
 import use.thm.persistence.model.HexCell;
+import use.thm.persistence.model.Tile;
+import use.thm.persistence.model.Troop;
+import use.thm.persistence.model.TroopArmy;
+import use.thm.persistence.model.TroopFleet;
 import basic.zBasic.ExceptionZZZ;
 import basic.zBasic.ObjectZZZ;
 import basic.zBasic.ReflectCodeZZZ;
@@ -69,8 +75,15 @@ public class HibernateContextProviderTHM extends HibernateContextProviderZZZ{
 		bReturn = fillConfigurationGlobal();
 		//+++ Die für Hiberante konfigurierten Klassen hinzufügen
 		//Merke: Wird eine Klasse ohne @Entity hinzugefügt, gibt es folgende Fehlermeldung: Exception in thread "main" org.hibernate.AnnotationException: No identifier specified for entity: use.thm.client.component.AreaCellTHM
-		bReturn = addConfigurationAnnotatedClass(HexCell.class);
-		bReturn = addConfigurationAnnotatedClass(AreaCell.class);
+		//bReturn = addConfigurationAnnotatedClass(HexCell.class);
+		//bReturn = addConfigurationAnnotatedClass(AreaCell.class);
+		bReturn = addConfigurationAnnotatedClass(AreaCellOcean.class);
+		bReturn = addConfigurationAnnotatedClass(AreaCellLand.class);
+		
+		//bReturn = addConfigurationAnnotatedClass(Tile.class);
+		//bReturn = addConfigurationAnnotatedClass(Troop.class);
+		bReturn = addConfigurationAnnotatedClass(TroopArmy.class);
+		bReturn = addConfigurationAnnotatedClass(TroopFleet.class);
 		
 		return bReturn;
 	}

@@ -34,7 +34,7 @@ public class AreaCell extends HexCell implements Serializable, IOptimisticLockin
 	//	@Type(type = "tryout.hibernate.AreaType", parameters = @Parameter(name = "type", value = "tryout.hibernate.AreaType"))
 	// @Embedded  aber geht nicht, da ENUM-Type 
 	@Transient
-	private Enum<AreaType> enumAreaType = null; //weil der EnumType nun String ist. @Column wird verwendet, da sonst der technische Name enumAreaType als Tabellenspalte herhalten muss.
+	private Enum<AreaCellType> enumAreaType = null; //weil der EnumType nun String ist. @Column wird verwendet, da sonst der technische Name enumAreaType als Tabellenspalte herhalten muss.
 	
 //	@Transient
 //	private String sAreaType;
@@ -43,7 +43,7 @@ public class AreaCell extends HexCell implements Serializable, IOptimisticLockin
 	public AreaCell(){
 		super();
 	}
-	public AreaCell(CellId objId, Enum<AreaType> enumAreaType){
+	public AreaCell(CellId objId, Enum<AreaCellType> enumAreaType){
 		super(objId);
 		this.setAreaTypeObject(enumAreaType);
 	}
@@ -52,12 +52,12 @@ public class AreaCell extends HexCell implements Serializable, IOptimisticLockin
 	//### Getter / Setter
 	//20170201: Dieser wird mit meiner SQLite Lösung als  BLOB gespeichert. Darum hier explicit nicht speichern, sondern den Textwert
 	@Transient
-	public Enum<AreaType> getAreaTypeObject(){
+	public Enum<AreaCellType> getAreaTypeObject(){
 		return this.enumAreaType;
 	}
 	
 	@Transient
-	public void setAreaTypeObject(Enum<AreaType> enumAreaType){
+	public void setAreaTypeObject(Enum<AreaCellType> enumAreaType){
 		this.enumAreaType = enumAreaType;	
 	}
 	
@@ -67,11 +67,11 @@ public class AreaCell extends HexCell implements Serializable, IOptimisticLockin
 	public String getAreaType(){
 		//das ist die Langbeschreibung return this.getAreaTypeObject().name();
 		String sName = this.getAreaTypeObject().name();	
-		AreaType at =  this.getAreaTypeObject().valueOf(AreaType.class, sName);
+		AreaCellType at =  this.getAreaTypeObject().valueOf(AreaCellType.class, sName);
 		return at.getAbbreviation();
 	}	
 	public void setAreaType(String sAreaType){
-		AreaType objType = AreaType.fromAbbreviation(sAreaType);
+		AreaCellType objType = AreaCellType.fromAbbreviation(sAreaType);
 		this.setAreaTypeObject(objType);
 	}
 	

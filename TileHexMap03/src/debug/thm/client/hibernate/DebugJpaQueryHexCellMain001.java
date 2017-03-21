@@ -8,7 +8,7 @@ import javax.persistence.Query;
 import basic.zBasic.ExceptionZZZ;
 import use.thm.persistence.hibernate.HibernateContextProviderTHM;
 import use.thm.persistence.model.AreaCell;
-import use.thm.persistence.model.AreaType;
+import use.thm.persistence.model.AreaCellType;
 
 public class DebugJpaQueryHexCellMain001 {
 
@@ -38,8 +38,8 @@ public class DebugJpaQueryHexCellMain001 {
 			
 			//Nein, die Objekte der Resultlist sind vom Typ AreaCell AreaType enumAreaType = (AreaType) obj;
 			AreaCell objCell = (AreaCell) obj;
-			Enum<AreaType> enumAreaType = objCell.getAreaTypeObject();
-			System.out.println("x / y / Name / Bezeichnung / Abkürzung: " + objCell.getMapX() + "/" + objCell.getMapY() + "/" + enumAreaType.name() + "/" + enumAreaType.toString() + "/" + ((AreaType) enumAreaType).getAbbreviation());
+			Enum<AreaCellType> enumAreaType = objCell.getAreaTypeObject();
+			System.out.println("x / y / Name / Bezeichnung / Abkürzung: " + objCell.getMapX() + "/" + objCell.getMapY() + "/" + enumAreaType.name() + "/" + enumAreaType.toString() + "/" + ((AreaCellType) enumAreaType).getAbbreviation());
 		}
 		
 		} catch (ExceptionZZZ e) {

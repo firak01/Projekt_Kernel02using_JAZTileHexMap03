@@ -2,7 +2,7 @@ package use.thm.client.component;
 
 import java.awt.Color;
 
-import use.thm.persistence.model.AreaType;
+import use.thm.persistence.model.AreaCellType;
 import basic.zKernel.KernelUseObjectZZZ;
 import basic.zKernel.KernelZZZ;
 
@@ -16,7 +16,7 @@ public abstract class AreaTypeTHM extends KernelUseObjectZZZ{
 	//public static int OZEAN=1;
 	//public static int LAND = 1024; //Durch enum ersetzt
 	private Enum enumAreaType = null;
-	public AreaTypeTHM(KernelZZZ objKernel, AreaType objAreaTypeEnum ){
+	public AreaTypeTHM(KernelZZZ objKernel, AreaCellType objAreaTypeEnum ){
 		super(objKernel);
 		this.enumAreaType = objAreaTypeEnum;
 	}

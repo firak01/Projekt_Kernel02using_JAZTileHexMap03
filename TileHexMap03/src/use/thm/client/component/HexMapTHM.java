@@ -18,7 +18,9 @@ import use.thm.client.event.TileMoveEventBrokerTHM;
 import use.thm.persistence.dao.AreaCellDao;
 import use.thm.persistence.hibernate.HibernateContextProviderTHM;
 import use.thm.persistence.model.AreaCell;
-import use.thm.persistence.model.AreaType;
+import use.thm.persistence.model.AreaCellLand;
+import use.thm.persistence.model.AreaCellOcean;
+import use.thm.persistence.model.AreaCellType;
 import use.thm.persistence.model.CellId;
 import use.thm.persistence.model.TileId;
 import use.thm.persistence.model.TroopArmy;
@@ -287,7 +289,7 @@ public class HexMapTHM extends KernelUseObjectZZZ implements ITileEventUserTHM {
 				if((sX.equals("5") & sY.equals("5")) | (sX.equals("4") & sY.equals("5")) | (sX.equals("4") & sY.equals("6")) | (sX.equals("4") & sY.equals("7"))  ){
 					//OZEAN					
 					//Aretype nun als ENUMERATION objCellTemp = new AreaCell(new CellId("EINS", sX, sY), AreaTypeTHM.OZEAN);
-					objCellTemp = new AreaCell(new CellId("EINS", sX, sY), AreaType.OCEAN);
+					objCellTemp = new AreaCell(new CellId("EINS", sX, sY), AreaCellType.OCEAN);
 					objCellThmTemp = new  AreaCellTHM(this.getKernelObject(), this,  objCellTemp, this.getSideLength());  //ToDo: Das sollen dann erst "Areas" werden, dh. mit Geländeinformationen, Danach "Provinzen" mit Gebäudeinfos/Armeeinfos
 					/*TODO Hintergrundbild
 					 *  ImageIcon background = new ImageIcon("Water.png");
@@ -295,7 +297,7 @@ public class HexMapTHM extends KernelUseObjectZZZ implements ITileEventUserTHM {
 					 */
 				}else{
 					//LAND
-					objCellTemp = new AreaCell(new CellId("EINS", sX, sY), AreaType.LAND);
+					objCellTemp = new AreaCell(new CellId("EINS", sX, sY), AreaCellType.LAND);
 					objCellThmTemp = new  AreaCellTHM(this.getKernelObject(), this,  objCellTemp, this.getSideLength());  //ToDo: Dass sollen dann erst "Areas" werden, dh. mit Gel�ndeinformationen, Danach "Provinzen" mit Geb�udeinfos/Armeeinfos
 					/*TODO Hintergrundbild
 					 *  ImageIcon background = new ImageIcon("Grass.png");
@@ -464,7 +466,7 @@ public class HexMapTHM extends KernelUseObjectZZZ implements ITileEventUserTHM {
 				if((sX.equals("5") & sY.equals("5")) | (sX.equals("4") & sY.equals("5")) | (sX.equals("4") & sY.equals("6")) | (sX.equals("4") & sY.equals("7"))  ){
 					//OZEAN					
 					//Aretype nun als ENUMERATION objCellTemp = new AreaCell(new CellId("EINS", sX, sY), AreaTypeTHM.OZEAN);
-					objCellTemp = new AreaCell(new CellId("EINS", sX, sY), AreaType.OCEAN);
+					objCellTemp = new AreaCellOcean(new CellId("EINS", sX, sY));
 					objCellThmTemp = new  AreaCellTHM(this.getKernelObject(), this,  objCellTemp, this.getSideLength());  //ToDo: Das sollen dann erst "Areas" werden, dh. mit Geländeinformationen, Danach "Provinzen" mit Gebäudeinfos/Armeeinfos
 					/*TODO Hintergrundbild
 					 *  ImageIcon background = new ImageIcon("Water.png");
@@ -472,7 +474,7 @@ public class HexMapTHM extends KernelUseObjectZZZ implements ITileEventUserTHM {
 					 */
 				}else{
 					//LAND
-					objCellTemp = new AreaCell(new CellId("EINS", sX, sY), AreaType.LAND);
+					objCellTemp = new AreaCellLand(new CellId("EINS", sX, sY));
 					objCellThmTemp = new  AreaCellTHM(this.getKernelObject(), this,  objCellTemp, this.getSideLength());  //ToDo: Dass sollen dann erst "Areas" werden, dh. mit Gel�ndeinformationen, Danach "Provinzen" mit Geb�udeinfos/Armeeinfos
 					/*TODO Hintergrundbild
 					 *  ImageIcon background = new ImageIcon("Grass.png");
@@ -528,23 +530,31 @@ public class HexMapTHM extends KernelUseObjectZZZ implements ITileEventUserTHM {
 					//TEST: FALSCHES PLATZIEREN DER TRUPPEN Komponente in einer bestimmten Zelle per Event hinzufügen
 					boolean bUseTestArea = false;
 					if(bUseTestArea && sX.equals("1") && sY.equals("2")){
+						TroopFleet objTroopTemp = new TroopFleet(new TileId("EINS", sX, sY));
+						//momentan wird noch ein BLOB gespeichert. ERst mal die LID in der HEXCell generieren lassen objTroopTemp.setHexCell(objCellTemp); //wg. 1:1 Beziehung
 						
 						FleetTileTHM objFleetTemp = new FleetTileTHM(panelMap, objTileMoveEventBroker, sX, sY, this.getSideLength());
 						
 						EventTileCreatedInCellTHM objEventTileCreated = new EventTileCreatedInCellTHM(objFleetTemp, 1, sX, sY);
 						objTileMetaEventBroker.fireEvent(objEventTileCreated);
+						
+						session.save(objFleetTemp);
 					}
 					
 					//Anfangsaufstellung: TRUPPEN Komponente in einer bestimmten Zelle per Event hinzufügen
 					//TODO: Die Truppenaufstellung soll wie die Karte auch in einer Tabelle hinterlegt werden. 
 					if(sX.equals("1") && sY.equals("2")){
 						TroopArmy objTroopTemp = new TroopArmy(new TileId("EINS", sX, sY));
+						//momentan wird noch ein BLOB gespeichert. ERst mal die LID in der HEXCell generieren lassen  objTroopTemp.setHexCell(objCellTemp); //wg. 1:1 Beziehung
 													
 						//TODO: Die TroopArmy noch an das UI-verwendete Objekt weitergeben ################
 						ArmyTileTHM objArmyTemp = new ArmyTileTHM(panelMap, objTileMoveEventBroker, sX, sY, this.getSideLength());
 						
 						EventTileCreatedInCellTHM objEventTileCreated = new EventTileCreatedInCellTHM(objArmyTemp, 1, sX, sY);
 						objTileMetaEventBroker.fireEvent(objEventTileCreated);
+						
+						session.save(objTroopTemp);
+						
 					}else if(sX.equals("5")&& sY.equals("5")){
 						TroopFleet objTroopTemp = new TroopFleet(new TileId("EINS", sX, sY));
 						
@@ -553,15 +563,21 @@ public class HexMapTHM extends KernelUseObjectZZZ implements ITileEventUserTHM {
 						
 						EventTileCreatedInCellTHM objEventTileCreated = new EventTileCreatedInCellTHM(objFleetTemp, 1, sX, sY);
 						objTileMetaEventBroker.fireEvent(objEventTileCreated);
+						
+						session.save(objTroopTemp);
 					}
 					
 					//TEST: FALSCHES PLATZIEREN DER TRUPPEN Komponente in einer bestimmten Zelle, die schon besetzt ist per Event hinzufügen
 					boolean bUseTestOccupied = false;
 					if(bUseTestOccupied && sX.equals("1") && sY.equals("2")){
+						TroopArmy objTroopTemp = new TroopArmy(new TileId("EINS", sX, sY));
+						
 						ArmyTileTHM objArmyTemp = new ArmyTileTHM(panelMap, objTileMoveEventBroker, sX, sY, this.getSideLength());
 						
 						EventTileCreatedInCellTHM objEventTileCreated = new EventTileCreatedInCellTHM(objArmyTemp, 1, sX, sY);
 						objTileMetaEventBroker.fireEvent(objEventTileCreated);
+						
+						session.save(objTroopTemp);
 					}
 					
 					

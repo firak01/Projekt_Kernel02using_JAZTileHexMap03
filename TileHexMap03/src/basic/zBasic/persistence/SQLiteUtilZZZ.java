@@ -8,6 +8,7 @@ import use.thm.persistence.hibernate.HibernateContextProviderTHM;
 import basic.zBasic.ExceptionZZZ;
 import basic.zBasic.ObjectZZZ;
 import basic.zBasic.ReflectCodeZZZ;
+import basic.zBasic.persistence.interfaces.IHibernateContextProviderZZZ;
 import basic.zBasic.util.abstractEnum.EnumSetMappedUtilZZZ;
 import basic.zBasic.util.abstractEnum.IEnumSetMappedZZZ;
 import basic.zBasic.util.datatype.string.StringZZZ;
@@ -29,7 +30,7 @@ public class SQLiteUtilZZZ  extends ObjectZZZ{
 		}//end main:		
 		return bReturn;
 	}
-	public static boolean databaseFileExists(HibernateContextProviderTHM objHibernateContext) throws ExceptionZZZ{
+	public static boolean databaseFileExists(IHibernateContextProviderZZZ objHibernateContext) throws ExceptionZZZ{
 		boolean bReturn = false;
 		main:{
 			if(objHibernateContext == null){

@@ -59,7 +59,7 @@ public class AreaCellTHM  extends HexCellTHM implements IListenerTileMetaTHM{
 		return this.objAreaCell;
 	}
 	
-	/* 20130701: �ber die mapParent ist das panelParent zu erreichen
+	/* 20130701: Über die mapParent ist das panelParent zu erreichen
 	public AreaCellTHM(KernelZZZ objKernel, KernelJPanelCascadedZZZ panelParent, String sMapX, String sMapY, int iSideLength, int iAreaType) {
 		super(objKernel, panelParent, sMapX, sMapY, iSideLength);
 		this.setAreaType(iAreaType);

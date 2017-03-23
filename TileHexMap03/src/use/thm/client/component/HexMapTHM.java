@@ -545,7 +545,7 @@ public class HexMapTHM extends KernelUseObjectZZZ implements ITileEventUserTHM {
 					//TODO: Die Truppenaufstellung soll wie die Karte auch in einer Tabelle hinterlegt werden. 
 					if(sX.equals("1") && sY.equals("2")){
 						TroopArmy objTroopTemp = new TroopArmy(new TileId("EINS", sX, sY));
-						//momentan wird noch ein BLOB gespeichert. ERst mal die LID in der HEXCell generieren lassen  objTroopTemp.setHexCell(objCellTemp); //wg. 1:1 Beziehung
+						objTroopTemp.setHexCell(objCellTemp); //wg. 1:1 Beziehung
 													
 						//TODO: Die TroopArmy noch an das UI-verwendete Objekt weitergeben ################
 						ArmyTileTHM objArmyTemp = new ArmyTileTHM(panelMap, objTileMoveEventBroker, sX, sY, this.getSideLength());
@@ -557,6 +557,7 @@ public class HexMapTHM extends KernelUseObjectZZZ implements ITileEventUserTHM {
 						
 					}else if(sX.equals("5")&& sY.equals("5")){
 						TroopFleet objTroopTemp = new TroopFleet(new TileId("EINS", sX, sY));
+						objTroopTemp.setHexCell(objCellTemp); //wg. 1:1 Beziehung
 						
 						//TODO: Die TroopArmy noch an das UI-verwendete Objekt weitergeben ################											
 						FleetTileTHM objFleetTemp = new FleetTileTHM(panelMap, objTileMoveEventBroker, sX, sY, this.getSideLength());

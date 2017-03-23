@@ -24,6 +24,7 @@ import javax.persistence.TableGenerator;
 import javax.persistence.Transient;
 
 import basic.persistence.model.IOptimisticLocking;
+import basic.zBasic.util.datatype.string.StringZZZ;
 
 /**Klasse für eine HexEck Zelle - persistierbar per JPA. Wird nach AreaCell vererbt. 
  * Die Klasse HexCellTHM hat im Vergleich zu dieser Klassen noch weitere Aufgaben einer Swing - Komponente.
@@ -67,13 +68,6 @@ public class HexCell implements Serializable, IOptimisticLocking{
 	@Transient
 	private Enum<HexCellType> enumHexType = null; //weil der EnumType nun String ist. @Column wird verwendet, da sonst der technische Name enumAreaType als Tabellenspalte herhalten muss.
 
-	//ist notNULL, darum darf es wohl nicht transient sein... @Transient
-	//private Integer intLid;  //klappt beim IntegerObjekt wohl nicht mit dem Generator
-	private int iLid;  
-	
-	
-	//Teste die fortlaufende Erstellung eines wertes, Mekre SQLite kann keine Sequenzen.
-	private int iMyTestSequence;
 	
 	//Der Default Contruktor wird für JPA - Abfragen wohl benötigt
 	 public HexCell(){
@@ -86,9 +80,30 @@ public class HexCell implements Serializable, IOptimisticLocking{
 	 }
 	 
 	 //Siehe Buch "Java Persistence API", Seite 37ff
-	 @Transient
+	 //@Transient
+	 //TODO 20170322
+	 //Versuch diese neue Spalte als JoinColumn für 1:1 Beziehung zwischen HexCell und Tile - Objekten zu nutzen
+	 @Column(name="FIELD_ALIAS")
 	 public String getFieldAlias(){
 		return this.getMapAlias() + "#" + this.getMapX() + "-" + this.getMapY(); 
+	 }
+	 public void setFieldAlias(String sAlias){
+		 if(!StringZZZ.isEmpty(sAlias)){
+			 String sMap = StringZZZ.left(sAlias, "#");
+			 
+			 String sX = StringZZZ.rightback("#" + sAlias, "#");
+			 sX = StringZZZ.left(sX, "-");			 
+			 Integer intX = new Integer(sX);
+			 
+			 String sY = StringZZZ.rightback("#" + sAlias, "#");
+			 sY = StringZZZ.right(sY,  "-");
+			 Integer intY = new Integer(sY);
+			 
+			 this.setMapAlias(sMap);
+			 this.setMapX(intX.intValue());
+			 this.setMapY(intY.intValue());			 			 
+		 }
+		 
 	 }
 	 
 	 
@@ -104,49 +119,78 @@ public class HexCell implements Serializable, IOptimisticLocking{
 	 @Transient
 		public String getMapAlias(){
 		   	return this.getId().getMapAlias();
+		}	 
+	 public void setMapAlias(String sAlias){
+		 this.getId().setMapAlias(sAlias);
+	 }
+	 
+		//Versuch mit MAX(X) darauf zuzugreifen aus der Methode fillMap(..)
+		//ABER: Da das String ist, wird "9" als maximaler Wert zurückgeliefert und kein Integerwert.	
+		@Access(AccessType.PROPERTY)
+		@Column(name="XX", nullable=false, columnDefinition="integer default 0")
+	    public int getMapX(){
+	    	String stemp = this.getId().getMapX();
+	    	Integer objReturn = new Integer(stemp);
+	    	return objReturn.intValue();
+	    	//return objReturn;
+	    }
+		public void setMapX(int iValue){
+			Integer intValue = new Integer(iValue);
+			String sX = intValue.toString();
+			this.getId().setMapX(sX);
+		}
+	    
+		@Access(AccessType.PROPERTY)
+		@Column(name="YY", nullable=false, columnDefinition="integer default 0")
+	    public int getMapY(){
+			String stemp =  this.getId().getMapY();
+	    	Integer objReturn = new Integer(stemp);
+	    	return objReturn.intValue();
+	    	//return objReturn;
+	    }
+		public void setMapY(int iValue){
+			Integer intValue = new Integer(iValue);
+			String sY = intValue.toString();
+			this.getId().setMapY(sY);
 		}
 	 
-	 //wg. 1:1 Beziehung zwischen Tile und HexCell
-	 @Access(AccessType.PROPERTY)
-	 
+	//Merke:
 	// @GeneratedValue(strategy= GenerationType.AUTO) //Klappt leider nicht
-	@GeneratedValue(strategy=GenerationType.SEQUENCE, generator="seq") //Vorausgesetzt man hat einen SequenceGenerator
-	 
-	//TODO GOON 201703: Klappt so nicht, darum folgende Strategie
+	//@GeneratedValue(strategy=GenerationType.SEQUENCE, generator="seq") //Vorausgesetzt man hat einen SequenceGenerator
+	 //usw...
+	 //
+	//201703: Klappt so nicht, darum folgende Strategie
 	//1. Versuche einen eigenen Generator zu erstellen als eigene Klasse
+	 //        Wird nicht funktionieren, weil @GeneratedValue angibt, dass die Datenbank die Erzeugung vornimmt.
+	 //        Da dies SQLite nicht kann (nur Postgres kann es angeblich) wird es nichts bringen.
+	 //        Der Generator "unterstützt" die Datenbank wohl nur bei der "wertfindung".
+	 //        Bei mit Id annotierten Spalten klappt es.
+	 //
 	//2. Nimm als Verbindungswert einen zusammengesetzten AliasString der Schlüsse.
 	//3. Probiere eine andere Datenbank als SQLite aus... Postgres?
-	@SequenceGenerator(name="seq",allocationSize=1,initialValue=1)//Ziel soll es sein über die ID-Felder hinaus eine automtisch initial berechnete Spalte anzubieten, diese soll verwendet werden um Tabellen miteinander zu verknüpfen.
-	 
-	 @Column(name="LID", nullable=false, unique=true) //long lasting ID, aber so wird weder unique noch der Default wert gesetzt.
-	 //TODO GOON: Hier ggfs. einen TableGenerator verwenden.
-	 //@Column(name="LID", nullable=false, unique=true, columnDefinition="INTEGER NOT NULL UNIQUE  DEFAULT 1") //long lasting ID, jetzt funktioniert UNIQUE, DEFAULTWERT funktioniert nicht. Der Ausdruck muss so sein, wie im SQL Statement vorgesehen, aber klappt irgendwie nicht.	 
-	 public int getLid(){
-		 return this.iLid;
-	 }
-	 public void setLid(int iLid){
-		 this.iLid = iLid;
-	 }
-	 
-	 /*
+	 //
+	
+	 /* +++++++++++++++++++++Zur Doku ++++++++++++++++++++++++++++++++++++
 	  
-    @Entity - marks this class as a JPA persistable entity
-    @Table - denotes the name of the table in which this entity is stored
-    @Id - declares the field it refers to as the unique identifier for this entity
-    @TableGenerator - informs JPA how to generate unique values for this entity's identifier. It has several parameters:
-        name - identifier for the generator binding. This value must match the parameter in the @GeneratedValue annotation as described below.
-        table - must match the name of the table created to store the sequence values.
-        pkColumnName - the primary key column name that contains the name of the sequence we are using.
-        valueColumnName - the name of the column that contains the numeric sequence value
-        pkColumnValue - the value of the primary key column that identifies the sequence
-        allocationSize - the amount by which this sequence should be incremented each time a new entity is created. The default value for this is fifty (50).
-    @GeneratedValue - marks the field as having a generated value, either from the database or from some other ID generation strategy. This has two important parameters:
-        strategy - a value from the GenerationType enumeration that declares the the way in which values will be generated. In this example GenerationType.TABLE is appropriate since we are letting the value be managed in the relational store.
-        generator- must match the name of the @TableGenerator tag to provide the specifics on how the value is to be generated.
-    @Column - declares the field to be mapped to a database column.
+	    @Entity - marks this class as a JPA persistable entity
+	    @Table - denotes the name of the table in which this entity is stored
+	    @Id - declares the field it refers to as the unique identifier for this entity
+	    @TableGenerator - informs JPA how to generate unique values for this entity's identifier. It has several parameters:
+	        name - identifier for the generator binding. This value must match the parameter in the @GeneratedValue annotation as described below.
+	        table - must match the name of the table created to store the sequence values.
+	        pkColumnName - the primary key column name that contains the name of the sequence we are using.
+	        valueColumnName - the name of the column that contains the numeric sequence value
+	        pkColumnValue - the value of the primary key column that identifies the sequence
+	        allocationSize - the amount by which this sequence should be incremented each time a new entity is created. The default value for this is fifty (50).
+	    @GeneratedValue - marks the field as having a generated value, either from the database or from some other ID generation strategy. This has two important parameters:
+	        strategy - a value from the GenerationType enumeration that declares the the way in which values will be generated. In this example GenerationType.TABLE is appropriate since we are letting the value be managed in the relational store.
+	        generator- must match the name of the @TableGenerator tag to provide the specifics on how the value is to be generated.
+	    @Column - declares the field to be mapped to a database column.
 
-	  */	 
+		  */
+	 
 	 /* Grosser Fehlschlag... @TableGenerator funktioniert wohl nur mit @Id ... Da hier der Wert nicht verändert wird, gibt es eine constraint - Verletzung aufgrund des UNIQUE */
+	 /* Zum Testen, siehe SequenceTester und DebugJpaSequenceTestMain001 - Hier funktioniert es mit der @Id Annotation */
 	 /* 
 	 @TableGenerator(name="lidGenerator", table="COMMON_LID",pkColumnName="lid_hexcell", pkColumnValue="HexCell",valueColumnName="XYZ",  initialValue=1, allocationSize=1)
 	 @GeneratedValue(strategy = GenerationType.TABLE, generator="lidGenerator")
@@ -184,34 +228,6 @@ public class HexCell implements Serializable, IOptimisticLocking{
 		}
 		
 			
-		//Versuch mit MAX(X) darauf zuzugreifen aus der Methode fillMap(..)
-		//ABER: Da das String ist, wird "9" als maximaler Wert zurückgeliefert und kein Integerwert.	
-		@Access(AccessType.PROPERTY)
-		@Column(name="XX", nullable=false, columnDefinition="integer default 0")
-	    public int getMapX(){
-	    	String stemp = this.getId().getMapX();
-	    	Integer objReturn = new Integer(stemp);
-	    	return objReturn.intValue();
-	    	//return objReturn;
-	    }
-		public void setMapX(int iValue){
-			Integer intValue = new Integer(iValue);
-			String sX = intValue.toString();
-			this.getId().setMapX(sX);
-		}
-	    
-		@Access(AccessType.PROPERTY)
-		@Column(name="YY", nullable=false, columnDefinition="integer default 0")
-	    public int getMapY(){
-			String stemp =  this.getId().getMapY();
-	    	Integer objReturn = new Integer(stemp);
-	    	return objReturn.intValue();
-	    	//return objReturn;
-	    }
-		public void setMapY(int iValue){
-			Integer intValue = new Integer(iValue);
-			String sY = intValue.toString();
-			this.getId().setMapY(sY);
-		}
+	
 	    
 }

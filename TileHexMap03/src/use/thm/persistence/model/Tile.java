@@ -24,6 +24,7 @@ import javax.persistence.Table;
 import javax.persistence.Transient;
 
 import basic.persistence.model.IOptimisticLocking;
+import basic.zBasic.util.datatype.string.StringZZZ;
 
 /**Klasse für einen Spielstein - persistierbar per JPA. Wird nach Troop vererbt. 
 * Die Klasse TileTHM hat im Vergleich zu dieser Klassen noch weitere Aufgaben einer Swing - Komponente.
@@ -71,7 +72,7 @@ public class Tile implements Serializable, IOptimisticLocking{
 	//1:1 Beziehung aufbauen
 	//Siehe Buch "Java Persistence API 2", Seite 90ff.	
 	@OneToOne
-	@JoinColumn(name="lid", nullable = false)
+	@JoinColumn(name="FIELD_ALIAS", nullable = false)
 	@Transient //Ich will kein BLOB speichern
 	private HexCell objHexCell;
 	
@@ -85,6 +86,7 @@ public class Tile implements Serializable, IOptimisticLocking{
 		 this.enumTileType = TileType.TROOP;
 	 }
 	 
+	 //### getter / setter
 	 //Siehe Buch "Java Persistence API", Seite 37ff
 	 @Transient
 	 public String getTileAlias(){
@@ -105,6 +107,67 @@ public class Tile implements Serializable, IOptimisticLocking{
 		public String getMapAlias(){
 		   	return this.getId().getMapAlias();
 		}
+	 public void setMapAlias(String sAlias){
+		 this.getId().setMapAlias(sAlias);
+	 }
+	 
+		//Versuch mit MAX(X) darauf zuzugreifen aus der Methode fillMap(..)
+		//ABER: Da das String ist, wird "9" als maximaler Wert zurückgeliefert und kein Integerwert.	
+		@Access(AccessType.PROPERTY)
+		@Column(name="XX", nullable=false, columnDefinition="integer default 0")
+	    public int getMapX(){
+	    	String stemp = this.getHexCell().getId().getMapX();
+	    	Integer objReturn = new Integer(stemp);
+	    	return objReturn.intValue();
+	    	//return objReturn;
+	    }
+		public void setMapX(int iValue){
+			Integer intValue = new Integer(iValue);
+			String sX = intValue.toString();
+			this.getHexCell().getId().setMapX(sX);
+		}
+	    
+		@Access(AccessType.PROPERTY)
+		@Column(name="YY", nullable=false, columnDefinition="integer default 0")
+	    public int getMapY(){
+			String stemp =  this.getHexCell().getId().getMapY();
+	    	Integer objReturn = new Integer(stemp);
+	    	return objReturn.intValue();
+	    	//return objReturn;
+	    }
+		public void setMapY(int iValue){
+			Integer intValue = new Integer(iValue);
+			String sY = intValue.toString();
+			this.getHexCell().getId().setMapY(sY);
+		}
+	 
+	 
+	 //Siehe Buch "Java Persistence API", Seite 37ff
+	 //@Transient
+	 //TODO 20170322
+	 //Versuch diese neue Spalte als JoinColumn für 1:1 Beziehung zwischen HexCell und Tile - Objekten zu nutzen
+	 @Column(name="FIELD_ALIAS")
+	 public String getFieldAlias(){
+		return this.getMapAlias() + "#" + this.getMapX() + "-" + this.getMapY(); 
+	 }
+	 public void setFieldAlias(String sAlias){
+		 if(!StringZZZ.isEmpty(sAlias)){
+			 String sMap = StringZZZ.left(sAlias, "#");
+			 
+			 String sX = StringZZZ.rightback("#" + sAlias, "#");
+			 sX = StringZZZ.left(sX, "-");			 
+			 Integer intX = new Integer(sX);
+			 
+			 String sY = StringZZZ.rightback("#" + sAlias, "#");
+			 sY = StringZZZ.right(sY,  "-");
+			 Integer intY = new Integer(sY);
+			 
+			 this.setMapAlias(sMap);
+			 this.setMapX(intX.intValue());
+			 this.setMapY(intY.intValue());			 			 
+		 }
+		 
+	 }
 	 
 	 //Enumeration werden als BLOB gespeichert, insbesondere, wenn sie eine Liste sind, darum den Stringwert der Enumeration holen und das Objekt selbst nicht persisiteren.
 		@Transient
@@ -164,16 +227,15 @@ public class Tile implements Serializable, IOptimisticLocking{
 			this.getId().setUniquename(sUniquename);
 		}
 		
-		//1:1 Beziehung aufbauen
+		//1:1 Beziehung aufbauen über den FieldAliasName
 		//Siehe Buch "Java Persistence API 2", Seite 90ff.	
 		@Access(AccessType.PROPERTY)
-		@OneToOne
-		@JoinColumn(name="LID", nullable = false)
 		@Transient //Ich will kein BLOB speichern
+		public HexCell getHexCell(){
+	    	return this.objHexCell;
+	    }
 		public void setHexCell(HexCell objHexCell){
 			this.objHexCell = objHexCell;
 		}
-	    public HexCell getHexCell(){
-	    	return this.objHexCell;
-	    }
+	    
 }

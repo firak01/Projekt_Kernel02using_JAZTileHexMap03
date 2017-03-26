@@ -11,7 +11,10 @@ import org.hibernate.cfg.Configuration;
 import org.hibernate.service.ServiceRegistry;
 import org.hibernate.service.ServiceRegistryBuilder;
 
-import debug.thm.persistence.model.SequenceTester;
+import debug.thm.persistence.model.association001.AssociationTargetTester;
+import debug.thm.persistence.model.association001.AssociationTargetTesterAutoKey;
+import debug.thm.persistence.model.association001.AssociationTester;
+import debug.thm.persistence.model.sequence001.SequenceTester;
 import use.thm.client.component.AreaCellTHM;
 import use.thm.client.component.HexCellTHM;
 import use.thm.persistence.model.AreaCell;
@@ -77,6 +80,11 @@ public class HibernateContextProviderTHM extends HibernateContextProviderZZZ{
 		//+++ Die für Hibernate DEBUG Konfigurierten Klassen hinzufügen
 		//Merke: Wird eine Klasse ohne @Entity hinzugefügt, gibt es folgende Fehlermeldung: Exception in thread "main" org.hibernate.AnnotationException: No identifier specified for entity: use.thm.client.component.AreaCellTHM
 		bReturn = addConfigurationAnnotatedClass(SequenceTester.class);
+		
+		//++++++++++++
+		bReturn = addConfigurationAnnotatedClass(AssociationTester.class);
+		bReturn = addConfigurationAnnotatedClass(AssociationTargetTester.class);
+		bReturn = addConfigurationAnnotatedClass(AssociationTargetTesterAutoKey.class);
 		
 		return bReturn;
 	}

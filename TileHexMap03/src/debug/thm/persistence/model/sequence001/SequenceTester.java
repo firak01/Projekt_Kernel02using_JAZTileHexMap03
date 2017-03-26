@@ -1,4 +1,4 @@
-package debug.thm.persistence.model;
+package debug.thm.persistence.model.sequence001;
 
 import java.io.Serializable;
 
@@ -25,10 +25,10 @@ import javax.persistence.Transient;
 
 import basic.persistence.model.IOptimisticLocking;
 
-/**Klasse für eine HexEck Zelle - persistierbar per JPA. Wird nach AreaCell vererbt. 
- * Die Klasse HexCellTHM hat im Vergleich zu dieser Klassen noch weitere Aufgaben einer Swing - Komponente.
- * Wegen nicht zu persistierender Eigenschaften wurde dann diese Klasse HexCell speziell nur mit zu persistierenden Eigenschaften erstellt.
+/**
  * @author lindhaueradmin
+ *  * Merke: Diese Klasse muss in HibernateContextProviderTHM der Debug-Packages hinzugefügt werden. 
+ * public boolean fillConfiguration() throws ExceptionZZZ{
  *
  */
 
@@ -78,8 +78,8 @@ public class SequenceTester implements Serializable, IOptimisticLocking{
 	 /* Grosser Fehlschlag... @TableGenerator funktioniert wohl nur mit @Id ... Da hier der Wert nicht verändert wird, gibt es ohne @Id eine constraint - Verletzung aufgrund des UNIQUE */
 	 /*Aber immerhin, mit @Id funktioniert es so auch unter Hibernate und SQLite */
 	 @Id
-	 @TableGenerator(name="lidGenerator", table="COMMON_FUER_IDGENERATOR",pkColumnName="nutzende_Klasse_als_String", pkColumnValue="SequenceTester",valueColumnName="naechster_id_wert",  initialValue=1, allocationSize=1)
-	 @GeneratedValue(strategy = GenerationType.TABLE, generator="lidGenerator")
+	 @TableGenerator(name="lidGeneratorSequence", table="COMMON_FUER_IDGENERATOR_SEQENCE",pkColumnName="nutzende_Klasse_als_String", pkColumnValue="SequenceTester",valueColumnName="naechster_id_wert",  initialValue=1, allocationSize=1)
+	 @GeneratedValue(strategy = GenerationType.TABLE, generator="lidGeneratorSequence")
 	 @Column(name="TESTID_INCREMENTIERT", nullable=false, unique=true, columnDefinition="INTEGER NOT NULL UNIQUE  DEFAULT 1") 
 	 public int getTest(){
 		 return this.iMyTestSequence;

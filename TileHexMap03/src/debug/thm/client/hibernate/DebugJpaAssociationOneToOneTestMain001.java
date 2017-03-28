@@ -7,11 +7,14 @@ import javax.persistence.Query;
 
 import org.hibernate.Session;
 
+import use.thm.persistence.dao.AreaCellDao;
+import use.thm.persistence.model.AreaCell;
 import basic.zBasic.ExceptionZZZ;
 import basic.zBasic.ObjectZZZ;
 import basic.zBasic.persistence.SQLiteUtilZZZ;
 import basic.zKernel.KernelUseObjectZZZ;
 import basic.zKernel.KernelZZZ;
+import debug.thm.persistence.dao.association001.AssociationTesterDao;
 import debug.thm.persistence.hibernate.HibernateContextProviderTHM;
 import debug.thm.persistence.model.association001.AssociationTargetTester;
 import debug.thm.persistence.model.association001.AssociationTargetTesterAutoKey;
@@ -20,6 +23,14 @@ import debug.thm.persistence.model.sequence001.SequenceTester;
 
 
 public class DebugJpaAssociationOneToOneTestMain001 extends KernelUseObjectZZZ {
+	public static void main(String[] args) {
+		DebugJpaAssociationOneToOneTestMain001 objMain = new DebugJpaAssociationOneToOneTestMain001();
+		objMain.createInitial();		
+		
+		objMain.readitl();				
+	}
+	
+	//########### Konstruktor
 	public DebugJpaAssociationOneToOneTestMain001(){
     	try {	
 	    	//Kernel Objekt
@@ -30,7 +41,9 @@ public class DebugJpaAssociationOneToOneTestMain001 extends KernelUseObjectZZZ {
 			e.printStackTrace();
 		}
     }
-    public void doit(){
+
+    public void createInitial(){
+    	main:{
     	try {			    							
 			//Prüfe die Existenz der Datenbank ab. Ohne die erstellte Datenbank und die Erstellte Datenbanktabelle kommt es hier zu einem Fehler.
     		HibernateContextProviderTHM objContextHibernate = new HibernateContextProviderTHM(this.getKernelObject());
@@ -45,7 +58,7 @@ public class DebugJpaAssociationOneToOneTestMain001 extends KernelUseObjectZZZ {
 				System.out.println("Datenbank existiert nicht als Datei");
 				objContextHibernate.getConfiguration().setProperty("hibernate.hbm2ddl.auto", "create");  //! Damit wird die Datenbank und sogar die Tabellen darin automatisch erstellt, aber: Sie wird am Anwendungsende geleert.
 			
-	
+	            
 			}//end if bDbExists
 			
 			Session session = objContextHibernate.getSession();
@@ -57,7 +70,7 @@ public class DebugJpaAssociationOneToOneTestMain001 extends KernelUseObjectZZZ {
 			//########### AUTO KEY
 			AssociationTargetTesterAutoKey[] objaTargetAutoKey = new AssociationTargetTesterAutoKey[10];
 			for (int icount = 0 ; icount <= 9; icount++){
-				AssociationTargetTesterAutoKey objAssociationTargetAutoKeyTester = new AssociationTargetTesterAutoKey("Wert mit AutoKey");				
+				AssociationTargetTesterAutoKey objAssociationTargetAutoKeyTester = new AssociationTargetTesterAutoKey("x mal " + icount + ". Wert mit AutoKey");				
 				System.out.println("Target AUTOKEY- Objekt  erstellt.");
 				objaTargetAutoKey[icount]=objAssociationTargetAutoKeyTester;
 			}			
@@ -102,12 +115,60 @@ public class DebugJpaAssociationOneToOneTestMain001 extends KernelUseObjectZZZ {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+    } //end main:    
+    }		
+    
+    public void readitl(){
+    	main:{
+    	try {			    							
+			//Prüfe die Existenz der Datenbank ab. Ohne die erstellte Datenbank und die Erstellte Datenbanktabelle kommt es hier zu einem Fehler.
+    		HibernateContextProviderTHM objContextHibernate = new HibernateContextProviderTHM(this.getKernelObject());
+			boolean bDbExists = SQLiteUtilZZZ.databaseFileExists(objContextHibernate);											
+			if(bDbExists){
+				System.out.println("Datenbank existiert als Datei.");
+				objContextHibernate.getConfiguration().setProperty("hibernate.hbm2ddl.auto", "update");  //! Jetzt erst wird jede Tabelle über den Anwendungsstart hinaus gepseichert.				
+							
+				
+			}else{
+				//Fall: Datenbank existiert noch nicht
+				System.out.println("Datenbank existiert nicht als Datei");
+				objContextHibernate.getConfiguration().setProperty("hibernate.hbm2ddl.auto", "create");  //! Damit wird die Datenbank und sogar die Tabellen darin automatisch erstellt, aber: Sie wird am Anwendungsende geleert.
+			
+				break main;
+			}//end if bDbExists
+			
+			Session session = objContextHibernate.getSession();
+			
+			AssociationTesterDao objTesterDao = new AssociationTesterDao(objContextHibernate);
+			
+			Integer primaryKey = 1;
+			
+			AssociationTester objTester = objTesterDao.findById(primaryKey);
+			if(objTester==null){
+				System.out.println("Kein Objekt gefunden");
+				break main;
+			}else{
+				System.out.println("Objekt gefunden");
+			}
+			
+			AssociationTargetTesterAutoKey objTargetAutoKey = objTester.getTargetAutoKey();
+			if(objTargetAutoKey==null){
+				System.out.println("Kein refernziertes Objekt gefunden");
+				break main;
+			}else{
+				System.out.println("Refernziertes Objekt gefunden");
+				System.out.println("Identifikationsstring: " + objTargetAutoKey.getDummyString());
+			}
+			
+			session.close();
+			
+		
+		} catch (ExceptionZZZ e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+    }//end main:
     }
     
-	public static void main(String[] args) {
-		DebugJpaAssociationOneToOneTestMain001 objMain = new DebugJpaAssociationOneToOneTestMain001();
-		objMain.doit();		
-	}
-		
 
 }//end class

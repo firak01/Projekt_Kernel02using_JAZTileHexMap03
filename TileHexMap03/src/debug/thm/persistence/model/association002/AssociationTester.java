@@ -1,4 +1,4 @@
-package debug.thm.persistence.model.association001;
+package debug.thm.persistence.model.association002;
 
 import java.io.Serializable;
 
@@ -12,8 +12,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
 import javax.persistence.OneToOne;
-import javax.persistence.PrimaryKeyJoinColumn;
 import javax.persistence.Table;
 import javax.persistence.TableGenerator;
 import javax.persistence.Transient;
@@ -28,7 +28,8 @@ import basic.persistence.model.IOptimisticLocking;
  *
  */
 
-@Entity
+
+@Entity(name="AssociationTester002") //Merke @Entiy muss eindeutig im ganzen Projekt sein
 @Access(AccessType.PROPERTY)
 @Table(name="ASSOCIATIONTESTER")
 public class AssociationTester implements Serializable, IOptimisticLocking{
@@ -48,8 +49,12 @@ public class AssociationTester implements Serializable, IOptimisticLocking{
 //	 
 	 //Speichert nur die ID ab. Das Abspeichern des Objekts wird mit @Transient über dem entsprechenden GETTER/SETTER verhindert
 	 @Access(AccessType.FIELD)
-	 @OneToOne(cascade=CascadeType.ALL)
-	 @JoinColumn(name="targetauto_id")
+	 @OneToOne(fetch = FetchType.LAZY)
+	 @JoinTable(
+			 name = "TESTER_TARGET", //Required !
+			 joinColumns = @JoinColumn(name="AssociationTester_ID"),
+			 inverseJoinColumns= @JoinColumn(name="targetauto_id", nullable = false, unique = true)
+			 )
 	private AssociationTargetTesterAutoKey objTargetAutoKey;
 	 
 	 
@@ -62,11 +67,14 @@ public class AssociationTester implements Serializable, IOptimisticLocking{
 //	 )
 //	 @PrimaryKeyJoinColumn(name="target_id", referencedColumnName="key")//, columnDefinition="INTEGER NOT NULL UNIQUE  DEFAULT 1")
 //	 
+	 
+	 
+	//In diesem Test erst mal nur die AUTOTARGETs testen
 	 //Speichert nur die ID ab. Das Abspeichern des Objekts wird mit @Transient über dem entsprechenden GETTER/SETTER verhindert
-	 @Access(AccessType.FIELD)
-	 @OneToOne(cascade=CascadeType.ALL)
-	 @JoinColumn(name="target_id")
-	 private AssociationTargetTester objTarget;
+//	 @Access(AccessType.FIELD)
+//	 @OneToOne(cascade=CascadeType.ALL)
+//	 @JoinColumn(name="target_id")
+//	 private AssociationTargetTestery objTarget;
 	
 
 	
@@ -86,8 +94,8 @@ public class AssociationTester implements Serializable, IOptimisticLocking{
 	 }
 	
 	 @Id				
-	 @TableGenerator(name="lidGeneratorAssociation001", table="COMMON_FUER_IDGENERATOR_ASSOCIATION",pkColumnName="nutzende_Klasse_als_String", pkColumnValue="SequenceTester",valueColumnName="naechster_id_wert",  initialValue=1, allocationSize=1) //Merke @TableGenerator muss eindeutig im ganzen Projekt sein
-	 @GeneratedValue(strategy = GenerationType.TABLE, generator="lidGeneratorAssociation001")
+	 @TableGenerator(name="lidGeneratorAssociation002", table="COMMON_FUER_IDGENERATOR_ASSOCIATION",pkColumnName="nutzende_Klasse_als_String", pkColumnValue="SequenceTester",valueColumnName="naechster_id_wert",  initialValue=1, allocationSize=1)//@TableGenerator Name muss einzigartig im ganzen Projekt sein.
+	 @GeneratedValue(strategy = GenerationType.TABLE, generator="lidGeneratorAssociation002")
 	 @Column(name="HAUPTID_INCREMENTIERT", nullable=false, unique=true, columnDefinition="INTEGER NOT NULL UNIQUE  DEFAULT 1") 
 	 public int getKey(){
 		 return this.iMyTestSequence;
@@ -125,13 +133,6 @@ public class AssociationTester implements Serializable, IOptimisticLocking{
 //	 )
 //	 @PrimaryKeyJoinColumn//(name="TARGETID", columnDefinition="INTEGER NOT NULL UNIQUE  DEFAULT 1")
 	 
-	 @Transient //Ich will nur den Schlüssel abspeichern, mit der JOINColumn - Lösung
- 	 public AssociationTargetTester getTarget(){
- 		 return this.objTarget;		 
-	 } 	 
-	 public void setTarget(AssociationTargetTester objTarget){
-		 this.objTarget = objTarget;
-	 }
-	 
+	
 	 
 }

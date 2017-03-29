@@ -1,41 +1,12 @@
 package debug.thm.persistence.hibernate;
 
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.Persistence;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceException;
-
-import org.hibernate.Session;
-import org.hibernate.SessionFactory;
-import org.hibernate.cfg.Configuration;
-import org.hibernate.service.ServiceRegistry;
-import org.hibernate.service.ServiceRegistryBuilder;
-
-import debug.thm.persistence.model.association001.AssociationTargetTester;
-import debug.thm.persistence.model.association001.AssociationTargetTesterAutoKey;
-import debug.thm.persistence.model.association001.AssociationTester;
-import debug.thm.persistence.model.sequence001.SequenceTester;
-import use.thm.client.component.AreaCellTHM;
-import use.thm.client.component.HexCellTHM;
-import use.thm.persistence.model.AreaCell;
-import use.thm.persistence.model.AreaCellLand;
-import use.thm.persistence.model.AreaCellOcean;
-import use.thm.persistence.model.HexCell;
-import use.thm.persistence.model.Tile;
-import use.thm.persistence.model.Troop;
-import use.thm.persistence.model.TroopArmy;
-import use.thm.persistence.model.TroopFleet;
 import basic.zBasic.ExceptionZZZ;
-import basic.zBasic.ObjectZZZ;
-import basic.zBasic.ReflectCodeZZZ;
 import basic.zBasic.persistence.HibernateContextProviderZZZ;
-import basic.zBasic.persistence.SQLiteUtilZZZ;
-import basic.zBasic.util.abstractList.HashMapExtendedZZZ;
-import basic.zBasic.util.datatype.string.StringZZZ;
-import basic.zKernel.KernelUseObjectZZZ;
 import basic.zKernel.KernelZZZ;
+import debug.thm.persistence.model.association002.AssociationTargetTesterAutoKey;
+import debug.thm.persistence.model.association002.AssociationTester;
 
-public class HibernateContextProviderTHM extends HibernateContextProviderZZZ{
+public class HibernateContextProviderAssociationOneToOneWithTableXXX extends HibernateContextProviderZZZ{
 	
 	
 	
@@ -50,7 +21,7 @@ public class HibernateContextProviderTHM extends HibernateContextProviderZZZ{
 //		}
 //	}
 	
-	public HibernateContextProviderTHM() throws ExceptionZZZ{
+	public HibernateContextProviderAssociationOneToOneWithTableXXX() throws ExceptionZZZ{
 		super();
 	}
 //
@@ -62,7 +33,7 @@ public class HibernateContextProviderTHM extends HibernateContextProviderZZZ{
 //			throw ez;
 //		}
 //	}
-	public HibernateContextProviderTHM(KernelZZZ objKernel) throws ExceptionZZZ{
+	public HibernateContextProviderAssociationOneToOneWithTableXXX(KernelZZZ objKernel) throws ExceptionZZZ{
 		super(objKernel);
 	}
 	
@@ -79,11 +50,7 @@ public class HibernateContextProviderTHM extends HibernateContextProviderZZZ{
 		bReturn = fillConfigurationGlobal();
 		//+++ Die für Hibernate DEBUG Konfigurierten Klassen hinzufügen
 		//Merke: Wird eine Klasse ohne @Entity hinzugefügt, gibt es folgende Fehlermeldung: Exception in thread "main" org.hibernate.AnnotationException: No identifier specified for entity: use.thm.client.component.AreaCellTHM
-		bReturn = addConfigurationAnnotatedClass(SequenceTester.class);
-		
-		//++++++++++++
 		bReturn = addConfigurationAnnotatedClass(AssociationTester.class);
-		bReturn = addConfigurationAnnotatedClass(AssociationTargetTester.class);
 		bReturn = addConfigurationAnnotatedClass(AssociationTargetTesterAutoKey.class);
 		
 		return bReturn;
@@ -101,7 +68,7 @@ public class HibernateContextProviderTHM extends HibernateContextProviderZZZ{
 				this.getConfiguration().setProperty("hiberate.format_sql", "true");
 				this.getConfiguration().setProperty("hibernate.dialect","basic.persistence.hibernate.SQLiteDialect" );
 				this.getConfiguration().setProperty("hibernate.connection.driver_class", "org.sqlite.JDBC");
-				this.getConfiguration().setProperty("hibernate.connection.url", "jdbc:sqlite:c:\\server\\SQLite\\DebugSequenceTester.sqlite");
+				this.getConfiguration().setProperty("hibernate.connection.url", "jdbc:sqlite:c:\\server\\SQLite\\DebugAssociationOneToOneWithTableTester.sqlite");
 				this.getConfiguration().setProperty("hibernate.connection.username", "");
 				this.getConfiguration().setProperty("hibernate.connection.password", "");
 

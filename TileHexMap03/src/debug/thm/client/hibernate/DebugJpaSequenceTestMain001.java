@@ -12,7 +12,7 @@ import basic.zBasic.ObjectZZZ;
 import basic.zBasic.persistence.SQLiteUtilZZZ;
 import basic.zKernel.KernelUseObjectZZZ;
 import basic.zKernel.KernelZZZ;
-import debug.thm.persistence.hibernate.HibernateContextProviderTHM;
+import debug.thm.persistence.hibernate.HibernateContextProviderSequenceAssociationXXX;
 import debug.thm.persistence.model.sequence001.SequenceTester;
 
 
@@ -30,7 +30,7 @@ public class DebugJpaSequenceTestMain001 extends KernelUseObjectZZZ {
 	    public void doit(){
 	    	try {			    							
 				//Prüfe die Existenz der Datenbank ab. Ohne die erstellte Datenbank und die Erstellte Datenbanktabelle kommt es hier zu einem Fehler.
-	    		HibernateContextProviderTHM objContextHibernate = new HibernateContextProviderTHM(this.getKernelObject());
+	    		HibernateContextProviderSequenceAssociationXXX objContextHibernate = new HibernateContextProviderSequenceAssociationXXX(this.getKernelObject());
 				boolean bDbExists = SQLiteUtilZZZ.databaseFileExists(objContextHibernate);											
 				if(bDbExists){
 					System.out.println("Datenbank existiert als Datei.");

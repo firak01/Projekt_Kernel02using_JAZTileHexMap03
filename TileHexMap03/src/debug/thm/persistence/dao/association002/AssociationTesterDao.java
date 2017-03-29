@@ -1,4 +1,4 @@
-package debug.thm.persistence.dao.association001;
+package debug.thm.persistence.dao.association002;
 
 import java.util.HashMap;
 import java.util.List;
@@ -6,8 +6,8 @@ import java.util.Map;
 
 import org.hibernate.Query;
 
-import debug.thm.persistence.hibernate.HibernateContextProviderSequenceAssociationXXX;
-import debug.thm.persistence.model.association001.AssociationTester;
+import debug.thm.persistence.hibernate.HibernateContextProviderAssociationOneToOneWithTableXXX;
+import debug.thm.persistence.model.association002.AssociationTester;
 import basic.zBasic.ExceptionZZZ;
 import basic.zBasic.persistence.GeneralDaoZZZ;
 public class AssociationTesterDao extends GeneralDaoZZZ<AssociationTester> {
@@ -18,15 +18,15 @@ public class AssociationTesterDao extends GeneralDaoZZZ<AssociationTester> {
 		super();
 		this.installLoger( AssociationTester.class);
 	}
-	public AssociationTesterDao(HibernateContextProviderSequenceAssociationXXX objContextHibernate) throws ExceptionZZZ{
+	public AssociationTesterDao(HibernateContextProviderAssociationOneToOneWithTableXXX objContextHibernate) throws ExceptionZZZ{
 		super(objContextHibernate);		
 		this.installLoger(AssociationTester.class);
 	}
-	public AssociationTesterDao(HibernateContextProviderSequenceAssociationXXX objContextHibernate, String sFlagControl) throws ExceptionZZZ{
+	public AssociationTesterDao(HibernateContextProviderAssociationOneToOneWithTableXXX objContextHibernate, String sFlagControl) throws ExceptionZZZ{
 		super(objContextHibernate, sFlagControl);
 		this.installLoger(AssociationTester.class);
 	}
-	public AssociationTesterDao(HibernateContextProviderSequenceAssociationXXX objContextHibernate, String[] saFlagControl) throws ExceptionZZZ{
+	public AssociationTesterDao(HibernateContextProviderAssociationOneToOneWithTableXXX objContextHibernate, String[] saFlagControl) throws ExceptionZZZ{
 		super(objContextHibernate, saFlagControl);
 		this.installLoger(AssociationTester.class);
 	}

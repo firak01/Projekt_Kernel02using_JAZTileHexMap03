@@ -1,44 +1,34 @@
 package debug.thm.client.hibernate;
 
-import java.util.List;
-
-import javax.persistence.EntityManager;
-import javax.persistence.Query;
-
 import org.hibernate.Session;
 
-import use.thm.persistence.dao.AreaCellDao;
-import use.thm.persistence.model.AreaCell;
 import basic.zBasic.ExceptionZZZ;
-import basic.zBasic.ObjectZZZ;
 import basic.zBasic.persistence.SQLiteUtilZZZ;
 import basic.zKernel.KernelUseObjectZZZ;
 import basic.zKernel.KernelZZZ;
-import debug.thm.persistence.dao.association001.AssociationTesterDao;
-import debug.thm.persistence.hibernate.HibernateContextProviderSequenceAssociationXXX;
-import debug.thm.persistence.model.association001.AssociationTargetTester;
-import debug.thm.persistence.model.association001.AssociationTargetTesterAutoKey;
-import debug.thm.persistence.model.association001.AssociationTester;
-import debug.thm.persistence.model.sequence001.SequenceTester;
+import debug.thm.persistence.dao.association002.AssociationTesterDao;
+import debug.thm.persistence.hibernate.HibernateContextProviderAssociationOneToOneWithTableXXX;
+import debug.thm.persistence.model.association002.AssociationTargetTesterAutoKey;
+import debug.thm.persistence.model.association002.AssociationTester;
 
-/** 1. Beispiel für @OneToOne Association
-*  Hier wird ein Fremschlüssel in der Haupttabelle gespeichert.
-*  Das macht bei mehrern  Objekten, zu denen Beziehungen bestehen auch mehrere Spalten.
-*  Ggfs. Probleme mit NULL Werten
-* 
-* @author Fritz Lindhauer
-*
-*/
-public class DebugJpaAssociationOneToOneTestMain001 extends KernelUseObjectZZZ {
+/** 2. Beispiel für @OneToOne Association
+ *  Als Erweiterung zum vorherigen Beispel wird hier die association selbst in einer eigenen Tabelle gespeichert.
+ *  Das hat den Vorteil, dass in der ASSOCIATIO_TESTR Haupttabelle keine Fremdschlüssel Ids mehr vorhanden sien müssen. 
+ *  So kann mann z.B. NULL Einträge in solch einer Spalte vermeiden
+ * 
+ * @author Fritz Lindhauer
+ *
+ */
+public class DebugJpaAssociationOneToOneWithTableTestMain001 extends KernelUseObjectZZZ {
 	public static void main(String[] args) {
-		DebugJpaAssociationOneToOneTestMain001 objMain = new DebugJpaAssociationOneToOneTestMain001();
+		DebugJpaAssociationOneToOneWithTableTestMain001 objMain = new DebugJpaAssociationOneToOneWithTableTestMain001();
 		objMain.createInitial();		
 		
 		objMain.readitl();				
 	}
 	
 	//########### Konstruktor
-	public DebugJpaAssociationOneToOneTestMain001(){
+	public DebugJpaAssociationOneToOneWithTableTestMain001(){
     	try {	
 	    	//Kernel Objekt
 	    	KernelZZZ objKernel  = new KernelZZZ("XXX", "01", "", "ZKernelConfigDebugPersistence.ini",(String[]) null);
@@ -53,7 +43,7 @@ public class DebugJpaAssociationOneToOneTestMain001 extends KernelUseObjectZZZ {
     	main:{
     	try {			    							
 			//Prüfe die Existenz der Datenbank ab. Ohne die erstellte Datenbank und die Erstellte Datenbanktabelle kommt es hier zu einem Fehler.
-    		HibernateContextProviderSequenceAssociationXXX objContextHibernate = new HibernateContextProviderSequenceAssociationXXX(this.getKernelObject());
+    		HibernateContextProviderAssociationOneToOneWithTableXXX objContextHibernate = new HibernateContextProviderAssociationOneToOneWithTableXXX(this.getKernelObject());
 			boolean bDbExists = SQLiteUtilZZZ.databaseFileExists(objContextHibernate);											
 			if(bDbExists){
 				System.out.println("Datenbank existiert als Datei.");
@@ -87,12 +77,7 @@ public class DebugJpaAssociationOneToOneTestMain001 extends KernelUseObjectZZZ {
 				System.out.println("Target Objekt (AUTOKEY) gespeichert");
 			}
 			
-		   //############## MANUAL KEY
-			AssociationTargetTester objAssociationTargetTester = new AssociationTargetTester("MANUAL_EINS", "Erster Wert");				
-			System.out.println("Target Objekt  (MANUALKEY) erstellt.");
-			session.save(objAssociationTargetTester);
-			System.out.println("Target Objekt (MANUALKEY) gespeichert");
-						
+		
 			//##########  HAUPTOBJEKT UND ZUORDNUNG
 			AssociationTester objAssociationTester = new AssociationTester("Erster  Wert");				
 			System.out.println("Erstes (HAUPT) Objekt erstellt.");
@@ -103,11 +88,6 @@ public class DebugJpaAssociationOneToOneTestMain001 extends KernelUseObjectZZZ {
 				System.out.println("Objekt (AUTOKEY) dem HAUPT Objekt zugeordnet.");
 			}
 			//ERGEBNIS: WEGEN 1:1 Zuordnung wird nur das 10. Objekt in der Tabelle gespeichert sein!!!
-			
-			
-			objAssociationTester.setTarget(objAssociationTargetTester);
-			System.out.println("Objekt (MANUAL KEY) dem HAUPT Objekt zugeordnet.");
-			
 			
 			session.save(objAssociationTester);
 			System.out.println("Objekt (HAUPT) gespeichert");
@@ -129,7 +109,7 @@ public class DebugJpaAssociationOneToOneTestMain001 extends KernelUseObjectZZZ {
     	main:{
     	try {			    							
 			//Prüfe die Existenz der Datenbank ab. Ohne die erstellte Datenbank und die Erstellte Datenbanktabelle kommt es hier zu einem Fehler.
-    		HibernateContextProviderSequenceAssociationXXX objContextHibernate = new HibernateContextProviderSequenceAssociationXXX(this.getKernelObject());
+    		HibernateContextProviderAssociationOneToOneWithTableXXX objContextHibernate = new HibernateContextProviderAssociationOneToOneWithTableXXX(this.getKernelObject());
 			boolean bDbExists = SQLiteUtilZZZ.databaseFileExists(objContextHibernate);											
 			if(bDbExists){
 				System.out.println("Datenbank existiert als Datei.");

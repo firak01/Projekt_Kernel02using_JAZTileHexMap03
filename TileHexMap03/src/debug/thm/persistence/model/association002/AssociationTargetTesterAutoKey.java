@@ -1,4 +1,4 @@
-package debug.thm.persistence.model.association001;
+package debug.thm.persistence.model.association002;
 
 import java.io.Serializable;
 
@@ -34,7 +34,8 @@ import basic.zBasic.ExceptionZZZ;
  *
  */
 
-@Entity
+
+@Entity(name="AssociationTargetTesterAutoKey002") //Merke @Entiy muss eindeutig im ganzen Projekt sein
 @Access(AccessType.PROPERTY)
 @Table(name="ASSOCIATIONTARGETTESTERAUTOKEY")
 public class AssociationTargetTesterAutoKey implements Serializable, IOptimisticLocking{
@@ -60,8 +61,8 @@ public class AssociationTargetTesterAutoKey implements Serializable, IOptimistic
 	 }
 	
 	 @Id				
-	 @TableGenerator(name="lidGeneratorAssociationTarget001", table="COMMON_FUER_IDGENERATOR_ASSOCIATIONTARGET",pkColumnName="nutzende_Klasse_als_String", pkColumnValue="SequenceTester",valueColumnName="naechster_id_wert",  initialValue=1, allocationSize=1) //@TableGenerator Name muss einzigartig im ganzen Projekt sein.
-	 @GeneratedValue(strategy = GenerationType.TABLE, generator="lidGeneratorAssociationTarget001")
+	 @TableGenerator(name="lidGeneratorAssociationTarget002", table="COMMON_FUER_IDGENERATOR_ASSOCIATIONTARGET",pkColumnName="nutzende_Klasse_als_String", pkColumnValue="SequenceTester",valueColumnName="naechster_id_wert",  initialValue=1, allocationSize=1)//@TableGenerator Name muss einzigartig im ganzen Projekt sein.
+	 @GeneratedValue(strategy = GenerationType.TABLE, generator="lidGeneratorAssociationTarget002")
 	 @Column(name="TESTID_INCREMENTIERT", nullable=false, unique=true, columnDefinition="INTEGER NOT NULL UNIQUE  DEFAULT 1") 
 	 public int getKey(){
 		 return this.iMyTestSequence;

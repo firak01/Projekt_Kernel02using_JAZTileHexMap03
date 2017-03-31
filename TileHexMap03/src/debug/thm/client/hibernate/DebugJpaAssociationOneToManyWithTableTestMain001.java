@@ -1,5 +1,7 @@
 package debug.thm.client.hibernate;
 
+import java.util.Set;
+
 import org.hibernate.Session;
 
 import basic.zBasic.ExceptionZZZ;
@@ -85,7 +87,9 @@ public class DebugJpaAssociationOneToManyWithTableTestMain001 extends KernelUseO
 			
 			for (int icount = 0 ; icount <= 9; icount++){
 				AssociationTargetTesterAutoKey objAssociationTargetAutoKeyTester = objaTargetAutoKey[icount];		
-				objAssociationTester.setTargetAutoKey(objAssociationTargetAutoKeyTester);
+				//Das wäre bei 1:1 objAssociationTester.setTargetAutoKey(objAssociationTargetAutoKeyTester);
+				//Abspeichern in einem Set ist 1:n
+				objAssociationTester.getTargetAutoKey().add(objAssociationTargetAutoKeyTester);
 				System.out.println("Objekt (AUTOKEY) dem HAUPT Objekt zugeordnet.");
 			}
 			//ERGEBNIS: WEGEN 1:1 Zuordnung wird nur das 10. Objekt in der Tabelle gespeichert sein!!!
@@ -139,13 +143,15 @@ public class DebugJpaAssociationOneToManyWithTableTestMain001 extends KernelUseO
 				System.out.println("Objekt gefunden");
 			}
 			
-			AssociationTargetTesterAutoKey objTargetAutoKey = objTester.getTargetAutoKey();
-			if(objTargetAutoKey==null){
-				System.out.println("Kein refernziertes Objekt gefunden");
+			Set<AssociationTargetTesterAutoKey> objsetTargetAutoKey = objTester.getTargetAutoKey();
+			if(objsetTargetAutoKey==null){
+				System.out.println("Kein referenziertes Objekt gefunden");
 				break main;
 			}else{
-				System.out.println("Refernziertes Objekt gefunden");
-				System.out.println("Identifikationsstring: " + objTargetAutoKey.getDummyString());
+				System.out.println("Referenziertes Objekt gefunden");
+				for(AssociationTargetTesterAutoKey objTargetAutoKey : objsetTargetAutoKey){
+					System.out.println("Identifikationsstring: " + objTargetAutoKey.getDummyString());
+				}
 			}
 			
 			session.close();

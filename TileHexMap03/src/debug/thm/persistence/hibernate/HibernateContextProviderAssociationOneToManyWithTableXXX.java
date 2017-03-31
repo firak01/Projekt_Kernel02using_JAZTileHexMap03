@@ -3,8 +3,8 @@ package debug.thm.persistence.hibernate;
 import basic.zBasic.ExceptionZZZ;
 import basic.zBasic.persistence.HibernateContextProviderZZZ;
 import basic.zKernel.KernelZZZ;
-import debug.thm.persistence.model.association002.AssociationTargetTesterAutoKey;
-import debug.thm.persistence.model.association002.AssociationTester;
+import debug.thm.persistence.model.association003.AssociationTargetTesterAutoKey;
+import debug.thm.persistence.model.association003.AssociationTester;
 
 public class HibernateContextProviderAssociationOneToManyWithTableXXX extends HibernateContextProviderZZZ{
 	

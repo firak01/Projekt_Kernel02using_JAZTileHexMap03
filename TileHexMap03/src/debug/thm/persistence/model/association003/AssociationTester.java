@@ -1,6 +1,8 @@
 package debug.thm.persistence.model.association003;
 
 import java.io.Serializable;
+import java.util.HashSet;
+import java.util.Set;
 
 import javax.persistence.Access;
 import javax.persistence.AccessType;
@@ -13,6 +15,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
+import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.TableGenerator;
@@ -48,14 +51,15 @@ public class AssociationTester implements Serializable, IOptimisticLocking{
 //	 @PrimaryKeyJoinColumn(name="targetauto_id", referencedColumnName="TESTID_INCREMENTIERT")//, columnDefinition="INTEGER NOT NULL UNIQUE  DEFAULT 1")
 //	 
 	 //Speichert nur die ID ab. Das Abspeichern des Objekts wird mit @Transient über dem entsprechenden GETTER/SETTER verhindert
+	//s. Buch PERsistence With Hibernate (second, 2016) Kapitel 8.x  
 	 @Access(AccessType.FIELD)
-	 @OneToOne(fetch = FetchType.LAZY)
+	 @OneToMany(fetch = FetchType.LAZY)
 	 @JoinTable(
 			 name = "TESTER_TARGET", //Required !
 			 joinColumns = @JoinColumn(name="AssociationTester_ID"),
 			 inverseJoinColumns= @JoinColumn(name="targetauto_id", nullable = false, unique = true)
 			 )
-	private AssociationTargetTesterAutoKey objTargetAutoKey;
+	private Set<AssociationTargetTesterAutoKey> objsetTargetAutoKey=new HashSet<AssociationTargetTesterAutoKey>();
 	 
 	 
 	 //Damit wird ein BLOB gespeichert, oder? JA, aber das will ich nicht!
@@ -95,7 +99,7 @@ public class AssociationTester implements Serializable, IOptimisticLocking{
 	
 	 @Id				
 	 @TableGenerator(name="lidGeneratorAssociation003", table="COMMON_FUER_IDGENERATOR_ASSOCIATION",pkColumnName="nutzende_Klasse_als_String", pkColumnValue="SequenceTester",valueColumnName="naechster_id_wert",  initialValue=1, allocationSize=1)//@TableGenerator Name muss einzigartig im ganzen Projekt sein.
-	 @GeneratedValue(strategy = GenerationType.TABLE, generator="lidGeneratorAssociation002")
+	 @GeneratedValue(strategy = GenerationType.TABLE, generator="lidGeneratorAssociation003")
 	 @Column(name="HAUPTID_INCREMENTIERT", nullable=false, unique=true, columnDefinition="INTEGER NOT NULL UNIQUE  DEFAULT 1") 
 	 public int getKey(){
 		 return this.iMyTestSequence;
@@ -115,11 +119,11 @@ public class AssociationTester implements Serializable, IOptimisticLocking{
 //		 @PrimaryKeyJoinColumn//(name="TARGETID", columnDefinition="INTEGER NOT NULL UNIQUE  DEFAULT 1")
 	 
 	 @Transient //Ich will nur den Schlüssel abspeichern, mit der JOINColumn - Lösung
-	 	public AssociationTargetTesterAutoKey getTargetAutoKey(){
-		 return this.objTargetAutoKey;		 
+	 	public Set<AssociationTargetTesterAutoKey> getTargetAutoKey(){
+		 return this.objsetTargetAutoKey;		 
 	 }
-	 public void setTargetAutoKey(AssociationTargetTesterAutoKey objTarget){
-		 this.objTargetAutoKey = objTarget;
+	 public void setTargetAutoKey(Set<AssociationTargetTesterAutoKey> objsetTarget){
+		 this.objsetTargetAutoKey = objsetTarget;
 	 }
 	 
 	 

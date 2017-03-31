@@ -47,7 +47,10 @@ public class AssociationTester implements Serializable, IOptimisticLocking{
 //	 )
 //	 @PrimaryKeyJoinColumn(name="targetauto_id", referencedColumnName="TESTID_INCREMENTIERT")//, columnDefinition="INTEGER NOT NULL UNIQUE  DEFAULT 1")
 //	 
+	
+	 
 	 //Speichert nur die ID ab. Das Abspeichern des Objekts wird mit @Transient über dem entsprechenden GETTER/SETTER verhindert
+	//Siehe Buch Persistence with Hibernate (2016) (MeapV7 - S. 182)(Im spreäeren Buch allerdings woanders).
 	 @Access(AccessType.FIELD)
 	 @OneToOne(fetch = FetchType.LAZY)
 	 @JoinTable(

@@ -32,7 +32,7 @@ public class AssociationTesterDao extends GeneralDaoZZZ<AssociationTester> {
 	}
 	
     public List<AssociationTester> findLazyAll(int first, int max){
-    	return this.findLazyAll("AssociationTesterl", first, max);
+    	return this.findLazyAll("AssociationTester", first, max);
     }
     
 	@Override

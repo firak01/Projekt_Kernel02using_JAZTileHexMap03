@@ -81,7 +81,7 @@ public class DebugJpaAssociationOneToManyWithTableTestMain001 extends KernelUseO
 			}
 			
 		
-			//##########  HAUPTOBJEKT UND ZUORDNUNG
+			//##########  ERSTES HAUPTOBJEKT UND ZUORDNUNG
 			AssociationTester objAssociationTester = new AssociationTester("Erster  Wert");				
 			System.out.println("Erstes (HAUPT) Objekt erstellt.");
 			
@@ -90,12 +90,45 @@ public class DebugJpaAssociationOneToManyWithTableTestMain001 extends KernelUseO
 				//Das wäre bei 1:1 objAssociationTester.setTargetAutoKey(objAssociationTargetAutoKeyTester);
 				//Abspeichern in einem Set ist 1:n
 				objAssociationTester.getTargetAutoKey().add(objAssociationTargetAutoKeyTester);
-				System.out.println("Objekt (AUTOKEY) dem HAUPT Objekt zugeordnet.");
+				System.out.println("Objekt (AUTOKEY) dem ersten HAUPT Objekt zugeordnet.");
 			}
 			//ERGEBNIS: WEGEN 1:1 Zuordnung wird nur das 10. Objekt in der Tabelle gespeichert sein!!!
 			
 			session.save(objAssociationTester);
-			System.out.println("Objekt (HAUPT) gespeichert");
+			System.out.println("Erstes Objekt (HAUPT) gespeichert");
+			
+			//####### Zweites Target AutoKey
+			AssociationTargetTesterAutoKey[] objaTargetAutoKey02 = new AssociationTargetTesterAutoKey[10];
+			for (int icount = 0 ; icount <= 9; icount++){
+				AssociationTargetTesterAutoKey objAssociationTargetAutoKeyTester02 = new AssociationTargetTesterAutoKey("02 x mal " + icount + ". Wert mit AutoKey");				
+				System.out.println("2. Target AUTOKEY- Objekt  erstellt.");
+				objaTargetAutoKey02[icount]=objAssociationTargetAutoKeyTester02;
+			}			
+			for (int icount = 0 ; icount <= 9; icount++){
+				AssociationTargetTesterAutoKey objAssociationTargetAutoKeyTester02 = objaTargetAutoKey02[icount];		
+				session.save(objAssociationTargetAutoKeyTester02);
+				System.out.println("2. Target Objekt (AUTOKEY) gespeichert");
+			}
+			
+			//##########  ZWEITES HAUPTOBJEKT UND ZUORDNUNG
+			//Damit das Klappt muss man die @Id Spaltengenerierung so abändern, das hier kein unique drin auftaucht.
+			//Daher hier den Test mit einem zweiten Hauptobjekt, um zu sehen, ob die incrementierung mit dem Generator funktioniert.
+			AssociationTester objAssociationTester02 = new AssociationTester("Zweiter  Wert");				
+			System.out.println("Zweites (HAUPT) Objekt erstellt.");
+			
+			for (int icount = 0 ; icount <= 9; icount++){
+				AssociationTargetTesterAutoKey objAssociationTargetAutoKeyTester02 = objaTargetAutoKey02[icount];		
+				//Das wäre bei 1:1 objAssociationTester.setTargetAutoKey(objAssociationTargetAutoKeyTester);
+				//Abspeichern in einem Set ist 1:n
+				objAssociationTester02.getTargetAutoKey().add(objAssociationTargetAutoKeyTester02);
+				System.out.println("Objekt (2. AUTOKEY) dem zweiten HAUPT Objekt zugeordnet.");
+			}
+			//ERGEBNIS: WEGEN 1:1 Zuordnung wird nur das 10. Objekt in der Tabelle gespeichert sein!!!
+			
+			session.save(objAssociationTester02);
+			System.out.println("Zweites Objekt (HAUPT) gespeichert");
+			
+			
 			
 			//####################
 			session.getTransaction().commit();

@@ -52,12 +52,13 @@ public class AssociationTester implements Serializable, IOptimisticLocking{
 //	 
 	 //Speichert nur die ID ab. Das Abspeichern des Objekts wird mit @Transient über dem entsprechenden GETTER/SETTER verhindert
 	//s. Buch PERsistence With Hibernate (second, 2016) Kapitel 8.x  
+	
 	 @Access(AccessType.FIELD)
-	 @OneToMany(fetch = FetchType.LAZY)
+	 @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	 @JoinTable(
 			 name = "TESTER_TARGET", //Required !
-			 joinColumns = @JoinColumn(name="AssociationTester_ID"),
-			 inverseJoinColumns= @JoinColumn(name="targetauto_id", nullable = false, unique = true)
+			 joinColumns = {@JoinColumn(name="AssociationTester_ID",referencedColumnName="HAUPTID_INCREMENTIERT", unique=false)}, //referencedColumnName="DUMMYSTRING")}, Das Klappt, in der ColumDefinitin wir auch keine unique verwendet ////das klappt nicht, es wird in der Column Definition unique verwendet //referencedColumnName="HAUPTID_INCREMENTIERT", unique=false)},//Fehler: Abort due to constraint violation (column AssociationTester_ID is not unique)
+			 inverseJoinColumns= {@JoinColumn(name="targetauto_id",referencedColumnName="TESTID_INCREMENTIERT")}//, nullable = false, unique = true)
 			 )
 	private Set<AssociationTargetTesterAutoKey> objsetTargetAutoKey=new HashSet<AssociationTargetTesterAutoKey>();
 	 
@@ -89,7 +90,8 @@ public class AssociationTester implements Serializable, IOptimisticLocking{
 		 this.setDummyString(sDummy);
 	 }
 	 
-	 
+	
+	@Column(name="DUMMYSTRING")
 	public String getDummyString(){
 		   	return this.sDummy;
 		}
@@ -100,7 +102,8 @@ public class AssociationTester implements Serializable, IOptimisticLocking{
 	 @Id				
 	 @TableGenerator(name="lidGeneratorAssociation003", table="COMMON_FUER_IDGENERATOR_ASSOCIATION",pkColumnName="nutzende_Klasse_als_String", pkColumnValue="SequenceTester",valueColumnName="naechster_id_wert",  initialValue=1, allocationSize=1)//@TableGenerator Name muss einzigartig im ganzen Projekt sein.
 	 @GeneratedValue(strategy = GenerationType.TABLE, generator="lidGeneratorAssociation003")
-	 @Column(name="HAUPTID_INCREMENTIERT", nullable=false, unique=true, columnDefinition="INTEGER NOT NULL UNIQUE  DEFAULT 1") 
+	 //Bei dieser Column Definition ist die Spalte nicht für @OneToMany mit @JoinTable zu gebrauchen @Column(name="HAUPTID_INCREMENTIERT", nullable=false, unique=true, columnDefinition="INTEGER NOT NULL UNIQUE  DEFAULT 1") 
+	 @Column(name="HAUPTID_INCREMENTIERT", nullable=false)
 	 public int getKey(){
 		 return this.iMyTestSequence;
 	 }

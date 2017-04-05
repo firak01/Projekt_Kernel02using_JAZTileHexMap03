@@ -102,8 +102,7 @@ public class HexCell implements Serializable, IOptimisticLocking{
 			 this.setMapAlias(sMap);
 			 this.setMapX(intX.intValue());
 			 this.setMapY(intY.intValue());			 			 
-		 }
-		 
+		 }		 
 	 }
 	 
 	 

@@ -7,11 +7,16 @@ import javax.persistence.AccessType;
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 import javax.persistence.EmbeddedId;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.TableGenerator;
 
 import basic.persistence.model.IPrimaryKeys;
 
 //Buch "Java Persistence API", S. 48
+//Merke: Bei der Variante mit der Generierten ID dies nicht mehr als @EmbeddedID einbinden, man kann nur eine ID Variante verwenden.
+
 @Embeddable
 @Access(AccessType.PROPERTY)
 public class TileId implements IPrimaryKeys{ //IPrimaryKeys hat zwar @Embeddable aber das wird scheinbar nicht vererbt.
@@ -21,10 +26,10 @@ public class TileId implements IPrimaryKeys{ //IPrimaryKeys hat zwar @Embeddable
 	 */
 	private static final long serialVersionUID = 1L;
 
-
 	private String sMapAlias = new String("TEST"); //Hiermit werden alle Felder einer Map zusammengehalten, momentan wird nur 1 Map in der Tabelle gespeichert	
 	private String sPlayer = null; 
 	private String sUniquename = null;
+
 	
 	//Der Default Contruktor wird für JPA - Abfragen wohl benötigt
 	public TileId(){
@@ -56,6 +61,8 @@ public class TileId implements IPrimaryKeys{ //IPrimaryKeys hat zwar @Embeddable
 	public void setUniquename(String sUniquename){
 		this.sUniquename = sUniquename;
 	}
+	
+	//Merke: Es hat nicht geklappt hier den Generator für einen Key einzubinden
 	
 	@Override
 	public int hashCode(){

@@ -21,6 +21,7 @@ import javax.persistence.InheritanceType;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
+import javax.persistence.TableGenerator;
 import javax.persistence.Transient;
 
 import basic.persistence.model.IOptimisticLocking;
@@ -42,6 +43,11 @@ import basic.zBasic.util.datatype.string.StringZZZ;
 public class Tile implements Serializable, IOptimisticLocking{
 	private static final long serialVersionUID = 1113434456411176970L;
 	
+	//Variante 2: Realisierung eines Schlüssel über eine eindeutige ID, die per Generator erzeugt wird
+	private int iMyTestSequence;
+	
+	
+	//Variante 1) Beispielsweise für das Spielbrett gewählte Variante...
 	//Realisierung eines Zusammengesetzten Schlüssels
 	//Siehe Buch "Java Persistence API 2", Seite 48ff.
 	//@EmbeddedId
@@ -52,13 +58,19 @@ public class Tile implements Serializable, IOptimisticLocking{
 //			@AttributeOverride(name = "sMapX", column= @Column(name="X", length = 2)),
 //			@AttributeOverride(name = "sMapY", column= @Column(name="Y", length = 2))
 //	})
-	//Merke: Attribut Access über PROPERTY.
+	
+	/*Meine Variante VOR dem Lösungsversuch mit dem generierten, eindeutigem Schlüssel.... Beide Varainten kann man nicht vereinen. 
+	//Merke: Attribut Access über PROPERTY	
 	@AttributeOverrides({
 			@AttributeOverride(name = "mapAlias", column= @Column(name="MAPALIAS")),
 			@AttributeOverride(name = "player", column= @Column(name="PLAYER", length = 2)),
-			@AttributeOverride(name = "uniquename", column= @Column(name="UNIQUENAME", length = 6))	//Merke UNIQUE ist ein Schlüsselwort		
+			@AttributeOverride(name = "uniquename", column= @Column(name="UNIQUENAME", length = 6))	//Merke UNIQUE selbst nicht verwendbar, ist ein Schlüsselwort				
 	})
+	*/
 	private TileId id;
+	
+	
+	
 	
 	//DAS PERSISTIERT ALS BLOB
 	//@Enumerated(EnumType.STRING)	
@@ -78,13 +90,28 @@ public class Tile implements Serializable, IOptimisticLocking{
 	
 	//Der Default Contruktor wird für JPA - Abfragen wohl benötigt
 	 public Tile(){
-	 }
-	 public Tile(TileId objId){
-		 this.id = objId;
-		 
-		 //bisher nur die eine Sorte des TileType vorhanden, darum nicht im Konstruktor aufgenommen
+		 //bisher nur die eine Sorte des TileType vorhanden, darum nicht im Konstruktor als Parameter aufgenommen
 		 this.enumTileType = TileType.TROOP;
 	 }
+	 public Tile(TileId objId){
+		this.id = objId;
+		 
+		 //bisher nur die eine Sorte des TileType vorhanden, darum nicht im Konstruktor als Parameter aufgenommen
+		 this.enumTileType = TileType.TROOP;
+	 }
+	 
+	//### Variante 2: Verwende auf dieser Ebene einen Generator, zum Erstellen einer ID
+		 @Id				
+		 @TableGenerator(name="lidGeneratorTile001", table="COMMON_FUER_IDGENERATOR_ASSOCIATION",pkColumnName="nutzende_Klasse_als_String", pkColumnValue="SequenceTester",valueColumnName="naechster_id_wert",  initialValue=1, allocationSize=1)//@TableGenerator Name muss einzigartig im ganzen Projekt sein.
+		 @GeneratedValue(strategy = GenerationType.TABLE, generator="lidGeneratorTile001")
+		 //Bei dieser Column Definition ist die Spalte nicht für @OneToMany mit @JoinTable zu gebrauchen @Column(name="HAUPTID_INCREMENTIERT", nullable=false, unique=true, columnDefinition="INTEGER NOT NULL UNIQUE  DEFAULT 1") 
+		 @Column(name="HAUPTID_INCREMENTIERT", nullable=false, unique=true, columnDefinition="INTEGER NOT NULL UNIQUE  DEFAULT 1") 
+		 public int getKey(){
+			 return this.iMyTestSequence;
+		 }
+		 public void setKey(int iLid){
+			 this.iMyTestSequence = iLid;
+		 }
 	 
 	 //### getter / setter
 	 //Siehe Buch "Java Persistence API", Seite 37ff
@@ -95,7 +122,7 @@ public class Tile implements Serializable, IOptimisticLocking{
 	 
 	 
 	 //### getter / setter
-	 @EmbeddedId
+	 //Version 02: Dh. mit Generiertem Key und ohne @EmbeddedId
 	 public TileId getId(){
 		return this.id;
 	}
@@ -144,8 +171,7 @@ public class Tile implements Serializable, IOptimisticLocking{
 	 
 	 //Siehe Buch "Java Persistence API", Seite 37ff
 	 //@Transient
-	 //TODO 20170322
-	 //Versuch diese neue Spalte als JoinColumn für 1:1 Beziehung zwischen HexCell und Tile - Objekten zu nutzen
+	 //TODO GOON 20170404: Diese neue Spalte als JoinColumn für 1:1 Beziehung zwischen HexCell und Tile - Objekten zu nutzen
 	 @Column(name="FIELD_ALIAS")
 	 public String getFieldAlias(){
 		return this.getMapAlias() + "#" + this.getMapX() + "-" + this.getMapY(); 

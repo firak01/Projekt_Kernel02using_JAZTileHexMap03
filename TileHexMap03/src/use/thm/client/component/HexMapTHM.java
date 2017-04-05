@@ -543,8 +543,8 @@ public class HexMapTHM extends KernelUseObjectZZZ implements ITileEventUserTHM {
 					
 					//Anfangsaufstellung: TRUPPEN Komponente in einer bestimmten Zelle per Event hinzufügen
 					//TODO: Die Truppenaufstellung soll wie die Karte auch in einer Tabelle hinterlegt werden. 
-					if(sX.equals("1") && sY.equals("2")){
-						TroopArmy objTroopTemp = new TroopArmy(new TileId("EINS", sX, sY));
+					if(sX.equals("1") && sY.equals("2")  | (sX.equals("1") & sY.equals("3")) | (sX.equals("1") & sY.equals("4"))){
+						TroopArmy objTroopTemp = new TroopArmy(new TileId("EINS", sX, sY));//TODO GOON 20170405: sY als Uniquename zu verwenden ist falsch... Lösung in Verwendung der Generator Klassen suchen.
 						objTroopTemp.setHexCell(objCellTemp); //wg. 1:1 Beziehung
 													
 						//TODO: Die TroopArmy noch an das UI-verwendete Objekt weitergeben ################

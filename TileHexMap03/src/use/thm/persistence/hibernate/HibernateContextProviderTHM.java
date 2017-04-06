@@ -88,7 +88,7 @@ public class HibernateContextProviderTHM extends HibernateContextProviderZZZ{
 		return bReturn;
 	}
 	
-	/** Fülle globale Werte in das Configuruation Objekt, z.B. der Datenbankname, Dialekt, etc.
+	/** Fülle globale Werte in das Configuration Objekt, z.B. der Datenbankname, Dialekt, etc.
 	 * 
 	 */
 	public boolean fillConfigurationGlobal(){

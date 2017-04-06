@@ -1784,7 +1784,7 @@ public abstract class GeneralDAO<T> implements IDaoInterface<T>{
 		return 0;
 	}
 
-	public Map<String, Object> getID(AreaCell instance) {
+	public Map<String, Object> getID(T instance) {
 		// TODO Auto-generated method stub
 		return null;
 	}

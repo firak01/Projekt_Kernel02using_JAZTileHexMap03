@@ -13,12 +13,14 @@ import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.TableGenerator;
@@ -81,11 +83,23 @@ public class Tile implements Serializable, IOptimisticLocking{
 	private Enum<TileType> enumTileType = null; //weil der EnumType nun String ist. @Column wird verwendet, da sonst der technische Name enumAreaType als Tabellenspalte herhalten muss.
 
 	
+	
 	//1:1 Beziehung aufbauen
 	//Siehe Buch "Java Persistence API 2", Seite 90ff.	
-	@OneToOne
-	@JoinColumn(name="FIELD_ALIAS", nullable = false)
-	@Transient //Ich will kein BLOB speichern
+	//Variante 1) mit einer gemeinsamen Spalte
+	//@Transient //Ich will kein BLOB speichern
+	//@JoinColumn(name="FIELD_ALIAS", nullable = false)
+	
+	//Variante 2) mit einer gemeinsamen Tabelle
+	 //Speichert nur die ID ab. Das Abspeichern des Objekts wird mit @Transient über dem entsprechenden GETTER/SETTER verhindert
+	//Siehe Buch Persistence with Hibernate (2016) (MeapV7 - S. 182)(Im späteren fertigen Buch allerdings woanders).
+	 @Access(AccessType.FIELD)
+	 @OneToOne(fetch = FetchType.LAZY)
+	 @JoinTable(
+			 name = "HEXCELL_TILE", //Required !
+			 joinColumns = {@JoinColumn(name="id")},
+			 inverseJoinColumns= {@JoinColumn(name="mapAlias", nullable = false, unique = true), @JoinColumn(name="mapX", nullable = false, unique = true), @JoinColumn(name="mapY", nullable = false, unique = true)} //private String sMapAlias = new String("TEST");  	private String sMapX = null; //X-KoordinatedId	private String sMapY = null; //Y-Koordinate
+			 )
 	private HexCell objHexCell;
 	
 	//Der Default Contruktor wird für JPA - Abfragen wohl benötigt
@@ -105,11 +119,11 @@ public class Tile implements Serializable, IOptimisticLocking{
 		 @TableGenerator(name="lidGeneratorTile001", table="COMMON_FUER_IDGENERATOR_ASSOCIATION",pkColumnName="nutzende_Klasse_als_String", pkColumnValue="SequenceTester",valueColumnName="naechster_id_wert",  initialValue=1, allocationSize=1)//@TableGenerator Name muss einzigartig im ganzen Projekt sein.
 		 @GeneratedValue(strategy = GenerationType.TABLE, generator="lidGeneratorTile001")
 		 //Bei dieser Column Definition ist die Spalte nicht für @OneToMany mit @JoinTable zu gebrauchen @Column(name="HAUPTID_INCREMENTIERT", nullable=false, unique=true, columnDefinition="INTEGER NOT NULL UNIQUE  DEFAULT 1") 
-		 @Column(name="HAUPTID_INCREMENTIERT", nullable=false, unique=true, columnDefinition="INTEGER NOT NULL UNIQUE  DEFAULT 1") 
-		 public int getKey(){
+		 @Column(name="TILE_ID_INCREMENTED", nullable=false, unique=true, columnDefinition="INTEGER NOT NULL UNIQUE  DEFAULT 1") 
+		 public int getId(){
 			 return this.iMyTestSequence;
 		 }
-		 public void setKey(int iLid){
+		 public void setId(int iLid){
 			 this.iMyTestSequence = iLid;
 		 }
 	 
@@ -123,19 +137,19 @@ public class Tile implements Serializable, IOptimisticLocking{
 	 
 	 //### getter / setter
 	 //Version 02: Dh. mit Generiertem Key und ohne @EmbeddedId
-	 public TileId getId(){
+	 public TileId getTileIdObject(){
 		return this.id;
 	}
-	 public void setId(TileId objId){
+	 public void setTileIdObject(TileId objId){
 		 this.id = objId;
 	 }
 		
-	 @Transient
-		public String getMapAlias(){
-		   	return this.getId().getMapAlias();
-		}
+	@Transient
+	public String getMapAlias(){
+	   	return this.getTileIdObject().getMapAlias();
+	}
 	 public void setMapAlias(String sAlias){
-		 this.getId().setMapAlias(sAlias);
+		 this.getTileIdObject().setMapAlias(sAlias);
 	 }
 	 
 		//Versuch mit MAX(X) darauf zuzugreifen aus der Methode fillMap(..)
@@ -143,35 +157,48 @@ public class Tile implements Serializable, IOptimisticLocking{
 		@Access(AccessType.PROPERTY)
 		@Column(name="XX", nullable=false, columnDefinition="integer default 0")
 	    public int getMapX(){
-	    	String stemp = this.getHexCell().getId().getMapX();
-	    	Integer objReturn = new Integer(stemp);
-	    	return objReturn.intValue();
-	    	//return objReturn;
+			if(this.getHexCell()!=null){
+		    	String stemp = this.getHexCell().getId().getMapX();
+		    	Integer objReturn = new Integer(stemp);
+		    	return objReturn.intValue();
+			}else{
+				return -1;
+			}	    	
 	    }
 		public void setMapX(int iValue){
 			Integer intValue = new Integer(iValue);
 			String sX = intValue.toString();
-			this.getHexCell().getId().setMapX(sX);
+			if(this.getHexCell()!=null){
+				this.getHexCell().getId().setMapX(sX);
+			}
 		}
 	    
 		@Access(AccessType.PROPERTY)
 		@Column(name="YY", nullable=false, columnDefinition="integer default 0")
 	    public int getMapY(){
-			String stemp =  this.getHexCell().getId().getMapY();
-	    	Integer objReturn = new Integer(stemp);
-	    	return objReturn.intValue();
+			if(this.getHexCell()!=null){
+				String stemp =  this.getHexCell().getId().getMapY();
+		    	Integer objReturn = new Integer(stemp);
+		    	return objReturn.intValue();
+			}else{
+				return -1;
+			}
 	    	//return objReturn;
 	    }
 		public void setMapY(int iValue){
 			Integer intValue = new Integer(iValue);
 			String sY = intValue.toString();
-			this.getHexCell().getId().setMapY(sY);
+			if(this.getHexCell()!=null){
+				this.getHexCell().getId().setMapY(sY);
+			}
 		}
 	 
 	 
 	 //Siehe Buch "Java Persistence API", Seite 37ff
 	 //@Transient
-	 //TODO GOON 20170404: Diese neue Spalte als JoinColumn für 1:1 Beziehung zwischen HexCell und Tile - Objekten zu nutzen
+	 //Die Idee war diese neue Spalte als JoinColumn für 1:1 Beziehung zwischen HexCell und Tile - Objekten zu nutzen, das wäre Version 1 gewesen
+    // Aber realisert wurde Version 2, mit einer JoinTable
+	/*
 	 @Column(name="FIELD_ALIAS")
 	 public String getFieldAlias(){
 		return this.getMapAlias() + "#" + this.getMapX() + "-" + this.getMapY(); 
@@ -191,9 +218,9 @@ public class Tile implements Serializable, IOptimisticLocking{
 			 this.setMapAlias(sMap);
 			 this.setMapX(intX.intValue());
 			 this.setMapY(intY.intValue());			 			 
-		 }
-		 
+		 }				
 	 }
+	 */
 	 
 	 //Enumeration werden als BLOB gespeichert, insbesondere, wenn sie eine Liste sind, darum den Stringwert der Enumeration holen und das Objekt selbst nicht persisiteren.
 		@Transient
@@ -219,38 +246,50 @@ public class Tile implements Serializable, IOptimisticLocking{
 			this.setTileTypeObject(objType);
 		}
 		
-			
+		
+		//ACHTUNG: Player ist auch in TileId, darum hier nicht persistieren, sonst bekommt man ambigious columns!!
+		
 		//Um zu versuchen alle Spielsteine eines Spielers zu bekommen.	
 		//Um zu versuchen das Maximum zu bekommen und einfach um +1 zu erhöhen
-		@Access(AccessType.PROPERTY)
-		@Column(name="PLAYER", nullable=false, columnDefinition="integer default 0")
+//		@Access(AccessType.PROPERTY)
+//		@Column(nullable=false, columnDefinition="integer default 0")
+		
+		@Transient
 	    public int getPlayer(){
-	    	String stemp= this.getId().getPlayer();
+	    	String stemp= this.getTileIdObject().getPlayer();
 	    	
 	    	//Das ist notwendig, um mit Zahlenwerten zu arbeiten
 	    	Integer objReturn = new Integer(stemp);
 	    	return objReturn.intValue();
 	    	
-	    }
+	    }		
 		public void setPlayer(String sPlayer){
 			//Das wäre notwendig, wenn der PrimaryKey ein Integer Wert wäre
-			//Integer intValue = new Integer(iValue);
+			//Integer intValue = new Integer(sPlayer);
 			//String sX = intValue.toString();
-			this.getId().setPlayer(sPlayer);
+			if(!StringZZZ.isNumeric(sPlayer)){
+				Integer intP = new Integer(sPlayer.hashCode());
+				this.getTileIdObject().setPlayer(intP.toString());
+			}else{
+				this.getTileIdObject().setPlayer(sPlayer);
+			}
+		}		
+		public void setPlayer(int iPlayer){
+			Integer intValue = new Integer(iPlayer);
+			String sPlayer = intValue.toString();
+			this.getTileIdObject().setPlayer(sPlayer);
 		}
 	    
-		//Um zu versuchen das Maximum zu bekommen und einfach um +1 zu erhöhen
-		@Access(AccessType.PROPERTY)
-		@Column(name="UNIQUENAME", nullable=false, columnDefinition="integer default 0")  //Merke UNIQUE ist ein Datenbankschlüsselwort
-	    public int getUniquename(){	
-			String stemp = this.getId().getUniquename();
-	    	Integer objReturn = new Integer(stemp);
-	    	return objReturn.intValue();		
+		//ACHTUNG: Player ist auch in TileId, darum hier nicht persistieren, sonst bekommt man ambigious columns!!
+//		@Access(AccessType.PROPERTY)
+//		@Column(name="UNIQUENAME", nullable=false, columnDefinition="string default 'xxx'")  //Merke UNIQUE ist ein Datenbankschlüsselwort
+		@Transient
+	    public String getUniquename(){	
+			String stemp = this.getTileIdObject().getUniquename();
+	    	return stemp; 		
 	    }
-		public void setUniquename(int iValue){
-			Integer intValue = new Integer(iValue);
-			String sUniquename = intValue.toString();
-			this.getId().setUniquename(sUniquename);
+		public void setUniquename(String sValue){
+			this.getTileIdObject().setUniquename(sValue);
 		}
 		
 		//1:1 Beziehung aufbauen über den FieldAliasName

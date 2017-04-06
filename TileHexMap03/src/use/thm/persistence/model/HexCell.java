@@ -91,7 +91,7 @@ public class HexCell implements Serializable, IOptimisticLocking{
 		 if(!StringZZZ.isEmpty(sAlias)){
 			 String sMap = StringZZZ.left(sAlias, "#");
 			 
-			 String sX = StringZZZ.rightback("#" + sAlias, "#");
+			 String sX = StringZZZ.right("#" + sAlias, "#");
 			 sX = StringZZZ.left(sX, "-");			 
 			 Integer intX = new Integer(sX);
 			 
@@ -117,10 +117,16 @@ public class HexCell implements Serializable, IOptimisticLocking{
 		
 	 @Transient
 		public String getMapAlias(){
+		 if(this.getId()!=null){
 		   	return this.getId().getMapAlias();
+		 }else{
+			 return null;
+		 }
 		}	 
 	 public void setMapAlias(String sAlias){
-		 this.getId().setMapAlias(sAlias);
+		 if(this.getId()!=null){
+			 this.getId().setMapAlias(sAlias);
+		 }
 	 }
 	 
 		//Versuch mit MAX(X) darauf zuzugreifen aus der Methode fillMap(..)
@@ -128,29 +134,41 @@ public class HexCell implements Serializable, IOptimisticLocking{
 		@Access(AccessType.PROPERTY)
 		@Column(name="XX", nullable=false, columnDefinition="integer default 0")
 	    public int getMapX(){
-	    	String stemp = this.getId().getMapX();
-	    	Integer objReturn = new Integer(stemp);
-	    	return objReturn.intValue();
+			 if(this.getId()!=null){
+		    	String stemp = this.getId().getMapX();
+		    	Integer objReturn = new Integer(stemp);
+		    	return objReturn.intValue();
+			 }else{
+				 return -1;
+			 }
 	    	//return objReturn;
 	    }
 		public void setMapX(int iValue){
 			Integer intValue = new Integer(iValue);
 			String sX = intValue.toString();
-			this.getId().setMapX(sX);
+			 if(this.getId()!=null){
+				 this.getId().setMapX(sX);
+			 }
 		}
 	    
 		@Access(AccessType.PROPERTY)
 		@Column(name="YY", nullable=false, columnDefinition="integer default 0")
 	    public int getMapY(){
-			String stemp =  this.getId().getMapY();
-	    	Integer objReturn = new Integer(stemp);
-	    	return objReturn.intValue();
+			 if(this.getId()!=null){
+				String stemp =  this.getId().getMapY();
+		    	Integer objReturn = new Integer(stemp);
+		    	return objReturn.intValue();
+			 }else{
+				 return -1;
+			 }
 	    	//return objReturn;
 	    }
 		public void setMapY(int iValue){
 			Integer intValue = new Integer(iValue);
 			String sY = intValue.toString();
-			this.getId().setMapY(sY);
+			if(this.getId()!=null){
+				this.getId().setMapY(sY);
+			}
 		}
 	 
 	//Merke:

@@ -19,7 +19,7 @@ import basic.persistence.model.IPrimaryKeys;
 
 @Embeddable
 @Access(AccessType.PROPERTY)
-public class TileId implements IPrimaryKeys{ //IPrimaryKeys hat zwar @Embeddable aber das wird scheinbar nicht vererbt.
+public class TileId { //Diese Klasse dient hier nicht als EmbeddedID, darum nicht: implements IPrimaryKeys{ //IPrimaryKeys hat zwar @Embeddable aber das wird scheinbar nicht vererbt.
 
 	/** Diese Klasse hat den Zweck eine ID zur Verfügung zu stellen.
 	 *   @Id ist nicht erlaubt. Alle Properties bilden automatisch den Schlüssel.

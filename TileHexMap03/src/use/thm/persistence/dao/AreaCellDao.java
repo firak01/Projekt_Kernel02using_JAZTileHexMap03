@@ -16,19 +16,19 @@ public class AreaCellDao extends GeneralDaoZZZ<AreaCell> {
 	/* Constructor */
 	public AreaCellDao() throws ExceptionZZZ{
 		super();
-		this.installLoger(AreaCell.class);
+		this.installLoger(AreaCell.class);//Durch das Installieren des Loggers mit der korrekten Klasse wird GeneralDao.getT() erst korrekt ermöglicht.
 	}
 	public AreaCellDao(HibernateContextProviderTHM objContextHibernate) throws ExceptionZZZ{
 		super(objContextHibernate);		
-		this.installLoger(AreaCell.class);
+		this.installLoger(AreaCell.class);//Durch das Installieren des Loggers mit der korrekten Klasse wird GeneralDao.getT() erst korrekt ermöglicht.
 	}
 	public AreaCellDao(HibernateContextProviderTHM objContextHibernate, String sFlagControl) throws ExceptionZZZ{
 		super(objContextHibernate, sFlagControl);
-		this.installLoger(AreaCell.class);
+		this.installLoger(AreaCell.class);//Durch das Installieren des Loggers mit der korrekten Klasse wird GeneralDao.getT() erst korrekt ermöglicht.
 	}
 	public AreaCellDao(HibernateContextProviderTHM objContextHibernate, String[] saFlagControl) throws ExceptionZZZ{
 		super(objContextHibernate, saFlagControl);
-		this.installLoger(AreaCell.class);
+		this.installLoger(AreaCell.class);//Durch das Installieren des Loggers mit der korrekten Klasse wird GeneralDao.getT() erst korrekt ermöglicht.
 	}
 	
     public List<AreaCell> findLazyAll(int first, int max){

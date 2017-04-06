@@ -16,13 +16,17 @@ import use.thm.client.event.EventTileCreatedInCellTHM;
 import use.thm.client.event.TileMetaEventBrokerTHM;
 import use.thm.client.event.TileMoveEventBrokerTHM;
 import use.thm.persistence.dao.AreaCellDao;
+import use.thm.persistence.dao.TroopArmyDao;
+import use.thm.persistence.dao.TroopDao;
 import use.thm.persistence.hibernate.HibernateContextProviderTHM;
 import use.thm.persistence.model.AreaCell;
 import use.thm.persistence.model.AreaCellLand;
 import use.thm.persistence.model.AreaCellOcean;
 import use.thm.persistence.model.AreaCellType;
 import use.thm.persistence.model.CellId;
+import use.thm.persistence.model.HexCell;
 import use.thm.persistence.model.TileId;
+import use.thm.persistence.model.Troop;
 import use.thm.persistence.model.TroopArmy;
 import use.thm.persistence.model.TroopFleet;
 import basic.zBasic.ExceptionZZZ;
@@ -74,10 +78,34 @@ public class HexMapTHM extends KernelUseObjectZZZ implements ITileEventUserTHM {
 		this.setPanelParent(panelParent);
 		boolean bSuccess = fillMap();
 		
+		//########################
+		//TEST TESTSE
+		//TODO GOON: Mache HibernateContextProvider zum SINGLETON!!!
+		HibernateContextProviderTHM objContextHibernate = new HibernateContextProviderTHM(this.getKernelObject());
+		objContextHibernate.getConfiguration().setProperty("hibernate.hbm2ddl.auto", "update");  //! Jetzt erst wird jede Tabelle über den Anwendungsstart hinaus gespeichert UND auch wiedergeholt.				
+			
+		TroopArmyDao daoTroop = new TroopArmyDao(objContextHibernate);
+		int iTroopCounted = daoTroop.count();
+		System.out.println("Es gibt platzierte Armeen: " + iTroopCounted);
+		
+		Integer primaryKey = new Integer(2);
+		TroopArmy objTroopTemp = (TroopArmy) daoTroop.findById(primaryKey.intValue());		
+		if(objTroopTemp==null){
+		System.out.println("Es gibt keine Troop mit der ID= "+primaryKey.intValue());	
+		}else{
+		System.out.println("Troop mit der ID = " + primaryKey.intValue() + " hat als Uniquename()= "+objTroopTemp.getUniquename());
+		
+		HexCell objHexCell = objTroopTemp.getHexCell();
+		if(objHexCell==null){
+			System.out.println("Es gibt keine HexCell für diese Troop");	
+		}else{
+			System.out.println("HexCell für diese Troop ist: " + objHexCell.getFieldAlias());
+		}
+		}
 	}
 	
 	/** Anzahl der Hexes in einer Zeile. 
-	 * Wird im Konstruktor �bergeben
+	 * Wird im Konstruktor übergeben
 	* @return
 	* 
 	* lindhaueradmin; 12.09.2008 08:17:33
@@ -530,7 +558,7 @@ public class HexMapTHM extends KernelUseObjectZZZ implements ITileEventUserTHM {
 					//TEST: FALSCHES PLATZIEREN DER TRUPPEN Komponente in einer bestimmten Zelle per Event hinzufügen
 					boolean bUseTestArea = false;
 					if(bUseTestArea && sX.equals("1") && sY.equals("2")){
-						TroopFleet objTroopTemp = new TroopFleet(new TileId("EINS", sX, sY));
+						TroopFleet objTroopTemp = new TroopFleet(new TileId("EINS", "1", "FLEET UNIQUE " + sY));
 						//momentan wird noch ein BLOB gespeichert. ERst mal die LID in der HEXCell generieren lassen objTroopTemp.setHexCell(objCellTemp); //wg. 1:1 Beziehung
 						
 						FleetTileTHM objFleetTemp = new FleetTileTHM(panelMap, objTileMoveEventBroker, sX, sY, this.getSideLength());
@@ -544,7 +572,7 @@ public class HexMapTHM extends KernelUseObjectZZZ implements ITileEventUserTHM {
 					//Anfangsaufstellung: TRUPPEN Komponente in einer bestimmten Zelle per Event hinzufügen
 					//TODO: Die Truppenaufstellung soll wie die Karte auch in einer Tabelle hinterlegt werden. 
 					if(sX.equals("1") && sY.equals("2")  | (sX.equals("1") & sY.equals("3")) | (sX.equals("1") & sY.equals("4"))){
-						TroopArmy objTroopTemp = new TroopArmy(new TileId("EINS", sX, sY));//TODO GOON 20170405: sY als Uniquename zu verwenden ist falsch... Lösung in Verwendung der Generator Klassen suchen.
+						TroopArmy objTroopTemp = new TroopArmy(new TileId("EINS", "1", "ARMY UNIQUE " + sY));//TODO GOON 20170405: sY als Uniquename zu verwenden ist nur heuristisch.
 						objTroopTemp.setHexCell(objCellTemp); //wg. 1:1 Beziehung
 													
 						//TODO: Die TroopArmy noch an das UI-verwendete Objekt weitergeben ################
@@ -556,7 +584,7 @@ public class HexMapTHM extends KernelUseObjectZZZ implements ITileEventUserTHM {
 						session.save(objTroopTemp);
 						
 					}else if(sX.equals("5")&& sY.equals("5")){
-						TroopFleet objTroopTemp = new TroopFleet(new TileId("EINS", sX, sY));
+						TroopFleet objTroopTemp = new TroopFleet(new TileId("EINS", "1", "FLEET UNIQUE " + sY));
 						objTroopTemp.setHexCell(objCellTemp); //wg. 1:1 Beziehung
 						
 						//TODO: Die TroopArmy noch an das UI-verwendete Objekt weitergeben ################											
@@ -571,7 +599,7 @@ public class HexMapTHM extends KernelUseObjectZZZ implements ITileEventUserTHM {
 					//TEST: FALSCHES PLATZIEREN DER TRUPPEN Komponente in einer bestimmten Zelle, die schon besetzt ist per Event hinzufügen
 					boolean bUseTestOccupied = false;
 					if(bUseTestOccupied && sX.equals("1") && sY.equals("2")){
-						TroopArmy objTroopTemp = new TroopArmy(new TileId("EINS", sX, sY));
+						TroopArmy objTroopTemp = new TroopArmy(new TileId("EINS", "1","ARMY UNIQUE " + sY));
 						
 						ArmyTileTHM objArmyTemp = new ArmyTileTHM(panelMap, objTileMoveEventBroker, sX, sY, this.getSideLength());
 						

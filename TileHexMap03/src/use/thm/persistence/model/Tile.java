@@ -96,7 +96,7 @@ public class Tile implements Serializable, IOptimisticLocking{
 	 @Access(AccessType.FIELD)
 	 @OneToOne(fetch = FetchType.LAZY)
 	 @JoinTable(
-			 name = "HEXCELL_TILE", //Required !
+			 name = "TILE_HEXCELL", //Required !
 			 joinColumns = {@JoinColumn(name="id")},
 			 inverseJoinColumns= {@JoinColumn(name="mapAlias", nullable = false, unique = true), @JoinColumn(name="mapX", nullable = false, unique = true), @JoinColumn(name="mapY", nullable = false, unique = true)} //private String sMapAlias = new String("TEST");  	private String sMapX = null; //X-KoordinatedId	private String sMapY = null; //Y-Koordinate
 			 )
@@ -117,9 +117,10 @@ public class Tile implements Serializable, IOptimisticLocking{
 	//### Variante 2: Verwende auf dieser Ebene einen Generator, zum Erstellen einer ID
 		 @Id				
 		 @TableGenerator(name="lidGeneratorTile001", table="COMMON_FUER_IDGENERATOR_ASSOCIATION",pkColumnName="nutzende_Klasse_als_String", pkColumnValue="SequenceTester",valueColumnName="naechster_id_wert",  initialValue=1, allocationSize=1)//@TableGenerator Name muss einzigartig im ganzen Projekt sein.
-		 @GeneratedValue(strategy = GenerationType.TABLE, generator="lidGeneratorTile001")
-		 //Bei dieser Column Definition ist die Spalte nicht für @OneToMany mit @JoinTable zu gebrauchen @Column(name="HAUPTID_INCREMENTIERT", nullable=false, unique=true, columnDefinition="INTEGER NOT NULL UNIQUE  DEFAULT 1") 
-		 @Column(name="TILE_ID_INCREMENTED", nullable=false, unique=true, columnDefinition="INTEGER NOT NULL UNIQUE  DEFAULT 1") 
+		 @GeneratedValue(strategy = GenerationType.TABLE, generator="lidGeneratorTile001")		 //
+		 //Bei dieser Column Definition ist die Spalte nicht für @OneToMany mit @JoinTable zu gebrauchen @Column(name="TILE_ID_INCREMENTED", nullable=false, unique=true, columnDefinition="INTEGER NOT NULL UNIQUE  DEFAULT 1")
+		 //Entferne also das unique...
+		 @Column(name="TILE_ID_INCREMENTED", nullable=false)
 		 public int getId(){
 			 return this.iMyTestSequence;
 		 }

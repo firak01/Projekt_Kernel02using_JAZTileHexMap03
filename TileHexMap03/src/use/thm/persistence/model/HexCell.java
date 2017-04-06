@@ -1,11 +1,16 @@
 package use.thm.persistence.model;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
 
 import javax.persistence.Access;
 import javax.persistence.AccessType;
 import javax.persistence.AttributeOverride;
 import javax.persistence.AttributeOverrides;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.DiscriminatorColumn;
 import javax.persistence.DiscriminatorType;
@@ -13,16 +18,23 @@ import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.OneToMany;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.persistence.TableGenerator;
 import javax.persistence.Transient;
 
+import org.apache.commons.collections.Bag;
+
+import debug.thm.persistence.model.association003.AssociationTargetTesterAutoKey;
 import basic.persistence.model.IOptimisticLocking;
 import basic.zBasic.util.datatype.string.StringZZZ;
 
@@ -68,6 +80,23 @@ public class HexCell implements Serializable, IOptimisticLocking{
 	@Transient
 	private Enum<HexCellType> enumHexType = null; //weil der EnumType nun String ist. @Column wird verwendet, da sonst der technische Name enumAreaType als Tabellenspalte herhalten muss.
 
+	
+	//1:n Beziehung von HexCell zu Tile, damit soll man schneller abfragen können welche "Tiles" in einer HexCell stehen
+	 @Access(AccessType.FIELD)
+	 @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	 @JoinTable(
+			 name = "HEXCELL_TILE", //Required !
+			 //joinColumns = {@JoinColumn(name="mapAlias", nullable = false, unique=false), @JoinColumn(name="mapX", nullable = false, unique=false), @JoinColumn(name="mapY", nullable = false, unique = false)}, //private String sMapAlias = new String("TEST");  	private String sMapX = null; //X-KoordinatedId	private String sMapY = null; //Y-Koordinate
+			 joinColumns = {@JoinColumn(name="MAPALIAS", nullable=false,unique=false), @JoinColumn(name="SX", nullable=false,unique=false), @JoinColumn(name="SY", nullable=false,unique = false)}, //private String sMapAlias = new String("TEST");  	private String sMapX = null; //X-KoordinatedId	private String sMapY = null; //Y-Koordinate
+			 inverseJoinColumns= {@JoinColumn(name="id",nullable = false, unique = true)}
+			 )	
+	 //Aus dem Buch "PersistenceWith Hibernate (2016, second, S. 143)
+//	 A java.util.Collection property, initialized with a java.util.ArrayList.
+//	 This collection has bag semantics; duplicates are possible, but the order of elements
+//	 isn’t preserved. All JPA providers support this type.
+	 //<> ist aber est ab 1.7 erlaubt .   private Collection<Tile> objbagTile=new ArrayList<>(); //null;//private Set<Tile> objsetTile=new HashSet<Tile>(); //Performance: Bag statt Set und erzeuge nur ein Objekt wenn nötig
+	 private Collection<Tile> objbagTile=null;//new ArrayList<Tile>(); //null;//private Set<Tile> objsetTile=new HashSet<Tile>(); //Performance: Bag statt Set und erzeuge nur ein Objekt wenn nötig
+	 
 	
 	//Der Default Contruktor wird für JPA - Abfragen wohl benötigt
 	 public HexCell(){
@@ -244,7 +273,19 @@ public class HexCell implements Serializable, IOptimisticLocking{
 			this.setHexTypeObject(objType);
 		}
 		
-			
+		 @Transient //Ich will nur den Schlüssel abspeichern, mit der JOINColumn - Lösung
+		public Collection<Tile> getTileBag(){
+			 if(this.objbagTile==null){
+				 this.objbagTile = new ArrayList<Tile>();
+			 }
+			 return this.objbagTile;		 
+		 }
+		 public void setTileBag(Collection<Tile> objbagTile){
+			 if(this.objbagTile==null){
+				 this.objbagTile = objbagTile;
+			 }
+			 
+		 }	
 	
 	    
 }

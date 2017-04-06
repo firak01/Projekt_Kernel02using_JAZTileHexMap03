@@ -290,6 +290,50 @@ public class HexMapTHM extends KernelUseObjectZZZ implements ITileEventUserTHM {
 		}
 		
 		
+		/* ACHTUNG PERFORMANCEPROBLEM
+		 * LÖSUNGSANSATZ ALLES AUF EINMAL HOLEN....
+		 * STATT HIER DIE CellID aufzubauen und dann Zelle für Zelle zu suchen......
+		 * 
+		 * The most inefficient way is to do it by accessing the corresponding property and trigger the lazy loading. There are some really big drawbacks:
+
+    Imagine what happen if you need to retrieve multiple level of data.
+    If the result set is going to be big, then you are issuing n+1 SQLs to DB.
+
+The more proper way is to try to fetch all related data in one query (or a few).
+
+Just give an example using Spring-data like syntax (should be intuitive enough to port to handcraft Hibernate Repository/DAO):
+
+interface GroupRepository {
+    @Query("from Group")
+    List<Group> findAll();
+
+    @Query("from Group g left join fetch g.users")
+    List<Group> findAllWithUsers();
+}
+
+Join fetching is equally simple in Criteria API (though seems only left join is available), quoted from Hibernate doc:
+
+List cats = session.createCriteria(Cat.class)
+    .add( Restrictions.like("name", "Fritz%") )
+    .setFetchMode("mate", FetchMode.EAGER)
+    .setFetchMode("kittens", FetchMode.EAGER)
+    .list();
+		 */
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
 		if(!bBuildNew){
 		//Zwei verschachtelte Schleifen, Aussen: Solange wie es "Provinzen" gibt...
 		//                                                  Innen:   von 1 bis maximaleSpaltenanzahl...
@@ -312,26 +356,26 @@ public class HexMapTHM extends KernelUseObjectZZZ implements ITileEventUserTHM {
 			if(objCellTemp==null){
 				System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": Zelle mit x/Y in Tabelle EINS NICHT gefunden (" + sX + "/" + sY + ")");
 				
-				//Wieder erwarten, da es doch die Datenbank gibt die neue Zelle erstellen.
-				//Das ist momentan noch so wie beim erstmaligen Erstellen.
-				if((sX.equals("5") & sY.equals("5")) | (sX.equals("4") & sY.equals("5")) | (sX.equals("4") & sY.equals("6")) | (sX.equals("4") & sY.equals("7"))  ){
-					//OZEAN					
-					//Aretype nun als ENUMERATION objCellTemp = new AreaCell(new CellId("EINS", sX, sY), AreaTypeTHM.OZEAN);
-					objCellTemp = new AreaCell(new CellId("EINS", sX, sY), AreaCellType.OCEAN);
-					objCellThmTemp = new  AreaCellTHM(this.getKernelObject(), this,  objCellTemp, this.getSideLength());  //ToDo: Das sollen dann erst "Areas" werden, dh. mit Geländeinformationen, Danach "Provinzen" mit Gebäudeinfos/Armeeinfos
-					/*TODO Hintergrundbild
-					 *  ImageIcon background = new ImageIcon("Water.png");
-	    				objCellTemp.setIcon(background);
-					 */
-				}else{
-					//LAND
-					objCellTemp = new AreaCell(new CellId("EINS", sX, sY), AreaCellType.LAND);
-					objCellThmTemp = new  AreaCellTHM(this.getKernelObject(), this,  objCellTemp, this.getSideLength());  //ToDo: Dass sollen dann erst "Areas" werden, dh. mit Gel�ndeinformationen, Danach "Provinzen" mit Geb�udeinfos/Armeeinfos
-					/*TODO Hintergrundbild
-					 *  ImageIcon background = new ImageIcon("Grass.png");
-	    				objCellTemp.setIcon(background);
-					 */
-				}
+//				//Wieder erwarten, da es doch die Datenbank gibt die neue Zelle erstellen.
+//				//Das ist momentan noch so wie beim erstmaligen Erstellen.
+//				if((sX.equals("5") & sY.equals("5")) | (sX.equals("4") & sY.equals("5")) | (sX.equals("4") & sY.equals("6")) | (sX.equals("4") & sY.equals("7"))  ){
+//					//OZEAN					
+//					//Aretype nun als ENUMERATION objCellTemp = new AreaCell(new CellId("EINS", sX, sY), AreaTypeTHM.OZEAN);
+//					objCellTemp = new AreaCell(new CellId("EINS", sX, sY), AreaCellType.OCEAN);
+//					objCellThmTemp = new  AreaCellTHM(this.getKernelObject(), this,  objCellTemp, this.getSideLength());  //ToDo: Das sollen dann erst "Areas" werden, dh. mit Geländeinformationen, Danach "Provinzen" mit Gebäudeinfos/Armeeinfos
+//					/*TODO Hintergrundbild
+//					 *  ImageIcon background = new ImageIcon("Water.png");
+//	    				objCellTemp.setIcon(background);
+//					 */
+//				}else{
+//					//LAND
+//					objCellTemp = new AreaCell(new CellId("EINS", sX, sY), AreaCellType.LAND);
+//					objCellThmTemp = new  AreaCellTHM(this.getKernelObject(), this,  objCellTemp, this.getSideLength());  //ToDo: Dass sollen dann erst "Areas" werden, dh. mit Gel�ndeinformationen, Danach "Provinzen" mit Geb�udeinfos/Armeeinfos
+//					/*TODO Hintergrundbild
+//					 *  ImageIcon background = new ImageIcon("Grass.png");
+//	    				objCellTemp.setIcon(background);
+//					 */
+//				}
 				
 			}else{
 				System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": Zelle mit x/Y in Tabelle EINS GEFUNDEN (" + sX + "/" + sY + ")");
@@ -343,23 +387,26 @@ public class HexMapTHM extends KernelUseObjectZZZ implements ITileEventUserTHM {
     				objCellTemp.setIcon(background);
 				 */
 				
+				
+				//TODO: Die Zelle soll ein eigenes Layout bekommen, das die Spielsteine automatisch anordnet.
+				objCellThmTemp.setLayout(null);
+				
+				//Am MoveEventBroker registrieren
+				objTileMoveEventBroker.addListenerTileMoved(objCellThmTemp);
+				
+				//20130630: Hier am MetaEventBroker registrieren
+				objTileMetaEventBroker.addListenerTileMeta(objCellThmTemp);
+				
+				//###############
+				  //Die Zelle in eine HashMap packen, die für´s UI verwendet wird				
+				  hmCell.put(sX, sY, objCellThmTemp);
+				  
+				  iNrOfHexesX++;
+				  iNrOfHexes++; //Zelle zur Summe hinzufügen		
+				
 			}
 					
-			//TODO: Die Zelle soll ein eigenes Layout bekommen, das die Spielsteine automatisch anordnet.
-			objCellThmTemp.setLayout(null);
 			
-			//Am MoveEventBroker registrieren
-			objTileMoveEventBroker.addListenerTileMoved(objCellThmTemp);
-			
-			//20130630: Hier am MetaEventBroker registrieren
-			objTileMetaEventBroker.addListenerTileMeta(objCellThmTemp);
-			
-			//###############
-			  //Die Zelle in eine HashMap packen, die für´s UI verwendet wird				
-			  hmCell.put(sX, sY, objCellThmTemp);
-			  
-			  iNrOfHexesX++;
-			  iNrOfHexes++; //Zelle zur Summe hinzufügen			
 		}//End for iX
 		iNrOfHexesY++;
 		}while(iY< this.getRowMax());
@@ -380,7 +427,7 @@ public class HexMapTHM extends KernelUseObjectZZZ implements ITileEventUserTHM {
 	
 	
 	//LÖSCHEN, STEUERE ÜBER DIE DAO KLASSEN
-	private boolean fillMap_readCreated(HibernateContextProviderTHM objContextHibernate, EntityManager em, KernelJPanelCascadedZZZ panelMap) throws ExceptionZZZ{
+	private boolean fillMap_readCreated_TODO_LOESCHEN(HibernateContextProviderTHM objContextHibernate, EntityManager em, KernelJPanelCascadedZZZ panelMap) throws ExceptionZZZ{
 		boolean bReturn = false;
 		main:{
 			int iNrOfHexes = 0;	
@@ -560,6 +607,7 @@ public class HexMapTHM extends KernelUseObjectZZZ implements ITileEventUserTHM {
 					if(bUseTestArea && sX.equals("1") && sY.equals("2")){
 						TroopFleet objTroopTemp = new TroopFleet(new TileId("EINS", "1", "FLEET UNIQUE " + sY));
 						//momentan wird noch ein BLOB gespeichert. ERst mal die LID in der HEXCell generieren lassen objTroopTemp.setHexCell(objCellTemp); //wg. 1:1 Beziehung
+						//TODO GOON: Die Validierung auf ein gültiges Feld in einen Event der Persistierung packen, siehe Buch..... Dannn kann man auch wieer richtig das falsche Hinzufügen testen 
 						
 						FleetTileTHM objFleetTemp = new FleetTileTHM(panelMap, objTileMoveEventBroker, sX, sY, this.getSideLength());
 						
@@ -574,7 +622,10 @@ public class HexMapTHM extends KernelUseObjectZZZ implements ITileEventUserTHM {
 					if(sX.equals("1") && sY.equals("2")  | (sX.equals("1") & sY.equals("3")) | (sX.equals("1") & sY.equals("4"))){
 						TroopArmy objTroopTemp = new TroopArmy(new TileId("EINS", "1", "ARMY UNIQUE " + sY));//TODO GOON 20170405: sY als Uniquename zu verwenden ist nur heuristisch.
 						objTroopTemp.setHexCell(objCellTemp); //wg. 1:1 Beziehung
-													
+						
+						//20170406: Füge diese Army der HexCell hinzu //wg. 1:n Beziehung
+						objCellTemp.getTileBag().add(objTroopTemp);
+						
 						//TODO: Die TroopArmy noch an das UI-verwendete Objekt weitergeben ################
 						ArmyTileTHM objArmyTemp = new ArmyTileTHM(panelMap, objTileMoveEventBroker, sX, sY, this.getSideLength());
 						
@@ -586,6 +637,9 @@ public class HexMapTHM extends KernelUseObjectZZZ implements ITileEventUserTHM {
 					}else if(sX.equals("5")&& sY.equals("5")){
 						TroopFleet objTroopTemp = new TroopFleet(new TileId("EINS", "1", "FLEET UNIQUE " + sY));
 						objTroopTemp.setHexCell(objCellTemp); //wg. 1:1 Beziehung
+						
+						//20170406: Füge diese Army der HexCell hinzu //wg. 1:n Beziehung
+						objCellTemp.getTileBag().add(objTroopTemp);
 						
 						//TODO: Die TroopArmy noch an das UI-verwendete Objekt weitergeben ################											
 						FleetTileTHM objFleetTemp = new FleetTileTHM(panelMap, objTileMoveEventBroker, sX, sY, this.getSideLength());
@@ -600,6 +654,7 @@ public class HexMapTHM extends KernelUseObjectZZZ implements ITileEventUserTHM {
 					boolean bUseTestOccupied = false;
 					if(bUseTestOccupied && sX.equals("1") && sY.equals("2")){
 						TroopArmy objTroopTemp = new TroopArmy(new TileId("EINS", "1","ARMY UNIQUE " + sY));
+						//TODO GOON: Die Validierung auf ein gültiges Feld in einen Event der Persistierung packen, siehe Buch..... Dannn kann man auch wieer richtig das falsche Hinzufügen testen 
 						
 						ArmyTileTHM objArmyTemp = new ArmyTileTHM(panelMap, objTileMoveEventBroker, sX, sY, this.getSideLength());
 						

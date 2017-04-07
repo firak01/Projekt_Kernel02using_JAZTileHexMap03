@@ -214,7 +214,9 @@ public class HexMapTHM extends KernelUseObjectZZZ implements ITileEventUserTHM {
 				
 				//20170316: Steuere über die DAO-Klassen
 				//Fall: Datenbank existiert, aber sind da auch alle Zellen drin enthalten?
+				//boolean bSuccess = fillMap_readCreated_IMPERFORMANT_EXAMPLE(objContextHibernate, panelMap);
 				boolean bSuccess = fillMap_readCreated(objContextHibernate, panelMap);
+				
 				
 				bFillDatabaseNew = !bSuccess;
 			}else{
@@ -243,150 +245,80 @@ public class HexMapTHM extends KernelUseObjectZZZ implements ITileEventUserTHM {
 	private boolean fillMap_readCreated(HibernateContextProviderTHM objContextHibernate, KernelJPanelCascadedZZZ panelMap) throws ExceptionZZZ{
 		boolean bReturn = false;
 		main:{
-			int iNrOfHexes = 0;
-			int iNrOfHexesX = 0;	
-			int iNrOfHexesY = 0;
-			boolean bBuildNew = true;
+				
 			
-			//Query objQuery = em.createQuery("SELECT MAX(c.sMapX) FROM HexCell c");//Fehler: could not resolve property: sMapX of: tryout.hibernate.HexCell 
-			//Query objQuery = em.createQuery("SELECT MAX(c.MapX) FROM HexCell c");//Fehler: could not resolve property: MapX of: tryout.hibernate.HexCell
-			//Query objQuery = em.createQuery("SELECT MAX(c.x) FROM HexCell c");//Fehler: could not resolve property: x of: tryout.hibernate.HexCell
-			//Query objQuery = em.createQuery("SELECT MAX(c.X) FROM HexCell c");//Fehler: could not resolve property: X of: tryout.hibernate.HexCell
+			//ACHTUNG NICHT LOESCHEN: Diese DAO Methoden funktionieren. und es war kompliziert genug hinzubekommen.
+			//20170316: Steuere das über die DAO-Klassen
+			//WENN MAN über die Liste der AreaCells geht (wg. Performance) dann braucht man dies nicht.
+	//		AreaCellDao daoAreaCell = new AreaCellDao(objContextHibernate);			
+	//		int iMaxMapX = daoAreaCell.computeMaxMapX(); 
+	//		System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": iMaxMapX = " + iMaxMapX);
+	//				
+	//		int iMaxMapY = daoAreaCell.computeMaxMapY(); 
+	//		System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": iMaxMapY = " + iMaxMapY);
+	//		
+	//		
+	//		//WENN Die Anzahl der Zellen in der Datenbank leer ist, dann diese neu aufbauen/füllen
+	//		if(iMaxMapX<=0 || iMaxMapY <=0){
+	//			bBuildNew = true;
+	//		}else{
+	//			bBuildNew = false;
+	//			this.setColumnMax(iMaxMapX);
+	//			this.setRowMax(iMaxMapY);
+	//		}
 			
-		//TODO: Mache ein DAO Objekt und dort diesen HQL String hinterlegen.
-		//TODO: Anzahl der echten Elemente aus einer noch zu erstellenden Hibernate-ZKernelUtility-Methode holen, sowie eine ResultList OHNE NULL Objekte.
-		//String sQueryTemp = "SELECT MAX(c.id.sMapX) FROM HexCell c";
-		//um einen Integer Wert zu bekommen die Propert naxh HexCell geholt und nicht mehr über id gehen.
-		//String sQueryTemp = "SELECT MAX(c.mapX) FROM HexCell c";
-		
-		
-		//20170316: Steuere über DAO-Klassen
-		//Query objQuery = em.createQuery(sQueryTemp);		
-		//Object objSingle =objQuery.getSingleResult();
-//		if(objSingle!=null){
-//			System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": Objekt als Single Result der Query " + objSingle.hashCode());
-//		}else{
-//			System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": NULL Objekt als Single Result der Query " + sQueryTemp);
-//		}
-				
-		//List objResult = objQuery.getResultList();
-		
-		//20170316: Steuere das über die DAO-Klassen
-		AreaCellDao daoAreaCell = new AreaCellDao(objContextHibernate);			
-		int iMaxMapX = daoAreaCell.computeMaxMapX(); 
-		System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": iMaxMapX = " + iMaxMapX);
-				
-		int iMaxMapY = daoAreaCell.computeMaxMapY(); 
-		System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": iMaxMapY = " + iMaxMapY);
-		
-		
-		//WENN Die Anzahl der Zellen in der Datenbank leer ist, dann diese neu aufbauen/füllen
-		if(iMaxMapX<=0 || iMaxMapY <=0){
-			bBuildNew = true;
-		}else{
-			bBuildNew = false;
-			this.setColumnMax(iMaxMapX);
-			this.setRowMax(iMaxMapY);
-		}
-		
-		
-		/* ACHTUNG PERFORMANCEPROBLEM
-		 * LÖSUNGSANSATZ ALLES AUF EINMAL HOLEN....
-		 * STATT HIER DIE CellID aufzubauen und dann Zelle für Zelle zu suchen......
-		 * 
-		 * The most inefficient way is to do it by accessing the corresponding property and trigger the lazy loading. There are some really big drawbacks:
-
-    Imagine what happen if you need to retrieve multiple level of data.
-    If the result set is going to be big, then you are issuing n+1 SQLs to DB.
-
-The more proper way is to try to fetch all related data in one query (or a few).
-
-Just give an example using Spring-data like syntax (should be intuitive enough to port to handcraft Hibernate Repository/DAO):
-
-interface GroupRepository {
-    @Query("from Group")
-    List<Group> findAll();
-
-    @Query("from Group g left join fetch g.users")
-    List<Group> findAllWithUsers();
-}
-
-Join fetching is equally simple in Criteria API (though seems only left join is available), quoted from Hibernate doc:
-
-List cats = session.createCriteria(Cat.class)
-    .add( Restrictions.like("name", "Fritz%") )
-    .setFetchMode("mate", FetchMode.EAGER)
-    .setFetchMode("kittens", FetchMode.EAGER)
-    .list();
-		 */
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		if(!bBuildNew){
-		//Zwei verschachtelte Schleifen, Aussen: Solange wie es "Provinzen" gibt...
-		//                                                  Innen:   von 1 bis maximaleSpaltenanzahl...
-		int iY = 0;
-		do{//die maximale Zeilenzahl ist noch hart verdrahtet, soll sich aber später automatisch ergeben.....
-		iY++;
-		Integer intY = new Integer(iY);
-		String sY = intY.toString();
-		
-		for(int iX=1; iX <= this.getColumnMax(); iX++){
-			Integer intX = new Integer(iX);				
-			String sX = intX.toString();
 			
-			//################			
-			//20170319: Nun wird eine "Landschaft ausgelesen und anschliessend gebaut"   HexCellTHM objCellTemp = new HexCellTHM(this.getKernelObject(), panelMap,  sX, sY, this.getSideLength());  //ToDo: Dass sollen dann erst "Areas" werden, dh. mit Gel�ndeinformationen, Danach "Provinzen" mit Geb�udeinfos/Armeeinfos
-			AreaCellTHM objCellThmTemp; //Die Zelle für das UI
+			/* ACHTUNG PERFORMANCEPROBLEM
+			 * LÖSUNGSANSATZ ALLES AUF EINMAL HOLEN....
+			 * STATT HIER DIE CellID aufzubauen und dann Zelle für Zelle zu suchen......
+			 * 
+			 * The most inefficient way is to do it by accessing the corresponding property and trigger the lazy loading. There are some really big drawbacks:
+	
+	    Imagine what happen if you need to retrieve multiple level of data.
+	    If the result set is going to be big, then you are issuing n+1 SQLs to DB.
+	
+	The more proper way is to try to fetch all related data in one query (or a few).
+	
+	Just give an example using Spring-data like syntax (should be intuitive enough to port to handcraft Hibernate Repository/DAO):
+	
+	interface GroupRepository {
+	    @Query("from Group")
+	    List<Group> findAll();
+	
+	    @Query("from Group g left join fetch g.users")
+	    List<Group> findAllWithUsers();
+	}
+	
+	Join fetching is equally simple in Criteria API (though seems only left join is available), quoted from Hibernate doc:
+	
+	List cats = session.createCriteria(Cat.class)
+	    .add( Restrictions.like("name", "Fritz%") )
+	    .setFetchMode("mate", FetchMode.EAGER)
+	    .setFetchMode("kittens", FetchMode.EAGER)
+	    .list();
+			 */
 			
-			CellId primaryKey = new CellId("EINS", sX, sY);//Die vorhandenen Schlüssel Klasse
-			AreaCell objCellTemp = daoAreaCell.findByKey(primaryKey);			
-			if(objCellTemp==null){
-				System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": Zelle mit x/Y in Tabelle EINS NICHT gefunden (" + sX + "/" + sY + ")");
-				
-//				//Wieder erwarten, da es doch die Datenbank gibt die neue Zelle erstellen.
-//				//Das ist momentan noch so wie beim erstmaligen Erstellen.
-//				if((sX.equals("5") & sY.equals("5")) | (sX.equals("4") & sY.equals("5")) | (sX.equals("4") & sY.equals("6")) | (sX.equals("4") & sY.equals("7"))  ){
-//					//OZEAN					
-//					//Aretype nun als ENUMERATION objCellTemp = new AreaCell(new CellId("EINS", sX, sY), AreaTypeTHM.OZEAN);
-//					objCellTemp = new AreaCell(new CellId("EINS", sX, sY), AreaCellType.OCEAN);
-//					objCellThmTemp = new  AreaCellTHM(this.getKernelObject(), this,  objCellTemp, this.getSideLength());  //ToDo: Das sollen dann erst "Areas" werden, dh. mit Geländeinformationen, Danach "Provinzen" mit Gebäudeinfos/Armeeinfos
-//					/*TODO Hintergrundbild
-//					 *  ImageIcon background = new ImageIcon("Water.png");
-//	    				objCellTemp.setIcon(background);
-//					 */
-//				}else{
-//					//LAND
-//					objCellTemp = new AreaCell(new CellId("EINS", sX, sY), AreaCellType.LAND);
-//					objCellThmTemp = new  AreaCellTHM(this.getKernelObject(), this,  objCellTemp, this.getSideLength());  //ToDo: Dass sollen dann erst "Areas" werden, dh. mit Gel�ndeinformationen, Danach "Provinzen" mit Geb�udeinfos/Armeeinfos
-//					/*TODO Hintergrundbild
-//					 *  ImageIcon background = new ImageIcon("Grass.png");
-//	    				objCellTemp.setIcon(background);
-//					 */
-//				}
-				
-			}else{
-				System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": Zelle mit x/Y in Tabelle EINS GEFUNDEN (" + sX + "/" + sY + ")");
-				
-				//Die in der Datenbank gefundenen Zelle in das UI bringen
+		//Steuerung über DAO - Klassen
+		AreaCellDao daoAreaCell = new AreaCellDao(objContextHibernate);	
+			
+		//Es soll performanter sein erst die ganze Liste zu holen (wg. Lazy), statt Über die ID jede Zelle einzeln.
+		List<AreaCell>listAreaCell = daoAreaCell.findLazyAll(0, -1);
+		System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": Anzahl gefundener HexCells = " + listAreaCell.size());
+		
+		AreaCellTHM objCellThmTemp; //Die in der Datenbank gefundenen Zelle in das UI bringen
+		int iNrOfHexes=0;
+		int iNrOfHexesX=-1;
+		int iNrOfHexesY=-1;
+		for(AreaCell objCell : listAreaCell){
+			String sHexTypeSub = objCell.getAreaType(); //LA= LAND, OC=OCEAN       //AR=Area objCell.getHexType();
+			if(sHexTypeSub.equalsIgnoreCase("OC")){
+				AreaCellOcean objCellTemp = (AreaCellOcean) objCell;			
 				objCellThmTemp = new  AreaCellTHM(this.getKernelObject(), this,  objCellTemp, this.getSideLength());  //ToDo: Das sollen dann erst "Areas" werden, dh. mit Geländeinformationen, Danach "Provinzen" mit Gebäudeinfos/Armeeinfos
-				/*TODO Hintergrundbild. Das muss natürlich abhängt vom Typ der Zelle sein.
-				 *  ImageIcon background = new ImageIcon("Grass.png");
-    				objCellTemp.setIcon(background);
-				 */
-				
+	
+			/*TODO Hintergrundbild
+			 *  ImageIcon background = new ImageIcon("Water.png");
+				objCellTemp.setIcon(background);
+			 */
 				
 				//TODO: Die Zelle soll ein eigenes Layout bekommen, das die Spielsteine automatisch anordnet.
 				objCellThmTemp.setLayout(null);
@@ -398,49 +330,266 @@ List cats = session.createCriteria(Cat.class)
 				objTileMetaEventBroker.addListenerTileMeta(objCellThmTemp);
 				
 				//###############
-				  //Die Zelle in eine HashMap packen, die für´s UI verwendet wird				
-				  hmCell.put(sX, sY, objCellThmTemp);
-				  
-				  iNrOfHexesX++;
-				  iNrOfHexes++; //Zelle zur Summe hinzufügen		
+				//Die Zelle in eine HashMap packen, die für´s UI verwendet wird	
+				int iX = objCellTemp.getMapX();
+				Integer intX = new Integer(iX);			
+				String sX = intX.toString();
+				if(iX>iNrOfHexesX) iNrOfHexesX = iX; //Auch ein Weg die Kartenbreite zu ermitteln, ohne eine zusätzliche Abfrage zu starten.
 				
-			}
-					
-			
-		}//End for iX
-		iNrOfHexesY++;
-		}while(iY< this.getRowMax());
-		
+				
+				int iY = objCellTemp.getMapY();
+				Integer intY = new Integer(iY);
+				String sY = intY.toString();
+				if(iY>iNrOfHexesY) iNrOfHexesY = iY; //Auch ein Weg die Kartenbreite zu ermitteln, ohne eine zusätzliche Abfrage zu starten.
+				
+				hmCell.put(sX, sY, objCellThmTemp);
+	
+				iNrOfHexes++; //Zelle zur Summe hinzufügen		
+	
+	
+			}else if(sHexTypeSub.equalsIgnoreCase("LA")){
+				AreaCellLand objCellTemp = (AreaCellLand) objCell;			
+				objCellThmTemp = new  AreaCellTHM(this.getKernelObject(), this,  objCellTemp, this.getSideLength());  //ToDo: Dass sollen dann erst "Areas" werden, dh. mit Gel�ndeinformationen, Danach "Provinzen" mit Geb�udeinfos/Armeeinfos
+				
+				/*TODO Hintergrundbild. Das muss natürlich abhängt vom Typ der Zelle sein.
+				 *  ImageIcon background = new ImageIcon("Grass.png");
+					objCeThmlTemp.setIcon(background);
+				 */
+				
+				//TODO: Die Zelle soll ein eigenes Layout bekommen, das die Spielsteine automatisch anordnet.
+				objCellThmTemp.setLayout(null);
+				
+				//Am MoveEventBroker registrieren
+				objTileMoveEventBroker.addListenerTileMoved(objCellThmTemp);
+				
+				//20130630: Hier am MetaEventBroker registrieren
+				objTileMetaEventBroker.addListenerTileMeta(objCellThmTemp);
+				
+				//###############
+				//Die Zelle in eine HashMap packen, die für´s UI verwendet wird	
+				int iX = objCellTemp.getMapX();
+				Integer intX = new Integer(iX);			
+				String sX = intX.toString();
+				if(iX>iNrOfHexesX) iNrOfHexesX = iX; //Auch ein Weg die Kartenbreite zu ermitteln, ohne eine zusätzliche Abfrage zu starten.
+				
+				int iY = objCellTemp.getMapY();
+				Integer intY = new Integer(iY);
+				String sY = intY.toString();
+				if(iY>iNrOfHexesY) iNrOfHexesY = iY; //Auch ein Weg die Kartenbreite zu ermitteln, ohne eine zusätzliche Abfrage zu starten.
+				
+				hmCell.put(sX, sY, objCellThmTemp);
+	
+				iNrOfHexes++; //Zelle zur Summe hinzufügen		
+			}else{
+				System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": Unbekanntes Geländeobjekt. '" + sHexTypeSub + "'");
+			}		
+		}// end for AREA
 		
 		this.setColumnMax(iNrOfHexesX);
 		this.setRowMax(iNrOfHexesY);
-		}//end if !bBuildNew
 		
+		//TODO GOON: nun Liste aller Tiles (FLEET / ARMY) holen. Die Idee ist, das dies schneller ist, als bei jeder Zelle abzufragen "gibt es eine Armee/Flotte".
+		//Dann ausgehend von der Armee/Flotte die Zelle ermitteln.
+		/*
+		 * TroopFleet objTroopTemp = new TroopFleet(new TileId("EINS", "1", "FLEET UNIQUE " + sY));
+						//momentan wird noch ein BLOB gespeichert. ERst mal die LID in der HEXCell generieren lassen objTroopTemp.setHexCell(objCellTemp); //wg. 1:1 Beziehung
+						//TODO GOON: Die Validierung auf ein gültiges Feld in einen Event der Persistierung packen, siehe Buch..... Dannn kann man auch wieer richtig das falsche Hinzufügen testen 
+						
+						FleetTileTHM objFleetTemp = new FleetTileTHM(panelMap, objTileMoveEventBroker, sX, sY, this.getSideLength());
+						
+						EventTileCreatedInCellTHM objEventTileCreated = new EventTileCreatedInCellTHM(objFleetTemp, 1, sX, sY);
+						objTileMetaEventBroker.fireEvent(objEventTileCreated);
+						
+		 */
+		
+		//Steuerung über DAO - Klassen
+		TroopDao daoTroop = new TroopDao(objContextHibernate);	
+			
+		//Es soll performanter sein erst die ganze Liste zu holen (wg. Lazy), statt Über die ID jede Zelle einzeln.
+		List<Troop>listTroop = daoTroop.findLazyAll(0, -1);
+		System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": Anzahl gefundener Truppen = " + listTroop.size());
+	
+		for(Troop objTroop : listTroop){
+			String sTroopTypeSub = objTroop.getTroopType();
+			if(sTroopTypeSub.equalsIgnoreCase("AR")){
+				TroopArmy objTroopTemp = (TroopArmy) objTroop;	
+				
+				int iX = objTroopTemp.getMapX();
+				Integer intX = new Integer(iX);			
+				String sX = intX.toString();
+				
+				int iY = objTroopTemp.getMapY();
+				Integer intY = new Integer(iY);
+				String sY = intY.toString();				
+				
+				ArmyTileTHM objArmyTemp = new ArmyTileTHM(panelMap, objTileMoveEventBroker, sX, sY, this.getSideLength());
+				EventTileCreatedInCellTHM objEventTileCreated = new EventTileCreatedInCellTHM(objArmyTemp, 1, sX, sY);
+				objTileMetaEventBroker.fireEvent(objEventTileCreated);
+	
+			}else if(sTroopTypeSub.equalsIgnoreCase("FL")){
+				TroopFleet objTroopTemp = (TroopFleet) objTroop;			
+				
+				int iX = objTroopTemp.getMapX();
+				Integer intX = new Integer(iX);			
+				String sX = intX.toString();
+				
+				int iY = objTroopTemp.getMapY();
+				Integer intY = new Integer(iY);
+				String sY = intY.toString();	
+				
+				FleetTileTHM objFleetTemp = new FleetTileTHM(panelMap, objTileMoveEventBroker, sX, sY, this.getSideLength());
+				EventTileCreatedInCellTHM objEventTileCreated = new EventTileCreatedInCellTHM(objFleetTemp, 1, sX, sY);
+				objTileMetaEventBroker.fireEvent(objEventTileCreated);
+	
+			} else{
+				System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": Unbekannter Truppentyp = " + sTroopTypeSub);				
+			}
+		} // end for TROOP (FLEET / ARMY)
+		
+		//################################################################################################
 		if(iNrOfHexes<=0){
 			bReturn = false;// ist ja noch nix ausgelesen worden, warum auch immer a) Datenbank existiert ohne Inhalt, b) Keine Objekte für den Schlüssel gefunden.
 		}else{
 			bReturn = true;
 		}
-		}//main:
-		return bReturn;
+	}//main:
+	return bReturn;
 }
 	
 	
-	//LÖSCHEN, STEUERE ÜBER DIE DAO KLASSEN
-	private boolean fillMap_readCreated_TODO_LOESCHEN(HibernateContextProviderTHM objContextHibernate, EntityManager em, KernelJPanelCascadedZZZ panelMap) throws ExceptionZZZ{
+	
+	//20170316: Steuere über die DAO-Klassen
+		private boolean fillMap_readCreated_IMPERFORMANT_EXAMPLE(HibernateContextProviderTHM objContextHibernate, KernelJPanelCascadedZZZ panelMap) throws ExceptionZZZ{
+			boolean bReturn = false;
+			main:{
+				int iNrOfHexes = 0;
+				int iNrOfHexesX = 0;	
+				int iNrOfHexesY = 0;
+				boolean bBuildNew = true;
+							
+			//ACHTUNG NICHT LOESCHEN: Diese DAO Methoden funktionieren. und es war kompliziert genug hinzubekommen.
+			//20170316: Steuere das über die DAO-Klassen
+			//WENN MAN über die Liste der AreaCells geht (wg. Performance) dann braucht man dies nicht.
+			AreaCellDao daoAreaCell = new AreaCellDao(objContextHibernate);			
+			int iMaxMapX = daoAreaCell.computeMaxMapX(); 
+			System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": iMaxMapX = " + iMaxMapX);
+					
+			int iMaxMapY = daoAreaCell.computeMaxMapY(); 
+			System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": iMaxMapY = " + iMaxMapY);
+						
+			//WENN Die Anzahl der Zellen in der Datenbank leer ist, dann diese neu aufbauen/füllen
+			if(iMaxMapX<=0 || iMaxMapY <=0){
+				bBuildNew = true;
+			}else{
+				bBuildNew = false;
+				this.setColumnMax(iMaxMapX);
+				this.setRowMax(iMaxMapY);
+			}
+			
+			/* ACHTUNG PERFORMANCEPROBLEM
+			 * LÖSUNGSANSATZ ALLES AUF EINMAL HOLEN....
+			 * STATT HIER DIE CellID aufzubauen und dann Zelle für Zelle zu suchen......
+			 * 
+			 * The most inefficient way is to do it by accessing the corresponding property and trigger the lazy loading. There are some really big drawbacks:
+
+	    Imagine what happen if you need to retrieve multiple level of data.
+	    If the result set is going to be big, then you are issuing n+1 SQLs to DB.
+
+	The more proper way is to try to fetch all related data in one query (or a few).
+
+	Just give an example using Spring-data like syntax (should be intuitive enough to port to handcraft Hibernate Repository/DAO):
+
+	interface GroupRepository {
+	    @Query("from Group")
+	    List<Group> findAll();
+
+	    @Query("from Group g left join fetch g.users")
+	    List<Group> findAllWithUsers();
+	}
+
+	Join fetching is equally simple in Criteria API (though seems only left join is available), quoted from Hibernate doc:
+
+	List cats = session.createCriteria(Cat.class)
+	    .add( Restrictions.like("name", "Fritz%") )
+	    .setFetchMode("mate", FetchMode.EAGER)
+	    .setFetchMode("kittens", FetchMode.EAGER)
+	    .list();
+			 */
+		
+			
+			if(!bBuildNew){
+			//Zwei verschachtelte Schleifen, Aussen: Solange wie es "Provinzen" gibt...
+			//                                                  Innen:   von 1 bis maximaleSpaltenanzahl...
+			int iY = 0;
+			do{//die maximale Zeilenzahl ist noch hart verdrahtet, soll sich aber später automatisch ergeben.....
+			iY++;
+			Integer intY = new Integer(iY);
+			String sY = intY.toString();
+			
+			for(int iX=1; iX <= this.getColumnMax(); iX++){
+				Integer intX = new Integer(iX);				
+				String sX = intX.toString();
+				
+				//################			
+				//20170319: Nun wird eine "Landschaft ausgelesen und anschliessend gebaut"   HexCellTHM objCellTemp = new HexCellTHM(this.getKernelObject(), panelMap,  sX, sY, this.getSideLength());  //ToDo: Dass sollen dann erst "Areas" werden, dh. mit Gel�ndeinformationen, Danach "Provinzen" mit Geb�udeinfos/Armeeinfos
+				AreaCellTHM objCellThmTemp; //Die Zelle für das UI
+				
+				CellId primaryKey = new CellId("EINS", sX, sY);//Die vorhandenen Schlüssel Klasse
+				AreaCell objCellTemp = daoAreaCell.findByKey(primaryKey);			
+				if(objCellTemp==null){
+					System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": Zelle mit x/Y in Tabelle EINS NICHT gefunden (" + sX + "/" + sY + ")");					
+				}else{
+					System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": Zelle mit x/Y in Tabelle EINS GEFUNDEN (" + sX + "/" + sY + ")");
+					
+					//Die in der Datenbank gefundenen Zelle in das UI bringen
+					objCellThmTemp = new  AreaCellTHM(this.getKernelObject(), this,  objCellTemp, this.getSideLength());  //ToDo: Das sollen dann erst "Areas" werden, dh. mit Geländeinformationen, Danach "Provinzen" mit Gebäudeinfos/Armeeinfos
+					/*TODO Hintergrundbild. Das muss natürlich abhängt vom Typ der Zelle sein.
+					 *  ImageIcon background = new ImageIcon("Grass.png");
+	    				objCellTemp.setIcon(background);
+					 */
+					
+					
+					//TODO: Die Zelle soll ein eigenes Layout bekommen, das die Spielsteine automatisch anordnet.
+					objCellThmTemp.setLayout(null);
+					
+					//Am MoveEventBroker registrieren
+					objTileMoveEventBroker.addListenerTileMoved(objCellThmTemp);
+					
+					//20130630: Hier am MetaEventBroker registrieren
+					objTileMetaEventBroker.addListenerTileMeta(objCellThmTemp);
+					
+					//###############
+					  //Die Zelle in eine HashMap packen, die für´s UI verwendet wird				
+					  hmCell.put(sX, sY, objCellThmTemp);
+					  
+					  iNrOfHexesX++;
+					  iNrOfHexes++; //Zelle zur Summe hinzufügen		
+					
+				}
+						
+				
+			}//End for iX
+			iNrOfHexesY++;
+			}while(iY< this.getRowMax());
+			
+			
+			this.setColumnMax(iNrOfHexesX);
+			this.setRowMax(iNrOfHexesY);
+			}//end if !bBuildNew
+			
+			if(iNrOfHexes<=0){
+				bReturn = false;// ist ja noch nix ausgelesen worden, warum auch immer a) Datenbank existiert ohne Inhalt, b) Keine Objekte für den Schlüssel gefunden.
+			}else{
+				bReturn = true;
+			}
+			}//main:
+			return bReturn;
+	}
+	
+	private boolean fillMap_readCreated_ENTITYMANAGER_EXAMPLE_IMPERFORMANTER_ANSATZ(HibernateContextProviderTHM objContextHibernate, EntityManager em, KernelJPanelCascadedZZZ panelMap) throws ExceptionZZZ{
 		boolean bReturn = false;
 		main:{
 			int iNrOfHexes = 0;	
-			
-			//Query objQuery = em.createQuery("SELECT MAX(c.sMapX) FROM HexCell c");//Fehler: could not resolve property: sMapX of: tryout.hibernate.HexCell 
-			//Query objQuery = em.createQuery("SELECT MAX(c.MapX) FROM HexCell c");//Fehler: could not resolve property: MapX of: tryout.hibernate.HexCell
-			//Query objQuery = em.createQuery("SELECT MAX(c.x) FROM HexCell c");//Fehler: could not resolve property: x of: tryout.hibernate.HexCell
-			//Query objQuery = em.createQuery("SELECT MAX(c.X) FROM HexCell c");//Fehler: could not resolve property: X of: tryout.hibernate.HexCell
-			
-		//TODO: Mache ein DAO Objekt und dort diesen HQL String hinterlegen.
-		//TODO: Anzahl der echten Elemente aus einer noch zu erstellenden Hibernate-ZKernelUtility-Methode holen, sowie eine ResultList OHNE NULL Objekte.
-		//String sQueryTemp = "SELECT MAX(c.id.sMapX) FROM HexCell c";
-		//um einen Integer Wert zu bekommen die Propert naxh HexCell geholt und nicht mehr über id gehen.
 			
 			
 		//BEACHTE: VERWENDE HIER DEN ENTITY MANAGER
@@ -484,9 +633,6 @@ List cats = session.createCriteria(Cat.class)
 			
 		}//End for iX
 		}while(iY< this.getRowMax());
-		
-		
-		
 		
 		bReturn = false;// ist ja noch nix ausgelesen worden
 		

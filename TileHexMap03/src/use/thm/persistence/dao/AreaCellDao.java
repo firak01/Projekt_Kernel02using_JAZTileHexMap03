@@ -86,6 +86,14 @@ public class AreaCellDao extends GeneralDaoZZZ<AreaCell> {
 		int iReturn = -1;
 		main:{
 			try {
+				//Nur als Beispiel wie kompliziert es sein kann den korrekten String herauszubekommen:
+				//Query objQuery = em.createQuery("SELECT MAX(c.sMapX) FROM HexCell c");//Fehler: could not resolve property: sMapX of: tryout.hibernate.HexCell 
+				//Query objQuery = em.createQuery("SELECT MAX(c.MapX) FROM HexCell c");//Fehler: could not resolve property: MapX of: tryout.hibernate.HexCell
+				//Query objQuery = em.createQuery("SELECT MAX(c.x) FROM HexCell c");//Fehler: could not resolve property: x of: tryout.hibernate.HexCell
+				//Query objQuery = em.createQuery("SELECT MAX(c.X) FROM HexCell c");//Fehler: could not resolve property: X of: tryout.hibernate.HexCell
+			
+				
+				
 			String sQueryTemp = "SELECT MAX(c.mapX) FROM HexCell c";
 			
 			//VARIANTE 1)

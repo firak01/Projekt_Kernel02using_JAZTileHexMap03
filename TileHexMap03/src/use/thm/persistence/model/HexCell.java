@@ -89,7 +89,7 @@ public class HexCell implements Serializable, IOptimisticLocking{
 			 //joinColumns = {@JoinColumn(name="mapAlias", nullable = false, unique=false), @JoinColumn(name="mapX", nullable = false, unique=false), @JoinColumn(name="mapY", nullable = false, unique = false)}, //private String sMapAlias = new String("TEST");  	private String sMapX = null; //X-KoordinatedId	private String sMapY = null; //Y-Koordinate
 			 joinColumns = {@JoinColumn(name="MAPALIAS", nullable=false,unique=false), @JoinColumn(name="SX", nullable=false,unique=false), @JoinColumn(name="SY", nullable=false,unique = false)}, //private String sMapAlias = new String("TEST");  	private String sMapX = null; //X-KoordinatedId	private String sMapY = null; //Y-Koordinate
 			 inverseJoinColumns= {@JoinColumn(name="id",nullable = false, unique = true)}
-			 )	
+			 )
 	 //Aus dem Buch "PersistenceWith Hibernate (2016, second, S. 143)
 //	 A java.util.Collection property, initialized with a java.util.ArrayList.
 //	 This collection has bag semantics; duplicates are possible, but the order of elements

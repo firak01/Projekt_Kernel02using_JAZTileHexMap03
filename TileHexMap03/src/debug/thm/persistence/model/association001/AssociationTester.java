@@ -88,7 +88,7 @@ public class AssociationTester implements Serializable, IOptimisticLocking{
 	 @Id				
 	 @TableGenerator(name="lidGeneratorAssociation001", table="COMMON_FUER_IDGENERATOR_ASSOCIATION",pkColumnName="nutzende_Klasse_als_String", pkColumnValue="SequenceTester",valueColumnName="naechster_id_wert",  initialValue=1, allocationSize=1) //Merke @TableGenerator muss eindeutig im ganzen Projekt sein
 	 @GeneratedValue(strategy = GenerationType.TABLE, generator="lidGeneratorAssociation001")
-	 @Column(name="HAUPTID_INCREMENTIERT", nullable=false, unique=true, columnDefinition="INTEGER NOT NULL UNIQUE  DEFAULT 1") 
+	 @Column(name="HAUPTID_INKREMENTIERT", nullable=false, unique=true, columnDefinition="INTEGER NOT NULL UNIQUE  DEFAULT 1") 
 	 public int getKey(){
 		 return this.iMyTestSequence;
 	 }

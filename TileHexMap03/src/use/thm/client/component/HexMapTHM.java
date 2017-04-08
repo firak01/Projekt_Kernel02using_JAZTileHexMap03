@@ -193,35 +193,32 @@ public class HexMapTHM extends KernelUseObjectZZZ implements ITileEventUserTHM {
 			TileMetaEventBrokerTHM objTileMetaEventBroker = new TileMetaEventBrokerTHM(objKernel);
 			this.setTileMetaEventBroker(objTileMetaEventBroker);
 			
-			//TODO GOON: Die MapInformationen und die Informationen für Hexfelder sollen aus einer SQL Tabelle kommen. Das legt dann auch die Größe der Karte fest fest....
-			//TODO GOON: Wenn es schon Mapinformationen gibt (ggf. neu "Map Alias" beachten) dann soll die Karten nicht neu aufgebaut, sondern aus der SQL Datenbank ausgelesen werden.
-			//Verwende eine Komfortklasse:
-			//TODO GOON: Den Namen der Datenbank/des Schemas aus der Kernelkonfiguration holen.
+			//### THEMA PERSISTIERUNG IN EINER DATENBANK
+			//Die MapInformationen und die Informationen für Hexfelder sollen aus einer SQL Tabelle kommen. Das legt dann auch die Größe der Karte fest fest....
+			//Wenn es schon Mapinformationen gibt (ggf. neu "Map Alias" beachten) dann soll die Karten nicht neu aufgebaut, sondern aus der SQL Datenbank ausgelesen werden.
+            //Den Namen der Datenbank/des Schemas aus der Kernelkonfiguration holen.
 			HibernateContextProviderTHM objContextHibernate = new HibernateContextProviderTHM(this.getKernelObject());
 									
 			//Prüfe die Existenz der Datenbank ab. Ohne die erstellte Datenbank und die Erstellte Datenbanktabelle kommt es hier zu einem Fehler.			
 			boolean bDbExists = SQLiteUtilZZZ.databaseFileExists(objContextHibernate);									
 			if(bDbExists){
-				System.out.println("Datenbank existiert als Datei.");
+				System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": Datenbank existiert als Datei.");
 				objContextHibernate.getConfiguration().setProperty("hibernate.hbm2ddl.auto", "update");  //! Jetzt erst wird jede Tabelle über den Anwendungsstart hinaus gepseichert.				
 							
 				//Erzeuge den Entity Manager als Ausgangspunkt für die Abfragen. !!! Damit Hibernate mit JPA funktioniert, braucht man die Datei META-INF\persistence.xml. Darin wird die persistence-unit angegeben.
 				//EntityManager em = null;
-				//Wichtig: Das darf erst NACH dem Überprüfen auf die Datenbankexistenz passieren, da hierdurch die Datei erzeugt wird (wenn auch noch ohne Tabellen)
+				//Wichtig: Das darf erst NACH dem Überprüfen auf die Datenbankexistenz passieren, da hierdurch die Datei erzeugt wird (wenn auch noch ohne Tabellen) und dies die Prüfung auf Existenz der Datei konterkariert.
 				//EntityManager em = objContextHibernate.getEntityManager("c:\\server\\SQLite\\TileHexMap03.sqlite");
 				//EntityManager em = objContextHibernate.getEntityManager("jdbc:sqlite:c:\\server\\SQLite\\TileHexMap03.sqlite");				
-				
-				
-				//20170316: Steuere über die DAO-Klassen
-				//Fall: Datenbank existiert, aber sind da auch alle Zellen drin enthalten?
+								
+				//Fall: Datenbank existiert. Wenn es einen Fehler gibt, dann wird Sie allerdings neu aufgebaut.
 				//boolean bSuccess = fillMap_readCreated_IMPERFORMANT_EXAMPLE(objContextHibernate, panelMap);
 				boolean bSuccess = fillMap_readCreated(objContextHibernate, panelMap);
-				
-				
+								
 				bFillDatabaseNew = !bSuccess;
 			}else{
 				//Fall: Datenbank existiert noch nicht
-				System.out.println("Datenbank existiert nicht als Datei");
+				System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": Datenbank existiert nicht als Datei");
 				objContextHibernate.getConfiguration().setProperty("hibernate.hbm2ddl.auto", "create");  //! Damit wird die Datenbank und sogar die Tabellen darin automatisch erstellt, aber: Sie wird am Anwendungsende geleert.
 			
 				bFillDatabaseNew=true;
@@ -229,7 +226,10 @@ public class HexMapTHM extends KernelUseObjectZZZ implements ITileEventUserTHM {
 			
 			if(bFillDatabaseNew){
 				if(bDbExists){
-					//	TODO ggfs. zur Sicherheit die gesamte Datenbankdatei löschen
+					System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": Datenbank existiert zwar als Datei, es hat aber Probleme beim Einlesen gegeben.");
+					System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": Datenbankdatei sollte gelöscht werden, damit der Neuaufbau keine Probleme bekommt.");
+					//	TODO ggfs. zur Sicherheit die gesamte Datenbankdatei löschen, was aber nur geht, wenn z.B. kein anderer Client darauf zugreift. Vor dem endgültigen Löschen immer ein Backup machen.
+					
 				}
 				
 				//Erzeuge neuen Datenbankinhalt
@@ -422,6 +422,7 @@ public class HexMapTHM extends KernelUseObjectZZZ implements ITileEventUserTHM {
 				Integer intY = new Integer(iY);
 				String sY = intY.toString();				
 				
+				//+++ UI Operationen & die TroopArmy noch an das UI-verwendete Objekt weitergeben					
 				ArmyTileTHM objArmyTemp = new ArmyTileTHM(panelMap, objTileMoveEventBroker, sX, sY, this.getSideLength());
 				EventTileCreatedInCellTHM objEventTileCreated = new EventTileCreatedInCellTHM(objArmyTemp, 1, sX, sY);
 				objTileMetaEventBroker.fireEvent(objEventTileCreated);
@@ -437,10 +438,11 @@ public class HexMapTHM extends KernelUseObjectZZZ implements ITileEventUserTHM {
 				Integer intY = new Integer(iY);
 				String sY = intY.toString();	
 				
+				//+++ UI Operationen & die TroopFleet noch an das UI-verwendete Objekt weitergeben				
 				FleetTileTHM objFleetTemp = new FleetTileTHM(panelMap, objTileMoveEventBroker, sX, sY, this.getSideLength());
 				EventTileCreatedInCellTHM objEventTileCreated = new EventTileCreatedInCellTHM(objFleetTemp, 1, sX, sY);
 				objTileMetaEventBroker.fireEvent(objEventTileCreated);
-	
+				
 			} else{
 				System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": Unbekannter Truppentyp = " + sTroopTypeSub);				
 			}
@@ -669,6 +671,10 @@ public class HexMapTHM extends KernelUseObjectZZZ implements ITileEventUserTHM {
 			session.beginTransaction();
 			
 			
+			//Für die Tests auf falsche Platzierung der Spielsteine untenstehende Variablen auf true setzen
+			boolean bUseTestArea = true;
+			boolean bUseTestOccupied = true;
+			
 			//Zwei verschachtelte Schleifen, Aussen: Solange wie es "Provinzen" gibt...
 			//                                                  Innen:   von 1 bis maximaleSpaltenanzahl...
 			int iY = 0;
@@ -749,30 +755,31 @@ public class HexMapTHM extends KernelUseObjectZZZ implements ITileEventUserTHM {
 					iNrOfHexes++; //Zelle zur Summe hinzufügen
 					
 					//TEST: FALSCHES PLATZIEREN DER TRUPPEN Komponente in einer bestimmten Zelle per Event hinzufügen
-					boolean bUseTestArea = false;
 					if(bUseTestArea && sX.equals("1") && sY.equals("2")){
-						TroopFleet objTroopTemp = new TroopFleet(new TileId("EINS", "1", "FLEET UNIQUE " + sY));
-						//momentan wird noch ein BLOB gespeichert. ERst mal die LID in der HEXCell generieren lassen objTroopTemp.setHexCell(objCellTemp); //wg. 1:1 Beziehung
-						//TODO GOON: Die Validierung auf ein gültiges Feld in einen Event der Persistierung packen, siehe Buch..... Dannn kann man auch wieer richtig das falsche Hinzufügen testen 
-						
+						//+++ Datenbankoperationen
+						TroopFleet objTroopTemp = new TroopFleet(new TileId("EINS", "1", "FLEET UNIQUE " + sY));					
+						//TODO GOON 20170407: Die Validierung auf ein gültiges Feld in einen Event der Persistierung packen, siehe Buch..... Dannn kann man auch wieer richtig das falsche Hinzufügen testen 
+						objTroopTemp.setHexCell(objCellTemp); //wg. 1:1 Beziehung
+						//TODO GOON 20170407: Hier müsste dann ein Fehler kommen, damit der folgende Code nicht ausgeführt wird......
+						objCellTemp.getTileBag().add(objTroopTemp);//Füge diese Flotte der HexCell hinzu //wg. 1:n Beziehung
+																		
+						//+++ UI Operationen & die TroopFleet noch an das UI-verwendete Objekt weitergeben	
 						FleetTileTHM objFleetTemp = new FleetTileTHM(panelMap, objTileMoveEventBroker, sX, sY, this.getSideLength());
 						
 						EventTileCreatedInCellTHM objEventTileCreated = new EventTileCreatedInCellTHM(objFleetTemp, 1, sX, sY);
 						objTileMetaEventBroker.fireEvent(objEventTileCreated);
 						
-						session.save(objFleetTemp);
+						session.save(objTroopTemp);
 					}
 					
-					//Anfangsaufstellung: TRUPPEN Komponente in einer bestimmten Zelle per Event hinzufügen
-					//TODO: Die Truppenaufstellung soll wie die Karte auch in einer Tabelle hinterlegt werden. 
+					//Anfangsaufstellung: TRUPPEN Komponente in einer Datenbank persistieren und in einer bestimmten Zelle per Event hinzufügen 
 					if(sX.equals("1") && sY.equals("2")  | (sX.equals("1") & sY.equals("3")) | (sX.equals("1") & sY.equals("4"))){
-						TroopArmy objTroopTemp = new TroopArmy(new TileId("EINS", "1", "ARMY UNIQUE " + sY));//TODO GOON 20170405: sY als Uniquename zu verwenden ist nur heuristisch.
-						objTroopTemp.setHexCell(objCellTemp); //wg. 1:1 Beziehung
+						//+++ Datenbankoperationen
+						TroopArmy objTroopTemp = new TroopArmy(new TileId("EINS", "1", "ARMY UNIQUE " + sY));//TODO GOON : sY als Uniquename zu verwenden ist nur heuristisch und nicht wirklich UNIQUE
+						objTroopTemp.setHexCell(objCellTemp); //Füge Zelle der Trupppe hinzu, wg. 1:1 Beziehung
+						objCellTemp.getTileBag().add(objTroopTemp); //Füge diese Army der HexCell hinzu //wg. 1:n Beziehung
 						
-						//20170406: Füge diese Army der HexCell hinzu //wg. 1:n Beziehung
-						objCellTemp.getTileBag().add(objTroopTemp);
-						
-						//TODO: Die TroopArmy noch an das UI-verwendete Objekt weitergeben ################
+						//+++ UI Operationen & die TroopArmy noch an das UI-verwendete Objekt weitergeben
 						ArmyTileTHM objArmyTemp = new ArmyTileTHM(panelMap, objTileMoveEventBroker, sX, sY, this.getSideLength());
 						
 						EventTileCreatedInCellTHM objEventTileCreated = new EventTileCreatedInCellTHM(objArmyTemp, 1, sX, sY);
@@ -781,13 +788,12 @@ public class HexMapTHM extends KernelUseObjectZZZ implements ITileEventUserTHM {
 						session.save(objTroopTemp);
 						
 					}else if(sX.equals("5")&& sY.equals("5")){
+						//+++ Datenbankoperationen
 						TroopFleet objTroopTemp = new TroopFleet(new TileId("EINS", "1", "FLEET UNIQUE " + sY));
-						objTroopTemp.setHexCell(objCellTemp); //wg. 1:1 Beziehung
+						objTroopTemp.setHexCell(objCellTemp); //wg. 1:1 Beziehung					
+						objCellTemp.getTileBag().add(objTroopTemp);//Füge diese Flotte der HexCell hinzu //wg. 1:n Beziehung
 						
-						//20170406: Füge diese Army der HexCell hinzu //wg. 1:n Beziehung
-						objCellTemp.getTileBag().add(objTroopTemp);
-						
-						//TODO: Die TroopArmy noch an das UI-verwendete Objekt weitergeben ################											
+						//+++ UI Operationen & die TroopFleet noch an das UI-verwendete Objekt weitergeben											
 						FleetTileTHM objFleetTemp = new FleetTileTHM(panelMap, objTileMoveEventBroker, sX, sY, this.getSideLength());
 						
 						EventTileCreatedInCellTHM objEventTileCreated = new EventTileCreatedInCellTHM(objFleetTemp, 1, sX, sY);
@@ -797,11 +803,15 @@ public class HexMapTHM extends KernelUseObjectZZZ implements ITileEventUserTHM {
 					}
 					
 					//TEST: FALSCHES PLATZIEREN DER TRUPPEN Komponente in einer bestimmten Zelle, die schon besetzt ist per Event hinzufügen
-					boolean bUseTestOccupied = false;
 					if(bUseTestOccupied && sX.equals("1") && sY.equals("2")){
+						//+++ Datenbankoperationen
 						TroopArmy objTroopTemp = new TroopArmy(new TileId("EINS", "1","ARMY UNIQUE " + sY));
-						//TODO GOON: Die Validierung auf ein gültiges Feld in einen Event der Persistierung packen, siehe Buch..... Dannn kann man auch wieer richtig das falsche Hinzufügen testen 
+						//TODO GOON 20170407: Die Validierung auf ein gültiges Feld in einen Event der Persistierung packen, siehe Buch..... Dannn kann man auch wieder richtig das falsche Hinzufügen testen 
+						objTroopTemp.setHexCell(objCellTemp); //wg. 1:1 Beziehung	
+						//TODO GOON 20170407: Hier müsste dann ein Fehler kommen, damit der folgende Code nicht ausgeführt wird......
+						objCellTemp.getTileBag().add(objTroopTemp);//Füge diese Flotte der HexCell hinzu //wg. 1:n Beziehung
 						
+						//+++ UI Operationen & die TroopArmy noch an das UI-verwendete Objekt weitergeben
 						ArmyTileTHM objArmyTemp = new ArmyTileTHM(panelMap, objTileMoveEventBroker, sX, sY, this.getSideLength());
 						
 						EventTileCreatedInCellTHM objEventTileCreated = new EventTileCreatedInCellTHM(objArmyTemp, 1, sX, sY);

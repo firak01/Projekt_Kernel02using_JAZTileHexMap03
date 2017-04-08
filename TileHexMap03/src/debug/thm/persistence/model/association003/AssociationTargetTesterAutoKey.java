@@ -63,7 +63,7 @@ public class AssociationTargetTesterAutoKey implements Serializable, IOptimistic
 	 @Id				
 	 @TableGenerator(name="lidGeneratorAssociationTarget003", table="COMMON_FUER_IDGENERATOR_ASSOCIATIONTARGET",pkColumnName="nutzende_Klasse_als_String", pkColumnValue="SequenceTester",valueColumnName="naechster_id_wert",  initialValue=1, allocationSize=1)//@TableGenerator Name muss einzigartig im ganzen Projekt sein.
 	 @GeneratedValue(strategy = GenerationType.TABLE, generator="lidGeneratorAssociationTarget003")
-	 @Column(name="TESTID_INCREMENTIERT", nullable=false, unique=true, columnDefinition="INTEGER NOT NULL UNIQUE  DEFAULT 1") 
+	 @Column(name="TESTID_INKREMENTIERT", nullable=false, unique=true, columnDefinition="INTEGER NOT NULL UNIQUE  DEFAULT 1") 
 	 public int getKey(){
 		 return this.iMyTestSequence;
 	 }

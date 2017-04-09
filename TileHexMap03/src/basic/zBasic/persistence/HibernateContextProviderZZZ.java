@@ -6,11 +6,17 @@ import javax.persistence.Persistence;
 import javax.persistence.PersistenceException;
 
 import org.hibernate.Session;
+import org.hibernate.SessionBuilder;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
+import org.hibernate.event.service.spi.EventListenerRegistry;
+import org.hibernate.internal.SessionFactoryImpl;
 import org.hibernate.service.ServiceRegistry;
 import org.hibernate.service.ServiceRegistryBuilder;
 
+import use.thm.persistence.listener.TroopArmyListener;
+import use.thm.persistence.listener.TroopArmyListener02;
+import use.thm.persistence.model.TroopArmy;
 import basic.zBasic.ExceptionZZZ;
 import basic.zBasic.ReflectCodeZZZ;
 import basic.zBasic.persistence.interfaces.IHibernateContextProviderZZZ;
@@ -155,7 +161,21 @@ public abstract class HibernateContextProviderZZZ  extends KernelUseObjectZZZ im
 			ServiceRegistry sr = new ServiceRegistryBuilder().applySettings(cfg.getProperties()).buildServiceRegistry();
 			//deprecated: SessionFactory sf = cfg.buildSessionFactory();
 			SessionFactory sf = cfg.buildSessionFactory(sr);
-			objReturn = sf.openSession();
+			
+			//########### Versuch Event Listener / Callback Methoden
+//			EventListenerRegistry registry = ((SessionFactoryImpl) sf)
+//				    .getServiceRegistry()
+//				    .getService(EventListenerRegistry.class);
+//				registry.appendListeners(new TroopArmyListener02(), TroopArmy.class);
+//			
+			
+			//###########  VERSUCH INTERCPTOR 
+			SessionBuilder builder = sf.withOptions().interceptor(new TroopArmyListener());
+	        objReturn =     builder.openSession();
+			//######################
+			
+			
+			//also das ist ohne SessionBuilder ....   objReturn = sf.openSession();
 			this.objSession = objReturn;
 		}
 		return objReturn;

@@ -13,6 +13,7 @@ import org.hibernate.service.ServiceRegistryBuilder;
 
 import use.thm.client.component.AreaCellTHM;
 import use.thm.client.component.HexCellTHM;
+import use.thm.persistence.listener.TroopArmyListener02;
 import use.thm.persistence.model.AreaCell;
 import use.thm.persistence.model.AreaCellLand;
 import use.thm.persistence.model.AreaCellOcean;
@@ -84,6 +85,10 @@ public class HibernateContextProviderTHM extends HibernateContextProviderZZZ{
 		//bReturn = addConfigurationAnnotatedClass(Troop.class);
 		bReturn = addConfigurationAnnotatedClass(TroopArmy.class);
 		bReturn = addConfigurationAnnotatedClass(TroopFleet.class);
+		
+		//FGL 20170409: VErsuch Callbacks in Hibernate
+		//this.getConfiguration().setListener("persist",new TroopArmyListener02());
+		
 		
 		return bReturn;
 	}

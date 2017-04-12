@@ -126,7 +126,8 @@ public abstract class GeneralDAO<T> implements IDaoInterface<T>{
 	 */
 	protected void begin() {
 		try {
-			this.getSession().beginTransaction();
+			Session session = this.getSession();
+			session.beginTransaction();
 		} catch (Exception e) {
 			this.getLog().error("Method begin failed +\n" + session.hashCode() + "\n ThreadID:" + Thread.currentThread().getId() +"\n", e);
 		}

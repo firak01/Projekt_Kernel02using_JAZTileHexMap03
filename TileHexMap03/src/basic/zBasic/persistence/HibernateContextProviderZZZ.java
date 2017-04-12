@@ -8,12 +8,14 @@ import javax.persistence.PersistenceException;
 import org.hibernate.Session;
 import org.hibernate.SessionBuilder;
 import org.hibernate.SessionFactory;
+import org.hibernate.cfg.AnnotationConfiguration;
 import org.hibernate.cfg.Configuration;
 import org.hibernate.event.service.spi.EventListenerRegistry;
 import org.hibernate.internal.SessionFactoryImpl;
 import org.hibernate.service.ServiceRegistry;
 import org.hibernate.service.ServiceRegistryBuilder;
 
+import use.thm.persistence.event.PersistListenerTHM;
 import use.thm.persistence.interceptor.HibernateInterceptorTHM;
 import use.thm.persistence.listener.TroopArmyListener;
 import use.thm.persistence.listener.TroopArmyListener;
@@ -181,7 +183,9 @@ public abstract class HibernateContextProviderZZZ  extends KernelUseObjectZZZ im
 			SessionFactory sf = cfg.buildSessionFactory(sr);
 			
 			//########### Versuch Event Listener / Callback Methoden
-			boolean bEventConfigured = this.declareConfigurationHibernateEvent(cfg);
+			//TODO GOON 20170412: HIER WIRD NOCH EIN FEHLER GEWEORFEN
+			//boolean bEventConfigured = this.declareConfigurationHibernateEvent(cfg);
+				
 			
 //			EventListenerRegistry registry = ((SessionFactoryImpl) sf)
 //				    .getServiceRegistry()
@@ -204,15 +208,9 @@ public abstract class HibernateContextProviderZZZ  extends KernelUseObjectZZZ im
 			//DAS KLAPPT:  Nun versuchen dies für das jeweilige Projekt / den jeweiligen HibernateContextProvider + KernelKeyZZZ zur Verfügung zu stellen.
 			objReturn = this.declareSessionHibernateIntercepted((SessionFactoryImpl) sf);
 			//######################
-			
-			
-			
-			
-			
-			
-		   
+
 			//also das ist ohne SessionBuilder ....  
-			if(objReturn==null) 	objReturn = sf.openSession();
+			if(objReturn==null) 	objReturn = sf.openSession();					        
 			
 			this.objSession = objReturn;
 		}

@@ -143,6 +143,7 @@ public class HibernateContextProviderTHM extends HibernateContextProviderZZZ{
 	@Override
 	public boolean declareConfigurationHibernateEvent(Configuration cfg) {
 
+		//NEIN: UNTER HIBERNATE 4. mit einer INEGRATOR - Klasse arbeiten. Dies ist dann falsch....
 		ServiceRegistryBuilder registry = new ServiceRegistryBuilder();
 		registry.applySettings(cfg.getProperties());
 		ServiceRegistry serviceRegistry = registry.buildServiceRegistry();

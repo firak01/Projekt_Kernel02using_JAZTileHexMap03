@@ -7,12 +7,14 @@ import javax.persistence.PrePersist;
 import javax.persistence.Table;
 
 import basic.zBasic.ReflectCodeZZZ;
+import use.thm.persistence.event.PersistListenerTHM;
 import use.thm.persistence.listener.TroopArmyListener;
 
 @Entity
 @DiscriminatorValue("army") //Wird es wg. der Vererbung(!) von Tile zu Troop immer geben. Ohne Annotation ist das DTYPE und der wert ist gleich dem Klassennamen.  //Das muss in dem Root Entity, also in Tile defniert werden. @DiscriminatorColumn(name="Disc", discriminatorType = DiscriminatorType.STRING)
 @Table(name="ARMY") 
-@EntityListeners(TroopArmyListener.class)//Versuch JPA Callback/ListenerMethoden.
+//@EntityListeners(TroopArmyListener.class)//Versuch JPA Callback/ListenerMethoden.
+@EntityListeners(PersistListenerTHM.class)//Versuch JPA Callback/ListenerMethoden.
 public class TroopArmy extends Troop{
 
 

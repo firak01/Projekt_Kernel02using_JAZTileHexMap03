@@ -35,6 +35,7 @@ public abstract class HibernateContextProviderZZZ  extends KernelUseObjectZZZ im
 	
 	//Über die EntityManagerFactory erstellte EntityManager werden in dieser Hashmap verwaltet: hm("Name des Schemas/der Datenbank") = objEntityManager;
 	private	HashMapExtendedZZZ<String, EntityManager> hmEntityManager = new HashMapExtendedZZZ<String, EntityManager>();
+	private EntityManagerFactory objEntityManagerFactory;
 		
 		
 		
@@ -78,6 +79,8 @@ public abstract class HibernateContextProviderZZZ  extends KernelUseObjectZZZ im
 				//TODO GOON: Dies in eine spezielle HibernateJpa...-Klasse auslagern.
 				//TODO GOON: Properties für .createEntityManagerFactory(..., properties) übergeben!!!
 				EntityManagerFactory emf = Persistence.createEntityManagerFactory(sSchemaName);
+				this.setEntityManagerFactory(emf);//TODO: IM Destruktor: if(this.getEntityManager()!=null) this.getEntityManager().close();
+				
 				objReturn = emf.createEntityManager();
 				
 				//this.hmEntityManager.put(sSchemaName, objReturn);
@@ -129,6 +132,12 @@ public abstract class HibernateContextProviderZZZ  extends KernelUseObjectZZZ im
 	
 	
 	//################### GETTER / SETTER
+	public EntityManagerFactory getEntityManagerFactory(){
+		return this.objEntityManagerFactory;
+	}
+	public void setEntityManagerFactory(EntityManagerFactory emf){
+		this.objEntityManagerFactory = emf;
+	}
 	public HashMapExtendedZZZ<String, EntityManager> getEntityManagerMap(){
 		return this.hmEntityManager;
 	}

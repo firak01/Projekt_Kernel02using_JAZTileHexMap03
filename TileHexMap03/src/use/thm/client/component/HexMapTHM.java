@@ -235,7 +235,7 @@ public class HexMapTHM extends KernelUseObjectZZZ implements ITileEventUserTHM {
 				//Erzeuge neuen Datenbankinhalt
 				//Per Hibernate & Session 
 				bReturn = fillMap_createNew(objContextHibernate, panelMap);
-				//Per EntityManager 
+				//Per EntityManager, aber das hat Probleme, zumindest mit SQLITE und den @TableGenerator Annotations zum automatischen Erstellen von IDs  
 				//bReturn = fillMap_createNew_ENTITYMANAGER_EXAMPLE(objContextHibernate, panelMap);
 			}else{
 				bReturn = true;

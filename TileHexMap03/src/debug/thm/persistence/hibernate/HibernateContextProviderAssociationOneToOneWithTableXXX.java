@@ -1,5 +1,9 @@
 package debug.thm.persistence.hibernate;
 
+import org.hibernate.Session;
+import org.hibernate.cfg.Configuration;
+import org.hibernate.internal.SessionFactoryImpl;
+
 import basic.zBasic.ExceptionZZZ;
 import basic.zBasic.persistence.HibernateContextProviderZZZ;
 import basic.zKernel.KernelZZZ;
@@ -44,14 +48,14 @@ public class HibernateContextProviderAssociationOneToOneWithTableXXX extends Hib
 	 * @return
 	 * @throws ExceptionZZZ 
 	 */
-	public boolean fillConfiguration() throws ExceptionZZZ{
+	public boolean fillConfiguration(Configuration cfg) throws ExceptionZZZ{
 		boolean bReturn = false;
 		
-		bReturn = fillConfigurationGlobal();
+		bReturn = fillConfigurationGlobal(cfg);
 		//+++ Die für Hibernate DEBUG Konfigurierten Klassen hinzufügen
 		//Merke: Wird eine Klasse ohne @Entity hinzugefügt, gibt es folgende Fehlermeldung: Exception in thread "main" org.hibernate.AnnotationException: No identifier specified for entity: use.thm.client.component.AreaCellTHM
-		bReturn = addConfigurationAnnotatedClass(AssociationTester.class);
-		bReturn = addConfigurationAnnotatedClass(AssociationTargetTesterAutoKey.class);
+		bReturn = addConfigurationAnnotatedClass(cfg, AssociationTester.class);
+		bReturn = addConfigurationAnnotatedClass(cfg, AssociationTargetTesterAutoKey.class);
 		
 		return bReturn;
 	}
@@ -59,18 +63,18 @@ public class HibernateContextProviderAssociationOneToOneWithTableXXX extends Hib
 	/** Fülle globale Werte in das Configuruation Objekt, z.B. der Datenbankname, Dialekt, etc.
 	 * 
 	 */
-	public boolean fillConfigurationGlobal(){
+	public boolean fillConfigurationGlobal(Configuration cfg){
 				//TODO: Die hier verwendeten Werte aus der Kernel-Konfiguration auslesen.
 				//Programmatisch das erstellen, das in der hibernate.cfg.xml Datei beschrieben steht.
 				//Merke: Irgendwie funktioniert es nicht die Werte in der hibernate.cfg.xml Datei zu überschreiben.
 		 		//			Darum muss z.B. hibernate.hbm2ddl.auto in der Konfigurationdatei auskommentiert werden, sonst ziehen hier die Änderungen nicht.
-				this.getConfiguration().setProperty("hiberate.show_sql", "true");
-				this.getConfiguration().setProperty("hiberate.format_sql", "true");
-				this.getConfiguration().setProperty("hibernate.dialect","basic.persistence.hibernate.SQLiteDialect" );
-				this.getConfiguration().setProperty("hibernate.connection.driver_class", "org.sqlite.JDBC");
-				this.getConfiguration().setProperty("hibernate.connection.url", "jdbc:sqlite:c:\\server\\SQLite\\DebugAssociationOneToOneWithTableTester.sqlite");
-				this.getConfiguration().setProperty("hibernate.connection.username", "");
-				this.getConfiguration().setProperty("hibernate.connection.password", "");
+				cfg.setProperty("hiberate.show_sql", "true");
+				cfg.setProperty("hiberate.format_sql", "true");
+				cfg.setProperty("hibernate.dialect","basic.persistence.hibernate.SQLiteDialect" );
+				cfg.setProperty("hibernate.connection.driver_class", "org.sqlite.JDBC");
+				cfg.setProperty("hibernate.connection.url", "jdbc:sqlite:c:\\server\\SQLite\\DebugAssociationOneToOneWithTableTester.sqlite");
+				cfg.setProperty("hibernate.connection.username", "");
+				cfg.setProperty("hibernate.connection.password", "");
 
 				/*
 				 * So the list of possible options are,
@@ -79,11 +83,22 @@ public class HibernateContextProviderAssociationOneToOneWithTableXXX extends Hib
     create: creates the schema, destroying previous data.
     create-drop: drop the schema when the SessionFactory is closed explicitly, typically when the application is stopped.
 				 */
-				this.getConfiguration().setProperty("hibernate.hbm2ddl.auto", "create"); //! Damit wird die Datenbank und sogar die Tabellen darin automatisch erstellt, aber: Sie wird am Anwendungsende geleert.
-				//this.getConfiguration().setProperty("hibernate.hbm2ddl.auto", "update");  //! Jetzt erst wird jede Tabelle über den Anwendungsstart hinaus gepseichert.
-				this.getConfiguration().setProperty("cache.provider_class", "org.hiberniate.cache.NoCacheProvider");
-				this.getConfiguration().setProperty("current_session_context_class", "thread");
+				cfg.setProperty("hibernate.hbm2ddl.auto", "create"); //! Damit wird die Datenbank und sogar die Tabellen darin automatisch erstellt, aber: Sie wird am Anwendungsende geleert.
+				//cfg.setProperty("hibernate.hbm2ddl.auto", "update");  //! Jetzt erst wird jede Tabelle über den Anwendungsstart hinaus gepseichert.
+				cfg.setProperty("cache.provider_class", "org.hiberniate.cache.NoCacheProvider");
+				cfg.setProperty("current_session_context_class", "thread");
 				
 				return true;
+	}
+	@Override
+	public Session declareSessionHibernateIntercepted(SessionFactoryImpl sf) {
+		// TODO Auto-generated method stub
+		return null;
 	}	
+	
+	@Override
+	public boolean declareConfigurationHibernateEvent(Configuration cfg) {
+		// TODO Auto-generated method stub
+		return false;
+	}
 }

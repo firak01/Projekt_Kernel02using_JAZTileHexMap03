@@ -9,7 +9,7 @@ import basic.zBasic.ExceptionZZZ;
 
 public interface IHibernateContextProviderZZZ {
 	public boolean fillConfiguration() throws ExceptionZZZ;	
-	public boolean fillConfigurationGlobal();
+	public boolean fillConfigurationGlobal() throws ExceptionZZZ;
 	
 	public boolean addConfigurationAnnotatedClass(Class cls) throws ExceptionZZZ;
 	public boolean addConfigurationClass(Class cls)throws ExceptionZZZ;

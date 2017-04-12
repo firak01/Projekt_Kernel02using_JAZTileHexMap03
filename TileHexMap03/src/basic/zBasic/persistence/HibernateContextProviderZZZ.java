@@ -14,8 +14,9 @@ import org.hibernate.internal.SessionFactoryImpl;
 import org.hibernate.service.ServiceRegistry;
 import org.hibernate.service.ServiceRegistryBuilder;
 
+import use.thm.persistence.interceptor.HibernateInterceptorTHM;
 import use.thm.persistence.listener.TroopArmyListener;
-import use.thm.persistence.listener.TroopArmyListener02;
+import use.thm.persistence.listener.TroopArmyListener;
 import use.thm.persistence.model.TroopArmy;
 import basic.zBasic.ExceptionZZZ;
 import basic.zBasic.ReflectCodeZZZ;
@@ -102,14 +103,22 @@ public abstract class HibernateContextProviderZZZ  extends KernelUseObjectZZZ im
 	 * @return
 	 * @throws ExceptionZZZ
 	 */
+	public boolean addConfigurationAnnotatedClass(Configuration cfg, Class cls) throws ExceptionZZZ{
+		if(cls==null){
+			ExceptionZZZ ez = new ExceptionZZZ("Class-Object not passed.", iERROR_PARAMETER_MISSING, this, ReflectCodeZZZ.getMethodCurrentName());
+			throw ez;
+		}
+		cfg.addAnnotatedClass(cls);
+		return true;
+	}
 	public boolean addConfigurationAnnotatedClass(Class cls) throws ExceptionZZZ{
 		if(cls==null){
 			ExceptionZZZ ez = new ExceptionZZZ("Class-Object not passed.", iERROR_PARAMETER_MISSING, this, ReflectCodeZZZ.getMethodCurrentName());
 			throw ez;
 		}
-		this.getConfiguration().addAnnotatedClass(cls);
-		return true;
+		return this.addConfigurationAnnotatedClass(	this.getConfiguration(), cls);
 	}
+	
 	/**Für die so hinzugefügte Klasse muss es eine XML Konfigurationsdatei geben.
 	 * Ansonsten Fehler, z.B. für eine User.class : org.hibernate.MappingNotFoundException: resource: tryout/hibernate/User.hbm.xml not found
 	 * 
@@ -172,29 +181,61 @@ public abstract class HibernateContextProviderZZZ  extends KernelUseObjectZZZ im
 			SessionFactory sf = cfg.buildSessionFactory(sr);
 			
 			//########### Versuch Event Listener / Callback Methoden
+			boolean bEventConfigured = this.declareConfigurationHibernateEvent(cfg);
+			
 //			EventListenerRegistry registry = ((SessionFactoryImpl) sf)
 //				    .getServiceRegistry()
 //				    .getService(EventListenerRegistry.class);
-//				registry.appendListeners(new TroopArmyListener02(), TroopArmy.class);
-//			
+//				registry.appendListeners(new TroopArmyListener(), TroopArmy.class);
 			
-			//###########  VERSUCH INTERCPTOR 
-			SessionBuilder builder = sf.withOptions().interceptor(new TroopArmyListener());
-	        objReturn =     builder.openSession();
+			
+//			ServiceRegistry serviceRegistry
+//			= new StandardServiceRegistryBuilder()
+//				.applySettings(configuration.getProperties()).build();
+//		
+//		// builds a session factory from the service registry
+//		sessionFactory = configuration.buildSessionFactory(serviceRegistry);
+			
+	
+			//###########  VERSUCH INTERCEPTOR 
+//			SessionBuilder builder = sf.withOptions().interceptor(new TroopArmyInterceptor());
+//	        objReturn =     builder.openSession();
+
+			//DAS KLAPPT:  Nun versuchen dies für das jeweilige Projekt / den jeweiligen HibernateContextProvider + KernelKeyZZZ zur Verfügung zu stellen.
+			objReturn = this.declareSessionHibernateIntercepted((SessionFactoryImpl) sf);
 			//######################
 			
 			
-			//also das ist ohne SessionBuilder ....   objReturn = sf.openSession();
+			
+			
+			
+			
+		   
+			//also das ist ohne SessionBuilder ....  
+			if(objReturn==null) 	objReturn = sf.openSession();
+			
 			this.objSession = objReturn;
 		}
 		return objReturn;
 	}
+	
+	public boolean fillConfiguration() throws ExceptionZZZ{
+		return this.fillConfiguration(this.getConfiguration());
+	}
+	
+	public boolean fillConfigurationGlobal() throws ExceptionZZZ{
+		return this.fillConfigurationGlobal(this.getConfiguration());
+	}
 
 	//############## Abstracte Methoden, die auf jeden Fall überschrieben werden müssen.
-	public abstract boolean fillConfiguration() throws ExceptionZZZ ;
+	public abstract boolean fillConfiguration(Configuration cfg) throws ExceptionZZZ ;
 
-	public abstract boolean fillConfigurationGlobal();
+	public abstract boolean fillConfigurationGlobal(Configuration cfg) throws ExceptionZZZ;
 
-	
+	//Verwende intern den SessionBuilder um eine Session zurückzuliefern, die einen Interceptor benutzt.
+	public abstract Session declareSessionHibernateIntercepted(SessionFactoryImpl sf);
+
+	//Füge Events hinzu, die auf dem Hibernate Event System basieren.
+	public abstract boolean declareConfigurationHibernateEvent(Configuration cfg);
 	
 }

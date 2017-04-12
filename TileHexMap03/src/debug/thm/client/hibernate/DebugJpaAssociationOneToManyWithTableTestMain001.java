@@ -10,7 +10,6 @@ import basic.zKernel.KernelUseObjectZZZ;
 import basic.zKernel.KernelZZZ;
 import debug.thm.persistence.dao.association003.AssociationTesterDao;
 import debug.thm.persistence.hibernate.HibernateContextProviderAssociationOneToManyWithTableXXX;
-import debug.thm.persistence.hibernate.HibernateContextProviderAssociationOneToOneWithTableXXX;
 import debug.thm.persistence.model.association003.AssociationTargetTesterAutoKey;
 import debug.thm.persistence.model.association003.AssociationTester;
 

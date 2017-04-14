@@ -13,8 +13,7 @@ import use.thm.persistence.listener.TroopArmyListener;
 @Entity
 @DiscriminatorValue("army") //Wird es wg. der Vererbung(!) von Tile zu Troop immer geben. Ohne Annotation ist das DTYPE und der wert ist gleich dem Klassennamen.  //Das muss in dem Root Entity, also in Tile defniert werden. @DiscriminatorColumn(name="Disc", discriminatorType = DiscriminatorType.STRING)
 @Table(name="ARMY") 
-//@EntityListeners(TroopArmyListener.class)//Versuch JPA Callback/ListenerMethoden.
-@EntityListeners(PersistListenerTHM.class)//Versuch JPA Callback/ListenerMethoden.
+//@EntityListeners(PersistListenerTHM.class)//Versuch JPA Callback/ListenerMethoden, aber hier funktionieren nur Hibernate EventListener
 public class TroopArmy extends Troop{
 
 
@@ -33,10 +32,10 @@ public class TroopArmy extends Troop{
 	
 	
 	//Versuch Callback - Methoden aufzurufen..... aber das Scheint nicht mit Hibernate zu gehen, sondern nur mti JPA & EntityManagager
-	@PrePersist
-	private void vorEinfuegen(){
-		System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": Vor dem Einfügen. Das wäre eine ideale Stelle für Validierung....");
-	}
+	//@PrePersist
+//	private void vorEinfuegen(){
+//		System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": Vor dem Einfügen. Das wäre eine ideale Stelle für Validierung....");
+//	}
 	
 	//### Getter / Setter
 	

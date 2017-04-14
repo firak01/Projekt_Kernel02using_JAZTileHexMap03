@@ -92,7 +92,7 @@ public class HibernateContextProviderTHM extends HibernateContextProviderZZZ{
 		bReturn = addConfigurationAnnotatedClass(cfg, TroopArmy.class);
 		bReturn = addConfigurationAnnotatedClass(cfg, TroopFleet.class);
 		
-		//FGL 20170409: VErsuch Callbacks in Hibernate
+		//FGL 20170409: Vrsuch Callbacks in Hibernate
 		//this.getConfiguration().setListener("persist",new TroopArmyListener());
 		
 		

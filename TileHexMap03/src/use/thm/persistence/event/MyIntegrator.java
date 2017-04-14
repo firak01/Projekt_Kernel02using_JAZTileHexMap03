@@ -9,8 +9,11 @@ import org.hibernate.metamodel.Metadata;
 import org.hibernate.metamodel.source.MetadataImplementor;
 import org.hibernate.service.spi.SessionFactoryServiceRegistry;
 
+import use.thm.persistence.listener.TroopArmyListener;
+
 /**Es muss in META-INF\services die Datei org.hibernate.integrator.spi.Integrator vorhanden sein.
  * Darin den Pfad zu dieser Klasse aufnehmen.
+ * https://docs.jboss.org/hibernate/orm/4.2/devguide/en-US/html_single/#registering-listeners-example
  * @author Fritz Lindhauer
  *
  */
@@ -23,12 +26,18 @@ public class MyIntegrator implements Integrator {
 
             final EventListenerRegistry eventListenerRegistry = serviceRegistry.getService( EventListenerRegistry.class );
 
-            PersistListenerTHM listener = new PersistListenerTHM();
-            eventListenerRegistry.appendListeners(EventType.PERSIST, listener);
+            PersistListenerTHM listenerPersist = new PersistListenerTHM();
+            eventListenerRegistry.setListeners(EventType.PERSIST, listenerPersist);
             
-            //UpdateBookEventListener listener = new UpdateBookEventListener(); 
-
-            //eventListenerRegistry.appendListeners(EventType.PRE_UPDATE, listener );
+            PreInsertListenerTHM listenerPreInsert = new PreInsertListenerTHM();
+            eventListenerRegistry.setListeners(EventType.PRE_INSERT, listenerPreInsert);
+            
+            //Weitere Listener: Merke, eine Listener Klasse kann auch mehrere Interfaces implementieren.
+//            TroopArmyListener  listenerTroop = new TroopArmyListener();
+//            eventListenerRegistry.setListeners(EventType.PRE_LOAD, listenerTroop);
+//            eventListenerRegistry.prependListeners(EventType.PERSIST, listenerTroop);
+//            eventListenerRegistry.prependListeners(EventType.PRE_INSERT, listenerTroop);
+//            eventListenerRegistry.prependListeners(EventType.PRE_UPDATE, listenerTroop);
             //eventListenerRegistry.appendListeners(EventType.POST_UPDATE, listener );
         } 
 

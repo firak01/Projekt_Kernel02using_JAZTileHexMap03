@@ -11,11 +11,15 @@ import org.hibernate.SessionFactory;
 import org.hibernate.cfg.AnnotationConfiguration;
 import org.hibernate.cfg.Configuration;
 import org.hibernate.event.service.spi.EventListenerRegistry;
+import org.hibernate.event.spi.EventType;
+import org.hibernate.integrator.spi.Integrator;
 import org.hibernate.internal.SessionFactoryImpl;
 import org.hibernate.service.ServiceRegistry;
 import org.hibernate.service.ServiceRegistryBuilder;
 
+import use.thm.persistence.event.MyIntegrator;
 import use.thm.persistence.event.PersistListenerTHM;
+import use.thm.persistence.event.PreInsertListenerTHM;
 import use.thm.persistence.interceptor.HibernateInterceptorTHM;
 import use.thm.persistence.listener.TroopArmyListener;
 import use.thm.persistence.listener.TroopArmyListener;
@@ -71,13 +75,12 @@ public abstract class HibernateContextProviderZZZ  extends KernelUseObjectZZZ im
 				ExceptionZZZ ez = new ExceptionZZZ("No database/schema name provided", iERROR_PARAMETER_MISSING, this, ReflectCodeZZZ.getMethodCurrentName());
 				throw ez;
 			}
-			//HashMapExtendedZZZ<String, EntityManager> hmEntityManager = this.hmEntityManager;
 			HashMapExtendedZZZ<String, EntityManager> hmEntityManager = this.getEntityManagerMap();
 			if(hmEntityManager.containsKey(sSchemaName)){
-				//wiederverwenden
+				//Fall: Wiederverwenden
 				objReturn = (EntityManager) hmEntityManager.get(sSchemaName);
 			}else{
-				//Neu erstellen
+				//Fall: Neu erstellen
 				
 				//TODO GOON: Dies in eine spezielle HibernateJpa...-Klasse auslagern.
 				//TODO GOON: Properties für .createEntityManagerFactory(..., properties) übergeben!!!
@@ -85,8 +88,6 @@ public abstract class HibernateContextProviderZZZ  extends KernelUseObjectZZZ im
 				this.setEntityManagerFactory(emf);//TODO: IM Destruktor: if(this.getEntityManager()!=null) this.getEntityManager().close();
 				
 				objReturn = emf.createEntityManager();
-				
-				//this.hmEntityManager.put(sSchemaName, objReturn);
 				this.getEntityManagerMap().put(sSchemaName, objReturn);
 			}
 			
@@ -178,34 +179,22 @@ public abstract class HibernateContextProviderZZZ  extends KernelUseObjectZZZ im
 //			}
 			
 			
-			ServiceRegistry sr = new ServiceRegistryBuilder().applySettings(cfg.getProperties()).buildServiceRegistry();
-			//deprecated: SessionFactory sf = cfg.buildSessionFactory();
+//############
+	        ServiceRegistry sr = new ServiceRegistryBuilder().applySettings(cfg.getProperties()).buildServiceRegistry();
 			SessionFactory sf = cfg.buildSessionFactory(sr);
 			
-			//########### Versuch Event Listener / Callback Methoden
-			//TODO GOON 20170412: HIER WIRD NOCH EIN FEHLER GEWEORFEN
-			//boolean bEventConfigured = this.declareConfigurationHibernateEvent(cfg);
-				
-			
-//			EventListenerRegistry registry = ((SessionFactoryImpl) sf)
-//				    .getServiceRegistry()
-//				    .getService(EventListenerRegistry.class);
-//				registry.appendListeners(new TroopArmyListener(), TroopArmy.class);
-			
-			
-//			ServiceRegistry serviceRegistry
-//			= new StandardServiceRegistryBuilder()
-//				.applySettings(configuration.getProperties()).build();
-//		
-//		// builds a session factory from the service registry
-//		sessionFactory = configuration.buildSessionFactory(serviceRegistry);
+			//########### Hibernaten Event Listener / Callback Methoden zur Verfügung stellen.
+			//MERKE 20170412: In Hibernate 4 ist dies nur auf folgendem Weg möglich
+			//1. Mache einen Integrator, also eine Klasse mit ...  implements Integrator
+			//2. Mache diesen Integrator als Service bekannt. Dazu erzeuge eine Datei org.hibernate.integrator.spi.Integrator im Verzeichnis META-INF/services
+			//                                                                   Trage in der Datei den Namen der Klasse, inklusive Package-Pfad ein.
+			//3. Registriere den Listerner innerhalb der integrate(...)-Methode der neu erstellten Integrator-Klasse
+			// PreInsertListenerTHM listenerPreInsert = new PreInsertListenerTHM();
+            // eventListenerRegistry.setListeners(EventType.PRE_INSERT, listenerPreInsert);
+			//4. Merke, dass scheinbar nicht immer alle Events aufgerufen werden. Ich habe z.B. noch keine PERSIST - Event aufrufen können, wenn ich .save() mache.
 			
 	
-			//###########  VERSUCH INTERCEPTOR 
-//			SessionBuilder builder = sf.withOptions().interceptor(new TroopArmyInterceptor());
-//	        objReturn =     builder.openSession();
-
-			//DAS KLAPPT:  Nun versuchen dies für das jeweilige Projekt / den jeweiligen HibernateContextProvider + KernelKeyZZZ zur Verfügung zu stellen.
+			//###########  INTERCEPTOR im jeweiligen Projekt / den jeweiligen HibernateContextProvider + KernelKeyZZZ zur Verfügung zu stellen. 
 			objReturn = this.declareSessionHibernateIntercepted((SessionFactoryImpl) sf);
 			//######################
 

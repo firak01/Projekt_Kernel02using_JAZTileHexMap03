@@ -6,7 +6,7 @@ import java.util.Map;
 
 import org.hibernate.Query;
 
-import use.thm.persistence.hibernate.HibernateContextProviderTHM;
+import use.thm.persistence.hibernate.HibernateContextProviderSingletonTHM;
 import use.thm.persistence.model.AreaCell;
 import basic.zBasic.ExceptionZZZ;
 import basic.zBasic.persistence.GeneralDaoZZZ;
@@ -18,15 +18,15 @@ public class AreaCellDao extends GeneralDaoZZZ<AreaCell> {
 		super();
 		this.installLoger(AreaCell.class);//Durch das Installieren des Loggers mit der korrekten Klasse wird GeneralDao.getT() erst korrekt ermöglicht.
 	}
-	public AreaCellDao(HibernateContextProviderTHM objContextHibernate) throws ExceptionZZZ{
+	public AreaCellDao(HibernateContextProviderSingletonTHM objContextHibernate) throws ExceptionZZZ{
 		super(objContextHibernate);		
 		this.installLoger(AreaCell.class);//Durch das Installieren des Loggers mit der korrekten Klasse wird GeneralDao.getT() erst korrekt ermöglicht.
 	}
-	public AreaCellDao(HibernateContextProviderTHM objContextHibernate, String sFlagControl) throws ExceptionZZZ{
+	public AreaCellDao(HibernateContextProviderSingletonTHM objContextHibernate, String sFlagControl) throws ExceptionZZZ{
 		super(objContextHibernate, sFlagControl);
 		this.installLoger(AreaCell.class);//Durch das Installieren des Loggers mit der korrekten Klasse wird GeneralDao.getT() erst korrekt ermöglicht.
 	}
-	public AreaCellDao(HibernateContextProviderTHM objContextHibernate, String[] saFlagControl) throws ExceptionZZZ{
+	public AreaCellDao(HibernateContextProviderSingletonTHM objContextHibernate, String[] saFlagControl) throws ExceptionZZZ{
 		super(objContextHibernate, saFlagControl);
 		this.installLoger(AreaCell.class);//Durch das Installieren des Loggers mit der korrekten Klasse wird GeneralDao.getT() erst korrekt ermöglicht.
 	}

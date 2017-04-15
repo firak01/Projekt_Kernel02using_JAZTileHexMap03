@@ -20,6 +20,7 @@ import org.hibernate.service.ServiceRegistryBuilder;
 
 import basic.persistence.util.HibernateUtil;
 import basic.zBasic.ExceptionZZZ;
+import basic.zBasic.KernelSingletonTHM;
 import basic.zBasic.util.datatype.string.StringZZZ;
 import basic.zBasic.util.log.KernelReportContextProviderZZZ;
 import basic.zBasic.util.log.ReportLogZZZ;
@@ -142,7 +143,8 @@ public class FrmMapSingletonTHM  extends KernelJFrameCascadedZZZ implements IGho
 		
 		//---- Nun das eigentliche KernelObjekt initiieren. Dabei können z.B. Debug-Einstellungen ausgwählt worden sein.
 		//KernelZZZ objKernel = new KernelZZZ(sApplicationKey, sSystemNr, sDir, sFile,(String)null);
-		KernelZZZ objKernel = new KernelZZZ("THM", "01", "", "ZKernelConfigTileHexMap02Client.ini", (String[]) null);
+		//20170413 ERSETZE DIESE ZENTRALE STELLE DURCH EIN SINGELTON... KernelZZZ objKernel = new KernelZZZ("THM", "01", "", "ZKernelConfigTileHexMap02Client.ini", (String[]) null);
+		KernelSingletonTHM objKernel = KernelSingletonTHM.getInstance("THM", "01", "", "ZKernelConfigTileHexMap02Client.ini", (String[]) null);
 		
 		//Lösung: Singleton, damit man nur eine Dialogbox öffnen kann 
 		FrmMapSingletonTHM frameInfo = FrmMapSingletonTHM.getInstance(objKernel, null);

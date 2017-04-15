@@ -20,7 +20,7 @@ import basic.zBasic.persistence.interfaces.IHibernateContextProviderUserZZZ;
 import basic.zBasic.persistence.interfaces.IHibernateContextProviderZZZ;
 import basic.zBasic.util.datatype.string.StringZZZ;
 import basic.zUtil.io.KernelFileZZZ.FLAGZ;
-import use.thm.persistence.hibernate.HibernateContextProviderTHM;
+import use.thm.persistence.hibernate.HibernateContextProviderSingletonTHM;
 import use.thm.persistence.model.AreaCell;
 
 public abstract class GeneralDaoZZZ<T> extends GeneralDAO<T> implements IObjectZZZ, IFlagZZZ, IHibernateContextProviderUserZZZ{
@@ -74,26 +74,34 @@ public abstract class GeneralDaoZZZ<T> extends GeneralDAO<T> implements IObjectZ
 	
 	//######## METHODEN, DIE VON GENERALDAO ÜBERSCHREIEBEN WERDEN ################
 	public Session getSession() {		
+		Session objReturn = null;
 		try {	
 			if(this.session==null){
 				IHibernateContextProviderZZZ objHibernateContext = this.getHibernateContextProvider();
 				if(objHibernateContext==null){
-					session = GeneralDAO.getSessionObject();			
+					objReturn= GeneralDAO.getSessionObject();			
 				}else{
-					session = objHibernateContext.getSession();
+					objReturn = objHibernateContext.getSession();
 				}
 				
-				if(session==null){				
+				if(objReturn==null){				
 					throw new ExceptionZZZ("Session weder aus reinem Hibernate noch aus dem EntityManager (s. HibernateContextProvider) zu holen. Keine HibernateContextProvider vorhanden.", iERROR_PARAMETER_VALUE, this, ReflectCodeZZZ.getMethodCurrentName());
 				}else{
-					this.setSession(session);
+					this.session = objReturn;
 				}				
 			}
 		} catch (ExceptionZZZ e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		return this.session;		
+		return this.session;				
+	}
+	
+	public void setSession(Session objSession){
+		if(this.session!=null){
+			this.session.close();
+		}
+		this.session=objSession;
 	}
 	
 	

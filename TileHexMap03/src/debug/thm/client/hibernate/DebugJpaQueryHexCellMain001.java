@@ -6,16 +6,17 @@ import javax.persistence.EntityManager;
 import javax.persistence.Query;
 
 import basic.zBasic.ExceptionZZZ;
-import use.thm.persistence.hibernate.HibernateContextProviderTHM;
+import use.thm.persistence.hibernate.HibernateContextProviderSingletonTHM;
 import use.thm.persistence.model.AreaCell;
 import use.thm.persistence.model.AreaCellType;
 
 public class DebugJpaQueryHexCellMain001 {
 
 	public static void main(String[] args) {
-		HibernateContextProviderTHM objContextHibernate;
+		HibernateContextProviderSingletonTHM objContextHibernate;
 		try {
-			objContextHibernate = new HibernateContextProviderTHM();
+			//objContextHibernate = new HibernateContextProviderSingletonTHM();
+			objContextHibernate = HibernateContextProviderSingletonTHM.getInstance();
 		
 		
 		

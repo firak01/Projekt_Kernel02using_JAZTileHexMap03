@@ -10,6 +10,7 @@ import javax.swing.JLayeredPane;
 import javax.swing.JPanel;
 
 import org.hibernate.Session;
+import org.hibernate.internal.SessionFactoryImpl;
 
 import use.thm.ITileEventUserTHM;
 import use.thm.client.event.EventTileCreatedInCellTHM;
@@ -18,7 +19,7 @@ import use.thm.client.event.TileMoveEventBrokerTHM;
 import use.thm.persistence.dao.AreaCellDao;
 import use.thm.persistence.dao.TroopArmyDao;
 import use.thm.persistence.dao.TroopDao;
-import use.thm.persistence.hibernate.HibernateContextProviderTHM;
+import use.thm.persistence.hibernate.HibernateContextProviderSingletonTHM;
 import use.thm.persistence.model.AreaCell;
 import use.thm.persistence.model.AreaCellLand;
 import use.thm.persistence.model.AreaCellOcean;
@@ -80,8 +81,8 @@ public class HexMapTHM extends KernelUseObjectZZZ implements ITileEventUserTHM {
 		
 		//########################
 		//TEST TESTSE
-		//TODO GOON: Mache HibernateContextProvider zum SINGLETON!!!
-		HibernateContextProviderTHM objContextHibernate = new HibernateContextProviderTHM(this.getKernelObject());
+		//HibernateContextProviderSingletonTHM objContextHibernate = new HibernateContextProviderSingletonTHM(this.getKernelObject());
+		HibernateContextProviderSingletonTHM objContextHibernate = HibernateContextProviderSingletonTHM.getInstance(this.getKernelObject());
 		objContextHibernate.getConfiguration().setProperty("hibernate.hbm2ddl.auto", "update");  //! Jetzt erst wird jede Tabelle über den Anwendungsstart hinaus gespeichert UND auch wiedergeholt.				
 			
 		TroopArmyDao daoTroop = new TroopArmyDao(objContextHibernate);
@@ -197,7 +198,8 @@ public class HexMapTHM extends KernelUseObjectZZZ implements ITileEventUserTHM {
 			//Die MapInformationen und die Informationen für Hexfelder sollen aus einer SQL Tabelle kommen. Das legt dann auch die Größe der Karte fest fest....
 			//Wenn es schon Mapinformationen gibt (ggf. neu "Map Alias" beachten) dann soll die Karten nicht neu aufgebaut, sondern aus der SQL Datenbank ausgelesen werden.
             //Den Namen der Datenbank/des Schemas aus der Kernelkonfiguration holen.
-			HibernateContextProviderTHM objContextHibernate = new HibernateContextProviderTHM(this.getKernelObject());
+			//HibernateContextProviderSingletonTHM objContextHibernate = new HibernateContextProviderSingletonTHM(this.getKernelObject());
+			HibernateContextProviderSingletonTHM objContextHibernate = HibernateContextProviderSingletonTHM.getInstance(this.getKernelObject());
 									
 			//Prüfe die Existenz der Datenbank ab. Ohne die erstellte Datenbank und die Erstellte Datenbanktabelle kommt es hier zu einem Fehler.			
 			boolean bDbExists = SQLiteUtilZZZ.databaseFileExists(objContextHibernate);									
@@ -245,7 +247,7 @@ public class HexMapTHM extends KernelUseObjectZZZ implements ITileEventUserTHM {
 	}
 	
 	//20170316: Steuere über die DAO-Klassen
-	private boolean fillMap_readCreated(HibernateContextProviderTHM objContextHibernate, KernelJPanelCascadedZZZ panelMap) throws ExceptionZZZ{
+	private boolean fillMap_readCreated(HibernateContextProviderSingletonTHM objContextHibernate, KernelJPanelCascadedZZZ panelMap) throws ExceptionZZZ{
 		boolean bReturn = false;
 		main:{
 				
@@ -464,7 +466,7 @@ public class HexMapTHM extends KernelUseObjectZZZ implements ITileEventUserTHM {
 	
 	
 	//20170316: Steuere über die DAO-Klassen
-		private boolean fillMap_readCreated_IMPERFORMANT_EXAMPLE(HibernateContextProviderTHM objContextHibernate, KernelJPanelCascadedZZZ panelMap) throws ExceptionZZZ{
+		private boolean fillMap_readCreated_IMPERFORMANT_EXAMPLE(HibernateContextProviderSingletonTHM objContextHibernate, KernelJPanelCascadedZZZ panelMap) throws ExceptionZZZ{
 			boolean bReturn = false;
 			main:{
 				int iNrOfHexes = 0;
@@ -591,7 +593,7 @@ public class HexMapTHM extends KernelUseObjectZZZ implements ITileEventUserTHM {
 			return bReturn;
 	}
 	
-	private boolean fillMap_readCreated_ENTITYMANAGER_EXAMPLE_IMPERFORMANTER_ANSATZ(HibernateContextProviderTHM objContextHibernate, EntityManager em, KernelJPanelCascadedZZZ panelMap) throws ExceptionZZZ{
+	private boolean fillMap_readCreated_ENTITYMANAGER_EXAMPLE_IMPERFORMANTER_ANSATZ(HibernateContextProviderSingletonTHM objContextHibernate, EntityManager em, KernelJPanelCascadedZZZ panelMap) throws ExceptionZZZ{
 		boolean bReturn = false;
 		main:{
 			int iNrOfHexes = 0;	
@@ -644,12 +646,10 @@ public class HexMapTHM extends KernelUseObjectZZZ implements ITileEventUserTHM {
 		}//main:
 		return bReturn;
 }
-		
-	private boolean fillMap_createNew(HibernateContextProviderTHM objContextHibernate, KernelJPanelCascadedZZZ panelMap) throws ExceptionZZZ{
+	
+	private boolean fillMap_createNew(HibernateContextProviderSingletonTHM objContextHibernate, KernelJPanelCascadedZZZ panelMap) throws ExceptionZZZ{
 		boolean bReturn = false;
 		main:{
-			int iNrOfHexes = 0;
-			
 			/*++++++++++++++
 			//Hibernate Beispiel für einfaches Erzeugen der Entities
 			SessionFactory sf = HibernateUtil.getSessionFactory();
@@ -668,20 +668,26 @@ public class HexMapTHM extends KernelUseObjectZZZ implements ITileEventUserTHM {
 			session.getTransaction().commit();
 			session.close();
 			*/			
-			Session session = objContextHibernate.getSession();//Merke: 20170409: Scheinbar scheint für Hibernate pur es nur die Möglichkeit zu geben 'Interceptoren' zu nutzen. Alternative EntityManager & Listener wird ausprobiert. 
-			
-			//Vorbereiten der Wertübergabe an die Datenbank
-			session.beginTransaction();
 			
 			
-			//Für die Tests auf falsche Platzierung der Spielsteine untenstehende Variablen auf true setzen
-			boolean bUseTestArea = true;
-			boolean bUseTestOccupied = true;
+			bReturn = fillMap_createNewAreas(objContextHibernate, panelMap);
+			if(bReturn){
+				bReturn = fillMap_createNewTiles(objContextHibernate, panelMap);
+			}
+		}//end main
+		return bReturn;		
+	}
+	private boolean fillMap_createNewAreas(HibernateContextProviderSingletonTHM objContextHibernate, KernelJPanelCascadedZZZ panelMap) throws ExceptionZZZ{
+		boolean bReturn = false;
+		main:{
+			int iNrOfHexes = 0;
 			
+			Session session = objContextHibernate.getSession(); 
+									
 			//Zwei verschachtelte Schleifen, Aussen: Solange wie es "Provinzen" gibt...
 			//                                                  Innen:   von 1 bis maximaleSpaltenanzahl...
 			int iY = 0;
-			do{//die maximale Zeilenzahl ist noch hart verdrahtet, soll sich aber später automatisch ergeben.....
+			do{
 			iY++;
 			Integer intY = new Integer(iY);
 			String sY = intY.toString();
@@ -690,6 +696,9 @@ public class HexMapTHM extends KernelUseObjectZZZ implements ITileEventUserTHM {
 				Integer intX = new Integer(iX);				
 				String sX = intX.toString();
 				
+				session.beginTransaction(); //Ein zu persistierendes Objekt ==> eine Transaction, auch wenn mehrere in einer Transaction abzuhandeln wären, aber besser um Fehler abfangen zu können.
+				
+				
 				//FGL 20081004 nun wird eine "Landschaft gebaut"   HexCellTHM objCellTemp = new HexCellTHM(this.getKernelObject(), panelMap,  sX, sY, this.getSideLength());  //ToDo: Dass sollen dann erst "Areas" werden, dh. mit Gel�ndeinformationen, Danach "Provinzen" mit Geb�udeinfos/Armeeinfos
 				AreaCellTHM objCellThmTemp;
 				AreaCell objCellTemp;
@@ -697,6 +706,8 @@ public class HexMapTHM extends KernelUseObjectZZZ implements ITileEventUserTHM {
 					//OZEAN					
 					//Aretype nun als ENUMERATION objCellTemp = new AreaCell(new CellId("EINS", sX, sY), AreaTypeTHM.OZEAN);
 					objCellTemp = new AreaCellOcean(new CellId("EINS", sX, sY));
+					
+					//TODO: Streng genommen müsste die Erstellung des UI hiervon getrennt werden.... So wie ich es wg. der falschen Platzierung von Armeen/Flotten im UI vorhabe
 					objCellThmTemp = new  AreaCellTHM(this.getKernelObject(), this,  objCellTemp, this.getSideLength());  //ToDo: Das sollen dann erst "Areas" werden, dh. mit Geländeinformationen, Danach "Provinzen" mit Gebäudeinfos/Armeeinfos
 					/*TODO Hintergrundbild
 					 *  ImageIcon background = new ImageIcon("Water.png");
@@ -705,26 +716,73 @@ public class HexMapTHM extends KernelUseObjectZZZ implements ITileEventUserTHM {
 				}else{
 					//LAND
 					objCellTemp = new AreaCellLand(new CellId("EINS", sX, sY));
+					
+					//TODO: Streng genommen müsste die Erstellung des UI hiervon getrennt werden.... So wie ich es wg. der falschen Platzierung von Armeen/Flotten im UI vorhabe
 					objCellThmTemp = new  AreaCellTHM(this.getKernelObject(), this,  objCellTemp, this.getSideLength());  //ToDo: Dass sollen dann erst "Areas" werden, dh. mit Gel�ndeinformationen, Danach "Provinzen" mit Geb�udeinfos/Armeeinfos
 					/*TODO Hintergrundbild
 					 *  ImageIcon background = new ImageIcon("Grass.png");
         				objCellTemp.setIcon(background);
-					 */
-					
-
+					 */					
 				}
 				
 				//TODO: Die Zelle soll ein eigenes Layout bekommen, das die Spielsteine automatisch anordnet.
 				objCellThmTemp.setLayout(null);
 				
 				//Am MoveEventBroker registrieren
-				objTileMoveEventBroker.addListenerTileMoved(objCellThmTemp);
+				this.getTileMoveEventBroker().addListenerTileMoved(objCellThmTemp);
 				
 				//20130630: Hier am MetaEventBroker registrieren
-				objTileMetaEventBroker.addListenerTileMeta(objCellThmTemp);
+				this.getTileMetaEventBroker().addListenerTileMeta(objCellThmTemp);
 				
+
+				//TEST: Ausgabe eines zusammengesetzten Wertes, der wg @Transient NICHT in der Datenbank persistiert werden soll
+				//System.out.println("Erstellt wurde ein Feld mit dem Alias: " + objCellTemp.getFieldAlias());
+				//Liefert folgende Losausgabe auf der Console: DEBUG org.hibernate.event.internal.AbstractSaveEventListener - Generated identifier: component[sMapAlias,sMapX,sMapY]{sMapX=30, sMapY=20, sMapAlias=EINS}, using strategy: org.hibernate.id.CompositeNestedGeneratedValueGenerator
 			
+				//Hibernate: Die Zelle in die Datenbank packen, in der sie persistiert wird
+				session.save(objCellTemp);
+					
+                //Die Zelle in eine HashMap packen, die für´s UI verwendet wird				
+				hmCell.put(sX, sY, objCellThmTemp);
+				iNrOfHexes++; //Zelle zur Summe hinzufügen
+					
 				
+				//TODO TEST: FALSCH ist es eine Zelle zu erzeugen, die es schon gibt.
+//					AreaCell objCellTest = new AreaCell(new CellId("EINS", "5", "5"), AreaType.LAND);
+//					AreaCellTHM objAreaTest = new  AreaCellTHM(this.getKernelObject(), this,  objCellTest, this.getSideLength());  //ToDo: Dass sollen dann erst "Areas" werden, dh. mit Geländeinformationen, Danach "Provinzen" mit Geb�udeinfos/Armeeinfos
+//					session.save(objCellTest); 
+					//Erfolgreich ist der Test, wenn er folgende Fehlermelung liefert: 
+					//Exception in thread "main" org.hibernate.NonUniqueObjectException: a different object with the same identifier value was already associated with the session: [tryout.hibernate.AreaCell#tryout.hibernate.CellId@2079d3]
+					
+					//Werte endgültig in die Datenbank übernehmen, per Hibernate
+					//Merke: Fehler "Caused by: java.sql.SQLException: [SQLITE_CONSTRAINT]  Abort due to constraint violation (columns mapAlias, mapX, mapY are not unique)"
+					//           Hier wird versucht ein NEUES Objekt mit dem gleichen Schlüsselwerten in die Tabelle zu schreiben. 
+					//           Daher sollte man vorher prüfen, ob es nicht schon solch ein Objekt gibt.
+					session.getTransaction().commit();										
+				}//End for iX
+			}while(iY< this.getRowMax());
+			
+			//FGL 20170415: Die Session nicht schliessen, da man auch noch die Spielsteine platzieren muss
+			//session.close();	
+			this.iNrOfHexes = iNrOfHexes;
+			if(iNrOfHexes >= 1) bReturn = true;
+		}//end main
+		return bReturn;
+	}
+	private boolean fillMap_createNewTiles(HibernateContextProviderSingletonTHM objContextHibernate, KernelJPanelCascadedZZZ panelMap) throws ExceptionZZZ{
+		boolean bReturn = false;
+		main:{			
+			
+			//Nun hatte es sich gezeigt, dass es wesentlich schneller ist, alle Provinzen auf einen Schlag abzufragen, statt jede Provinz per CellId zu suchen.
+			//Steuerung über DAO - Klassen
+			AreaCellDao daoAreaCell = new AreaCellDao(objContextHibernate);	
+				
+			//Es soll performanter sein erst die ganze Liste zu holen (wg. Lazy), statt Über die ID jede Zelle einzeln.
+			List<AreaCell>listAreaCell = daoAreaCell.findLazyAll(0, -1);
+			System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": Anzahl gefundener HexCells = " + listAreaCell.size());
+			//vielleicht so die initaialisierung der "bag" möglich .... Das war ein Versuch wg. "Database is locked" Fehler... daoAreaCell.setSession(null);
+			
+			
 			/* !!! Alte Version, nicht Löschen: So werden Truppen ohne einen Event hinzugefügt	
 			//TEST: TRUPPEN Komponente(n) in eine bestimmte Zelle hinzufügen
 			if(sX.equals("1") && sY.equals("1")){
@@ -746,67 +804,84 @@ public class HexMapTHM extends KernelUseObjectZZZ implements ITileEventUserTHM {
 				objCellTemp.add(objFleetTemp);
 			}*/
 			
-				//TEST: Ausgabe eines zusammengesetzten Wertes, der wg @Transient NICHT in der Datenbank persistiert werden soll
-				//System.out.println("Erstellt wurde ein Feld mit dem Alias: " + objCellTemp.getFieldAlias());
-				//Liefert folgende Losausgabe auf der Console: DEBUG org.hibernate.event.internal.AbstractSaveEventListener - Generated identifier: component[sMapAlias,sMapX,sMapY]{sMapX=30, sMapY=20, sMapAlias=EINS}, using strategy: org.hibernate.id.CompositeNestedGeneratedValueGenerator
+			Session session = objContextHibernate.getSession(); 
+			int iNrOfTiles = 0;
 			
-					//JPA: Die Zelle in die Datenbank packen, in der sie persistiert wird
+			//Für die Tests auf falsche Platzierung der Spielsteine untenstehende Variablen auf true setzen
+			boolean bUseTestArea = true;
+			boolean bUseTestOccupied = true;
+		
+			for(AreaCell objCellTemp : listAreaCell){			
+				CellId objId = objCellTemp.getId();			
+				String sX = objId.getMapX();
+				String sY = objId.getMapY();
+								
+				//Anfangsaufstellung: TRUPPEN Komponente in einer Datenbank persistieren und in einer bestimmten Zelle per Event hinzufügen 
+				AreaCellTHM objCellThmTemp;				
+				if(sX.equals("1") && sY.equals("2")  | (sX.equals("1") & sY.equals("3")) | (sX.equals("1") & sY.equals("4"))){
+							session.beginTransaction(); //Ein zu persistierendes Objekt - eine Transaction, auch wenn mehrere in einer Transaction abzuhandeln wären, aber besser um Fehler abfangen zu können.					
+					
+							//+++ Datenbankoperationen
+							TroopArmy objTroopTemp = new TroopArmy(new TileId("EINS", "1", "ARMY UNIQUE " + sY));//TODO GOON : sY als Uniquename zu verwenden ist nur heuristisch und nicht wirklich UNIQUE
+							objTroopTemp.setHexCell(objCellTemp); //Füge Zelle der Trupppe hinzu, wg. 1:1 Beziehung
+							objCellTemp.getTileBag().add(objTroopTemp); //Füge diese Army der HexCell hinzu //wg. 1:n Beziehung
+							
+							session.save(objCellTemp); 																	
+							session.save(objTroopTemp);							
+							session.getTransaction().commit();
+														
+							//+++ UI Operationen & die TroopArmy noch an das UI-verwendete Objekt weitergeben
+							ArmyTileTHM objArmyTemp = new ArmyTileTHM(panelMap, objTileMoveEventBroker, sX, sY, this.getSideLength());
+							
+							EventTileCreatedInCellTHM objEventTileCreated = new EventTileCreatedInCellTHM(objArmyTemp, 1, sX, sY);
+							this.getTileMetaEventBroker().fireEvent(objEventTileCreated);						
+							
+							iNrOfTiles++;
+				}else if(sX.equals("5")&& sY.equals("5")){
+					session.beginTransaction(); //Ein zu persistierendes Objekt - eine Transaction, auch wenn mehrere in einer Transaction abzuhandeln wären, aber besser um Fehler abfangen zu können.					
+										
+					//+++ Datenbankoperationen
+					TroopFleet objTroopTemp = new TroopFleet(new TileId("EINS", "1", "FLEET UNIQUE " + sY));
+					objTroopTemp.setHexCell(objCellTemp); //wg. 1:1 Beziehung					
+					objCellTemp.getTileBag().add(objTroopTemp);//Füge diese Flotte der HexCell hinzu //wg. 1:n Beziehung
+					
+					session.save(objTroopTemp);
 					session.save(objCellTemp);
+					session.getTransaction().commit();
 					
-                    //Die Zelle in eine HashMap packen, die für´s UI verwendet wird				
-					hmCell.put(sX, sY, objCellThmTemp);
-					iNrOfHexes++; //Zelle zur Summe hinzufügen
+					//+++ UI Operationen & die TroopFleet noch an das UI-verwendete Objekt weitergeben											
+					FleetTileTHM objFleetTemp = new FleetTileTHM(panelMap, objTileMoveEventBroker, sX, sY, this.getSideLength());
 					
+					EventTileCreatedInCellTHM objEventTileCreated = new EventTileCreatedInCellTHM(objFleetTemp, 1, sX, sY);
+					this.getTileMetaEventBroker().fireEvent(objEventTileCreated);
+					
+					iNrOfTiles++;
+				}else if (bUseTestArea && sX.equals("1") && sY.equals("5")){
 					//TEST: FALSCHES PLATZIEREN DER TRUPPEN Komponente in einer bestimmten Zelle per Event hinzufügen
-					if(bUseTestArea && sX.equals("1") && sY.equals("2")){
-						//+++ Datenbankoperationen
-						TroopFleet objTroopTemp = new TroopFleet(new TileId("EINS", "1", "FLEET UNIQUE " + sY));					
-						//TODO GOON 20170407: Die Validierung auf ein gültiges Feld in einen Event der Persistierung packen, siehe Buch..... Dannn kann man auch wieer richtig das falsche Hinzufügen testen 
-						objTroopTemp.setHexCell(objCellTemp); //wg. 1:1 Beziehung
-						//TODO GOON 20170407: Hier müsste dann ein Fehler kommen, damit der folgende Code nicht ausgeführt wird......
-						objCellTemp.getTileBag().add(objTroopTemp);//Füge diese Flotte der HexCell hinzu //wg. 1:n Beziehung
-						
-						session.save(objTroopTemp);
-						
-						//+++ UI Operationen & die TroopFleet noch an das UI-verwendete Objekt weitergeben	
-						FleetTileTHM objFleetTemp = new FleetTileTHM(panelMap, objTileMoveEventBroker, sX, sY, this.getSideLength());
-						
-						EventTileCreatedInCellTHM objEventTileCreated = new EventTileCreatedInCellTHM(objFleetTemp, 1, sX, sY);
-						objTileMetaEventBroker.fireEvent(objEventTileCreated);												
-					}
+					session.beginTransaction(); //Ein zu persistierendes Objekt - eine Transaction, auch wenn mehrere in einer Transaction abzuhandeln wären, aber besser um Fehler abfangen zu können.					
+										
+					//+++ Datenbankoperationen
+					TroopFleet objTroopTemp = new TroopFleet(new TileId("EINS", "1", "FLEET UNIQUE " + sY));					
+					//TODO GOON 20170407: Die Validierung auf ein gültiges Feld in einen Event der Persistierung packen, siehe Buch..... Dannn kann man auch wieer richtig das falsche Hinzufügen testen 
+					objTroopTemp.setHexCell(objCellTemp); //wg. 1:1 Beziehung
+					//TODO GOON 20170407: Hier müsste dann ein Fehler kommen, damit der folgende Code nicht ausgeführt wird......
+					objCellTemp.getTileBag().add(objTroopTemp);//Füge diese Flotte der HexCell hinzu //wg. 1:n Beziehung
 					
-					//Anfangsaufstellung: TRUPPEN Komponente in einer Datenbank persistieren und in einer bestimmten Zelle per Event hinzufügen 
-					if(sX.equals("1") && sY.equals("2")  | (sX.equals("1") & sY.equals("3")) | (sX.equals("1") & sY.equals("4"))){
-						//+++ Datenbankoperationen
-						TroopArmy objTroopTemp = new TroopArmy(new TileId("EINS", "1", "ARMY UNIQUE " + sY));//TODO GOON : sY als Uniquename zu verwenden ist nur heuristisch und nicht wirklich UNIQUE
-						objTroopTemp.setHexCell(objCellTemp); //Füge Zelle der Trupppe hinzu, wg. 1:1 Beziehung
-						objCellTemp.getTileBag().add(objTroopTemp); //Füge diese Army der HexCell hinzu //wg. 1:n Beziehung
-						
-						session.save(objTroopTemp);
-						
-						//+++ UI Operationen & die TroopArmy noch an das UI-verwendete Objekt weitergeben
-						ArmyTileTHM objArmyTemp = new ArmyTileTHM(panelMap, objTileMoveEventBroker, sX, sY, this.getSideLength());
-						
-						EventTileCreatedInCellTHM objEventTileCreated = new EventTileCreatedInCellTHM(objArmyTemp, 1, sX, sY);
-						objTileMetaEventBroker.fireEvent(objEventTileCreated);						
-						
-					}else if(sX.equals("5")&& sY.equals("5")){
-						//+++ Datenbankoperationen
-						TroopFleet objTroopTemp = new TroopFleet(new TileId("EINS", "1", "FLEET UNIQUE " + sY));
-						objTroopTemp.setHexCell(objCellTemp); //wg. 1:1 Beziehung					
-						objCellTemp.getTileBag().add(objTroopTemp);//Füge diese Flotte der HexCell hinzu //wg. 1:n Beziehung
-						
-						session.save(objTroopTemp);
-						
-						//+++ UI Operationen & die TroopFleet noch an das UI-verwendete Objekt weitergeben											
-						FleetTileTHM objFleetTemp = new FleetTileTHM(panelMap, objTileMoveEventBroker, sX, sY, this.getSideLength());
-						
-						EventTileCreatedInCellTHM objEventTileCreated = new EventTileCreatedInCellTHM(objFleetTemp, 1, sX, sY);
-						objTileMetaEventBroker.fireEvent(objEventTileCreated);												
-					}
+					session.save(objTroopTemp);
+					session.save(objCellTemp);
+					session.getTransaction().commit();
 					
+					//+++ UI Operationen & die TroopFleet noch an das UI-verwendete Objekt weitergeben	
+					FleetTileTHM objFleetTemp = new FleetTileTHM(panelMap, objTileMoveEventBroker, sX, sY, this.getSideLength());
+					
+					EventTileCreatedInCellTHM objEventTileCreated = new EventTileCreatedInCellTHM(objFleetTemp, 1, sX, sY);
+					this.getTileMetaEventBroker().fireEvent(objEventTileCreated);	
+					
+					iNrOfTiles++;
+				}else if(bUseTestOccupied && sX.equals("4") && sY.equals("5")){					
 					//TEST: FALSCHES PLATZIEREN DER TRUPPEN Komponente in einer bestimmten Zelle, die schon besetzt ist per Event hinzufügen
-					if(bUseTestOccupied && sX.equals("1") && sY.equals("2")){
+					session.beginTransaction(); //Ein zu persistierendes Objekt - eine Transaction, auch wenn mehrere in einer Transaction abzuhandeln wären, aber besser um Fehler abfangen zu können.					
+					
 					
 						//+++ Datenbankoperationen
 						TroopArmy objTroopTemp = new TroopArmy(new TileId("EINS", "1","ARMY UNIQUE " + sY));
@@ -816,35 +891,21 @@ public class HexMapTHM extends KernelUseObjectZZZ implements ITileEventUserTHM {
 						objCellTemp.getTileBag().add(objTroopTemp);//Füge diese Flotte der HexCell hinzu //wg. 1:n Beziehung
 						
 						session.save(objTroopTemp);
+						session.save(objCellTemp);
+						session.getTransaction().commit();
 					
 						
 						//+++ UI Operationen & die TroopArmy noch an das UI-verwendete Objekt weitergeben
 						ArmyTileTHM objArmyTemp = new ArmyTileTHM(panelMap, objTileMoveEventBroker, sX, sY, this.getSideLength());
 						
 						EventTileCreatedInCellTHM objEventTileCreated = new EventTileCreatedInCellTHM(objArmyTemp, 1, sX, sY);
-						objTileMetaEventBroker.fireEvent(objEventTileCreated);												
-					}
-					
-					
-				}//End for iX
-			}while(iY< this.getRowMax());
-			
-			
-			//TEST: FALSCH ist es eine Zelle zu erzeugen, die es schon gibt.
-//			AreaCell objCellTest = new AreaCell(new CellId("EINS", "5", "5"), AreaType.LAND);
-//			AreaCellTHM objAreaTest = new  AreaCellTHM(this.getKernelObject(), this,  objCellTest, this.getSideLength());  //ToDo: Dass sollen dann erst "Areas" werden, dh. mit Geländeinformationen, Danach "Provinzen" mit Geb�udeinfos/Armeeinfos
-//			session.save(objCellTest); 
-			//Erfolgreich ist der Test, wenn er folgende Fehlermelung liefert: 
-			//Exception in thread "main" org.hibernate.NonUniqueObjectException: a different object with the same identifier value was already associated with the session: [tryout.hibernate.AreaCell#tryout.hibernate.CellId@2079d3]
-			
-			//Werte endgültig in die Datenbank übernehmen, per Hibernate
-			//Merke: Fehler "Caused by: java.sql.SQLException: [SQLITE_CONSTRAINT]  Abort due to constraint violation (columns mapAlias, mapX, mapY are not unique)"
-			//           Hier wird versucht ein NEUES Objekt mit dem gleichen Schlüsselwerten in die Tabelle zu schreiben. 
-			//           Daher sollte man vorher prüfen, ob es nicht schon solch ein Objekt gibt.
-			session.getTransaction().commit();
-			session.close();
-			
-			this.iNrOfHexes = iNrOfHexes;
+						this.getTileMetaEventBroker().fireEvent(objEventTileCreated);	
+						
+						iNrOfTiles++;
+					}												
+			}//end for
+			session.close();	
+			if(iNrOfTiles >= 1) bReturn = true;
 		}//end main:
 		return bReturn;
 	}
@@ -907,7 +968,7 @@ public class HexMapTHM extends KernelUseObjectZZZ implements ITileEventUserTHM {
 		this.objTileMoveEventBroker = objTileMoveEventBroker;
 	}
 
-	private boolean fillMap_createNew_ENTITYMANAGER_EXAMPLE(HibernateContextProviderTHM objContextHibernate, KernelJPanelCascadedZZZ panelMap) throws ExceptionZZZ{
+	private boolean fillMap_createNew_ENTITYMANAGER_EXAMPLE(HibernateContextProviderSingletonTHM objContextHibernate, KernelJPanelCascadedZZZ panelMap) throws ExceptionZZZ{
 			boolean bReturn = false;
 			main:{
 				int iNrOfHexes = 0;

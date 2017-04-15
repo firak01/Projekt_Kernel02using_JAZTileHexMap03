@@ -15,6 +15,7 @@ import org.hibernate.internal.SessionFactoryImpl;
 import org.hibernate.service.ServiceRegistry;
 import org.hibernate.service.ServiceRegistryBuilder;
 
+import use.thm.client.FrmMapSingletonTHM;
 import use.thm.client.component.AreaCellTHM;
 import use.thm.client.component.HexCellTHM;
 import use.thm.persistence.event.PersistListenerTHM;
@@ -37,35 +38,32 @@ import basic.zBasic.util.abstractList.HashMapExtendedZZZ;
 import basic.zBasic.util.datatype.string.StringZZZ;
 import basic.zKernel.KernelUseObjectZZZ;
 import basic.zKernel.KernelZZZ;
+import basic.zKernelUI.component.KernelJFrameCascadedZZZ;
 
-public class HibernateContextProviderTHM extends HibernateContextProviderZZZ{
+public class HibernateContextProviderSingletonTHM extends HibernateContextProviderZZZ{
+	private static HibernateContextProviderSingletonTHM objContextHibernate; //muss als Singleton static sein
+
+	public static HibernateContextProviderSingletonTHM getInstance() throws ExceptionZZZ{
+		if(objContextHibernate==null){
+			objContextHibernate = new HibernateContextProviderSingletonTHM();
+		}
+		return objContextHibernate;		
+	}
 	
-	
-	
-//	//Über die EntityManagerFactory erstellte EntityManager werden in dieser Hashmap verwaltet: hm("Name des Schemas/der Datenbank") = objEntityManager;
-//	HashMapExtendedZZZ<String, EntityManager> hmEntityManager = new HashMapExtendedZZZ<String, EntityManager>();
-//	public HibernateContextProviderTHM() throws ExceptionZZZ{
-//		super();
-//		boolean bErg = this.fillConfiguration();
-//		if(!bErg){
-//			ExceptionZZZ ez = new ExceptionZZZ("Configuration not successfully filled.", iERROR_RUNTIME, this, ReflectCodeZZZ.getMethodCurrentName());
-//			throw ez;
-//		}
-//	}
-	
-	public HibernateContextProviderTHM() throws ExceptionZZZ{
+	public static  HibernateContextProviderSingletonTHM getInstance(KernelZZZ objKernel) throws ExceptionZZZ{
+		if(objContextHibernate==null){
+			objContextHibernate = new HibernateContextProviderSingletonTHM(objKernel);
+		}
+		return objContextHibernate;	
+	}
+			
+	//Die Konstruktoren nun verbergen, wg. Singleton
+	private HibernateContextProviderSingletonTHM() throws ExceptionZZZ{
 		super();
 	}
-//
-//	public HibernateContextProviderTHM(KernelZZZ objKernel) throws ExceptionZZZ{
-//		super(objKernel);
-//		boolean bErg = this.fillConfiguration();
-//		if(!bErg){
-//			ExceptionZZZ ez = new ExceptionZZZ("Configuration not successfully filled.", iERROR_RUNTIME, this, ReflectCodeZZZ.getMethodCurrentName());
-//			throw ez;
-//		}
-//	}
-	public HibernateContextProviderTHM(KernelZZZ objKernel) throws ExceptionZZZ{
+	
+	//Die Konstruktoren nun verbergen, wg. Singleton
+	private HibernateContextProviderSingletonTHM(KernelZZZ objKernel) throws ExceptionZZZ{
 		super(objKernel);
 	}
 	
@@ -139,19 +137,21 @@ public class HibernateContextProviderTHM extends HibernateContextProviderZZZ{
 	}
 	
 	/*Versuch über das Hibernte Event System flexibler als mit dem Interceptor auf die Ereignisse reagieren zu können und ggfs. sogar auf mehrerer
-	 * Merke: Das Event System hat sich von Hibernate 3 nach Hibernate 4 ziemlich geändert. */
+	 * Merke: Das Event System hat sich von Hibernate 3 nach Hibernate 4 ziemlich geändert. 
+	 *            UNTER HIBERNATE 4. mit einer INEGRATOR - Klasse arbeiten, 
+	 *            die dann unter META-INF/services in der Datei org.hibernate.integrator.spi.Integrator bekannt gemacht werden muss */
 	@Override
 	public boolean declareConfigurationHibernateEvent(Configuration cfg) {
 
-		//NEIN: UNTER HIBERNATE 4. mit einer INEGRATOR - Klasse arbeiten. Dies ist dann falsch....
-		ServiceRegistryBuilder registry = new ServiceRegistryBuilder();
-		registry.applySettings(cfg.getProperties());
-		ServiceRegistry serviceRegistry = registry.buildServiceRegistry();
-
-            final EventListenerRegistry eventListenerRegistry = serviceRegistry.getService( EventListenerRegistry.class );
-
-            PersistListenerTHM listener = new PersistListenerTHM();
-            eventListenerRegistry.appendListeners(EventType.PERSIST, listener);
+		//MERKE: Daas ist dann unter Hibernate 4, überflüssig....
+//		ServiceRegistryBuilder registry = new ServiceRegistryBuilder();
+//		registry.applySettings(cfg.getProperties());
+//		ServiceRegistry serviceRegistry = registry.buildServiceRegistry();
+//
+//            final EventListenerRegistry eventListenerRegistry = serviceRegistry.getService( EventListenerRegistry.class );
+//
+//            PersistListenerTHM listener = new PersistListenerTHM();
+//            eventListenerRegistry.appendListeners(EventType.PERSIST, listener);
             
             //UpdateBookEventListener listener = new UpdateBookEventListener(); 
 //            eventListenerRegistry.appendListeners(EventType.PRE_UPDATE, listener );

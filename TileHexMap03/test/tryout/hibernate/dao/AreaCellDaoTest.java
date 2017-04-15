@@ -7,7 +7,7 @@ import javax.persistence.EntityManager;
 
 import custom.zUtil.io.FileZZZ;
 import use.thm.persistence.dao.AreaCellDao;
-import use.thm.persistence.hibernate.HibernateContextProviderTHM;
+import use.thm.persistence.hibernate.HibernateContextProviderSingletonTHM;
 import junit.framework.TestCase;
 import basic.zBasic.ExceptionZZZ;
 import basic.zBasic.persistence.SQLiteUtilZZZ;
@@ -19,13 +19,14 @@ import basic.zKernel.KernelZZZ;
 
 public class AreaCellDaoTest extends TestCase{
 	 private AreaCellDao objDaoTest = null;
-	 private  HibernateContextProviderTHM objContextHibernate = null;
+	 private  HibernateContextProviderSingletonTHM objContextHibernate = null;
 	 
 	    protected void setUp(){
 	      
 		try {			
 	    	KernelZZZ objKernel = new KernelZZZ("THM", "01", "", "ZKernelConfigTileHexMap02Client.ini", (String[]) null);
-	    	HibernateContextProviderTHM objContextHibernate = new HibernateContextProviderTHM(objKernel);
+	    	//HibernateContextProviderSingletonTHM objContextHibernate = new HibernateContextProviderSingletonTHM(objKernel);
+	    	HibernateContextProviderSingletonTHM objContextHibernate = HibernateContextProviderSingletonTHM.getInstance(objKernel);
 	    	this.objContextHibernate = objContextHibernate;
 	    	
 	    	//Prüfe die Existenz der Datenbank ab. Ohne die erstellte Datenbank und die Erstellte Datenbanktabelle kommt es hier zu einem Fehler.			

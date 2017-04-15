@@ -38,7 +38,7 @@ public class HibernateInterceptorTHM extends EmptyInterceptor {
            }
 
            TroopArmy book = (TroopArmy)entity;
-           System.out.println("BOOK STATE is ");
+           System.out.println("ARMY STATE is ");
            System.out.println(book);
        }
        return true;

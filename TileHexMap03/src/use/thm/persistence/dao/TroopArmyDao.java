@@ -6,7 +6,7 @@ import java.util.Map;
 
 import org.hibernate.Query;
 
-import use.thm.persistence.hibernate.HibernateContextProviderTHM;
+import use.thm.persistence.hibernate.HibernateContextProviderSingletonTHM;
 import use.thm.persistence.model.AreaCell;
 import use.thm.persistence.model.Troop;
 import use.thm.persistence.model.TroopArmy;
@@ -20,15 +20,15 @@ public class TroopArmyDao<T> extends TroopDao<T> {
 		super();
 		this.installLoger(TroopArmy.class);//Durch das Installieren des Loggers mit der korrekten Klasse wird GeneralDao.getT() erst korrekt ermöglicht.
 	}
-	public TroopArmyDao(HibernateContextProviderTHM objContextHibernate) throws ExceptionZZZ{
+	public TroopArmyDao(HibernateContextProviderSingletonTHM objContextHibernate) throws ExceptionZZZ{
 		super(objContextHibernate);		
 		this.installLoger(Troop.class);//Durch das Installieren des Loggers mit der korrekten Klasse wird GeneralDao.getT() erst korrekt ermöglicht.
 	}
-	public TroopArmyDao(HibernateContextProviderTHM objContextHibernate, String sFlagControl) throws ExceptionZZZ{
+	public TroopArmyDao(HibernateContextProviderSingletonTHM objContextHibernate, String sFlagControl) throws ExceptionZZZ{
 		super(objContextHibernate, sFlagControl);
 		this.installLoger(Troop.class);//Durch das Installieren des Loggers mit der korrekten Klasse wird GeneralDao.getT() erst korrekt ermöglicht.
 	}
-	public TroopArmyDao(HibernateContextProviderTHM objContextHibernate, String[] saFlagControl) throws ExceptionZZZ{
+	public TroopArmyDao(HibernateContextProviderSingletonTHM objContextHibernate, String[] saFlagControl) throws ExceptionZZZ{
 		super(objContextHibernate, saFlagControl);
 		this.installLoger(Troop.class);//Durch das Installieren des Loggers mit der korrekten Klasse wird GeneralDao.getT() erst korrekt ermöglicht.
 	}

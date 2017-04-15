@@ -6,7 +6,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.Query;
 
 import basic.zBasic.ExceptionZZZ;
-import use.thm.persistence.hibernate.HibernateContextProviderTHM;
+import use.thm.persistence.hibernate.HibernateContextProviderSingletonTHM;
 import use.thm.persistence.model.AreaCell;
 import use.thm.persistence.model.AreaCellType;
 import use.thm.persistence.model.CellId;
@@ -14,9 +14,10 @@ import use.thm.persistence.model.CellId;
 public class DebugJpaQueryHexCellMain003 {
 
 	public static void main(String[] args) {
-		HibernateContextProviderTHM objContextHibernate;
+		HibernateContextProviderSingletonTHM objContextHibernate;
 		try {
-			objContextHibernate = new HibernateContextProviderTHM();
+			//objContextHibernate = new HibernateContextProviderSingletonTHM();
+			objContextHibernate = HibernateContextProviderSingletonTHM.getInstance();
 		
 		//TEST: SQL ABFRAGE...
 		//Erzeuge den Entity Manager als Ausgangspunkt für die Abfragen. !!! Damit Hibernate mit JPA funktioniert, braucht man die Datei META-INF\persistence.xml. Darin wird die persistence-unit angegeben.		

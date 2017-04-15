@@ -17,6 +17,7 @@ import org.hibernate.internal.SessionFactoryImpl;
 import org.hibernate.service.ServiceRegistry;
 import org.hibernate.service.ServiceRegistryBuilder;
 
+import use.thm.client.FrmMapSingletonTHM;
 import use.thm.persistence.event.MyIntegrator;
 import use.thm.persistence.event.PersistListenerTHM;
 import use.thm.persistence.event.PreInsertListenerTHM;
@@ -31,21 +32,27 @@ import basic.zBasic.util.abstractList.HashMapExtendedZZZ;
 import basic.zBasic.util.datatype.string.StringZZZ;
 import basic.zKernel.KernelUseObjectZZZ;
 import basic.zKernel.KernelZZZ;
-
+import basic.zKernelUI.component.KernelJFrameCascadedZZZ;
+/**Hier wird die Konfiguration programmatisch aufgebaut
+ * und die globalen Hibernate Objekte sind hierüber überall verfügbar.
+ * 
+ */
 public abstract class HibernateContextProviderZZZ  extends KernelUseObjectZZZ implements IHibernateContextProviderZZZ {
-	/**Hier wird die Konfiguration programmatisch aufgebaut
-	 * und die globalen Hibernate Objekte sind hierüber überall verfügbar.
-	 * 
-	 */
+	
 	private Configuration cfgHibernate = new Configuration();
+	
+	//Session NICHT hier speichern. Der Grund ist, dass es pro Transaction nur 1 Session geben darf
+//	http://stackoverflow.com/questions/37602501/hibernate-2nd-transaction-in-same-session-doesnt-save-modified-object
+//	Thanks to @Michal, the problem is solved. In my base DAO class, I had the session as an instance variable, which screwed things up. Not entirely sure why exactly, but I also agree that one transaction = one session.
+//	So the solution was to make the session a method variable and basically always ask the session factory for the session.
 	private Session objSession = null;
+	
+	//20170415: Statt die Session zu speichern die SessionFactory speichern.
+	private SessionFactoryImpl objSessionFactory = null;
 	
 	//Über die EntityManagerFactory erstellte EntityManager werden in dieser Hashmap verwaltet: hm("Name des Schemas/der Datenbank") = objEntityManager;
 	private	HashMapExtendedZZZ<String, EntityManager> hmEntityManager = new HashMapExtendedZZZ<String, EntityManager>();
 	private EntityManagerFactory objEntityManagerFactory;
-		
-		
-		
 		
 		public HibernateContextProviderZZZ() throws ExceptionZZZ{
 			super();
@@ -63,6 +70,31 @@ public abstract class HibernateContextProviderZZZ  extends KernelUseObjectZZZ im
 			ExceptionZZZ ez = new ExceptionZZZ("Configuration not successfully filled.", iERROR_RUNTIME, this, ReflectCodeZZZ.getMethodCurrentName());
 			throw ez;
 		}
+	}
+	
+	public SessionFactoryImpl getSessionFactory(){
+		SessionFactoryImpl objReturn = this.objSessionFactory;
+		if(objReturn==null){
+			  Configuration cfg = this.getConfiguration();
+		      ServiceRegistry sr = new ServiceRegistryBuilder().applySettings(cfg.getProperties()).buildServiceRegistry();		    
+		      SessionFactory sf = cfg.buildSessionFactory(sr);
+			
+		      this.objSessionFactory = (SessionFactoryImpl) sf;
+			 objReturn = (SessionFactoryImpl) sf;			 
+		}		
+		return objReturn;
+	}
+	/**Das wird hautpsächlich dafür benutz, um eine neue SessionFactory zu erzwingen, fall sich die Hibernate Configuration geändert hat.
+	 * Z.B. wenn die Datenbank nicht mehr neu aufgebaut werden soll, sondern für Folgeabfragen weiterverwendet werden soll.
+	 * In diesem Fall setzt man die SessionFactory auf NULL.
+	 * @param objSessionFactory
+	 */
+	public void setSessionFactory(SessionFactoryImpl objSessionFactory){
+		if(this.objSessionFactory!=null){			
+			this.setSession(null);			
+			this.objSessionFactory.close(); //Die alte SessionFactory schliessen.
+		}
+		this.objSessionFactory = objSessionFactory;
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -159,7 +191,8 @@ public abstract class HibernateContextProviderZZZ  extends KernelUseObjectZZZ im
 	}
 	
 	public Session getSession() throws ExceptionZZZ{
-		Session objReturn = this.objSession;
+		//Session objReturn = null;
+		Session objReturn = this.objSession; //!!! Session darf nicht als Variable gespeichert und wiederverwendet werden. Der Grund ist 1 Transaktion ==> 1 Session.
 		if(objReturn==null || objReturn.isOpen()==false){
 			Configuration cfg = this.getConfiguration();
 			if(cfg==null){
@@ -179,10 +212,9 @@ public abstract class HibernateContextProviderZZZ  extends KernelUseObjectZZZ im
 //			}
 			
 			
-//############
-	        ServiceRegistry sr = new ServiceRegistryBuilder().applySettings(cfg.getProperties()).buildServiceRegistry();
-			SessionFactory sf = cfg.buildSessionFactory(sr);
-			
+			//############	
+			SessionFactoryImpl sf= this.getSessionFactory();
+						
 			//########### Hibernaten Event Listener / Callback Methoden zur Verfügung stellen.
 			//MERKE 20170412: In Hibernate 4 ist dies nur auf folgendem Weg möglich
 			//1. Mache einen Integrator, also eine Klasse mit ...  implements Integrator
@@ -204,6 +236,15 @@ public abstract class HibernateContextProviderZZZ  extends KernelUseObjectZZZ im
 			this.objSession = objReturn;
 		}
 		return objReturn;
+	}
+	
+	public void setSession(Session objSession){
+		if(this.objSession!=null){
+			if(this.objSession.isOpen()){
+				this.objSession.close();
+			}
+		}
+		this.objSession=objSession;
 	}
 	
 	public boolean fillConfiguration() throws ExceptionZZZ{

@@ -1197,7 +1197,8 @@ public abstract class GeneralDAO<T> implements IDaoInterface<T>{
 		
 		this.begin();
 		
-		Query q = getSession().createQuery("from "+table+" p") ;
+		Session objSession = this.getSession();		
+		Query q = objSession.createQuery("from "+table+" p") ;
 		
 		q.setFirstResult(first);
 		q.setMaxResults(max);

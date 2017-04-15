@@ -21,6 +21,7 @@ public class HibernateInterceptorTHM extends EmptyInterceptor {
     public boolean onSave(Object entity, Serializable id, Object[] state,
            String[] propertyNames, Type[] types) {
        System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": onsave Method is getting called");
+       //Merke: Der Interceptor schein nach dem PreInsert-Event aufgerufen zu werden.
        System.out.println("==== DETAILS OF ENTITY ARE ====");
        if(entity instanceof TroopArmy)
        {

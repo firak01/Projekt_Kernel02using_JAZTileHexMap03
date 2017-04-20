@@ -45,7 +45,7 @@ public abstract class HibernateContextProviderZZZ  extends KernelUseObjectZZZ im
 //	http://stackoverflow.com/questions/37602501/hibernate-2nd-transaction-in-same-session-doesnt-save-modified-object
 //	Thanks to @Michal, the problem is solved. In my base DAO class, I had the session as an instance variable, which screwed things up. Not entirely sure why exactly, but I also agree that one transaction = one session.
 //	So the solution was to make the session a method variable and basically always ask the session factory for the session.
-	private Session objSession = null;
+	private Session objSession = null; //Wird zwar gespeichert, aber beim neuen Holen per Getter auf NULL gesetzt und komplett neu geholt.
 	
 	//20170415: Statt die Session zu speichern die SessionFactory speichern.
 	private SessionFactoryImpl objSessionFactory = null;
@@ -91,7 +91,7 @@ public abstract class HibernateContextProviderZZZ  extends KernelUseObjectZZZ im
 	 */
 	public void setSessionFactory(SessionFactoryImpl objSessionFactory){
 		if(this.objSessionFactory!=null){			
-			this.setSession(null);			
+			this.setSession(null);  //session darf nicht gespeichert werden 1 Transaktion ==> 1 Session 	
 			this.objSessionFactory.close(); //Die alte SessionFactory schliessen.
 		}
 		this.objSessionFactory = objSessionFactory;
@@ -191,9 +191,9 @@ public abstract class HibernateContextProviderZZZ  extends KernelUseObjectZZZ im
 	}
 	
 	public Session getSession() throws ExceptionZZZ{
-		//Session objReturn = null;
-		Session objReturn = this.objSession; //!!! Session darf nicht als Variable gespeichert und wiederverwendet werden. Der Grund ist 1 Transaktion ==> 1 Session.
-		if(objReturn==null || objReturn.isOpen()==false){
+		Session objReturn = null;
+		this.setSession(null); //Session objReturn = this.objSession; //!!! Session darf nicht als Variable gespeichert und wiederverwendet werden. Der Grund ist 1 Transaktion ==> 1 Session.
+		
 			Configuration cfg = this.getConfiguration();
 			if(cfg==null){
 				ExceptionZZZ ez = new ExceptionZZZ("Configuration-Object not (yet) created.", iERROR_PROPERTY_EMPTY, this, ReflectCodeZZZ.getMethodCurrentName());
@@ -231,13 +231,12 @@ public abstract class HibernateContextProviderZZZ  extends KernelUseObjectZZZ im
 			//######################
 
 			//also das ist ohne SessionBuilder ....  
-			if(objReturn==null) 	objReturn = sf.openSession();					        
-			
-			this.objSession = objReturn;
-		}
+			if(objReturn==null) 	objReturn = sf.openSession();					        			
+			this.objSession = objReturn; //session wird zwar gespeichert, aber nicht dauerhaft. Darf nicht gespeichert werden 1 Transaktion ==> 1 Session. Wird daher immer neu geholt. 
 		return objReturn;
 	}
 	
+	 //session darf nicht gespeichert werden 1 Transaktion ==> 1 Session, darum wird in getSession() immer eine neue erzeugt. 
 	public void setSession(Session objSession){
 		if(this.objSession!=null){
 			if(this.objSession.isOpen()){

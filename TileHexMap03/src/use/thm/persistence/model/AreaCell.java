@@ -16,10 +16,6 @@ import basic.persistence.model.IOptimisticLocking;
                                       //Das muss in dem Root Entity, also in HEXCELL defniert werden. @DiscriminatorColumn(name="Disc", discriminatorType = DiscriminatorType.STRING)
 public class AreaCell extends HexCell implements Serializable, IOptimisticLocking{
 
-
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
 	
 

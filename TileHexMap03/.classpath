@@ -24,6 +24,7 @@
 	</classpathentry>
 	<classpathentry kind="lib" path="C:/Dokumente und Einstellungen/lindhaueradmin/.m2/repository/org/hibernate/hibernate-core/4.2.4.Final/hibernate-core-4.2.4.Final.jar" sourcepath="C:/Dokumente und Einstellungen/lindhaueradmin/.m2/repository/org/hibernate/hibernate-core/4.2.4.Final/hibernate-core-4.2.4.Final-sources.jar">
 		<attributes>
+			<attribute name="javadoc_location" value="file:/C:/java/hibernate-release-4.2.21.Final/documentation/javadocs/"/>
 			<attribute name="maven.pomderived" value="true"/>
 			<attribute name="maven.groupId" value="org.hibernate"/>
 			<attribute name="maven.artifactId" value="hibernate-core"/>

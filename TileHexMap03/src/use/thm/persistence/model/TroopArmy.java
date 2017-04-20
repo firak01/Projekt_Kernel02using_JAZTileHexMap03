@@ -16,10 +16,6 @@ import use.thm.persistence.listener.TroopArmyListener;
 //@EntityListeners(PersistListenerTHM.class)//Versuch JPA Callback/ListenerMethoden, aber hier funktionieren nur Hibernate EventListener
 public class TroopArmy extends Troop{
 
-
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
 		
 	//Der Default Contruktor wird für JPA - Abfragen wohl benötigt

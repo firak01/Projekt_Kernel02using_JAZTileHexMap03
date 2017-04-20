@@ -16,10 +16,6 @@ import basic.persistence.model.IOptimisticLocking;
 @DiscriminatorValue("troop") //Wird es wg. der Vererbung(!) von Tile zu Troop immer geben. Ohne Annotation ist das DTYPE und der wert ist gleich dem Klassennamen. //Das muss in dem Root Entity, also in Tile defniert werden. @DiscriminatorColumn(name="Disc", discriminatorType = DiscriminatorType.STRING)                                      
 public class Troop extends Tile implements Serializable, IOptimisticLocking{
 
-
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
 	
 

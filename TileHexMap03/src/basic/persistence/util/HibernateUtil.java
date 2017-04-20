@@ -1,7 +1,25 @@
 package basic.persistence.util;
  
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+
 import org.hibernate.SessionFactory;
+import org.hibernate.Transaction;
 import org.hibernate.cfg.AnnotationConfiguration;
+import org.hibernate.cfg.Configuration;
+import org.hibernate.event.internal.DefaultSaveEventListener;
+import org.hibernate.event.internal.DefaultSaveOrUpdateEventListener;
+import org.hibernate.event.service.spi.EventListenerGroup;
+import org.hibernate.event.service.spi.EventListenerRegistry;
+import org.hibernate.event.spi.EventType;
+import org.hibernate.event.spi.PreInsertEvent;
+import org.hibernate.event.spi.PreInsertEventListener;
+import org.hibernate.service.spi.SessionFactoryServiceRegistry;
+
+import use.thm.persistence.event.PreInsertListenerTHM;
+import use.thm.persistence.event.SaveOrUpdateListenerTHM;
+import use.thm.persistence.hibernate.HibernateContextProviderSingletonTHM;
+import basic.zBasic.ReflectCodeZZZ;
  
 public class HibernateUtil {
  
@@ -22,5 +40,83 @@ public class HibernateUtil {
     public static SessionFactory getSessionFactory() {
         return sessionFactory;
     }
+    
+    /**Wird eingesetzt, nach einem Commit, 
+     *  beispielsweise, ein preInsert-Listerner kann durch sein Veto den commit (d.h. also den Insert) verhindern.
+     *  ABER: EIN EINFACHES "WAS COMMITTED" IST KEINE LÖSUNG.
+     *  DARUM: Erweitere meinen Listener so, dass er sein letztes Ergebnis in einer Property speichert.
+     * @param objTransaction
+     * @return
+     */
+    public static boolean wasCommitSuccessful(HibernateContextProviderSingletonTHM objContextHibernate, String sCommitedType, Transaction objTransaction){
+    	boolean bReturn = false;
+    	main:{    		    		
+//	    	if (objTransaction.wasCommitted()) { //Keine LÖSUNG, da: //Always false: http://stackoverflow.com/questions/15503976/why-does-transaction-wascommitted-return-false
+//				System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": committed gilt als ausgeführt, aber es wurde nix inserted. Das hat preInsertListerner durch sein Veto verhindert.");
+//				bReturn = true;
+//			}else{
+//				System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": committed gilt als NICHT ausgeführt. Das hat preInsertListerner durch sein Veto verhindert.");
+//				bReturn = false;
+//			}
+//			if (objTransaction.wasRolledBack()) {
+//				System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": rolledBack gilt als ausgeführt. Das hat preInsertListerner durch sein Veto ermöglicht.");
+//			}else{
+//				System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": rolledBack gilt als NICHT ausgeführt, obwohl kein Insert gemacht wurde. Den hat preInsertListerner durch sein Veto verhindert.");
+//			}
+	    	
+	    	
+	    	Configuration hibernateConfiguration = objContextHibernate.getConfiguration();	    	
+	    	 final EventListenerRegistry x = objContextHibernate.getSessionFactory().getServiceRegistry().getService(EventListenerRegistry.class);////org.hibernate.integrator.spi.Integrator in META-INF/services beaknnt machen.
+	    	 
+	    	 //TODO GOON 20170420: Je nachdem was vor dem commit gemacht worden ist  eine anderer EventListerenrGruop holen.
+	    	 //TODO die Strings als Konstanten hinterlegen
+	    	 if(sCommitedType.equalsIgnoreCase("save")){
+		    	 EventListenerGroup eg = x.getEventListenerGroup(EventType.PRE_INSERT);
+		    	for(Object objtemp : eg.listeners()){
+		    		System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": Listener der Klasse '"+ objtemp.getClass().getName() +"'");
+		    		PreInsertListenerTHM  myListener = (PreInsertListenerTHM) objtemp;
+		    		
+		    		String sDateTime = "(ohne Datum)";
+		    		Calendar cal = myListener.getVetoDate();	
+		    		if(cal!=null){
+			    		SimpleDateFormat format1 = new SimpleDateFormat("yyyy-MM-dd - hh:mm:ss");			    			    
+			    		sDateTime = format1.format(cal.getTime());
+		    		}		
+		    		System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": Letztes Ergebnis des Listeners isVeto() = " + myListener.isVeto() + " vom: " + sDateTime);
+		    		bReturn = !myListener.isVeto();
+		    		myListener.resetVeto(); //Nachdem man hier den Status abgefragt hat, diesen auf "nicht ausgeführt" zurücksetzen.
+		    		System.out.println("xxxxxxxxxxxxxxxxxxxxxxx");
+		    	}
+	    	}else if(sCommitedType.equalsIgnoreCase("update")){
+	    		 EventListenerGroup eg = x.getEventListenerGroup(EventType.SAVE_UPDATE);
+			    	for(Object objtemp : eg.listeners()){
+			    		System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": Listener der Klasse '"+ objtemp.getClass().getName() +"'");
+			    		//Klappt nicht SaveOrUpdateListenerTHM  myListener = (SaveOrUpdateListenerTHM) objtemp;
+			    		
+			    		//DefaultSaveOrUpdateEventListener  myListenerX = (DefaultSaveOrUpdateEventListener) objtemp;//aber da fehlt meine IVetoZZZ erweiterung
+			    		SaveOrUpdateListenerTHM  myListener = (SaveOrUpdateListenerTHM) objtemp;
+			    		
+			    		String sDateTime = "(ohne Datum)";
+			    		Calendar cal = myListener.getVetoDate();	
+			    		if(cal!=null){
+				    		SimpleDateFormat format1 = new SimpleDateFormat("yyyy-MM-dd - hh:mm:ss");			    			    
+				    		sDateTime = format1.format(cal.getTime());
+			    		}			    		
+			    		System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": Letztes Ergebnis des Listeners hasVeto() = " + myListener.isVeto() + " vom: " + sDateTime);
+			    		bReturn = !myListener.isVeto();
+			    		myListener.resetVeto(); //Nachdem man hier den Status abgefragt hat, diesen auf "nicht ausgeführt" zurücksetzen.
+			    		System.out.println("yyyyyyyyyyyyyyyyyyyyyyyyyy");
+			    	}
+	    		
+	    	}
+	    		
+	    		
+	    	//final SessionFactoryServiceRegistry serviceRegistry = hibernateConfiguration
+	    	
+	    	
+    	}//end main:
+    	return bReturn;
+    }
+    
 }
 

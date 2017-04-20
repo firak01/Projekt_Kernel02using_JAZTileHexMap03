@@ -31,18 +31,28 @@ public class MyIntegrator implements Integrator, IKernelUserZZZ {
 
             final EventListenerRegistry eventListenerRegistry = serviceRegistry.getService( EventListenerRegistry.class );
 
+            //Wird nicht ausgeführt, weder bei session.save noch bei session.update
             PersistListenerTHM listenerPersist = new PersistListenerTHM(); //Funktioniert wahrscheinlich nur unter JPA. Mit Hibernate session.save(xxx) wird das nicht ausgeführt.
             eventListenerRegistry.setListeners(EventType.PERSIST, listenerPersist);
             
             PreInsertListenerTHM listenerPreInsert = new PreInsertListenerTHM();
-            eventListenerRegistry.setListeners(EventType.PRE_INSERT, listenerPreInsert);
+            eventListenerRegistry.setListeners(EventType.PRE_INSERT, listenerPreInsert); 
+            
+           //Wird nicht ausgeführt, weder bei session.save noch bei session.update
+          //PreUpdateListenerTHM listenerPreUpdate = new PreUpdateListenerTHM();
+          //eventListenerRegistry.prependListeners(EventType.PRE_UPDATE, listenerPreUpdate);
+            
+            SaveOrUpdateListenerTHM listenerSaveUpdate = new SaveOrUpdateListenerTHM();
+            //eventListenerRegistry.appendListeners(EventType.SAVE_UPDATE, listenerSaveUpdate);
+            eventListenerRegistry.setListeners(EventType.SAVE_UPDATE, listenerSaveUpdate);
+            
             
             //Weitere Listener: Merke, eine Listener Klasse kann auch mehrere Interfaces implementieren. 
             //Anbei eine kleine Auswahl weiterer möglicher Listener Events. Jeder Event entspricht einem Interface.
 //            eventListenerRegistry.setListeners(EventType.PRE_LOAD, listener);
 //            eventListenerRegistry.prependListeners(EventType.PRE_INSERT, listener);
-//            eventListenerRegistry.prependListeners(EventType.PRE_UPDATE, listener);
             //eventListenerRegistry.appendListeners(EventType.POST_UPDATE, listener );
+            
         } 
 
         public void disintegrate(SessionFactoryImplementor arg0, SessionFactoryServiceRegistry arg1) {        

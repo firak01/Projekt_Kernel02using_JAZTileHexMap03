@@ -1,10 +1,11 @@
 package use.thm.persistence.event;
 
-import java.util.Calendar;
 import java.util.Collection;
 
 import org.hibernate.event.spi.PreInsertEvent;
 import org.hibernate.event.spi.PreInsertEventListener;
+import org.hibernate.event.spi.PreUpdateEvent;
+import org.hibernate.event.spi.PreUpdateEventListener;
 
 import custom.zKernel.LogZZZ;
 import use.thm.persistence.dao.AreaCellDao;
@@ -21,25 +22,20 @@ import basic.zBasic.ReflectCodeZZZ;
 import basic.zKernel.IKernelUserZZZ;
 import basic.zKernel.KernelZZZ;
 
-/** Rückgabewert ist ein "Veto", also:
+/**
  * Damit wird nix eingefügt... return true;
 *  Damit wird etwas eingefügt return false;
-*  
-*  Das Problem ist nun, dass ein Veto zwar das Einfügen verhindert, aber dies beispielsweise nicht Abrufbar ist.
-*  Vairante  über Transaction.wasCommitted() abzufragen funktioniert nicht, da immer "false" zurückgegeben wird.
  * @author Fritz Lindhauer
  *
  */
-public class PreInsertListenerTHM implements PreInsertEventListener,IKernelUserZZZ, IVetoFlagZZZ {
+public class PreUpdateListenerTHM implements PreUpdateEventListener,IKernelUserZZZ {
 	private static final long serialVersionUID = 1L;
 	private KernelZZZ objKernel;
 	private LogZZZ objLog; 
-	
-	private VetoFlag4ListenerZZZ objLastResult=new VetoFlag4ListenerZZZ();
 
 	@Override
-	public boolean onPreInsert(PreInsertEvent event) {
-//		System.out.println(ReflectCodeZZZ.getPositionCurrent() + " onPreInsert   Hibernate-Event 02...");		
+	public boolean onPreUpdate(PreUpdateEvent event) {
+		//		System.out.println(ReflectCodeZZZ.getPositionCurrent() + " onPreInsert   Hibernate-Event 02...");		
 		boolean bReturn = false;
 		
 		//Versuch nun mehr über den Event herauszubekommen....
@@ -59,11 +55,7 @@ public class PreInsertListenerTHM implements PreInsertEventListener,IKernelUserZ
 			String sTypeArea = area.getAreaType();
 			System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": Area vom Typ="+sTypeArea);
 			
-			if(!sTypeArea.equalsIgnoreCase("LA")){
-				bReturn = true; //Der Returnwert true bedeutet "VETO"
-			}else{
-				bReturn = false;
-			}
+			if(!sTypeArea.equalsIgnoreCase("LA")) bReturn = true; //Der Returnwert true bedeutet "VETO"
 			
 			//Merke: 20170415: Hier hatte ich zuerst versuch über ein DAO Objekt die notwendigen Informationen zu bekommen. daoArea.findByKey(cellid);
 			//                           Aber, zumindest mit SQLite bekommt man dann Probleme, wenn man
@@ -86,11 +78,7 @@ public class PreInsertListenerTHM implements PreInsertEventListener,IKernelUserZ
 			String sTypeArea = area.getAreaType();
 			System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": Area vom Typ="+sTypeArea);
 			
-			if(!sTypeArea.equalsIgnoreCase("OC")){
-				bReturn = true; //Der Returnwert true bedeutet "VETO"
-			}else{
-				bReturn = false;
-			}
+			if(!sTypeArea.equalsIgnoreCase("OC")) bReturn = true; //Der Returnwert true bedeutet "VETO"
 			
 		}else{
 			System.out.println(ReflectCodeZZZ.getPositionCurrent()+": eingefügt wird ein Objekt der Klasse: " + obj.getClass().getName());
@@ -98,33 +86,30 @@ public class PreInsertListenerTHM implements PreInsertEventListener,IKernelUserZ
 			
 			//ACTUNG: DAS NICHT MACHEN... 
 			//Erstens wird dadurch die LAZY Erstellung unterlaufen... es dauert also länger.
-			//Zweitens existieren beim Aufbau der Karte (also beim INSERT der Hexfelder) die Tiles noch nicht. Hier ist also nix zu prüfen.
+			//Zweitens existieren beim Aufbau der KArete (also beim INSERT der Hexfelder) die Tiles noch nicht. Hier ist also nix zu prüfen.
 			//Daher diese Überprüfung beim Speichern machen... Welcher Event????
-//			AreaCell area = (AreaCell) obj;
-//			String sTypeArea = area.getAreaType();
-//			System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": Area vom Typ="+sTypeArea);
-//			
-//			Collection<Tile> colTile = area.getTileBag();
-//			for(Tile objTile : colTile){
-//				String sTileType = objTile.getTileType();
-//				System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": Enthält Spielstein vom Typ="+sTileType);
-//				
-//				if(sTypeArea.equalsIgnoreCase("OC") & sTileType.equalsIgnoreCase("AR")){
-//					bReturn = true; // also VETO
-//				}else if(sTypeArea.equalsIgnoreCase( "LA") & sTileType.equalsIgnoreCase("FL")){
-//					bReturn = true;
-//				}else{
-//					bReturn = false;
-//				}
-//				
-//				
-//			}
+			AreaCell area = (AreaCell) obj;
+			String sTypeArea = area.getAreaType();
+			System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": Area vom Typ="+sTypeArea);
+			
+			Collection<Tile> colTile = area.getTileBag();
+			for(Tile objTile : colTile){
+				String sTileType = objTile.getTileType();
+				System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": Enthält Spielstein vom Typ="+sTileType);
+				
+				if(sTypeArea.equalsIgnoreCase("OC") & sTileType.equalsIgnoreCase("AR")){
+					bReturn = true; // also VETO
+				}else if(sTypeArea.equalsIgnoreCase( "LA") & sTileType.equalsIgnoreCase("FL")){
+					bReturn = true;
+				}else{
+					bReturn = false;
+				}
+				
+				
+			}
 		}		
-		this.veto(bReturn);
 		return bReturn;
 	}
-	
-
 
 	//#######################################
 		//Methods implemented by additional Interface
@@ -142,17 +127,4 @@ public class PreInsertListenerTHM implements PreInsertEventListener,IKernelUserZ
 			this.objLog = objLog;
 		}
 		
-		
-		public boolean isVeto(){
-			return this.objLastResult.isVeto();				
-		}
-		public void veto(boolean bResult){
-			this.objLastResult.veto(bResult);			
-		}
-		public void resetVeto(){
-			this.objLastResult.resetVeto();
-		}
-		public Calendar getVetoDate(){
-			return this.objLastResult.getVetoDate();
-		}
 }

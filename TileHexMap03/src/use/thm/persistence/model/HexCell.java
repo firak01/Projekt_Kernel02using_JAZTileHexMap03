@@ -16,6 +16,7 @@ import javax.persistence.DiscriminatorColumn;
 import javax.persistence.DiscriminatorType;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
+import javax.persistence.EntityListeners;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
@@ -34,6 +35,7 @@ import javax.persistence.Transient;
 
 import org.apache.commons.collections.Bag;
 
+import use.thm.persistence.event.SaveOrUpdateListenerTHM;
 import debug.thm.persistence.model.association003.AssociationTargetTesterAutoKey;
 import basic.persistence.model.IOptimisticLocking;
 import basic.zBasic.util.datatype.string.StringZZZ;
@@ -51,6 +53,7 @@ import basic.zBasic.util.datatype.string.StringZZZ;
 @Inheritance(strategy =  InheritanceType.JOINED )//ZIEL: Nur bestimmte Entiteis in einer eigenen Klasse //InheritanceType.TABEL_PER_CLASS) //Ziel: Jedes Entity der Vererbungshierarchie in einer eigenen Tabelle // InheritanceType.SINGLE_TABLE) //Hiermit werden alle Datensätze der Vererbungshierarchieklassen in einer Tabelle zusammengafasst und nur anhan ddes Discriminator Wertes unterschieden
 @DiscriminatorColumn(name="Disc", discriminatorType = DiscriminatorType.STRING) //Voraussetzung für DiscriminatorValue in der AreaCell-Klasse. //Wird es wg. der Vererbung von HEXCell zu AreaType immer geben. Ohne Annotation ist das DTYPE und der wert ist gleich dem Klassennamen.
 @Table(name="HEXCELL")
+//@EntityListeners(SaveOrUpdateListenerTHM.class)//Versuch JPA Callback/ListenerMethoden, aber hier funktionieren nur Hibernate EventListener
 public class HexCell implements Serializable, IOptimisticLocking{
 	private static final long serialVersionUID = 1113434456411176970L;
 	

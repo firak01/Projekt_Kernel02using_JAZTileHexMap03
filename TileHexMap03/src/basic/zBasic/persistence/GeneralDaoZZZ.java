@@ -69,6 +69,7 @@ public abstract class GeneralDaoZZZ<T> extends GeneralDAO<T> implements IObjectZ
 		}	
 			
 		this.setHibernateContextProvider(objContextHibernate);	
+		this.getSession();
 		}//end main:
 	}
 	
@@ -87,7 +88,7 @@ public abstract class GeneralDaoZZZ<T> extends GeneralDAO<T> implements IObjectZ
 				if(objReturn==null){				
 					throw new ExceptionZZZ("Session weder aus reinem Hibernate noch aus dem EntityManager (s. HibernateContextProvider) zu holen. Keine HibernateContextProvider vorhanden.", iERROR_PARAMETER_VALUE, this, ReflectCodeZZZ.getMethodCurrentName());
 				}else{
-					this.session = objReturn;
+					this.setSession(objReturn);
 				}				
 			}
 		} catch (ExceptionZZZ e) {
@@ -99,7 +100,7 @@ public abstract class GeneralDaoZZZ<T> extends GeneralDAO<T> implements IObjectZ
 	
 	public void setSession(Session objSession){
 		if(this.session!=null){
-			this.session.close();
+			if(this.session.isOpen()) this.session.close();
 		}
 		this.session=objSession;
 	}

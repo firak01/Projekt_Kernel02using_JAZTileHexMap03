@@ -1,10 +1,12 @@
 package use.thm.persistence.dao;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.hibernate.Query;
+import org.hibernate.Session;
 
 import use.thm.persistence.hibernate.HibernateContextProviderSingletonTHM;
 import use.thm.persistence.model.AreaCell;
@@ -85,5 +87,51 @@ public class TroopDao<T> extends GeneralDaoZZZ<T> {
 	
 	//####### EIGENE METHODEN ###########
 	//....
-	
+	public List<TroopArmy> searchTileIdCollectionByHexCell(String sMapAlias, String sX, String sY){
+		List<TroopArmy> listReturn = new ArrayList<TroopArmy>();
+		
+//		select mate
+//		from Cat as cat
+//		    inner join cat.mate as mate
+		    
+		//1. Beispiel: wenn man aber die WHERE Parameter so als String reinprogrammiert, ist das anfällig für SQL injection.
+		//String sHql = "SELECT id from Tile as tableTile";								
+		//listReturn = this.findByHQL(sHql, 0, 0);//start ist indexwert also 0 = erster Wert, Danach folgt maximale Anzahl von Objekten.
+		
+		//2. Beispiel: Etwas sicherer ist es die Parameter mit Platzhaltern zu füllen
+		Session session = this.getSession();
+		//liefert die ID Spalte als Integer zurück, also nicht das TileId Objekt...  Query query = session.createQuery("SELECT id from Tile as tableTile");
+		//                                                       wird nicht gefunden Query query = session.createQuery("SELECT TileIdObject from Tile as tableTile");
+		
+		//Also über die HEXCELL gehen...
+		//JA, das liefert die HEXCELL-Objekte zurück
+		//Query query = session.createQuery("SELECT objHexCell from Tile as tableTile");
+						
+		//JA, das liefert die CellId-Objekte der Hexcell zurück
+		//Query query = session.createQuery("SELECT objHexCell.id from Tile as tableTile");
+		
+		//JA, das liefert die Alias Map-Werte zurück
+		//Query query = session.createQuery("SELECT objHexCell.id.mapAlias from Tile as tableTile");
+		
+		//DARAUS VERSUCHEN DIE ABFRAGE ZU BAUEN....
+		//Query query = session.createQuery("SELECT objHexCell from Tile as tableTile where tableTile.objHexCell.Id.MapAlias IN (:mapAlias)");
+		
+			
+		//JA, das funktioniert
+		//Query query = session.createQuery("from Tile as tableTile where tableTile.objHexCell.id.mapAlias = :mapAlias");
+		//Query query = session.createQuery("from Tile as tableTile where tableTile.objHexCell.id.mapAlias = :mapAlias AND tableTile.objHexCell.id.mapX = :mapX AND tableTile.objHexCell.id.mapY = :mapY");
+		Query query = session.createQuery("from TroopArmy as tableTile where tableTile.objHexCell.id.mapAlias = :mapAlias AND tableTile.objHexCell.id.mapX = :mapX AND tableTile.objHexCell.id.mapY = :mapY");
+		
+		query.setString("mapAlias", sMapAlias);
+		query.setString("mapX", sX);
+		query.setString("mapY", sY);
+		
+		//Object objResult = query.uniqueResult(); //Das sind aber ggfs. mehrere Werte		
+		listReturn = query.list(); 
+		
+		//3. Beispiel
+		//TODO: Nicht den statischen HQL Ansatz, sondern über die Criteria API, d.h. die Where - Bedingung zur Laufzeit zusammensetzen
+				
+		return listReturn;
+	}
 }

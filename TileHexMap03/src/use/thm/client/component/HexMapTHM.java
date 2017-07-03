@@ -21,6 +21,8 @@ import use.thm.client.event.TileMoveEventBrokerTHM;
 import use.thm.persistence.dao.AreaCellDao;
 import use.thm.persistence.dao.TroopArmyDao;
 import use.thm.persistence.dao.TroopDao;
+import use.thm.persistence.daoFacade.TroopArmyDaoFacade;
+import use.thm.persistence.daoFacade.TroopFleetDaoFacade;
 import use.thm.persistence.hibernate.HibernateContextProviderSingletonTHM;
 import use.thm.persistence.model.AreaCell;
 import use.thm.persistence.model.AreaCellLand;
@@ -820,90 +822,15 @@ public class HexMapTHM extends KernelUseObjectZZZ implements ITileEventUserTHM {
 				String sX = objId.getMapX();
 				String sY = objId.getMapY();
 								
-				//Anfangsaufstellung: TRUPPEN Komponente in einer Datenbank persistieren und in einer bestimmten Zelle per Event hinzufügen 
-				AreaCellTHM objCellThmTemp;				
+				//Anfangsaufstellung: TRUPPEN Komponente in einer Datenbank persistieren und in einer bestimmten Zelle per Event hinzufügen 			
 				if(sX.equals("1") && sY.equals("2")  | (sX.equals("1") & sY.equals("3")) | (sX.equals("1") & sY.equals("4"))){
 						boolean bGoon = false;
-						validEntry:{
-							//Vesuch eine neue Session zu bekommen. Merke: Die Session wird hier nicht gespeichert! Wg. 1 Transaktion ==> 1 Session
-							if(session!=null){
-								if(session.isOpen()) session.close();
-								session = null;
-							}
-							session = objContextHibernate.getSession();
-							session.getTransaction().begin();
-							//session.beginTransaction(); //Ein zu persistierendes Objekt - eine Transaction, auch wenn mehrere in einer Transaction abzuhandeln wären, aber besser um Fehler abfangen zu können.					
-					
-							//+++ Datenbankoperationen
-							TroopArmy objTroopTemp = new TroopArmy(new TileId("EINS", "1", "ARMY UNIQUE " + sY));//TODO GOON : sY als Uniquename zu verwenden ist nur heuristisch und nicht wirklich UNIQUE
-							objTroopTemp.setHexCell(objCellTemp); //Füge Zelle der Trupppe hinzu, wg. 1:1 Beziehung
-							
-							//TODO GOON: EINE TRANSACTION = EINE SESSION ==>  neue session von der SessionFactory holen
-							session.save(objTroopTemp); //Hibernate Interceptor wird aufgerufen																				
-							if (!session.getTransaction().wasCommitted()) {
-								//session.flush(); //Datenbank synchronisation, d.h. Inserts und Updates werden gemacht. ABER es wird noch nix committed.
-								session.getTransaction().commit(); //onPreInsertListener wird ausgeführt   //!!! TODO GOON: WARUM WIRD wg. des FLUSH NIX MEHR AUSGEFÜHRT AN LISTENERN, ETC ???
-								bGoon = HibernateUtil.wasCommitSuccessful(objContextHibernate,"save",session.getTransaction());
-							}
-							if(!bGoon)break validEntry;
-						
-							if(objCellTemp instanceof AreaCell){
-								//Vesuch eine neue Session zu bekommen. Merke: Die Session wird hier nicht gespeichert! Wg. 1 Transaktion ==> 1 Session
-								if(session!=null){
-									if(session.isOpen()) session.close();
-									session = null;
-								}
-								session = objContextHibernate.getSession();
-								
-								session.getTransaction().begin();					
-								//session.beginTransaction(); //Ein zu persistierendes Objekt - eine Transaction, auch wenn mehrere in einer Transaction abzuhandeln wären, aber besser um Fehler abfangen zu können.
-								//Das aktiviert nicht den PreUpdateListener und zu diesem Zeitpunkt auch nicht mehr den PreInsertListener 
-								
-								AreaCellLand objAreaTemp = (AreaCellLand) objCellTemp;
-								int iPlayer = objTroopTemp.getPlayer();
-								objAreaTemp.setPlayerOwner(iPlayer);							
-
-								//session.save(objAreaTemp); //constraint violation, so als ob ein neues Objekt gepseichert werden würde .... insert ...
-								session.update(objAreaTemp); //SaveAndUpdate-Listener wird NICHT(!) ausgeführt, aber es gibt keine constraint verletzung ... update
-								if (!session.getTransaction().wasCommitted()) {
-									//session.flush();								
-									session.getTransaction().commit();///SaveAndUpdate-Listener NICHT ausgeführt. //TODO GOON: Probiere ob 'AbstractFlushingEventListener' ausgeführt würde.
-									bGoon = HibernateUtil.wasCommitSuccessful(objContextHibernate,"update",session.getTransaction());
-								}
-							}
-							if(!bGoon)break validEntry;
-							
-							//Vesuch eine neue Session zu bekommen. Merke: Die Session wird hier nicht gespeichert! Wg. 1 Transaktion ==> 1 Session
-							if(session!=null){
-								if(session.isOpen()) session.close();
-								session = null;
-							}
-							session = objContextHibernate.getSession();
-							session.getTransaction().begin();
-							
-							//Exception in thread "main" org.hibernate.LazyInitializationException: failed to lazily initialize a collection of role: use.thm.persistence.model.HexCell.objbagTile, could not initialize proxy - no Session
-							//http://stackoverflow.com/questions/18956825/hibernate-collection-is-not-associated-with-any-session
-							session.refresh(objCellTemp);//liefert im Log... Collection fully initialized: [use.thm.persistence.model.HexCell.objbagTile#component[mapAlias,mapX,mapY]{mapY=2, mapX=1, mapAlias=EINS}]
-							
-							//weil Lazy - Loading eingestellt ist an dieser Stelle erst mal sehn, die Collection zu bekommen
-							//objCellTemp.getTileBag().add(objTroopTemp); //Füge diese Army der HexCell hinzu //wg. 1:n Beziehung
-							Collection<Tile>colTile = objCellTemp.getTileBag();
-							
-							
-							Hibernate.initialize(colTile);
-							if(colTile!=null){
-								colTile.add(objTroopTemp);
-							}
-							
-							session.update(objCellTemp); //SaveAndUpdate-Listener wird nicht ausgeführt
-							if (!session.getTransaction().wasCommitted()) {
-								//session.flush();								
-								session.getTransaction().commit();///SaveAndUpdate-Listener wir ausgeführt, FÜR EIN TROOPARMY OBJEKT!!!
-								bGoon = HibernateUtil.wasCommitSuccessful(objContextHibernate,"update",session.getTransaction());
-							}
-							if(!bGoon)break validEntry;
-								
-							
+						//20170629: Dies in eine Methode kapseln (DAO Klasse?). Ziel: Dies ohne Redundanz beim Einsetzen eines neuen Spielsteins verwenden.
+						TroopArmyDaoFacade objTroopDaoFacade = new TroopArmyDaoFacade(objContextHibernate);
+						String sUniquename = "ARMY UNIQUE " + sY;//TODO GOON : sY als Uniquename zu verwenden ist nur heuristisch und nicht wirklich UNIQUE
+						bGoon = objTroopDaoFacade.insertTroopArmy(sUniquename, objCellTemp);
+						if(bGoon){
+														
 							//+++ UI Operationen & die TroopArmy noch an das UI-verwendete Objekt weitergeben
 							ArmyTileTHM objArmyTemp = new ArmyTileTHM(panelMap, objTileMoveEventBroker, sX, sY, this.getSideLength());
 							
@@ -911,189 +838,66 @@ public class HexMapTHM extends KernelUseObjectZZZ implements ITileEventUserTHM {
 							this.getTileMetaEventBroker().fireEvent(objEventTileCreated);						
 							
 							iNrOfTiles++;
-						}//end validEntry;
+						}
 				}else if(sX.equals("5")&& sY.equals("5")){
 					boolean bGoon = false;
-					validEntry:{
-					//Vesuch eine neue Session zu bekommen. Merke: Die Session wird hier nicht gespeichert! Wg. 1 Transaktion ==> 1 Session
-					session = objContextHibernate.getSession();
-					session.getTransaction().begin();	
-					//session.beginTransaction(); //Ein zu persistierendes Objekt - eine Transaction, auch wenn mehrere in einer Transaction abzuhandeln wären, aber besser um Fehler abfangen zu können.					
-										
-					//+++ Datenbankoperationen
-					TroopFleet objTroopTemp = new TroopFleet(new TileId("EINS", "1", "FLEET UNIQUE " + sY));
-					objTroopTemp.setHexCell(objCellTemp); //wg. 1:1 Beziehung					
-										
-					session.save(objTroopTemp);					
-					//Das aktiviert nicht den PreUpdateListener und zu diesem Zeitpunkt auch nicht mehr den PreInsertListener 
-					if (!session.getTransaction().wasCommitted()) {
-						//session.flush();
-						session.getTransaction().commit();//SaveAndUpdate-Listener wir NICHT ausgeführt, aber PreInsert-Listener wird ausgeführt.
-						bGoon = HibernateUtil.wasCommitSuccessful(objContextHibernate,"save",session.getTransaction());
-					}		
-					if(!bGoon)break validEntry;
+					//20170629: Dies in eine Methode kapseln (DAO Klasse?). Ziel: Dies ohne Redundanz beim Einsetzen eines neuen Spielsteins verwenden.
+					TroopFleetDaoFacade objFleetDaoFacade = new TroopFleetDaoFacade(objContextHibernate);
+					String sUniquename = "FLEET UNIQUE " + sY;//TODO GOON : sY als Uniquename zu verwenden ist nur heuristisch und nicht wirklich UNIQUE
+					bGoon = objFleetDaoFacade.insertTroopFleet(sUniquename, objCellTemp);
+					if(bGoon){
 						
-					//Vesuch eine neue Session zu bekommen. Merke: Die Session wird hier nicht gespeichert! Wg. 1 Transaktion ==> 1 Session
-					session = objContextHibernate.getSession();
-					//session.beginTransaction(); //Ein zu persistierendes Objekt - eine Transaction, auch wenn mehrere in einer Transaction abzuhandeln wären, aber besser um Fehler abfangen zu können.
-					session.getTransaction().begin();	
-					
-					//Exception in thread "main" org.hibernate.LazyInitializationException: failed to lazily initialize a collection of role: use.thm.persistence.model.HexCell.objbagTile, could not initialize proxy - no Session
-					//http://stackoverflow.com/questions/18956825/hibernate-collection-is-not-associated-with-any-session
-					session.refresh(objCellTemp);//liefert im Log... Collection fully initialized: [use.thm.persistence.model.HexCell.objbagTile#component[mapAlias,mapX,mapY]{mapY=2, mapX=1, mapAlias=EINS}]
-										
-					//weil Lazy - Loading eingestellt ist an dieser Stelle erst mal sehn, die Collection zu bekommen
-					//objCellTemp.getTileBag().add(objTroopTemp); //Füge diese Army der HexCell hinzu //wg. 1:n Beziehung
-					Collection<Tile>colTile = objCellTemp.getTileBag();
-										
-					Hibernate.initialize(colTile);
-					if(colTile!=null){
-						colTile.add(objTroopTemp);
+						//+++ UI Operationen & die TroopFleet noch an das UI-verwendete Objekt weitergeben	
+						FleetTileTHM objFleetTemp = new FleetTileTHM(panelMap, objTileMoveEventBroker, sX, sY, this.getSideLength());
+						
+						EventTileCreatedInCellTHM objEventTileCreated = new EventTileCreatedInCellTHM(objFleetTemp, 1, sX, sY);
+						this.getTileMetaEventBroker().fireEvent(objEventTileCreated);	
+						
+						iNrOfTiles++;						
 					}
-					session.update(objCellTemp); //SaveAndUpdate-Listener wird nicht ausgeführt
-					if (!session.getTransaction().wasCommitted()) {
-						//session.flush();
-						session.getTransaction().commit();
-						bGoon = HibernateUtil.wasCommitSuccessful(objContextHibernate,"update",session.getTransaction());
-					}
-					if(!bGoon)break validEntry;
-																
-					//+++ UI Operationen & die TroopFleet noch an das UI-verwendete Objekt weitergeben											
-					FleetTileTHM objFleetTemp = new FleetTileTHM(panelMap, objTileMoveEventBroker, sX, sY, this.getSideLength());
-					
-					EventTileCreatedInCellTHM objEventTileCreated = new EventTileCreatedInCellTHM(objFleetTemp, 1, sX, sY);
-					this.getTileMetaEventBroker().fireEvent(objEventTileCreated);
-					
-					iNrOfTiles++;
-					}//end validEntry
-				}else if (bUseTestArea && sX.equals("1") && sY.equals("5")){
-					//TEST: FALSCHES PLATZIEREN DER TRUPPEN Komponente in einer bestimmten Zelle per Event hinzufügen
-					boolean bGoon = false;				
-					validEntry:{
-					//Vesuch eine neue Session zu bekommen. Merke: Die Session wird hier nicht gespeichert! Wg. 1 Transaktion ==> 1 Session
-					session = objContextHibernate.getSession();
-					//session.beginTransaction(); //Ein zu persistierendes Objekt - eine Transaction, auch wenn mehrere in einer Transaction abzuhandeln wären, aber besser um Fehler abfangen zu können.
-					session.getTransaction().begin();	
-										
-					//+++ Datenbankoperationen
-					TroopFleet objTroopTemp = new TroopFleet(new TileId("EINS", "1", "FLEET UNIQUE " + sY));					
-					//TODO GOON 20170407: Die Validierung auf ein gültiges Feld in einen Event der Persistierung packen, siehe Buch..... Dannn kann man auch wieer richtig das falsche Hinzufügen testen 
-					objTroopTemp.setHexCell(objCellTemp); //wg. 1:1 Beziehung
-					//TODO GOON 20170407: Hier müsste dann ein Fehler kommen, damit der folgende Code nicht ausgeführt wird......
-					
-					session.save(objTroopTemp);				
-					if (!session.getTransaction().wasCommitted()) {
-						//session.flush();
-						session.getTransaction().commit();//SaveAndUpdate-Listener wir NICHT ausgeführt, aber PreInsert-Listener wird ausgeführt.
-						bGoon = HibernateUtil.wasCommitSuccessful(objContextHibernate,"save",session.getTransaction());
-					}
-					if(!bGoon)break validEntry;
-					
-					//TODO GOON 20170419: DIESER CODE DARF NICHT AUSGEFÜHRT WERDEN, DER onPreInsert-Listener muss das verhindern.
-//					if(objCellTemp instanceof AreaCell){
-//						//Vesuch eine neue Session zu bekommen. Merke: Die Session wird hier nicht gespeichert! Wg. 1 Transaktion ==> 1 Session
-//						session = objContextHibernate.getSession();
-//						session.getTransaction().begin();					
-//						//session.beginTransaction(); //Ein zu persistierendes Objekt - eine Transaction, auch wenn mehrere in einer Transaction abzuhandeln wären, aber besser um Fehler abfangen zu können.
-//						//Das aktiviert nicht den PreUpdateListener und zu diesem Zeitpunkt auch nicht mehr den PreInsertListener 
-//						
-//						AreaCellLand objAreaTemp = (AreaCellLand) objCellTemp;
-//						int iPlayer = objTroopTemp.getPlayer();
-//						objAreaTemp.setPlayerOwner(iPlayer);
-//						
-//						session.update(objCellTemp); //SaveAndUpdate-Listener wird nicht ausgeführt
-//						if (!session.getTransaction().wasCommitted()) {
-//							//session.flush();								
-//							session.getTransaction().commit();///SaveAndUpdate-Listener wir ausgeführt, aber FÜR EIN TROOPARMY OBJEKT!!!
-//						}
-//					}
-//					
-//					//Vesuch eine neue Session zu bekommen. Merke: Die Session wird hier nicht gespeichert! Wg. 1 Transaktion ==> 1 Session
-//					session = objContextHibernate.getSession();
-//					session.getTransaction().begin();	
-//					
-//					//Exception in thread "main" org.hibernate.LazyInitializationException: failed to lazily initialize a collection of role: use.thm.persistence.model.HexCell.objbagTile, could not initialize proxy - no Session
-//					//http://stackoverflow.com/questions/18956825/hibernate-collection-is-not-associated-with-any-session
-//					session.refresh(objCellTemp);//liefert im Log... Collection fully initialized: [use.thm.persistence.model.HexCell.objbagTile#component[mapAlias,mapX,mapY]{mapY=2, mapX=1, mapAlias=EINS}]
-//														
-//					//weil Lazy - Loading eingestellt ist an dieser Stelle erst mal sehn, die Collection zu bekommen
-//					//objCellTemp.getTileBag().add(objTroopTemp); //Füge diese Army der HexCell hinzu //wg. 1:n Beziehung
-//					Collection<Tile>colTile = objCellTemp.getTileBag();
-//					
-//					
-//					Hibernate.initialize(colTile);
-//					if(colTile!=null){
-//						colTile.add(objTroopTemp);
-//					}
-//					session.update(objCellTemp);
-//					if (!session.getTransaction().wasCommitted()) {
-//						//session.flush();
-//						session.getTransaction().commit();//SaveAndUpdate-Listener wir NICHT ausgeführt, aber PreInsert-Listener wird ausgeführt.
-//					}
-		
-					//+++ UI Operationen & die TroopFleet noch an das UI-verwendete Objekt weitergeben	
-					FleetTileTHM objFleetTemp = new FleetTileTHM(panelMap, objTileMoveEventBroker, sX, sY, this.getSideLength());
-					
-					EventTileCreatedInCellTHM objEventTileCreated = new EventTileCreatedInCellTHM(objFleetTemp, 1, sX, sY);
-					this.getTileMetaEventBroker().fireEvent(objEventTileCreated);	
-					
-					iNrOfTiles++;
-					}//end validEntry:
-				}else if(bUseTestOccupied && sX.equals("4") && sY.equals("5")){					
-					//TEST: FALSCHES PLATZIEREN DER TRUPPEN Komponente in einer bestimmten Zelle, die schon besetzt ist per Event hinzufügen
+																														
+				}
+				
+				if (bUseTestArea && sX.equals("1") && sY.equals("5")){	//Das nicht in einen else---Fall packen, sonst wird dieser Fall nicht ausgeführt.
+					//TEST: FALSCHES PLATZIEREN DER FLOTTEN Komponente in eine bestimmte LAND Zelle per Event hinzufügen					
 					boolean bGoon = false;			
-					validEntry:{
 					
-					//Vesuch eine neue Session zu bekommen. Merke: Die Session wird hier nicht gespeichert! Wg. 1 Transaktion ==> 1 Session
-					session = objContextHibernate.getSession();
-					//session.beginTransaction(); //Ein zu persistierendes Objekt - eine Transaction, auch wenn mehrere in einer Transaction abzuhandeln wären, aber besser um Fehler abfangen zu können.
-					session.getTransaction().begin();	
-					
-					
-						//+++ Datenbankoperationen
-						TroopArmy objTroopTemp = new TroopArmy(new TileId("EINS", "1","ARMY UNIQUE " + sY)); 
-						objTroopTemp.setHexCell(objCellTemp); //wg. 1:1 Beziehung, und das ist dann der Fehlergrund: Eine Armee wird in ein Wasserfeld gesetzt.
-						session.save(objTroopTemp);
-						if (!session.getTransaction().wasCommitted()) {
-							//session.flush();
-							session.getTransaction().commit();//SaveAndUpdate-Listener wird NICHT ausgeführt, aber PreInsert-Listener wird ausgeführt.
-							bGoon = HibernateUtil.wasCommitSuccessful(objContextHibernate,"save",session.getTransaction());
-						}
-						if(!bGoon)break validEntry;
+					//20170629: Dies in eine Methode kapseln (DAO Klasse?). Ziel: Dies ohne Redundanz beim Einsetzen eines neuen Spielsteins verwenden.
+					TroopFleetDaoFacade objFleetDaoFacade = new TroopFleetDaoFacade(objContextHibernate);
+					String sUniquename = "FLEET UNIQUE " + sY;//TODO GOON : sY als Uniquename zu verwenden ist nur heuristisch und nicht wirklich UNIQUE
+					bGoon = objFleetDaoFacade.insertTroopFleet(sUniquename, objCellTemp);										
+					if(bGoon){
+						//TEST: DIESER CODE DARF NICHT AUSGEFÜHRT WERDEN, DER onPreInsert-Listener muss das verhindert haben und zurückgeliefert haben.
 						
-						//TODO GOON 20170419: DIESER CODE DARF NICHT AUSGEFÜHRT WERDEN, DER onPreInsert-Listener muss das verhindern.							
-//						//Vesuch eine neue Session zu bekommen. Merke: Die Session wird hier nicht gespeichert! Wg. 1 Transaktion ==> 1 Session
-//						session = objContextHibernate.getSession();
-//						//session.beginTransaction(); //Ein zu persistierendes Objekt - eine Transaction, auch wenn mehrere in einer Transaction abzuhandeln wären, aber besser um Fehler abfangen zu können.
-//						session.getTransaction().begin();	
-//					
-//						//Exception in thread "main" org.hibernate.LazyInitializationException: failed to lazily initialize a collection of role: use.thm.persistence.model.HexCell.objbagTile, could not initialize proxy - no Session
-//						//http://stackoverflow.com/questions/18956825/hibernate-collection-is-not-associated-with-any-session
-//						session.refresh(objCellTemp);//liefert im Log... Collection fully initialized: [use.thm.persistence.model.HexCell.objbagTile#component[mapAlias,mapX,mapY]{mapY=2, mapX=1, mapAlias=EINS}]
-//															
-//						//weil Lazy - Loading eingestellt ist an dieser Stelle erst mal sehn, die Collection zu bekommen
-//						//objCellTemp.getTileBag().add(objTroopTemp); //Füge diese Army der HexCell hinzu //wg. 1:n Beziehung
-//						Collection<Tile>colTile = objCellTemp.getTileBag();
-//						
-//						
-//						Hibernate.initialize(colTile);
-//						if(colTile!=null){
-//							colTile.add(objTroopTemp);
-//						}
-//						session.update(objCellTemp);
-//						if (!session.getTransaction().wasCommitted()) {
-//							//session.flush();
-//							session.getTransaction().commit();//SaveAndUpdate-Listener wir NICHT ausgeführt, aber PreInsert-Listener wird ausgeführt.
-//						}
-					
+						//+++ UI Operationen & die TroopFleet noch an das UI-verwendete Objekt weitergeben	
+						FleetTileTHM objFleetTemp = new FleetTileTHM(panelMap, objTileMoveEventBroker, sX, sY, this.getSideLength());
+						
+						EventTileCreatedInCellTHM objEventTileCreated = new EventTileCreatedInCellTHM(objFleetTemp, 1, sX, sY);
+						this.getTileMetaEventBroker().fireEvent(objEventTileCreated);	
+						
+						iNrOfTiles++;						
+					}					
+				}																
+				
+				if(bUseTestOccupied && sX.equals("1") && sY.equals("4")){	//Das nicht in einen else---Fall packen, sonst wird dieser Fall ggfs. nicht ausgeführt.					
+					//TEST: FALSCHES PLATZIEREN DER TRUPPEN Komponente in einer bestimmten Zelle (Vom richtigen Geländetyp), die aber schon BESETZT ist per Event hinzufügen
+					boolean bGoon = false;	
+
+					//20170629: Dies in eine Methode kapseln (DAO Klasse?). Ziel: Dies ohne Redundanz beim Einsetzen eines neuen Spielsteins verwenden.
+					TroopArmyDaoFacade objTroopDaoFacade = new TroopArmyDaoFacade(objContextHibernate);
+					String sUniquename = "ARMY TEST OCCUPIED FIELD " + sY;//TODO GOON : sY als Uniquename zu verwenden ist nur heuristisch und nicht wirklich UNIQUE
+					bGoon = objTroopDaoFacade.insertTroopArmy(sUniquename, objCellTemp);
+					if(bGoon){
+						//TEST: DIESER CODE DARF NICHT AUSGEFÜHRT WERDEN, DER onPreInsert-Listener muss das verhindern.
+													
 						//+++ UI Operationen & die TroopArmy noch an das UI-verwendete Objekt weitergeben
 						ArmyTileTHM objArmyTemp = new ArmyTileTHM(panelMap, objTileMoveEventBroker, sX, sY, this.getSideLength());
 						
 						EventTileCreatedInCellTHM objEventTileCreated = new EventTileCreatedInCellTHM(objArmyTemp, 1, sX, sY);
-						this.getTileMetaEventBroker().fireEvent(objEventTileCreated);	
+						this.getTileMetaEventBroker().fireEvent(objEventTileCreated);						
 						
 						iNrOfTiles++;
-					}	//end validEntry:	
+					}									
 				}//end iif
 			}//end for
 			if(session!= null) session.close();	

@@ -64,16 +64,66 @@ public class SaveOrUpdateListenerTHM extends DefaultSaveOrUpdateEventListener im
 	@Override
 	public void onSaveOrUpdate(SaveOrUpdateEvent event) throws HibernateException {
 		System.out.println(ReflectCodeZZZ.getPositionCurrent() + " Hibernate-Event 03...");		
-	
+		boolean bHasVeto = true;
+//		try {
+			
 		//Versuch nun mehr über den Event herauszubekommen....
 //		Object obj = event.getEntity();   //NULL, zumindest beim SAVE - Fall
 //		EntityEntry entry = event.getEntry(); //NULL zumindest beim SAVE - Fall
 		//Also hier nur
 		Object obj = event.getObject();
+		String sTypeArea = null;
 		if(obj instanceof TroopArmy){			
 			TroopArmy troop = (TroopArmy) obj;
 			System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": Eine Armee soll committed werden. Uniquename = '" + troop.getUniquename() + "'");
-
+            bHasVeto = saveOrUpdate_TroopVeto(troop);        					
+		}else if(obj instanceof TroopFleet){			
+			TroopFleet troop = (TroopFleet) obj;
+			System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": Eine Flotte soll committed werden. Uniquename = '" + troop.getUniquename() + "'");
+			bHasVeto = saveOrUpdate_FleetVeto(troop);
+		}else if(obj instanceof AreaCell){
+			System.out.println(ReflectCodeZZZ.getPositionCurrent()+": Committed wird ein Objekt der Klasse: " + obj.getClass().getName());
+			System.out.println(ReflectCodeZZZ.getPositionCurrent()+": DAS WURDE NOCH NIE AUSGEFÜHRT... WARUM JETZT ?");
+			
+			AreaCell area = (AreaCell) obj;
+			sTypeArea = area.getAreaType();
+			System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": Area vom Typ="+sTypeArea);
+			
+			Collection<Tile> colTile = area.getTileBag();
+			for(Tile objTile : colTile){
+				String sTileType = objTile.getTileType();
+				System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": Enthaelt Spielstein vom Typ="+sTileType);
+				
+				if(sTypeArea.equalsIgnoreCase("OC") & sTileType.equalsIgnoreCase("AR")){
+					System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": FEHLER beim Committen einer Area wg. Armee Spielsteins");
+					bHasVeto = true;
+				}else if(sTypeArea.equalsIgnoreCase( "LA") & sTileType.equalsIgnoreCase("FL")){				
+					System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": FEHLER beim Committen einer Area wg. Flotten Spielsteins");
+					bHasVeto = true;
+				}else{
+					bHasVeto = false;
+				}						
+			}
+		}else{
+			System.out.println(ReflectCodeZZZ.getPositionCurrent()+": Committed wird ein Objekt der Klasse: " + obj.getClass().getName());
+			System.out.println(ReflectCodeZZZ.getPositionCurrent()+": DIESE KLASSE WIRD NOCH NICHT BEHANDELT");					
+		}
+		this.veto(bHasVeto);	
+		
+		
+		
+//		} catch (ExceptionZZZ e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//			System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": FEHLER beim Committen eines Spielsteins / einer Area.");
+//			this.veto(true);
+//		}
+		
+	}
+	
+	private boolean saveOrUpdate_TroopVeto(TroopArmy troop){
+		boolean bReturn = false;
+		main:{
 			//Hole das Hexfeld
 			HexCell hex = troop.getHexCell();
 			String sType = hex.getHexType();
@@ -81,16 +131,8 @@ public class SaveOrUpdateListenerTHM extends DefaultSaveOrUpdateEventListener im
 			
 			//Aber, das das mit den DAO-Klassen hier nicht klappt (wg. Sessionproblemen: 1. Lock Database oder 2. Nested Transaction not allowed),
 			//versuchen doch direkt die AreaCell zu bekommen, um den AreaTyp zu bekommen.
-			AreaCell area = (AreaCell) troop.getHexCell();
-			String sTypeArea = area.getAreaType();
-			System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": Area vom Typ="+sTypeArea);
+			//AreaCell area = (AreaCell) troop.getHexCell(); //TODO GOON 20170630: DIES STELLE WIRFT EINEN FEHLER, BEIM TESTEN "EINFUEGEN" IN EIN SCHON BESETZTES FELD
 			
-			if(!sTypeArea.equalsIgnoreCase("LA")){			
-				System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": FEHLER beim committen eines Armee Spielsteins");
-				this.veto(true);
-			}else{
-				this.veto(false);
-			}
 			
 			//Merke: 20170415: Hier hatte ich zuerst versuch über ein DAO Objekt die notwendigen Informationen zu bekommen. daoArea.findByKey(cellid);
 			//                           Aber, zumindest mit SQLite bekommt man dann Probleme, wenn man
@@ -98,10 +140,34 @@ public class SaveOrUpdateListenerTHM extends DefaultSaveOrUpdateEventListener im
 			//                           B) In ein und derselben Session versucht eine zweite Transaktion zu starten, bevor die andere Transaktion beendet ist (Nested Transaction not allowed).			
 			//                               In der DAO wird aber eine neue Transaction gemact....
 			
-		}else if(obj instanceof TroopFleet){			
-			TroopFleet troop = (TroopFleet) obj;
-			System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": Eine Flotte soll committed werden. Uniquename = '" + troop.getUniquename() + "'");
-			
+			//Die Bemerkung vom 20170415 hat dann zur Folge: Wenn man an dieser Stelle eine neue Session aufmacht, dann gibt es in der aufrufenden Methode den Fehler, dass die Session closed sei.
+			//			HibernateContextProviderSingletonTHM objHibernateContext = HibernateContextProviderSingletonTHM.getInstance();			
+			//			AreaCellDao areaDao = new AreaCellDao(objHibernateContext);
+			//			AreaCell area = areaDao.findByKey(hex.getId());
+				
+			System.out.println("Hexcell Objekt von der Klasse: " + hex.getClass().getName());
+			if(hex instanceof use.thm.persistence.model.AreaCellLand){
+				
+				AreaCell area = (AreaCell) troop.getHexCell(); //TODO GOON 20170630: DIES STELLE WIRFT EINEN FEHLER, BEIM TESTEN "EINFUEGEN" IN EIN SCHON BESETZTES FELD
+				String sTypeArea = area.getAreaType();
+				System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": Area vom Typ="+sTypeArea);
+				
+				if(!sTypeArea.equalsIgnoreCase("LA")){			
+					System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": FEHLER beim committen eines Armee Spielsteins");
+					bReturn = true;
+				}else{
+					bReturn = false;
+				}		
+			}else{
+				System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": UNERWARTETER FALL. Hexcell Objekt von der Klasse: " + hex.getClass().getName());
+			}//end if hex instanceoff			
+		}
+		return bReturn;
+	}
+	
+	private boolean saveOrUpdate_FleetVeto(TroopFleet troop){
+		boolean bReturn = false;
+		main:{
 			//Hole das Hexfeld
 			HexCell hex = troop.getHexCell();
 			String sType = hex.getHexType();
@@ -109,46 +175,39 @@ public class SaveOrUpdateListenerTHM extends DefaultSaveOrUpdateEventListener im
 			
 			//Aber, das das mit den DAO-Klassen hier nicht klappt (wg. Sessionproblemen: 1. Lock Database oder 2. Nested Transaction not allowed),
 			//versuchen doch direkt die AreaCell zu bekommen, um den AreaTyp zu bekommen.
-			AreaCell area = (AreaCell) troop.getHexCell();
-			String sTypeArea = area.getAreaType();
-			System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": Area vom Typ="+sTypeArea);
+			//AreaCell area = (AreaCell) troop.getHexCell(); //TODO GOON 20170630: DIES STELLE WIRFT EINEN FEHLER, BEIM TESTEN "EINFUEGEN" IN EIN SCHON BESETZTES FELD
 			
-			if(!sTypeArea.equalsIgnoreCase("OC")) {				
-				System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": FEHLER beim committen eines Flotten Spielsteins");
-				this.veto(true);
-			}else{
-				this.veto(false);
-			}
 			
-		}else if(obj instanceof AreaCell){
-			System.out.println(ReflectCodeZZZ.getPositionCurrent()+": Committed wird ein Objekt der Klasse: " + obj.getClass().getName());
-			System.out.println(ReflectCodeZZZ.getPositionCurrent()+": DAS WURDE NOCH NIE AUSGEFÜHRT... WARUM JETZT ?");
+			//Merke: 20170415: Hier hatte ich zuerst versuch über ein DAO Objekt die notwendigen Informationen zu bekommen. daoArea.findByKey(cellid);
+			//                           Aber, zumindest mit SQLite bekommt man dann Probleme, wenn man
+			//                           A) Eine zweite Session erstellt (Database locked)
+			//                           B) In ein und derselben Session versucht eine zweite Transaktion zu starten, bevor die andere Transaktion beendet ist (Nested Transaction not allowed).			
+			//                               In der DAO wird aber eine neue Transaction gemact....
 			
-			AreaCell area = (AreaCell) obj;
-			String sTypeArea = area.getAreaType();
-			System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": Area vom Typ="+sTypeArea);
-			
-			Collection<Tile> colTile = area.getTileBag();
-			for(Tile objTile : colTile){
-				String sTileType = objTile.getTileType();
-				System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": Enthält Spielstein vom Typ="+sTileType);
+			//Die Bemerkung vom 20170415 hat dann zur Folge: Wenn man an dieser Stelle eine neue Session aufmacht, dann gibt es in der aufrufenden Methode den Fehler, dass die Session closed sei.
+			//			HibernateContextProviderSingletonTHM objHibernateContext = HibernateContextProviderSingletonTHM.getInstance();			
+			//			AreaCellDao areaDao = new AreaCellDao(objHibernateContext);
+			//			AreaCell area = areaDao.findByKey(hex.getId());
 				
-				if(sTypeArea.equalsIgnoreCase("OC") & sTileType.equalsIgnoreCase("AR")){
-					System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": FEHLER beim Committen einer Area wg. Armee Spielsteins");
-					this.veto(true);
-				}else if(sTypeArea.equalsIgnoreCase( "LA") & sTileType.equalsIgnoreCase("FL")){				
-					System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": FEHLER beim Committen einer area wg. Flotten Spielsteins");
-					this.veto(true);
+			System.out.println("Hexcell Objekt von der Klasse: " + hex.getClass().getName());
+			if(hex instanceof use.thm.persistence.model.AreaCellOcean){
+				
+				AreaCell area = (AreaCell) troop.getHexCell(); //TODO GOON 20170630: DIES STELLE WIRFT EINEN FEHLER, BEIM TESTEN "EINFUEGEN" IN EIN SCHON BESETZTES FELD
+				String sTypeArea = area.getAreaType();
+				System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": Area vom Typ="+sTypeArea);
+				
+				if(!sTypeArea.equalsIgnoreCase("OC")) {				
+					System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": FEHLER beim committen eines Flotten Spielsteins");
+					bReturn = true;
 				}else{
-					this.veto(false);
-				}						
-			}
-		}else{
-			System.out.println(ReflectCodeZZZ.getPositionCurrent()+": Committed wird ein Objekt der Klasse: " + obj.getClass().getName());
-			System.out.println(ReflectCodeZZZ.getPositionCurrent()+": DIESE KLASSE WIRD NOCH NICHT BEHANDELT");					
+					bReturn = false;
+				}
+			}else{
+				System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": UNERWARTETER FALL. Hexcell Objekt von der Klasse: " + hex.getClass().getName());
+			}//end if hex instanceoff			
 		}
+		return bReturn;
 	}
-	
 
 	//#######################################
 		//Methods implemented by additional Interface

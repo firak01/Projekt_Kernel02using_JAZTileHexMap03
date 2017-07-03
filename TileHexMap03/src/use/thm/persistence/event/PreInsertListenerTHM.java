@@ -1,8 +1,11 @@
 package use.thm.persistence.event;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
+import java.util.Set;
 
+import org.hibernate.collection.internal.PersistentBag;
 import org.hibernate.event.spi.PreInsertEvent;
 import org.hibernate.event.spi.PreInsertEventListener;
 
@@ -47,6 +50,7 @@ public class PreInsertListenerTHM implements PreInsertEventListener,IKernelUserZ
 		if(obj instanceof TroopArmy){
 			System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": Eine Armee soll eingefügt werden.");
 			TroopArmy troop = (TroopArmy) obj;
+			System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": UNIQUENAME ="+troop.getUniquename());
 
 			//Hole das Hexfeld
 			HexCell hex = troop.getHexCell();
@@ -63,6 +67,23 @@ public class PreInsertListenerTHM implements PreInsertEventListener,IKernelUserZ
 				bReturn = true; //Der Returnwert true bedeutet "VETO"
 			}else{
 				bReturn = false;
+				
+				//Nun prüfen, ob es bereits in dem Feld einen anderen Spielstein gibt.
+				//TODO GOON 20170703
+				//event.getSession().update(area); //Versuche damit das Problem des Lazy Loading zu beseitigen
+				Collection<Tile> setTile = area.getTileBag();				
+				if(setTile==null){
+					bReturn = false;
+				}else{				
+					if(setTile.size()>=1){
+						bReturn = true; //Der Returnwert true bedeutet "VETO"
+					}else{
+						bReturn = false;
+					}		
+				}
+				//Problem: Exception in thread "main" org.hibernate.AssertionFailure: collection [use.thm.persistence.model.HexCell.objbagTile] was not processed by flush()
+				//event.getSession().merge(area); //versuch das mal am Schluss nach dem Zugriff aufzurufen.
+				//Wenn man das hier macht, dann kommt man in eine Endlosschleife .... event.getSession().flush();
 			}
 			
 			//Merke: 20170415: Hier hatte ich zuerst versuch über ein DAO Objekt die notwendigen Informationen zu bekommen. daoArea.findByKey(cellid);
@@ -74,6 +95,7 @@ public class PreInsertListenerTHM implements PreInsertEventListener,IKernelUserZ
 		}else if(obj instanceof TroopFleet){
 			System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": Eine Flotte soll eingefügt werden.");
 			TroopFleet troop = (TroopFleet) obj;
+			System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": UNIQUENAME ="+troop.getUniquename());
 			
 			//Hole das Hexfeld
 			HexCell hex = troop.getHexCell();
@@ -90,13 +112,30 @@ public class PreInsertListenerTHM implements PreInsertEventListener,IKernelUserZ
 				bReturn = true; //Der Returnwert true bedeutet "VETO"
 			}else{
 				bReturn = false;
+				
+				//Nun prüfen, ob es bereits in dem Feld einen anderen Spielstein gibt.
+				//TODO GOON 20170703
+				Collection<Tile>setTile = area.getTileBag();
+				if(setTile.size()>=1){
+					bReturn = true; //Der Returnwert true bedeutet "VETO"
+				}else{
+					bReturn = false;
+				}		
+				
 			}
+			
+			//Merke: 20170415: Hier hatte ich zuerst versuch über ein DAO Objekt die notwendigen Informationen zu bekommen. daoArea.findByKey(cellid);
+			//                           Aber, zumindest mit SQLite bekommt man dann Probleme, wenn man
+			//                           A) Eine zweite Session erstellt (Database locked)
+			//                           B) In ein und derselben Session versucht eine zweite Transaktion zu starten, bevor die andere Transaktion beendet ist (Nested Transaction not allowed).			
+			//                               In der DAO wird aber eine neue Transaction gemact....
+			
 			
 		}else{
 			System.out.println(ReflectCodeZZZ.getPositionCurrent()+": eingefügt wird ein Objekt der Klasse: " + obj.getClass().getName());
 			bReturn = false; //Der Returnwert true bedeutet "VETO"
 			
-			//ACTUNG: DAS NICHT MACHEN... 
+			//ACHTUNG: DAS NICHT MACHEN... 
 			//Erstens wird dadurch die LAZY Erstellung unterlaufen... es dauert also länger.
 			//Zweitens existieren beim Aufbau der Karte (also beim INSERT der Hexfelder) die Tiles noch nicht. Hier ist also nix zu prüfen.
 			//Daher diese Überprüfung beim Speichern machen... Welcher Event????

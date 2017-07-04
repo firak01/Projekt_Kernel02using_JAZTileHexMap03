@@ -1,12 +1,12 @@
 package use.thm.client.dragDropTranslucent;
 import java.awt.Point;
+
 import javax.swing.JComponent;
 import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
 import javax.swing.JViewport;
 
 import custom.zKernel.LogZZZ;
-
 import use.thm.IHexMapUserTHM;
 import use.thm.client.component.ArmyTileTHM;
 import use.thm.client.component.HexCellTHM;
@@ -16,7 +16,11 @@ import use.thm.client.event.EventTileCreatedInCellTHM;
 import use.thm.client.event.EventTileDroppedToCellTHM;
 import use.thm.client.event.TileMetaEventBrokerTHM;
 import use.thm.client.event.TileMoveEventBrokerTHM;
-
+import use.thm.persistence.dao.AreaCellDao;
+import use.thm.persistence.daoFacade.TroopArmyDaoFacade;
+import use.thm.persistence.hibernate.HibernateContextProviderSingletonTHM;
+import use.thm.persistence.model.AreaCell;
+import use.thm.persistence.model.CellId;
 import basic.zBasic.ExceptionZZZ;
 import basic.zBasic.ReflectCodeZZZ;
 import basic.zBasic.util.datatype.string.StringZZZ;
@@ -61,12 +65,12 @@ public class GhostDropManagerHexMapPanelTHM extends AbstractGhostDropManager imp
 		   try{
 	   String action = e.getAction();
 	   
-	   Point p0 = e.getDropLocation(); //Das der GlassPane �ber den ganzen Frame geht, ist das ein Punkt bezogen auf den ganzen Frame.
+	   Point p0 = e.getDropLocation(); //Das der GlassPane über den ganzen Frame geht, ist das ein Punkt bezogen auf den ganzen Frame.
 	   Point p1 = getTranslatedPoint(e.getDropLocation());  //Punkt beziehen auf den JScrollPane
 
-	   //Aber, wenn in einem JScrollpane gedroppt wird: Dann ist die "tats�chliche Karte" gr��er als der angezeigte ViewPort.
+	   //Aber, wenn in einem JScrollpane gedroppt wird: Dann ist die "tatsächliche Karte" grö�er als der angezeigte ViewPort.
 	   Point p = JScrollPaneHelperZZZ.toWorldCoordinate((JScrollPane)this.getDropTargetComponent(), p1);
-	   if (!isInTarget(p)) {  //Das ist dann das Ziel f�r den GhostDrop, aber noch nicht die einzelne Zelle
+	   if (!isInTarget(p)) {  //Das ist dann das Ziel für den GhostDrop, aber noch nicht die einzelne Zelle
 		   System.out.println(ReflectCodeZZZ.getMethodCurrentName() + "### Punkt NICHT im 'Ziel des GhostDrop' x: " + p.getX() + " | y: " + p.getY());
 	   }else{
 		   System.out.println(ReflectCodeZZZ.getMethodCurrentName() + "### Punkt im 'Ziel des GhostDrop' x: " + p.getX() + " | y: " + p.getY());
@@ -77,9 +81,9 @@ public class GhostDropManagerHexMapPanelTHM extends AbstractGhostDropManager imp
 		   if(objCell!=null){
 			   System.out.println(ReflectCodeZZZ.getMethodCurrentName() + "### Gefunden am Punkt ein Objekt der Klasse '" + objCell.getClass().getName() + "'");
 			   
-			   //+++ Erstelle den Spielstein. Schl�ssel daf�r ist im GhostDropEvent vorhanden
+			   //+++ Erstelle den Spielstein. Schlüssel dafür ist im GhostDropEvent vorhanden
 			   String sAction = e.getAction();
-			   TileTHM objTile = null; //wird gleich konkret gef�llt, falls der Action-Key passt.
+			   TileTHM objTile = null; //wird gleich konkret gefüllt, falls der Action-Key passt.
 			   
 			  //MoveEventBroker f�r die Bewegung von einer Zelle zur anderen
 			  
@@ -87,11 +91,34 @@ public class GhostDropManagerHexMapPanelTHM extends AbstractGhostDropManager imp
 		      // JOptionPane.showMessageDialog(this.component, ReflectCodeZZZ.getMethodCurrentName() + "### Action: '" + action + "'");
 			   if(!StringZZZ.isEmpty(sAction)){
 				   if(sAction.equalsIgnoreCase("new_sale")){
+					   
+					   //FGL: 20170703 - Hier erst einmal im Backend prüfen, ob eine neue Army hier überhaupt erstellt werden darf.
+					   boolean bGoon = false;					   					   
+						//Die in eine Methode gekapselte (DAO Klasse) Vorgehensweise verwenden. //Der Code stammt aus HexMapTH.fillMap_createNewTiles(...)
+					   //Allerdings müssen erst einmal alle Voraussetzungen erfüllt werden. HibernateContext,..., AreaCell Objekt...,
+					    HibernateContextProviderSingletonTHM objContextHibernate = HibernateContextProviderSingletonTHM.getInstance(this.getKernelObject());
+					    AreaCellDao objAreaDao = new AreaCellDao(objContextHibernate);
+					    
+					    String sXDropped = objCell.getMapX();
+						String sYDropped = objCell.getMapY();
+					    CellId primaryKeyCell = new CellId("EINS", sXDropped, sYDropped);
+					    
+					    AreaCell objCellTemp = objAreaDao.findByKey(primaryKeyCell);//Spannend. Eine Transaction = Eine Session, d.h. es müsste dann wieder eine neue Session gemacht werden, beim zweiten DAO Aufruf.
+					    
+						TroopArmyDaoFacade objTroopDaoFacade = new TroopArmyDaoFacade(objContextHibernate);
+						String sUniquename = "ARMY UNIQUE NEW"; //TODO GOON 20170703: BERECHNE DEN NÄCHSTEN uniquenamen einer Truppe.
+						bGoon = objTroopDaoFacade.insertTroopArmy(sUniquename, objCellTemp);//Falls das aus irgendwelchen Gründen nicht erlaubt ist, ein Veto einlegen.
+						if(!bGoon){
+							//TODO GOON 20170703: Hole auch irgendwie einen Grund ab, warum an dieser Stelle nix eingefügt werden darf.
+							
+						}else{
+					   
 					   objTile = new ArmyTileTHM(objMap.getPanelParent(), objMap.getTileMoveEventBroker(), objCell.getMapX(), objCell.getMapY(), objMap.getSideLength());
+						}
 				   }
 			   }
 			   if(objTile!=null){
-				  /* Merke EventTileDroppedToCellTHM w�re der FALSCHER EVENT !!! */
+				  /* Merke EventTileDroppedToCellTHM wäre der FALSCHER EVENT !!! */
 				  				   
 				   String sXDropped = objCell.getMapX();
 				   String sYDropped = objCell.getMapY();

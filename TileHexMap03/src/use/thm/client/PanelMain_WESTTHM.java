@@ -64,19 +64,19 @@ public class PanelMain_WESTTHM extends KernelJPanelCascadedZZZ implements IGhost
 		     box.add(label = UIHelper.createLabelWithIcon("Test Drag", sFile));
 		     //++++++++++++++++++++++++++++++++++++++
 		     		     
-		     //wird nun von au�en �bergeben, muss der gleiche sein, der den DROP-Event abf�ngt.		     GhostPictureAdapter pictureAdapter = new GhostPictureAdapter(glassPane, "new_sale", sFile); //Das wird immer und �berall redundant gemacht, da es ja mehrere Pictures gibt. Es wird auch redundant gemacht beim DROPP-EVENT abfangen.
+		     //wird nun von au�en übergeben, muss der gleiche sein, der den DROP-Event abf�ngt.		     GhostPictureAdapter pictureAdapter = new GhostPictureAdapter(glassPane, "new_sale", sFile); //Das wird immer und �berall redundant gemacht, da es ja mehrere Pictures gibt. Es wird auch redundant gemacht beim DROPP-EVENT abfangen.
 		     label.addMouseListener(pictureAdapter); //Beim Clicken wird das Bild vom pictureAdapter an die passende Stelle im glassPane gesetzt.
 
 		     //Das DRAGGEN 
 		     label.addMouseMotionListener(new GhostMotionAdapter(glassPane));
 		     
 		     
-		     /* FGL 20130627: Nach Einf�hren des JScrollPanes funktioniert das Droppen nicht mehr 100%ig wenn gescrollt wurde.
+		     /* FGL 20130627: Nach Einführen des JScrollPanes funktioniert das Droppen nicht mehr 100%ig wenn gescrollt wurde.
 		      * Daher versuchen den JScrollPane als Dropp-Ziel einzubinden, was in PanelFrmMap�SingletonTHM passiert
 		      *
-		     //!!! Das DROPPEN wird NICHT in dem dar�bergeordneten Panel definiert, da der pictureAdapter nur hier an das Label.addMouseListener() �bergeben werden kann.
+		     //!!! Das DROPPEN wird NICHT in dem darübergeordneten Panel definiert, da der pictureAdapter nur hier an das Label.addMouseListener() übergeben werden kann.
 		     //Das DROPPEN: Merke Die TileHexMap ist keine JComponent. Das sind nur die einzelnen Zellen. 
-		     //Die einzelnen Zellen zu verwenden ist aber hier noch zuviel und zue teif verschachtelt. Darum das Panel als Drop-Ziel. 
+		     //Die einzelnen Zellen zu verwenden ist aber hier noch zuviel und zue tief verschachtelt. Darum das Panel als Drop-Ziel. 
 		     KernelJPanelCascadedZZZ panelCenter = this.getPanelNeighbour("CENTER");
 		     GhostDropListener listener = new GhostDropManagerHexMapPanelTHM(panelCenter);
 		     pictureAdapter.addGhostDropListener(listener);

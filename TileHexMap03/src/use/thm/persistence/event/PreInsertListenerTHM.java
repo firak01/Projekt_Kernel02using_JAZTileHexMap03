@@ -44,6 +44,7 @@ public class PreInsertListenerTHM implements PreInsertEventListener,IKernelUserZ
 	public boolean onPreInsert(PreInsertEvent event) {
 //		System.out.println(ReflectCodeZZZ.getPositionCurrent() + " onPreInsert   Hibernate-Event 02...");		
 		boolean bReturn = false;
+		String sReturnMessage = new String("");
 		
 		//Versuch nun mehr über den Event herauszubekommen....
 		Object obj = event.getEntity(); 
@@ -65,6 +66,7 @@ public class PreInsertListenerTHM implements PreInsertEventListener,IKernelUserZ
 			
 			if(!sTypeArea.equalsIgnoreCase("LA")){
 				bReturn = true; //Der Returnwert true bedeutet "VETO"
+				sReturnMessage = "Armee kann in dem Gebiet vom Typ '" + area.getAreaTypeObject().name() + "' nicht eingesetzt werden.";
 			}else{
 				bReturn = false;
 				
@@ -77,6 +79,7 @@ public class PreInsertListenerTHM implements PreInsertEventListener,IKernelUserZ
 				}else{				
 					if(setTile.size()>=1){
 						bReturn = true; //Der Returnwert true bedeutet "VETO"
+						sReturnMessage = "Armee kann in einem Gebiet mit anderem Spielstein nicht eingesetzt werden.";
 					}else{
 						bReturn = false;
 					}		
@@ -110,6 +113,7 @@ public class PreInsertListenerTHM implements PreInsertEventListener,IKernelUserZ
 			
 			if(!sTypeArea.equalsIgnoreCase("OC")){
 				bReturn = true; //Der Returnwert true bedeutet "VETO"
+				sReturnMessage = "Flotte kann in dem Gebiet vom Typ '" + area.getAreaTypeObject().name() + "' nicht eingesetzt werden.";
 			}else{
 				bReturn = false;
 				
@@ -118,6 +122,7 @@ public class PreInsertListenerTHM implements PreInsertEventListener,IKernelUserZ
 				Collection<Tile>setTile = area.getTileBag();
 				if(setTile.size()>=1){
 					bReturn = true; //Der Returnwert true bedeutet "VETO"
+					sReturnMessage = "Flotte kann in einem Gebiet mit anderem Spielstein nicht eingesetzt werden.";
 				}else{
 					bReturn = false;
 				}		
@@ -159,7 +164,7 @@ public class PreInsertListenerTHM implements PreInsertEventListener,IKernelUserZ
 //				
 //			}
 		}		
-		this.veto(bReturn);
+		this.veto(bReturn, sReturnMessage);
 		return bReturn;
 	}
 	
@@ -188,10 +193,16 @@ public class PreInsertListenerTHM implements PreInsertEventListener,IKernelUserZ
 		public void veto(boolean bResult){
 			this.objLastResult.veto(bResult);			
 		}
+		public void veto(boolean bResult, String sResultMessage){
+			this.objLastResult.veto(bResult, sResultMessage);
+		}
 		public void resetVeto(){
 			this.objLastResult.resetVeto();
 		}
 		public Calendar getVetoDate(){
 			return this.objLastResult.getVetoDate();
+		}
+		public VetoFlag4ListenerZZZ getCommitResult(){
+			return this.objLastResult;
 		}
 }

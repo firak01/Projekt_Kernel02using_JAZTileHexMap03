@@ -8,6 +8,7 @@ import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 import javax.persistence.Query;
 import javax.swing.JLayeredPane;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
 import org.hibernate.Hibernate;
@@ -838,6 +839,11 @@ public class HexMapTHM extends KernelUseObjectZZZ implements ITileEventUserTHM {
 							this.getTileMetaEventBroker().fireEvent(objEventTileCreated);						
 							
 							iNrOfTiles++;
+						}else{
+							String sMessage = objTroopDaoFacade.getFacadeResult().getMessage(); //Hole die Meldung ab.
+							
+							//Mache nun eine Ausgabe, wie sonst in AreaCellTHM.onTileCreated(EventTileCreatedInCellTHM) 				
+							JOptionPane.showMessageDialog (panelMap, sMessage);//TODO GOON: Eigentlich hier nicht ausgeben, sondern das Ergebnis für irgendwelche Frontend-Klassen zur Verfügung stellen, die dann ggfs. auch eine UI Komponente haben.
 						}
 				}else if(sX.equals("5")&& sY.equals("5")){
 					boolean bGoon = false;

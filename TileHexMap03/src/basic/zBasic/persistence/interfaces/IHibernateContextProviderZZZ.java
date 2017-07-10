@@ -4,6 +4,7 @@ import javax.persistence.EntityManager;
 
 import org.hibernate.Session;
 import org.hibernate.cfg.Configuration;
+import org.hibernate.internal.SessionFactoryImpl;
 
 import basic.zBasic.ExceptionZZZ;
 
@@ -15,6 +16,8 @@ public interface IHibernateContextProviderZZZ {
 	public boolean addConfigurationClass(Class cls)throws ExceptionZZZ;
 	
 	public Configuration getConfiguration();
+	public SessionFactoryImpl getSessionFactory();
+	
 	public Session getSession() throws ExceptionZZZ;
 	
 	public EntityManager getEntityManager(String sSchemaName)throws ExceptionZZZ;

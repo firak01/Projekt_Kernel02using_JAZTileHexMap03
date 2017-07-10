@@ -324,6 +324,8 @@ public class AreaCellTHM  extends HexCellTHM implements IListenerTileMetaTHM{
 			String sY = this.getMapY();
 			if(eventTileCreated.getMapX().equals(sX) && eventTileCreated.getMapY().equals(sY)){
 		
+				//20170705: Merke: Durch die Verwendung von PreInsertListenerTHM oder SaveOrUpdateListenerTHM und der Überprüfung im Backend, sollte es an dieser Stelle keine Ausgabe mehr geben.
+				//                         Die JOptionPane.showMessageDialog Ausgabe wird in den TroopArmyDaoFacade bzw. TroopFleetDaoFacade gemacht.
 				System.out.println(ReflectCodeZZZ.getMethodCurrentName() + " ##### Pr�fe ob der Spielstein (TILE) '" + eventTileCreated.getTile().getName() + "' hier (" + sX + "/" +sY +") erzeugt werden kann. #######");
 				boolean bIsCreationPlaceFor = this.isCreationPlaceFor(eventTileCreated.getTile());
 				if(bIsCreationPlaceFor){

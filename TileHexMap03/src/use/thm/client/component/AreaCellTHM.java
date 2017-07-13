@@ -72,7 +72,7 @@ public class AreaCellTHM  extends HexCellTHM implements IListenerTileMetaTHM{
 	}
 	/** Darf der Spielstein die Area betreten.
 	 *  Voraussetzungen sind momentan:
-	 *  a) dass der Spielstein den Gel�ndetyp betreten darf. Intern wird die gleichnamige statische Methode der AreaType-Klasse abgefragt
+	 *  a) dass der Spielstein den Geländetyp betreten darf. Intern wird die gleichnamige statische Methode der AreaType-Klasse abgefragt
 	 *   
 	* @param tileTHM
 	* @return
@@ -142,7 +142,7 @@ public class AreaCellTHM  extends HexCellTHM implements IListenerTileMetaTHM{
 	/* (non-Javadoc)
 	 * @see use.thm.client.component.HexCellTHM#fillDetail(java.awt.Graphics, java.awt.Polygon)
 	 * 
-	 * Hier werden anders als in der Zelle f�r jeden Areatyp andere Farben verwendet
+	 * Hier werden anders als in der Zelle für jeden Areatyp andere Farben verwendet
 	 * Merke: po ist das Sechseck.
 	 */
 	public void fillDetail(Graphics g, Polygon po){
@@ -151,7 +151,7 @@ public class AreaCellTHM  extends HexCellTHM implements IListenerTileMetaTHM{
 		//Falls per DragDrop eine Spielfigur auf die Zelle gezogen wird
 	 	//if (this.getFlag("effectDragTile")){
 		if (this.getFlagZ(HexCellTHM.FLAGZ.EFFECT_DRAG_TILE.name())){
-	 		//Erst den zugeh�renden Effekt holen
+	 		//Erst den zugehörenden Effekt holen
 	 		//int iEffect = this.getEffectByFlag("effectDragTile");
 	 		int iEffect = this.getEffectByFlag(HexCellTHM.FLAGZ.EFFECT_DRAG_TILE.name());
 	 		
@@ -161,7 +161,7 @@ public class AreaCellTHM  extends HexCellTHM implements IListenerTileMetaTHM{
 	 		//g.setColor(c.darker());
 	 	//}else if(this.getFlag("effectPathTile")){
 		}else if(this.getFlagZ(HexCellTHM.FLAGZ.EFFECT_PATH_TILE.name())){
-//	 		Erst den zugeh�renden Effekt holen
+//	 		Erst den zugehörenden Effekt holen
 	 		//int iEffect = this.getEffectByFlag("effectPathTile");
 			int iEffect = this.getEffectByFlag(HexCellTHM.FLAGZ.EFFECT_PATH_TILE.name());
 	 		
@@ -179,13 +179,13 @@ public class AreaCellTHM  extends HexCellTHM implements IListenerTileMetaTHM{
 	/* (non-Javadoc)
 	 * @see use.thm.client.component.HexCellTHM#onTileEnter(use.thm.client.event.EventCellEnteredTHM)
 	 * 
-	 *  Falls ein nicht g�ltiges Feld betreten wird, wird der Cursor zum DEFAULT_CURSOR
+	 *  Falls ein nicht gültiges Feld betreten wird, wird der Cursor zum DEFAULT_CURSOR
 	 */
 	public boolean onTileEnter(EventCellEnteredTHM eventCellEntered) {
 		boolean bReturn = true;
 		Cursor objCursor=null;
 		main:{
-//			TODO daf�r eine eigene Methode //Erst mal herausfinden, ob das die eigene Area ist
+//			TODO dafür eine eigene Methode //Erst mal herausfinden, ob das die eigene Area ist
 			if(eventCellEntered.getMapX().equals(this.getMapX()) && eventCellEntered.getMapY().equals(this.getMapY())){
 				
 				//+++ Ist das Neue-Feld vom letzten g�ltigen Feld aus erreichbar ?
@@ -207,7 +207,7 @@ public class AreaCellTHM  extends HexCellTHM implements IListenerTileMetaTHM{
 					break main;
 				}
 				
-				bReturn = super.onTileEnter(eventCellEntered); //MErke: Hier wird der CURSOR zum CROSSHAIR Cursor
+				bReturn = super.onTileEnter(eventCellEntered); //Merke: Hier wird der CURSOR zum CROSSHAIR Cursor
 			}
 			
 		}//end main
@@ -239,7 +239,7 @@ public class AreaCellTHM  extends HexCellTHM implements IListenerTileMetaTHM{
 	public boolean onTileDrop(EventTileDroppedToCellTHM eventTileDropped) {
 		boolean bReturn = true;
 		main:{
-			//TODO daf�r eine eigene Methode //Erst mal herausfinden, ob das die eigene Area ist
+			//TODO dafür eine eigene Methode //Erst mal herausfinden, ob das die eigene Area ist
 			String sX = this.getMapX();
 			String sY = this.getMapY();
 			
@@ -247,7 +247,7 @@ public class AreaCellTHM  extends HexCellTHM implements IListenerTileMetaTHM{
 			String sYDropped = eventTileDropped.getMapY();
 			if(sXDropped.equals(sX) && sYDropped.equals(sY)){
 		
-//			 	+++++ ist dies das gleiche Feld wie das zuletzt g�ltige ?	
+//			 	+++++ ist dies das gleiche Feld wie das zuletzt gültige ?	
 				//Merke: Wenn "von Aussen" ein Spielstein eingesetzt wurde, dann gibt es keine "vorherige" Zelle.
 				HexCellTHM objCellValidLast = eventTileDropped.getTile().getMouseMotionHandler().getCellValidLast();
 				if(objCellValidLast!=null){
@@ -269,12 +269,19 @@ public class AreaCellTHM  extends HexCellTHM implements IListenerTileMetaTHM{
 				}
 				
 			
-				// TODO: Zus�tzlich muss gefragt werden, ob der Spielstein einer ist, den diese Zelle "beobachtet". 
-				bReturn = super.onTileDrop(eventTileDropped); //Das sorgt z.B. daf�r, dass alle Zellen die "Hervorhebung" verlieren.
+				// TODO: Zusätzlich muss gefragt werden, ob der Spielstein einer ist, den diese Zelle "beobachtet". 
+				bReturn = super.onTileDrop(eventTileDropped); //Das sorgt z.B. dafür, dass alle Zellen die "Hervorhebung" verlieren.
 				if(!bReturn){
 					System.out.println(ReflectCodeZZZ.getMethodCurrentName() + "!!! CELL darf nicht Ende der Bewegung sein: " +  this.getMapX() + "/" + this.getMapY());
 					break main;
 				} 
+				
+				//Merke 20170711: Das Arbeiten mit der Component, die dann andere Koordinaten bekommt und einer anderen Zelle zugeordnet wird,
+				//                        passiert in TileMouseMotionHandlerTHM.mouseReleased(). Dort dann ggfs. auch die Persistierung in der Datenbank ändern.
+				
+				//Merke 20170711: Falls weiterer Überprüfungen passieren sollten (z.B. gegnerische Spielsteine angrenzend, etc.) dann müsste hierzu an dieser Stelle die Datenbank abgefragt werden
+				
+				
 			}
 		}//end main
 		return bReturn;

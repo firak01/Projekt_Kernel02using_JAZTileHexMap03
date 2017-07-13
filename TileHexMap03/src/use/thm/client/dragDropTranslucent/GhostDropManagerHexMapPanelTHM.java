@@ -85,7 +85,7 @@ public class GhostDropManagerHexMapPanelTHM extends AbstractGhostDropManager imp
 			   String sAction = e.getAction();
 			   TileTHM objTile = null; //wird gleich konkret gefüllt, falls der Action-Key passt.
 			   
-			  //MoveEventBroker f�r die Bewegung von einer Zelle zur anderen
+			  //MoveEventBroker für die Bewegung von einer Zelle zur anderen
 			  
 			   TileMetaEventBrokerTHM objTileMetaEventBroker = objMap.getTileMetaEventBroker();//new TileMoveEventBrokerTHM(this.getKernelObject());
 		      // JOptionPane.showMessageDialog(this.component, ReflectCodeZZZ.getMethodCurrentName() + "### Action: '" + action + "'");
@@ -95,7 +95,7 @@ public class GhostDropManagerHexMapPanelTHM extends AbstractGhostDropManager imp
 					   //FGL: 20170703 - Hier erst einmal im Backend prüfen, ob eine neue Army hier überhaupt erstellt werden darf.
 					   boolean bGoon = false;					   					   
 						//Die in eine Methode gekapselte (DAO Klasse) Vorgehensweise verwenden. //Der Code stammt aus HexMapTH.fillMap_createNewTiles(...)
-					   //Allerdings müssen erst einmal alle Voraussetzungen erfüllt werden. HibernateContext,..., AreaCell Objekt...,
+					   //Allerdings müssen erst einmal alle Voraussetzungen erfüllt werden. HibernateContext,..., PrimaryKey..., AreaCell Objekt...,
 					    HibernateContextProviderSingletonTHM objContextHibernate = HibernateContextProviderSingletonTHM.getInstance(this.getKernelObject());
 					    AreaCellDao objAreaDao = new AreaCellDao(objContextHibernate);
 					    
@@ -109,8 +109,7 @@ public class GhostDropManagerHexMapPanelTHM extends AbstractGhostDropManager imp
 						String sUniquename = "ARMY UNIQUE NEW"; //TODO GOON 20170703: BERECHNE DEN NÄCHSTEN uniquenamen einer Truppe.
 						bGoon = objTroopDaoFacade.insertTroopArmy(sUniquename, objCellTemp);//Falls das aus irgendwelchen Gründen nicht erlaubt ist, ein Veto einlegen.
 						if(!bGoon){
-							//TODO GOON 20170703: Hole auch irgendwie einen Grund ab, warum an dieser Stelle nix eingefügt werden darf.
-							//Dies muss aus TroopArmyDaoFacade abgeholt werden.
+							//0170703: Hole auch irgendwie einen Grund ab, warum an dieser Stelle nix eingefügt werden darf.//Dies muss aus TroopArmyDaoFacade abgeholt werden.							
 							String sMessage = objTroopDaoFacade.getFacadeResult().getMessage(); //Hole die Meldung ab.
 							
 							//Mache nun eine Ausgabe, wie sonst in AreaCellTHM.onTileCreated(EventTileCreatedInCellTHM) 				
@@ -118,7 +117,7 @@ public class GhostDropManagerHexMapPanelTHM extends AbstractGhostDropManager imp
 							
 						}else{
 					   
-					   objTile = new ArmyTileTHM(objMap.getPanelParent(), objMap.getTileMoveEventBroker(), objCell.getMapX(), objCell.getMapY(), objMap.getSideLength());
+					   objTile = new ArmyTileTHM(objMap.getPanelParent(), objMap.getTileMoveEventBroker(), sUniquename, objCell.getMapX(), objCell.getMapY(), objMap.getSideLength());
 						}
 				   }
 			   }

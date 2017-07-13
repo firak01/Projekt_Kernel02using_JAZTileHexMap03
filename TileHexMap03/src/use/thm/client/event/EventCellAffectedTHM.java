@@ -10,7 +10,7 @@ public class EventCellAffectedTHM extends EventObject{
 	private String sMapY;
 	private int iId;
 	
-	/** Event Elternklasse für EventCellEntered/EventCellLeaved, die ausgelöst werden, wenn ein Spielstein über die Zellen der Karte bewegt wird 
+	/** Event Elternklasse fÃ¼r EventCellEntered/EventCellLeaved, die ausgelÃ¶st werden, wenn ein Spielstein Ã¼ber die Zellen der Karte bewegt wird 
 	* lindhaueradmin; 03.10.2008 09:53:41
 	 * @param source, der Spielstein
 	 * @param iID

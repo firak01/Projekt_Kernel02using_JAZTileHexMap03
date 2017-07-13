@@ -7,14 +7,16 @@ import java.awt.Graphics;
 
 import javax.swing.JPanel;
 
+import basic.zBasic.persistence.interfaces.IBackendPersistanceUser4UiZZZ;
 import basic.zBasic.util.math.MathZZZ;
+import basic.zKernel.IKernelUserZZZ;
 import basic.zKernelUI.component.KernelJPanelCascadedZZZ;
-
 import use.thm.IMapPositionableTHM;
 import use.thm.client.event.TileMoveEventBrokerTHM;
 import use.thm.client.handler.TileMouseMotionHandlerTHM;
 
-public class TileTHM extends JPanel implements IMapPositionableTHM {
+public class TileTHM extends JPanel implements IMapPositionableTHM, IBackendPersistanceUser4UiZZZ {
+	private String sUniquename; //Ein eindeutige Bezeichnung. Über diese wird die UI Komponente mit der BackendPersistence-Entsprechung verbunden.
 	private String sAliasX; //Die Koordinaten auf der Karte
 	private String sAliasY;
 	private int iHexSideLength=0; //= RadiusOuter
@@ -34,11 +36,13 @@ public class TileTHM extends JPanel implements IMapPositionableTHM {
 	 * @param sAliasY
 	 * @param iHexSideLength
 	 */
-	public TileTHM(KernelJPanelCascadedZZZ panelMap,TileMoveEventBrokerTHM objEventBroker, String sAliasX, String sAliasY, int iHexSideLength){
+	public TileTHM(KernelJPanelCascadedZZZ panelMap,TileMoveEventBrokerTHM objEventBroker, String sUniquename, String sAliasX, String sAliasY, int iHexSideLength){
 		super();
 		
 
 		try {
+			this.setUniquename(sUniquename);
+			
 			this.setMapX(sAliasX);
 			this.setMapY(sAliasY);
 			this.panelMap = panelMap;
@@ -63,15 +67,15 @@ public class TileTHM extends JPanel implements IMapPositionableTHM {
 		this.setBackground(Color.green);
 		this.setForeground(Color.green);
 				
-		//Dimension ausrechnen anhand der Seitenl�nge des Sechsecks !!!!
-		//Merke: Der Umkreisradius des Sechsecks entspricht der Seitenl�nge (Variable a)
+		//Dimension ausrechnen anhand der Seitenlänge des Sechsecks !!!!
+		//Merke: Der Umkreisradius des Sechsecks entspricht der Seitenlänge (Variable a)
 		//Aber: Wenn der Spielstein innerhalb des Sechsecks bleiben soll, ist der Inkreisradius interessanter.
 		//      Inkreisradius = a * ( (Wurzel aus 3) / 2 )
 		//Dimension dim = new Dimension(30,30);
 		int iTileSideLength = this.getTileSideLength();
 		Dimension dim = new Dimension(iTileSideLength, iTileSideLength);
 		
-		//Bounds ausrechnen anhand der Seitenl�nge des Sechsecks !!!!
+		//Bounds ausrechnen anhand der Seitenlänge des Sechsecks !!!!
 		//this.setBounds(30, 30, 30, 30); //Ziel: Es soll nicht in der linken oberen Ecke erscheinen ! //ABER: Es soll noch eine Layout Manger f�r die Zelle geben, der dann automatisch positioniert
 		this.setBounds(iTileSideLength, iTileSideLength,iTileSideLength, iTileSideLength);
 		this.setPreferredSize(dim);
@@ -150,6 +154,14 @@ public class TileTHM extends JPanel implements IMapPositionableTHM {
 			this.iTileSideLength = this.computeTileSideLength(this.getHexSideLength());
 		}
 		return this.iTileSideLength;
+	}
+
+	@Override
+	public String getUniquename() {
+		return this.sUniquename;
+	}
+	protected void setUniquename(String sUniquename) {
+		this.sUniquename=sUniquename;
 	}
 	
 }

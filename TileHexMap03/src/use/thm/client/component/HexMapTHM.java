@@ -432,10 +432,13 @@ public class HexMapTHM extends KernelUseObjectZZZ implements ITileEventUserTHM {
 				
 				int iY = objTroopTemp.getMapY();
 				Integer intY = new Integer(iY);
-				String sY = intY.toString();				
+				String sY = intY.toString();	
+				
+				String sUniquename = objTroopTemp.getUniquename();//Die Backend-Funkion heisst genauso wie die UI-Funktion, die verwndet wird, um das UI-Objekt mit dem Backend zu identifizieren.
+				
 				
 				//+++ UI Operationen & die TroopArmy noch an das UI-verwendete Objekt weitergeben					
-				ArmyTileTHM objArmyTemp = new ArmyTileTHM(panelMap, objTileMoveEventBroker, sX, sY, this.getSideLength());
+				ArmyTileTHM objArmyTemp = new ArmyTileTHM(panelMap, objTileMoveEventBroker, sUniquename, sX, sY, this.getSideLength());
 				EventTileCreatedInCellTHM objEventTileCreated = new EventTileCreatedInCellTHM(objArmyTemp, 1, sX, sY);
 				objTileMetaEventBroker.fireEvent(objEventTileCreated);
 	
@@ -450,8 +453,11 @@ public class HexMapTHM extends KernelUseObjectZZZ implements ITileEventUserTHM {
 				Integer intY = new Integer(iY);
 				String sY = intY.toString();	
 				
+				String sUniquename = objTroopTemp.getUniquename();//Die Backend-Funkion heisst genauso wie die UI-Funktion, die verwndet wird, um das UI-Objekt mit dem Backend zu identifizieren.
+				
+				
 				//+++ UI Operationen & die TroopFleet noch an das UI-verwendete Objekt weitergeben				
-				FleetTileTHM objFleetTemp = new FleetTileTHM(panelMap, objTileMoveEventBroker, sX, sY, this.getSideLength());
+				FleetTileTHM objFleetTemp = new FleetTileTHM(panelMap, objTileMoveEventBroker, sUniquename, sX, sY, this.getSideLength());
 				EventTileCreatedInCellTHM objEventTileCreated = new EventTileCreatedInCellTHM(objFleetTemp, 1, sX, sY);
 				objTileMetaEventBroker.fireEvent(objEventTileCreated);
 				
@@ -833,7 +839,11 @@ public class HexMapTHM extends KernelUseObjectZZZ implements ITileEventUserTHM {
 						if(bGoon){
 														
 							//+++ UI Operationen & die TroopArmy noch an das UI-verwendete Objekt weitergeben
-							ArmyTileTHM objArmyTemp = new ArmyTileTHM(panelMap, objTileMoveEventBroker, sX, sY, this.getSideLength());
+							//20170711: Nimm hier die UniqueId des Backends mit auf....
+							//20170711: Der Uniquename muss der im UI-verwendeten Objekt übergeben werden. Das ist dann die Verbindung zwischen UI und Backend.
+							//               Diese Verbindung zwischen UI und Backend wird wichtig, wenn der Spielstein weiterbewegt wird und diese Bewegung im Backend verzeichnet werden soll,
+							//                sprich ein Update gemacht werden soll.
+							ArmyTileTHM objArmyTemp = new ArmyTileTHM(panelMap, objTileMoveEventBroker, sUniquename, sX, sY, this.getSideLength());
 							
 							EventTileCreatedInCellTHM objEventTileCreated = new EventTileCreatedInCellTHM(objArmyTemp, 1, sX, sY);
 							this.getTileMetaEventBroker().fireEvent(objEventTileCreated);						
@@ -853,8 +863,14 @@ public class HexMapTHM extends KernelUseObjectZZZ implements ITileEventUserTHM {
 					bGoon = objFleetDaoFacade.insertTroopFleet(sUniquename, objCellTemp);
 					if(bGoon){
 						
+						//20170711: Nimm hier die UniqueId des Backends mit auf....
+						//20170711: Der Uniquename muss der im UI-verwendeten Objekt übergeben werden. Das ist dann die Verbindung zwischen UI und Backend.
+						//               Diese Verbindung zwischen UI und Backend wird wichtig, wenn der Spielstein weiterbewegt wird und diese Bewegung im Backend verzeichnet werden soll,
+						//               sprich ein Update gemacht werden soll.
+						
+						
 						//+++ UI Operationen & die TroopFleet noch an das UI-verwendete Objekt weitergeben	
-						FleetTileTHM objFleetTemp = new FleetTileTHM(panelMap, objTileMoveEventBroker, sX, sY, this.getSideLength());
+						FleetTileTHM objFleetTemp = new FleetTileTHM(panelMap, objTileMoveEventBroker, sUniquename, sX, sY, this.getSideLength());
 						
 						EventTileCreatedInCellTHM objEventTileCreated = new EventTileCreatedInCellTHM(objFleetTemp, 1, sX, sY);
 						this.getTileMetaEventBroker().fireEvent(objEventTileCreated);	
@@ -876,7 +892,7 @@ public class HexMapTHM extends KernelUseObjectZZZ implements ITileEventUserTHM {
 						//TEST: DIESER CODE DARF NICHT AUSGEFÜHRT WERDEN, DER onPreInsert-Listener muss das verhindert haben und zurückgeliefert haben.
 						
 						//+++ UI Operationen & die TroopFleet noch an das UI-verwendete Objekt weitergeben	
-						FleetTileTHM objFleetTemp = new FleetTileTHM(panelMap, objTileMoveEventBroker, sX, sY, this.getSideLength());
+						FleetTileTHM objFleetTemp = new FleetTileTHM(panelMap, objTileMoveEventBroker,sUniquename, sX, sY, this.getSideLength());
 						
 						EventTileCreatedInCellTHM objEventTileCreated = new EventTileCreatedInCellTHM(objFleetTemp, 1, sX, sY);
 						this.getTileMetaEventBroker().fireEvent(objEventTileCreated);	
@@ -897,7 +913,7 @@ public class HexMapTHM extends KernelUseObjectZZZ implements ITileEventUserTHM {
 						//TEST: DIESER CODE DARF NICHT AUSGEFÜHRT WERDEN, DER onPreInsert-Listener muss das verhindern.
 													
 						//+++ UI Operationen & die TroopArmy noch an das UI-verwendete Objekt weitergeben
-						ArmyTileTHM objArmyTemp = new ArmyTileTHM(panelMap, objTileMoveEventBroker, sX, sY, this.getSideLength());
+						ArmyTileTHM objArmyTemp = new ArmyTileTHM(panelMap, objTileMoveEventBroker, sUniquename, sX, sY, this.getSideLength());
 						
 						EventTileCreatedInCellTHM objEventTileCreated = new EventTileCreatedInCellTHM(objArmyTemp, 1, sX, sY);
 						this.getTileMetaEventBroker().fireEvent(objEventTileCreated);						
@@ -1077,8 +1093,10 @@ public class HexMapTHM extends KernelUseObjectZZZ implements ITileEventUserTHM {
 						
 						//TEST: FALSCHES PLATZIEREN DER TRUPPEN Komponente in einer bestimmten Zelle per Event hinzufügen
 						if(bUseTestArea && sX.equals("1") && sY.equals("2")){
+							String sUniquename ="FLEET UNIQUE " + sY;
+							
 							//+++ Datenbankoperationen
-							TroopFleet objTroopTemp = new TroopFleet(new TileId("EINS", "1", "FLEET UNIQUE " + sY));					
+							TroopFleet objTroopTemp = new TroopFleet(new TileId( "EINS", "1", sUniquename));					
 							//TODO GOON 20170407: Die Validierung auf ein gültiges Feld in einen Event der Persistierung packen, siehe Buch..... Dannn kann man auch wieer richtig das falsche Hinzufügen testen 
 							objTroopTemp.setHexCell(objCellTemp); //wg. 1:1 Beziehung
 							//TODO GOON 20170407: Hier müsste dann ein Fehler kommen, damit der folgende Code nicht ausgeführt wird......
@@ -1089,7 +1107,7 @@ public class HexMapTHM extends KernelUseObjectZZZ implements ITileEventUserTHM {
 							em.persist(objTroopTemp);		
 							
 							//+++ UI Operationen & die TroopFleet noch an das UI-verwendete Objekt weitergeben	
-							FleetTileTHM objFleetTemp = new FleetTileTHM(panelMap, objTileMoveEventBroker, sX, sY, this.getSideLength());
+							FleetTileTHM objFleetTemp = new FleetTileTHM(panelMap, objTileMoveEventBroker, sUniquename, sX, sY, this.getSideLength());
 							
 							EventTileCreatedInCellTHM objEventTileCreated = new EventTileCreatedInCellTHM(objFleetTemp, 1, sX, sY);
 							objTileMetaEventBroker.fireEvent(objEventTileCreated);
@@ -1099,8 +1117,10 @@ public class HexMapTHM extends KernelUseObjectZZZ implements ITileEventUserTHM {
 						
 						//Anfangsaufstellung: TRUPPEN Komponente in einer Datenbank persistieren und in einer bestimmten Zelle per Event hinzufügen 
 						if(sX.equals("1") && sY.equals("2")  | (sX.equals("1") & sY.equals("3")) | (sX.equals("1") & sY.equals("4"))){
+							String sUniquename = "ARMY UNIQUE " + sY;
+							
 							//+++ Datenbankoperationen
-							TroopArmy objTroopTemp = new TroopArmy(new TileId("EINS", "1", "ARMY UNIQUE " + sY));//TODO GOON : sY als Uniquename zu verwenden ist nur heuristisch und nicht wirklich UNIQUE
+							TroopArmy objTroopTemp = new TroopArmy(new TileId("EINS", "1", sUniquename));//TODO GOON : sY als Uniquename zu verwenden ist nur heuristisch und nicht wirklich UNIQUE
 							objTroopTemp.setHexCell(objCellTemp); //Füge Zelle der Trupppe hinzu, wg. 1:1 Beziehung
 							objCellTemp.getTileBag().add(objTroopTemp); //Füge diese Army der HexCell hinzu //wg. 1:n Beziehung
 							
@@ -1109,7 +1129,7 @@ public class HexMapTHM extends KernelUseObjectZZZ implements ITileEventUserTHM {
 							em.persist(objTroopTemp);
 							
 							//+++ UI Operationen & die TroopArmy noch an das UI-verwendete Objekt weitergeben
-							ArmyTileTHM objArmyTemp = new ArmyTileTHM(panelMap, objTileMoveEventBroker, sX, sY, this.getSideLength());
+							ArmyTileTHM objArmyTemp = new ArmyTileTHM(panelMap, objTileMoveEventBroker, sUniquename, sX, sY, this.getSideLength());
 							
 							EventTileCreatedInCellTHM objEventTileCreated = new EventTileCreatedInCellTHM(objArmyTemp, 1, sX, sY);
 							objTileMetaEventBroker.fireEvent(objEventTileCreated);
@@ -1117,8 +1137,10 @@ public class HexMapTHM extends KernelUseObjectZZZ implements ITileEventUserTHM {
 						
 							
 						}else if(sX.equals("5")&& sY.equals("5")){
+							String sUniquename = "FLEET UNIQUE " + sY;
+							
 							//+++ Datenbankoperationen
-							TroopFleet objTroopTemp = new TroopFleet(new TileId("EINS", "1", "FLEET UNIQUE " + sY));
+							TroopFleet objTroopTemp = new TroopFleet(new TileId("EINS", "1", sUniquename));
 							objTroopTemp.setHexCell(objCellTemp); //wg. 1:1 Beziehung					
 							objCellTemp.getTileBag().add(objTroopTemp);//Füge diese Flotte der HexCell hinzu //wg. 1:n Beziehung
 							
@@ -1126,7 +1148,7 @@ public class HexMapTHM extends KernelUseObjectZZZ implements ITileEventUserTHM {
 							em.persist(objTroopTemp);
 							
 							//+++ UI Operationen & die TroopFleet noch an das UI-verwendete Objekt weitergeben											
-							FleetTileTHM objFleetTemp = new FleetTileTHM(panelMap, objTileMoveEventBroker, sX, sY, this.getSideLength());
+							FleetTileTHM objFleetTemp = new FleetTileTHM(panelMap, objTileMoveEventBroker, sUniquename, sX, sY, this.getSideLength());
 							
 							EventTileCreatedInCellTHM objEventTileCreated = new EventTileCreatedInCellTHM(objFleetTemp, 1, sX, sY);
 							objTileMetaEventBroker.fireEvent(objEventTileCreated);
@@ -1136,9 +1158,10 @@ public class HexMapTHM extends KernelUseObjectZZZ implements ITileEventUserTHM {
 						
 						//TEST: FALSCHES PLATZIEREN DER TRUPPEN Komponente in einer bestimmten Zelle, die schon besetzt ist per Event hinzufügen
 						if(bUseTestOccupied && sX.equals("1") && sY.equals("2")){
-																			
+							String sUniquename = "ARMY UNIQUE " + sY;											
+							
 							//+++ Datenbankoperationen
-							TroopArmy objTroopTemp = new TroopArmy(new TileId("EINS", "1","ARMY UNIQUE " + sY));
+							TroopArmy objTroopTemp = new TroopArmy(new TileId("EINS", "1",sUniquename));
 							//TODO GOON 20170407: Die Validierung auf ein gültiges Feld in einen Event der Persistierung packen, siehe Buch..... Dannn kann man auch wieder richtig das falsche Hinzufügen testen 
 							objTroopTemp.setHexCell(objCellTemp); //wg. 1:1 Beziehung	
 							//TODO GOON 20170407: Hier müsste dann ein Fehler kommen, damit der folgende Code nicht ausgeführt wird......
@@ -1153,7 +1176,7 @@ public class HexMapTHM extends KernelUseObjectZZZ implements ITileEventUserTHM {
 			
 							
 							//+++ UI Operationen & die TroopArmy noch an das UI-verwendete Objekt weitergeben
-							ArmyTileTHM objArmyTemp = new ArmyTileTHM(panelMap, objTileMoveEventBroker, sX, sY, this.getSideLength());
+							ArmyTileTHM objArmyTemp = new ArmyTileTHM(panelMap, objTileMoveEventBroker, sUniquename, sX, sY, this.getSideLength());
 							
 							EventTileCreatedInCellTHM objEventTileCreated = new EventTileCreatedInCellTHM(objArmyTemp, 1, sX, sY);
 							objTileMetaEventBroker.fireEvent(objEventTileCreated);

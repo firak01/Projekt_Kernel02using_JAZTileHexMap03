@@ -360,8 +360,7 @@ public class HexCellTHM extends KernelJPanelCascadedZZZ implements IMapFixedTHM,
 		if(this.getFlagZ(FLAGZ.EFFECT_DRAG_TILE.name())==true){
 			try {
 				this.setFlagZ(FLAGZ.EFFECT_DRAG_TILE.name(), false);
-			} catch (ExceptionZZZ e) {
-				// TODO Auto-generated catch block
+			} catch (ExceptionZZZ e) {				
 				e.printStackTrace();
 			}
 			bRepaint = true;
@@ -369,8 +368,7 @@ public class HexCellTHM extends KernelJPanelCascadedZZZ implements IMapFixedTHM,
 		if(this.getFlagZ(FLAGZ.EFFECT_PATH_TILE.name()) == true){
 			try {
 				this.setFlagZ(FLAGZ.EFFECT_PATH_TILE.name(), false);
-			} catch (ExceptionZZZ e) {
-				// TODO Auto-generated catch block
+			} catch (ExceptionZZZ e) {				
 				e.printStackTrace();
 			}
 			bRepaint = true;
@@ -392,8 +390,7 @@ public class HexCellTHM extends KernelJPanelCascadedZZZ implements IMapFixedTHM,
 		try {
 			this.setFlagZ(FLAGZ.EFFECT_PATH_TILE.name(), false);
 			this.setFlagZ(FLAGZ.EFFECT_DRAG_TILE.name(), false);//Der darf nat�rlich auch nicht auftreten, wenn die Zelle ganz vom Pfad entfernt worden ist.
-		} catch (ExceptionZZZ e) {
-			// TODO Auto-generated catch block
+		} catch (ExceptionZZZ e) {			
 			e.printStackTrace();
 		}
 		this.repaint(); //da diese Zelle ggf. weder eine Zelle ist, die gerade verlassen oder betreten wird, sorgt kein Event daf�r, das neu gezeichnet wird. Also hier neu zeichnen.
@@ -502,14 +499,14 @@ public class HexCellTHM extends KernelJPanelCascadedZZZ implements IMapFixedTHM,
 		return pointaReturn;
 	}
 	
-	/** Enth�lt diese Zelle schon einen Spielstein?
+	/** Enthält diese Zelle schon einen Spielstein?
 	 * 
 	 */
 	public boolean isOccupiedByAnyTile(){
 		boolean bReturn = false;
 		main:{
 			Component[] objaComponent = this.getComponents();
-			System.out.println(ReflectCodeZZZ.getMethodCurrentName() + " #### Die Zelle enth�lt " + objaComponent.length + " Objekte. ");
+			System.out.println(ReflectCodeZZZ.getMethodCurrentName() + " #### Die Zelle enthält " + objaComponent.length + " Objekte. ");
 			if(objaComponent.length>=1){
 				int icount = 0;
 				for(Component objComponent : objaComponent){
@@ -543,7 +540,7 @@ public class HexCellTHM extends KernelJPanelCascadedZZZ implements IMapFixedTHM,
 	}
 	
 	/** Ist die durch den Punkt angegebene Zelle (der HexMap-Koordinaten) in einer geraden oder in einer ungeraden Reihe.
-	 *	   Diese Untersuchung ist z.B. wichtig f�r die Ermittlung der Nachbarzellen.
+	 *	   Diese Untersuchung ist z.B. wichtig für die Ermittlung der Nachbarzellen.
 	* @param p
 	* @return
 	* 

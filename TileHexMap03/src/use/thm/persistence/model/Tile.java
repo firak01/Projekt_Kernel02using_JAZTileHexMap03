@@ -159,12 +159,14 @@ public class Tile implements Serializable, IOptimisticLocking{
 				return -1;
 			}	    	
 	    }
-		public void setMapX(int iValue){
+		private void setMapX(int iValue){
 			Integer intValue = new Integer(iValue);
 			String sX = intValue.toString();
-			if(this.getHexCell()!=null){
-				this.getHexCell().getId().setMapX(sX);
-			}
+			
+			//TODO GOON 20170715: Müsste hier jetzt nicht die korrekte HexCell ermittelt werden? Das Setzen klappt so nämlich nicht...
+//			if(this.getHexCell()!=null){
+//				this.getHexCell().getId().setMapX(sX);
+//			}
 		}
 	    
 		@Access(AccessType.PROPERTY)
@@ -179,12 +181,14 @@ public class Tile implements Serializable, IOptimisticLocking{
 			}
 	    	//return objReturn;
 	    }
-		public void setMapY(int iValue){
+		private void setMapY(int iValue){
 			Integer intValue = new Integer(iValue);
 			String sY = intValue.toString();
-			if(this.getHexCell()!=null){
-				this.getHexCell().getId().setMapY(sY);
-			}
+			
+			//TODO GOON 20170715: Müsste hier jetzt nicht die korrekte HexCell ermittelt werden? Das Setzen klappt so nmlich nicht...
+//			if(this.getHexCell()!=null){
+//				this.getHexCell().getId().setMapY(sY);
+//			}
 		}
 	 
 	 

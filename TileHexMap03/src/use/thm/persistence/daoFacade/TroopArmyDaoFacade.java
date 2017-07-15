@@ -12,6 +12,7 @@ import org.hibernate.event.spi.EventType;
 import basic.persistence.daoFacade.GeneralDaoFacadeZZZ;
 import basic.persistence.util.HibernateUtil;
 import basic.zBasic.ExceptionZZZ;
+import basic.zBasic.ReflectCodeZZZ;
 import basic.zBasic.persistence.HibernateContextProviderZZZ;
 import use.thm.client.component.ArmyTileTHM;
 import use.thm.client.event.EventTileCreatedInCellTHM;
@@ -167,7 +168,7 @@ public class TroopArmyDaoFacade extends GeneralDaoFacadeZZZ{
 			TroopArmy objTroopArmy = objTroopArmyDao.searchTroopArmyByUniquename(sUniqueName);
 
 			
-			//TODO GOON: 20170713 - ES WIRD IMMER EIN NEUES OBJEKT ANGELEGT, STATT MIT DEM GERADE GEFUNDENEN OBJEKT ZU ARBEITEN !!!
+			//TODO GOON: 20170713 -WIE UPDATE DER ZELLENEINTRÄGE HINBEKOMMEN !!!
 			
 			
 			
@@ -193,18 +194,23 @@ public class TroopArmyDaoFacade extends GeneralDaoFacadeZZZ{
 			if(session == null) break main;			
 			session.getTransaction().begin();//Ein zu persistierendes Objekt - eine Transaction, auch wenn mehrere in einer Transaction abzuhandeln wären, aber besser um Fehler abfangen zu können.
 			
-			//FHELER: NUN UNBEDING AUCH DIE XX YY Koordinaten ändern, sonst bekommt man einen neuen Datensatz
-			objTroopArmy.setMapX(iXDropped);
-			objTroopArmy.setMapY(iYDropped);
+			//FEHLER: Momentan werden die Koordinaten direkt aus der zugeordneten HEXCell geholt. Darum macht das keine Änderung...
+			//objTroopArmy.setMapX(iXDropped);
+			//objTroopArmy.setMapY(iYDropped);
 			
 			//Update, d.h. Initialisierung ist wichtig, weil die Zelle ggfs. noch nie zuvor betreten worden ist.
 			session.update(objCellTemp);//20170703: GROSSE PROBLEME WG. LAZY INITIALISIERUNG DES PERSISTENTBAG in dem area-Objekt. Versuche damit das zu inisiteliesen.
 			objTroopArmy.setHexCell(objCellTemp); //Füge Zelle der Trupppe hinzu, wg. 1:1 Beziehung
 		
 			//Merke: EINE TRANSACTION = EINE SESSION ==>  neue session von der SessionFactory holen
-			session.save(objTroopArmy); //Hibernate Interceptor wird aufgerufen																				
+			//wenn man .save() aufruft, wird immer eine neue Zeile mit dem Objekt erzeugt, auch wenn man ein bestehendes aktualisieren möchte session.save(objTroopArmy); //Hibernate Interceptor wird aufgerufen
+			//Alternative: Siehe https://stackoverflow.com/questions/30473707/hibernate-creates-new-row-on-save-and-not-updates
+			session.saveOrUpdate(objTroopArmy); //Hibernate Interceptor wird aufgerufen
 			if (!session.getTransaction().wasCommitted()) {
 				//session.flush(); //Datenbank synchronisation, d.h. Inserts und Updates werden gemacht. ABER es wird noch nix committed.
+				
+				//VErsuch die Werte der neuen xSpalte yZeile in der Datenbank zu aktualisiere, mit flush()... 
+				session.flush(); //Datenbank synchronisation, d.h. Inserts und Updates werden gemacht. ABER es wird noch nix committed.
 				session.getTransaction().commit(); //onPreInsertListener wird ausgeführt   //!!! TODO: WARUM WIRD wg. des FLUSH NIX MEHR AUSGEFÜHRT AN LISTENERN, ETC ???
 				
 				//bGoon = HibernateUtil.wasCommitSuccessful(objContextHibernate,"save",session.getTransaction());//EventType.PRE_INSERT
@@ -217,7 +223,12 @@ public class TroopArmyDaoFacade extends GeneralDaoFacadeZZZ{
 				this.getFacadeResult().setMessage(sMessage);
 				break validEntry;
 			}
+			System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": Aktuelle Position der Army (X/Y): " + objTroopArmy.getMapX() + "/" + objTroopArmy.getMapY());
+			
+			
+			/* ########## TODO GOON: DAS ERST MAL NOCH AUSKLAMMERN. ERST MUSS DIE ARMY ECHT DIE NEUE POSITION HABEN 
 		
+			 
 			//###################
 			//2. Aktualisiere die Area-AUSGANGS-Zelle, Besitzer bleibt, aber die TroopArmy muss aus der Collection rausgenommen werden.
 			//###################
@@ -284,6 +295,8 @@ public class TroopArmyDaoFacade extends GeneralDaoFacadeZZZ{
 				sMessage = objResult.getVetoMessage();
 				bGoon = !objResult.isVeto();
 			}
+			*/
+			
 			if(!bGoon){
 				//Mache die Ausgabe im UI nicht selbst, sondern stelle lediglich die Daten zur Verfügung. Grund: Hier stehen u.a. die UI Komponenten nicht zur Verfügung
 				this.getFacadeResult().setMessage(sMessage);

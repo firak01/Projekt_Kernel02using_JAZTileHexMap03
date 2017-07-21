@@ -83,26 +83,30 @@ public class SaveOrUpdateListenerTHM extends DefaultSaveOrUpdateEventListener im
 			bHasVeto = saveOrUpdate_FleetVeto(troop);
 		}else if(obj instanceof AreaCell){
 			System.out.println(ReflectCodeZZZ.getPositionCurrent()+": Committed wird ein Objekt der Klasse: " + obj.getClass().getName());
-			System.out.println(ReflectCodeZZZ.getPositionCurrent()+": DAS WURDE NOCH NIE AUSGEFÜHRT... WARUM JETZT ?");
+			System.out.println(ReflectCodeZZZ.getPositionCurrent()+": DAS WURDE NOCH NIE AUSGEFÜHRT... WARUM JETZT ? ... Aufruf beim expliziten SaveOrUpdate einer AreaCell. z.B. um die Anzahl darin gespeicherter Spielsteine (i TileBag) zu reduzieren.");
 			
 			AreaCell area = (AreaCell) obj;
 			sTypeArea = area.getAreaType();
 			System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": Area vom Typ="+sTypeArea);
 			
 			Collection<Tile> colTile = area.getTileBag();
-			for(Tile objTile : colTile){
-				String sTileType = objTile.getTileType();
-				System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": Enthaelt Spielstein vom Typ="+sTileType);
-				
-				if(sTypeArea.equalsIgnoreCase("OC") & sTileType.equalsIgnoreCase("AR")){
-					System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": FEHLER beim Committen einer Area wg. Armee Spielsteins");
-					bHasVeto = true;
-				}else if(sTypeArea.equalsIgnoreCase( "LA") & sTileType.equalsIgnoreCase("FL")){				
-					System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": FEHLER beim Committen einer Area wg. Flotten Spielsteins");
-					bHasVeto = true;
-				}else{
-					bHasVeto = false;
-				}						
+			if(colTile.size() == 0){
+				bHasVeto = false;
+			}else{
+				for(Tile objTile : colTile){
+					String sTileType = objTile.getTileType();
+					System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": Enthaelt Spielstein vom Typ="+sTileType);
+					
+					if(sTypeArea.equalsIgnoreCase("OC") & sTileType.equalsIgnoreCase("AR")){
+						System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": FEHLER beim Committen einer Area wg. Armee Spielsteins");
+						bHasVeto = true;
+					}else if(sTypeArea.equalsIgnoreCase( "LA") & sTileType.equalsIgnoreCase("FL")){				
+						System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": FEHLER beim Committen einer Area wg. Flotten Spielsteins");
+						bHasVeto = true;
+					}else{
+						bHasVeto = false;
+					}						
+				}//end for
 			}
 		}else{
 			System.out.println(ReflectCodeZZZ.getPositionCurrent()+": Committed wird ein Objekt der Klasse: " + obj.getClass().getName());
@@ -126,6 +130,7 @@ public class SaveOrUpdateListenerTHM extends DefaultSaveOrUpdateEventListener im
 		main:{
 			//Hole das Hexfeld
 			HexCell hex = troop.getHexCell();
+			if(hex==null) break main; //Das ist ggfs. beim Löschen der TroopArmy möglich, wenn die 1:1 Beziehungen gelöst/gelöscht werden. 
 			String sType = hex.getHexType();
 			System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": HexFeld vom Typ="+sType);
 			

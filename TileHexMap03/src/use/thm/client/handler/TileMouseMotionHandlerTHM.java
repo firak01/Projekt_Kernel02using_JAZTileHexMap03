@@ -424,6 +424,8 @@ public class TileMouseMotionHandlerTHM extends MouseAdapter implements MouseMoti
 							
 							//TODO GOON: 201707213: Darin müssen erste noch einige HQLs getestet werden, etc. 
 							bGoon = objTroopDaoFacade.updateTroopArmyPosition(sUniquename, objCellTemp);//Falls das aus irgendwelchen Gründen nicht erlaubt ist, ein Veto einlegen.					
+							//DAS FUNKTIOINIERT IST ABER HIER SINNLOS
+							//bGoon = objTroopDaoFacade.deleteTroopArmy(sUniquename);//Falls das aus irgendwelchen Gründen nicht erlaubt ist, ein Veto einlegen.
 							if(!bGoon){
 								//20170703: Hole auch irgendwie einen Grund ab, warum an dieser Stelle nix upgedatet werden darf.//Dies muss aus TroopArmyDaoFacade abgeholt werden.							
 								String sMessage = objTroopDaoFacade.getFacadeResult().getMessage(); //Hole die Meldung ab.

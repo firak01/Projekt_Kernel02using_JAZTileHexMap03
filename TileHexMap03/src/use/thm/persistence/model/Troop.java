@@ -10,6 +10,8 @@ import javax.persistence.Entity;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
+import org.apache.commons.lang.builder.EqualsBuilder;
+
 import basic.persistence.model.IOptimisticLocking;
 
 @Entity //ich will aber keine Tabelle für TROOP haben.
@@ -71,5 +73,19 @@ public class Troop extends Tile implements Serializable, IOptimisticLocking{
 		this.setTroopTypeObject(objType);
 	}
 	
+	    //Damit es funktioniert aus der BAG - Der Tiles die TroopArmy entfernen zu können, entweder beim Bewegen oder beim Löschen des Spielsteins
+		@Override
+	    public boolean equals(Object obj) {
+	        if (this == obj) {
+	            return true;
+	        }
+	        if (!(obj instanceof Troop)) {
+	            return false;
+	        }
+	        Troop that = (Troop) obj;
+	        EqualsBuilder eb = new EqualsBuilder();
+	        eb.append(this.getUniquename(), that.getUniquename());
+	        return eb.isEquals();
+	    }
 	
 }

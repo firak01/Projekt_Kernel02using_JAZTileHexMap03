@@ -3,6 +3,8 @@ package use.thm.persistence.event;
 import java.io.Serializable;
 import java.util.Calendar;
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.Set;
 
 import org.hibernate.HibernateException;
 import org.hibernate.engine.spi.EntityEntry;
@@ -23,9 +25,13 @@ import use.thm.persistence.model.HexCell;
 import use.thm.persistence.model.Tile;
 import use.thm.persistence.model.TroopArmy;
 import use.thm.persistence.model.TroopFleet;
+import use.thm.rule.facade.TroopArmyRuleFacade;
+import use.thm.rule.model.TroopArmyRuleType;
 import basic.zBasic.ExceptionZZZ;
 import basic.zBasic.KernelSingletonTHM;
 import basic.zBasic.ReflectCodeZZZ;
+import basic.zBasic.util.abstractList.ExtendedVectorZZZ;
+import basic.zBasic.util.abstractList.VectorExtendedZZZ;
 import basic.zKernel.IKernelUserZZZ;
 import basic.zKernel.KernelZZZ;
 
@@ -64,8 +70,10 @@ public class SaveOrUpdateListenerTHM extends DefaultSaveOrUpdateEventListener im
 	@Override
 	public void onSaveOrUpdate(SaveOrUpdateEvent event) throws HibernateException {
 		System.out.println(ReflectCodeZZZ.getPositionCurrent() + " Hibernate-Event 03...");		
-		boolean bHasVeto = true;
-//		try {
+		boolean bHasVeto = true;//Erst mal auf true setzen. Falls einer der Fälle nicht greift, dann kommt eine leere dialogbox hoch, um hier ein Problem anzuzeigen.
+		try {
+		this.resetVeto();
+
 			
 		//Versuch nun mehr über den Event herauszubekommen....
 //		Object obj = event.getEntity();   //NULL, zumindest beim SAVE - Fall
@@ -83,7 +91,7 @@ public class SaveOrUpdateListenerTHM extends DefaultSaveOrUpdateEventListener im
 			bHasVeto = saveOrUpdate_FleetVeto(troop);
 		}else if(obj instanceof AreaCell){
 			System.out.println(ReflectCodeZZZ.getPositionCurrent()+": Committed wird ein Objekt der Klasse: " + obj.getClass().getName());
-			System.out.println(ReflectCodeZZZ.getPositionCurrent()+": DAS WURDE NOCH NIE AUSGEFÜHRT... WARUM JETZT ? ... Aufruf beim expliziten SaveOrUpdate einer AreaCell. z.B. um die Anzahl darin gespeicherter Spielsteine (i TileBag) zu reduzieren.");
+			System.out.println(ReflectCodeZZZ.getPositionCurrent()+": Aufruf beim expliziten SaveOrUpdate einer AreaCell. z.B. um die Anzahl darin gespeicherter Spielsteine (i TileBag) zu reduzieren. Ansosnten wurde DAS NOCH NIE AUSGEFÜHRT... WARUM JETZT ? ... ");
 			
 			AreaCell area = (AreaCell) obj;
 			sTypeArea = area.getAreaType();
@@ -113,19 +121,15 @@ public class SaveOrUpdateListenerTHM extends DefaultSaveOrUpdateEventListener im
 			System.out.println(ReflectCodeZZZ.getPositionCurrent()+": DIESE KLASSE WIRD NOCH NICHT BEHANDELT");					
 		}
 		this.veto(bHasVeto);	
-		
-		
-		
-//		} catch (ExceptionZZZ e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//			System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": FEHLER beim Committen eines Spielsteins / einer Area.");
-//			this.veto(true);
-//		}
-		
+						
+		} catch (ExceptionZZZ e) {
+			e.printStackTrace();
+			System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": FEHLER beim Committen eines Spielsteins / einer Area.");
+			this.veto(true);
+		}		
 	}
 	
-	private boolean saveOrUpdate_TroopVeto(TroopArmy troop){
+	private boolean saveOrUpdate_TroopVeto(TroopArmy troop) throws ExceptionZZZ{
 		boolean bReturn = false;
 		main:{
 			//Hole das Hexfeld
@@ -146,26 +150,35 @@ public class SaveOrUpdateListenerTHM extends DefaultSaveOrUpdateEventListener im
 			//                               In der DAO wird aber eine neue Transaction gemact....
 			
 			//Die Bemerkung vom 20170415 hat dann zur Folge: Wenn man an dieser Stelle eine neue Session aufmacht, dann gibt es in der aufrufenden Methode den Fehler, dass die Session closed sei.
-			//			HibernateContextProviderSingletonTHM objHibernateContext = HibernateContextProviderSingletonTHM.getInstance();			
+			HibernateContextProviderSingletonTHM objHibernateContext = HibernateContextProviderSingletonTHM.getInstance();			
 			//			AreaCellDao areaDao = new AreaCellDao(objHibernateContext);
 			//			AreaCell area = areaDao.findByKey(hex.getId());
-				
-			System.out.println("Hexcell Objekt von der Klasse: " + hex.getClass().getName());
-			if(hex instanceof use.thm.persistence.model.AreaCellLand){
-				
-				AreaCell area = (AreaCell) troop.getHexCell(); //TODO GOON 20170630: DIES STELLE WIRFT EINEN FEHLER, BEIM TESTEN "EINFUEGEN" IN EIN SCHON BESETZTES FELD
-				String sTypeArea = area.getAreaType();
-				System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": Area vom Typ="+sTypeArea);
-				
-				if(!sTypeArea.equalsIgnoreCase("LA")){			
-					System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": FEHLER beim committen eines Armee Spielsteins");
-					bReturn = true;
-				}else{
-					bReturn = false;
-				}		
-			}else{
-				System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": UNERWARTETER FALL. Hexcell Objekt von der Klasse: " + hex.getClass().getName());
-			}//end if hex instanceoff			
+			
+			
+			
+			//TODO GOON AreaCellTHM.onTileDrop(event) und darin .isAcessibleBy(.... ) wird vorher aufgerufen. 
+			//                    Dadurch, dass die Area schon vom UI nicht betreten werden kann, wird alles abgebrochen und diese Validierung passiert nicht.
+			//                    Statt dessen PreInsertListener.onPreInsert() zum Teseten des TroopArmyRuleFacade verwenden. Dieser greift beim Ziehen des Spielsteins von Aussen in die Karte. 
+			//TODO GOON 20170724: Teste auch hier die Verwendung hier die RuleFacade.....
+			TroopArmyRuleFacade objRuleFacade = new TroopArmyRuleFacade(objHibernateContext, troop);
+			boolean bValid = objRuleFacade.onUpdateTroopArmyPosition(hex,"UPDATE");//Die UPDATE Angaebe ist notwednig wg. anderen Stacking Limits als z.B. im PREINSERT.
+			bReturn = !bValid;
+			if(!bValid){
+				String sResultMessage = new String("");
+			
+				VectorExtendedZZZ<Enum<?>> vecMessage = objRuleFacade.getFacadeRuleResult().getMessageVector();				
+				for(Object obj :  vecMessage){
+					@SuppressWarnings("unchecked")
+					Enum<TroopArmyRuleType> rule = (Enum<TroopArmyRuleType>) obj;					
+					String sMessage = rule.toString();
+					if(sResultMessage.length()==0){
+						sResultMessage = sMessage;
+					}else{
+						sResultMessage += "\n" + sMessage; 
+					}
+				}//end for
+		        this.veto(bReturn, sResultMessage);
+			}
 		}
 		return bReturn;
 	}

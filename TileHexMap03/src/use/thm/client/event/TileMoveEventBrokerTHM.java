@@ -5,9 +5,10 @@ import java.util.ArrayList;
 import java.util.EventListener;
 import java.util.HashMap;
 
+import javax.swing.JOptionPane;
+
 import use.thm.IMapPositionableTHM;
 import use.thm.client.component.TileTHM;
-
 import basic.zBasic.ReflectCodeZZZ;
 import basic.zKernel.KernelUseObjectZZZ;
 import basic.zKernel.KernelZZZ;
@@ -24,14 +25,14 @@ public class TileMoveEventBrokerTHM extends KernelUseObjectZZZ implements ISende
 	 * @see use.via.client.module.export.ISenderEventComponentReset#fireEvent(basic.zKernelUI.component.model.KernelEventComponentSelectionResetZZZ)
 	 */
 	private ArrayList listaLISTENER_REGISTERED = new ArrayList();  //Das ist die Arrayliste, in welche  die registrierten Komponenten eingetragen werden 
-																							  //wichtig: Sie muss private sein und kann nicht im Interace global definiert werden, weil es sonst nicht möglich ist 
-	                                                                                          //             mehrere Events, an verschiedenen Komponenten, unabhängig voneinander zu verwalten.
+																							  //wichtig: Sie muss private sein und kann nicht im Interace global definiert werden, weil es sonst nicht mï¿½glich ist 
+	                                                                                          //             mehrere Events, an verschiedenen Komponenten, unabhï¿½ngig voneinander zu verwalten.
 	private ArrayList listaEVENT_STOPPER = new ArrayList();   //TODO: Als Interface ISenderFeedback
-																								//Wenn hierin Einträge vorhanden sind, dann sind die objInterfaceUser (also die angemeldenent Listener) 
-	                                                                                           //nicht mit der Fortführung des Events einverstanden.
+																								//Wenn hierin Eintrï¿½ge vorhanden sind, dann sind die objInterfaceUser (also die angemeldenent Listener) 
+	                                                                                           //nicht mit der Fortfï¿½hrung des Events einverstanden.
 	
 	public final void fireEvent(EventCellEnteredTHM event){	
-	//nur für SPIELSTEINE if(event.getSource() instanceof IMapPositionableTHM){
+	//nur fï¿½r SPIELSTEINE if(event.getSource() instanceof IMapPositionableTHM){
 		boolean bQuery=false;
 		this.getListenerEventStopper().clear(); //Am Anfang die Feedback-Liste leeren
 		
@@ -53,11 +54,11 @@ public class TileMoveEventBrokerTHM extends KernelUseObjectZZZ implements ISende
 			
 			for(int i = 0 ; i < this.getListenerRegisteredAll().size(); i++){
 				////  IListenerSelectionResetZZZ l = (IListenerSelectionResetZZZ) this.getListenerRegisteredAll().get(i);				
-				System.out.println(ReflectCodeZZZ.getMethodCurrentName() + "# EventCellEnteredTHM by " + this.getClass().getName() + " - object !!!!! Das ist zwar beweglich aber kein Spielstein !!!! Es passiert nix weiter, vollkommen überflüssig  !!!!");
+				System.out.println(ReflectCodeZZZ.getMethodCurrentName() + "# EventCellEnteredTHM by " + this.getClass().getName() + " - object !!!!! Das ist zwar beweglich aber kein Spielstein !!!! Es passiert nix weiter, vollkommen ï¿½berflï¿½ssig  !!!!");
 				//?????   l.doMove(event);
 			}
 		}else{
-			System.out.println(ReflectCodeZZZ.getMethodCurrentName() + "# EventCellEnteredTHM by " + this.getClass().getName() + " - object !!!!! Das ist nicht beweglich und  kein Spielstein !!!! Es passiert nix weiter, vollkommen überflüssig  !!!!");
+			System.out.println(ReflectCodeZZZ.getMethodCurrentName() + "# EventCellEnteredTHM by " + this.getClass().getName() + " - object !!!!! Das ist nicht beweglich und  kein Spielstein !!!! Es passiert nix weiter, vollkommen ï¿½berflï¿½ssig  !!!!");
 		}
 	}
 	
@@ -67,7 +68,7 @@ public class TileMoveEventBrokerTHM extends KernelUseObjectZZZ implements ISende
 		boolean bQuery=false;
 		this.getListenerEventStopper().clear(); //Am Anfang die Feedback-Liste leeren
 		
-		//		nur für SPIELSTEINE if(event.getSource() instanceof IMapPositionableTHM){
+		//		nur fï¿½r SPIELSTEINE if(event.getSource() instanceof IMapPositionableTHM){
 		if(event.getSource() instanceof TileTHM){
 			
 			for(int i = 0 ; i < this.getListenerRegisteredAll().size(); i++){
@@ -86,44 +87,52 @@ public class TileMoveEventBrokerTHM extends KernelUseObjectZZZ implements ISende
 			
 			for(int i = 0 ; i < this.getListenerRegisteredAll().size(); i++){
 				////  IListenerSelectionResetZZZ l = (IListenerSelectionResetZZZ) this.getListenerRegisteredAll().get(i);				
-				System.out.println(ReflectCodeZZZ.getMethodCurrentName() + "# EventCellLeavedTHM by " + this.getClass().getName() + " - object !!!!! Das ist zwar beweglich aber kein Spielstein !!!! Es passiert nix weiter, vollkommen überflüssig  !!!!");
+				System.out.println(ReflectCodeZZZ.getMethodCurrentName() + "# EventCellLeavedTHM by " + this.getClass().getName() + " - object !!!!! Das ist zwar beweglich aber kein Spielstein !!!! Es passiert nix weiter, vollkommen ï¿½berflï¿½ssig  !!!!");
 				//?????   l.doMove(event);
 			}
 		}else{
-			System.out.println(ReflectCodeZZZ.getMethodCurrentName() + "# EventCellLeavedTHM by " + this.getClass().getName() + " - object !!!!! Das ist nicht beweglich und  kein Spielstein !!!! Es passiert nix weiter, vollkommen überflüssig  !!!!");
+			System.out.println(ReflectCodeZZZ.getMethodCurrentName() + "# EventCellLeavedTHM by " + this.getClass().getName() + " - object !!!!! Das ist nicht beweglich und  kein Spielstein !!!! Es passiert nix weiter, vollkommen ï¿½berflï¿½ssig  !!!!");
 		}
 	}
 	
 	
-	public final void fireEvent(EventTileDroppedToCellTHM event){
+	public final void fireEvent(EventTileDroppedToCellTHM eventTileDropped){
 		//Merke: Event.getSource() ist der Spielstein,d er gerade bewegt wird.
+		main:{
 		boolean bQuery=false;
 		this.getListenerEventStopper().clear(); //Am Anfang die Feedback-Liste leeren
 		
-		//nur für SPIELSTEINE if(event.getSource() instanceof IMapPositionableTHM){
-		if(event.getSource() instanceof TileTHM){
+		//nur fï¿½r SPIELSTEINE if(event.getSource() instanceof IMapPositionableTHM){
+		if(eventTileDropped.getSource() instanceof TileTHM){
 			for(int i = 0 ; i < this.getListenerRegisteredAll().size(); i++){
 				IListenerTileMovedTHM objlnterfaceUser =(IListenerTileMovedTHM) this.getListenerRegisteredAll().get(i);
-				System.out.println(ReflectCodeZZZ.getMethodCurrentName() + "# EventTileDroppedTHM by " + event.getSource().getClass().getName() + " fired: " + i);
-				bQuery = objlnterfaceUser.onTileDrop(event);
+				System.out.println(ReflectCodeZZZ.getMethodCurrentName() + "# EventTileDroppedTHM by " + eventTileDropped.getSource().getClass().getName() + " fired: " + i);
+				bQuery = objlnterfaceUser.onTileDrop(eventTileDropped);
 				
 				if(bQuery==false){
-					System.out.println(ReflectCodeZZZ.getMethodCurrentName() + "# EventTileDroppedTHM by " + event.getSource().getClass().getName() + " fired: " + i + " !!! ungültig  bei start von: " + event.getTile().getMapX() + "/" + event.getTile().getMapY()  + " !!!");
-					this.setContinue(objlnterfaceUser, false);
+					System.out.println(ReflectCodeZZZ.getMethodCurrentName() + "# EventTileDroppedTHM by " + eventTileDropped.getSource().getClass().getName() + " fired: " + i + " !!! ungÃ¼ltig  bei start von: " + eventTileDropped.getTile().getMapX() + "/" + eventTileDropped.getTile().getMapY()  + " !!!");
+					
+					String sX = eventTileDropped.getMapX();
+					String sY = eventTileDropped.getMapY();
+					JOptionPane.showMessageDialog(null, "UI-PrÃ¼fung. BackendprÃ¼fung sollte das eigentlich verhindern: Spielstein '" + eventTileDropped.getTile().getName() + "' kann hier (" + sX + "/" +sY +") nicht erzeugt werden. Feld ist schon von anderem Spielstein besetzt.");
+					
+					this.setContinue(objlnterfaceUser, false);					
+					break main;
 				}
 			}
-		}else if( (event.getSource() instanceof TileTHM)==false && event.getSource() instanceof IMapPositionableTHM) {
+		}else if( (eventTileDropped.getSource() instanceof TileTHM)==false && eventTileDropped.getSource() instanceof IMapPositionableTHM) {
 			
 			//Dann wurde etwas anderes als ein "Spielstein bewegt"
 			
 			for(int i = 0 ; i < this.getListenerRegisteredAll().size(); i++){
 				////  IListenerSelectionResetZZZ l = (IListenerSelectionResetZZZ) this.getListenerRegisteredAll().get(i);				
-				System.out.println(ReflectCodeZZZ.getMethodCurrentName() + "# EventCellEnteredTHM by " + this.getClass().getName() + " - object !!!!! Das ist zwar beweglich aber kein Spielstein !!!! Es passiert nix weiter, vollkommen überflüssig  !!!!");
+				System.out.println(ReflectCodeZZZ.getMethodCurrentName() + "# EventCellEnteredTHM by " + this.getClass().getName() + " - object !!!!! Das ist zwar beweglich aber kein Spielstein !!!! Es passiert nix weiter, vollkommen ï¿½berflï¿½ssig  !!!!");
 				//?????   l.doMove(event);
 			}
 		}else{
-			System.out.println(ReflectCodeZZZ.getMethodCurrentName() + "# EventCellEnteredTHM by " + this.getClass().getName() + " - object !!!!! Das ist nicht beweglich und  kein Spielstein !!!! Es passiert nix weiter, vollkommen überflüssig  !!!!");
+			System.out.println(ReflectCodeZZZ.getMethodCurrentName() + "# EventCellEnteredTHM by " + this.getClass().getName() + " - object !!!!! Das ist nicht beweglich und  kein Spielstein !!!! Es passiert nix weiter, vollkommen ï¿½berflï¿½ssig  !!!!");
 		}
+	}//End main:
 	}
 	
 	/* (non-Javadoc)
@@ -148,7 +157,7 @@ public class TileMoveEventBrokerTHM extends KernelUseObjectZZZ implements ISende
 	}
 	
 	
-	/** Listener Objekte werden der Array Liste hinzugefügt.
+	/** Listener Objekte werden der Array Liste hinzugefï¿½gt.
 	 *   Damit sind in der ArrayListe diejenigen, die den Event "ablehnen"
 	* @param eventListener
 	* @param bValue

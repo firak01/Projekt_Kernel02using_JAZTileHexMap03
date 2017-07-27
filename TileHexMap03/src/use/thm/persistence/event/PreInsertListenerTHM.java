@@ -18,9 +18,12 @@ import use.thm.persistence.model.HexCell;
 import use.thm.persistence.model.Tile;
 import use.thm.persistence.model.TroopArmy;
 import use.thm.persistence.model.TroopFleet;
+import use.thm.rule.facade.TroopArmyRuleFacade;
+import use.thm.rule.model.TroopArmyRuleType;
 import basic.zBasic.ExceptionZZZ;
 import basic.zBasic.KernelSingletonTHM;
 import basic.zBasic.ReflectCodeZZZ;
+import basic.zBasic.util.abstractList.VectorExtendedZZZ;
 import basic.zKernel.IKernelUserZZZ;
 import basic.zKernel.KernelZZZ;
 
@@ -46,6 +49,26 @@ public class PreInsertListenerTHM implements PreInsertEventListener,IKernelUserZ
 		boolean bReturn = false;
 		String sReturnMessage = new String("");
 		
+		try {
+		this.resetVeto();
+		
+		//Aber, das das mit den DAO-Klassen hier nicht klappt (wg. Sessionproblemen: 1. Lock Database oder 2. Nested Transaction not allowed),
+		//versuchen doch direkt die AreaCell zu bekommen, um den AreaTyp zu bekommen.
+		//AreaCell area = (AreaCell) troop.getHexCell(); //TODO GOON 20170630: DIES STELLE WIRFT EINEN FEHLER, BEIM TESTEN "EINFUEGEN" IN EIN SCHON BESETZTES FELD
+		
+		
+		//Merke: 20170415: Hier hatte ich zuerst versuch über ein DAO Objekt die notwendigen Informationen zu bekommen. daoArea.findByKey(cellid);
+		//                           Aber, zumindest mit SQLite bekommt man dann Probleme, wenn man
+		//                           A) Eine zweite Session erstellt (Database locked)
+		//                           B) In ein und derselben Session versucht eine zweite Transaktion zu starten, bevor die andere Transaktion beendet ist (Nested Transaction not allowed).			
+		//                               In der DAO wird aber eine neue Transaction gemact....
+		
+		//Die Bemerkung vom 20170415 hat dann zur Folge: Wenn man an dieser Stelle eine neue Session aufmacht, dann gibt es in der aufrufenden Methode den Fehler, dass die Session closed sei.
+		HibernateContextProviderSingletonTHM objHibernateContext = HibernateContextProviderSingletonTHM.getInstance();			
+		//			AreaCellDao areaDao = new AreaCellDao(objHibernateContext);
+		//			AreaCell area = areaDao.findByKey(hex.getId());
+		
+				
 		//Versuch nun mehr über den Event herauszubekommen....
 		Object obj = event.getEntity(); 
 		if(obj instanceof TroopArmy){
@@ -58,6 +81,30 @@ public class PreInsertListenerTHM implements PreInsertEventListener,IKernelUserZ
 			String sType = hex.getHexType();
 			System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": HexFeld vom Typ="+sType);
 			
+			//TODO GOON 20170724: Teste die Verwendung hier die RuleFacade.....
+			//TODO: Mache darin auch die Überprüfung, ob es noch einen anderen Spielstein in dem Feld gibt, also das StckingLimit überschritten wird.
+			TroopArmyRuleFacade objRuleFacade = new TroopArmyRuleFacade(objHibernateContext, troop);
+			boolean bValid	 = objRuleFacade.onUpdateTroopArmyPosition(hex,"PREINSERT");//false bedeutet, dass einer Regel verletzt wurde.	//Die PREINSERT ANGABE ist notwendig, wg. anderen STACKING_LIMITS.		
+			bReturn = !bValid;
+			if(!bValid){
+				String sResultMessage = new String("");
+			
+				VectorExtendedZZZ<Enum<?>> vecMessage = objRuleFacade.getFacadeRuleResult().getMessageVector();				
+				for(Object objMessage :  vecMessage){
+					@SuppressWarnings("unchecked")
+					Enum<TroopArmyRuleType> rule = (Enum<TroopArmyRuleType>) objMessage;					
+					String sMessage = rule.toString();
+					if(sResultMessage.length()==0){
+						sResultMessage = sMessage;
+					}else{
+						sResultMessage += "\n" + sMessage; 
+					}
+				}//end for
+				sReturnMessage = sResultMessage;
+			}
+		
+						
+			/* TODO GOON ERsetze dies alles durch die RuleFacade 
 			//Aber, das das mit den DAO-Klassen hier nicht klappt (wg. Sessionproblemen: 1. Lock Database oder 2. Nested Transaction not allowed),
 			//versuchen doch direkt die AreaCell zu bekommen, um den AreaTyp zu bekommen.
 			AreaCell area = (AreaCell) troop.getHexCell();
@@ -88,6 +135,8 @@ public class PreInsertListenerTHM implements PreInsertEventListener,IKernelUserZ
 				//event.getSession().merge(area); //versuch das mal am Schluss nach dem Zugriff aufzurufen.
 				//Wenn man das hier macht, dann kommt man in eine Endlosschleife .... event.getSession().flush();
 			}
+			
+			*/
 			
 			//Merke: 20170415: Hier hatte ich zuerst versuch über ein DAO Objekt die notwendigen Informationen zu bekommen. daoArea.findByKey(cellid);
 			//                           Aber, zumindest mit SQLite bekommt man dann Probleme, wenn man
@@ -163,8 +212,13 @@ public class PreInsertListenerTHM implements PreInsertEventListener,IKernelUserZ
 //				
 //				
 //			}
-		}		
+		}				
 		this.veto(bReturn, sReturnMessage);
+		} catch (ExceptionZZZ e) {
+			e.printStackTrace();
+			System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": FEHLER beim Committen eines Spielsteins / einer Area.");
+			this.veto(true);
+		}
 		return bReturn;
 	}
 	

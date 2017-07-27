@@ -886,10 +886,12 @@ public class HexMapTHM extends KernelUseObjectZZZ implements ITileEventUserTHM {
 					
 					//20170629: Dies in eine Methode kapseln (DAO Klasse?). Ziel: Dies ohne Redundanz beim Einsetzen eines neuen Spielsteins verwenden.
 					TroopFleetDaoFacade objFleetDaoFacade = new TroopFleetDaoFacade(objContextHibernate);
-					String sUniquename = "FLEET UNIQUE " + sY;//TODO GOON : sY als Uniquename zu verwenden ist nur heuristisch und nicht wirklich UNIQUE
+					String sUniquename = "FLEET TEST PLACE ON LAND " + sY;//TODO GOON : sY als Uniquename zu verwenden ist nur heuristisch und nicht wirklich UNIQUE
 					bGoon = objFleetDaoFacade.insertTroopFleet(sUniquename, objCellTemp);										
 					if(bGoon){
 						//TEST: DIESER CODE DARF NICHT AUSGEFÜHRT WERDEN, DER onPreInsert-Listener muss das verhindert haben und zurückgeliefert haben.
+						String sMessage = "FALSCHES TESTERGEBNIS: HIER DARF NIX ERZEUGT WERDEN, WG. PASSENDES GEBIET REGEL.";			
+						JOptionPane.showMessageDialog (panelMap, sMessage);
 						
 						//+++ UI Operationen & die TroopFleet noch an das UI-verwendete Objekt weitergeben	
 						FleetTileTHM objFleetTemp = new FleetTileTHM(panelMap, objTileMoveEventBroker,sUniquename, sX, sY, this.getSideLength());
@@ -898,6 +900,11 @@ public class HexMapTHM extends KernelUseObjectZZZ implements ITileEventUserTHM {
 						this.getTileMetaEventBroker().fireEvent(objEventTileCreated);	
 						
 						iNrOfTiles++;						
+					}else{
+						String sMessage = "ERWARTETES TESTERGEBNIS: " + objFleetDaoFacade.getFacadeResult().getMessage(); //Hole die Meldung ab.
+						
+						//Mache nun eine Ausgabe, wie sonst in AreaCellTHM.onTileCreated(EventTileCreatedInCellTHM) 				
+						JOptionPane.showMessageDialog (panelMap, sMessage);//TODO GOON: Eigentlich hier nicht ausgeben, sondern das Ergebnis für irgendwelche Frontend-Klassen zur Verfügung stellen, die dann ggfs. auch eine UI Komponente haben.
 					}					
 				}																
 				
@@ -911,6 +918,8 @@ public class HexMapTHM extends KernelUseObjectZZZ implements ITileEventUserTHM {
 					bGoon = objTroopDaoFacade.insertTroopArmy(sUniquename, objCellTemp);
 					if(bGoon){
 						//TEST: DIESER CODE DARF NICHT AUSGEFÜHRT WERDEN, DER onPreInsert-Listener muss das verhindern.
+						String sMessage = "FALSCHES TESTERGEBNIS: HIER DARF NIX ERZEUGT WERDEN, WG. STACKING-LIMIT REGEL.";		
+						JOptionPane.showMessageDialog (panelMap, sMessage);
 													
 						//+++ UI Operationen & die TroopArmy noch an das UI-verwendete Objekt weitergeben
 						ArmyTileTHM objArmyTemp = new ArmyTileTHM(panelMap, objTileMoveEventBroker, sUniquename, sX, sY, this.getSideLength());
@@ -919,7 +928,12 @@ public class HexMapTHM extends KernelUseObjectZZZ implements ITileEventUserTHM {
 						this.getTileMetaEventBroker().fireEvent(objEventTileCreated);						
 						
 						iNrOfTiles++;
-					}									
+					}else{
+						String sMessage = "ERWARTETES TESTERGEBNIS: " + objTroopDaoFacade.getFacadeResult().getMessage(); //Hole die Meldung ab.
+						
+						//Mache nun eine Ausgabe, wie sonst in AreaCellTHM.onTileCreated(EventTileCreatedInCellTHM) 				
+						JOptionPane.showMessageDialog (panelMap, sMessage);//TODO GOON: Eigentlich hier nicht ausgeben, sondern das Ergebnis für irgendwelche Frontend-Klassen zur Verfügung stellen, die dann ggfs. auch eine UI Komponente haben.
+					}											
 				}//end iif
 			}//end for
 			if(session!= null) session.close();	

@@ -259,11 +259,17 @@ public class AreaCellTHM  extends HexCellTHM implements IListenerTileMetaTHM{
 						break main;
 					}
 				}
+
+				//Merke 20170711: Das Arbeiten mit der Component, die dann andere Koordinaten bekommt und einer anderen Zelle zugeordnet wird,
+				//                        passiert in TileMouseMotionHandlerTHM.mouseReleased(). Dort dann ggfs. auch die Persistierung in der Datenbank ändern.				
+				//Merke 20170711: Falls weiterer Überprüfungen passieren sollten (z.B. gegnerische Spielsteine angrenzend, etc.) dann müsste hierzu an dieser Stelle die Datenbank abgefragt werden
 				
+				//20170725: Überlass diese Validierung komplett dem Backend, welches allerdings erst in "onMouseReleased" Event anfängt zu arbeiten. Die Meldungen werden angezeigt um Fehler in der Backendvalidierung anzuzeigen. 				
 				//++++ Gibt es bereits einen Spielstein in der Zelle?
 				boolean bIsOccupiedByTile = this.isOccupiedByAnyTile();
 				if(bIsOccupiedByTile){
 					System.out.println(ReflectCodeZZZ.getMethodCurrentName() + "!!! Feld ist schon von anderem Spielstein besetzt." +  this.getMapX() + "/" + this.getMapY());
+					JOptionPane.showMessageDialog(this, "UI-Prüfung. Backendprüfung sollte das eingentlich verhindern: Spielstein '" + eventTileDropped.getTile().getName() + "' kann hier (" + sX + "/" +sY +") nicht erzeugt werden. Feld ist schon von anderem Spielstein besetzt.");
 					bReturn = false;
 					break main;
 				}
@@ -273,15 +279,11 @@ public class AreaCellTHM  extends HexCellTHM implements IListenerTileMetaTHM{
 				bReturn = super.onTileDrop(eventTileDropped); //Das sorgt z.B. dafür, dass alle Zellen die "Hervorhebung" verlieren.
 				if(!bReturn){
 					System.out.println(ReflectCodeZZZ.getMethodCurrentName() + "!!! CELL darf nicht Ende der Bewegung sein: " +  this.getMapX() + "/" + this.getMapY());
+					JOptionPane.showMessageDialog(this, "UI-Prüfung. Backendprüfung sollte das eingentlich verhindern: Spielstein '" + eventTileDropped.getTile().getName() + "' kann hier (" + sX + "/" +sY +") nicht herbewegt werden. CELL darf nicht Ende der Bewegung sein..");
+					bReturn = false;
 					break main;
 				} 
-				
-				//Merke 20170711: Das Arbeiten mit der Component, die dann andere Koordinaten bekommt und einer anderen Zelle zugeordnet wird,
-				//                        passiert in TileMouseMotionHandlerTHM.mouseReleased(). Dort dann ggfs. auch die Persistierung in der Datenbank ändern.
-				
-				//Merke 20170711: Falls weiterer Überprüfungen passieren sollten (z.B. gegnerische Spielsteine angrenzend, etc.) dann müsste hierzu an dieser Stelle die Datenbank abgefragt werden
-				
-				
+													
 			}
 		}//end main
 		return bReturn;
@@ -333,14 +335,14 @@ public class AreaCellTHM  extends HexCellTHM implements IListenerTileMetaTHM{
 		
 				//20170705: Merke: Durch die Verwendung von PreInsertListenerTHM oder SaveOrUpdateListenerTHM und der Überprüfung im Backend, sollte es an dieser Stelle keine Ausgabe mehr geben.
 				//                         Die JOptionPane.showMessageDialog Ausgabe wird in den TroopArmyDaoFacade bzw. TroopFleetDaoFacade gemacht.
-				System.out.println(ReflectCodeZZZ.getMethodCurrentName() + " ##### Pr�fe ob der Spielstein (TILE) '" + eventTileCreated.getTile().getName() + "' hier (" + sX + "/" +sY +") erzeugt werden kann. #######");
+				System.out.println(ReflectCodeZZZ.getMethodCurrentName() + " ##### Prüfe ob der Spielstein (TILE) '" + eventTileCreated.getTile().getName() + "' hier (" + sX + "/" +sY +") erzeugt werden kann. #######");				
 				boolean bIsCreationPlaceFor = this.isCreationPlaceFor(eventTileCreated.getTile());
 				if(bIsCreationPlaceFor){
-					System.out.println(ReflectCodeZZZ.getMethodCurrentName() + " Pr�fung erfolgreich - Erzeuge hier dann das TILE #######");
+					System.out.println(ReflectCodeZZZ.getMethodCurrentName() + " Prüfung erfolgreich - Erzeuge hier dann das TILE #######");
 					bReturn = true;
 				}else{
 					//Fehlerhinweis ausgeben
-					JOptionPane.showMessageDialog(this, "Spielstein '" + eventTileCreated.getTile().getName() + "' kann hier (" + sX + "/" +sY +") nicht erzeugt werden.");
+					JOptionPane.showMessageDialog(this, "UI-Prüfung. Backendprüfung sollte das eingentlich verhindern: Spielstein '" + eventTileCreated.getTile().getName() + "' kann hier (" + sX + "/" +sY +") nicht erzeugt werden.");
 					bReturn = false;
 					break main;
 				}

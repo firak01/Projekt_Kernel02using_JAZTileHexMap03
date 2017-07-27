@@ -332,7 +332,7 @@ public class TileMouseMotionHandlerTHM extends MouseAdapter implements MouseMoti
 		
 		
 		/*
-		//neues Quadrat hinzuf�gen, wenn Zeiger nicht in einem Quadrat
+		//neues Quadrat hinzufügen, wenn Zeiger nicht in einem Quadrat
 		Rectangle2D objRect2D = panelCurrent.findSquare(arg0.getPoint());
 		if(objRect2D == null){
 			//Das Panel ein neues Square-Objekt hinzuf�gen lassen
@@ -382,6 +382,7 @@ public class TileMouseMotionHandlerTHM extends MouseAdapter implements MouseMoti
 				}else{
 					//+++ Fall: Es handelt sich um eine Zelle, ist sie aber auch für den Spielstein gültig ?
 					
+					//TODO GOON 20170726: Hier müsste man eine Backend-Validierung vorschalten. Dadurch würde verhindert, dass alle registrierten Zellen durchlaufen werden.
 					
 //					TODO: Für den Spielstein eine "Undo-Möglichkeit anbieten, die durch den Doppelclick auf den Spielstein als Button sichtbar wird. Falls man den Stein versehentlich zu früh losgelassen hat.
 					//### Event losschicken, dass der Zug beendet ist
@@ -394,7 +395,7 @@ public class TileMouseMotionHandlerTHM extends MouseAdapter implements MouseMoti
 					boolean bContinue = eventBroker.getContinue(); //Abfrage, ob eine Komponente etwas dagegen hat.
 					//#############################################
 					if( !bContinue){ //Also einer Zelle hinzufügen, aber nur, wenn der aufgeworfene Event o.k. war.
-						System.out.println("Keine gültiges Zielkomponente, hier darf dieser Spielstein nicht abgesetzt werden.");
+						System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": Keine gültiges Zielkomponente, hier darf dieser Spielstein nicht abgesetzt werden.");
 					}else{
 						//#####################################
 						//TODO GOON 20170711: Das wäre dann meiner Meinung nach die Stelle, an der die Persistierung in der Datenbank geändert werden kann.

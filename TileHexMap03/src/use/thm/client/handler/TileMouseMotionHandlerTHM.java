@@ -378,41 +378,31 @@ public class TileMouseMotionHandlerTHM extends MouseAdapter implements MouseMoti
 				//if(objMapItem.getClass().getName().equals(HexCellTHM.class.getName())){
 				if(!(objMapItem  instanceof HexCellTHM)){
 					//+++ Falls es sich um keine Zelle handelt (z.B. den Spielfeldrand)
-					sComponentDetail = "KEIN GÜLTIGES ZIEL.";
+					sComponentDetail = "KEIN GÜLTIGES ZIEL (UI).";
 				}else{
 					//+++ Fall: Es handelt sich um eine Zelle, ist sie aber auch für den Spielstein gültig ?
-					
-					//TODO GOON 20170726: Hier müsste man eine Backend-Validierung vorschalten. Dadurch würde verhindert, dass alle registrierten Zellen durchlaufen werden.
-					
-//					TODO: Für den Spielstein eine "Undo-Möglichkeit anbieten, die durch den Doppelclick auf den Spielstein als Button sichtbar wird. Falls man den Stein versehentlich zu früh losgelassen hat.
-					//### Event losschicken, dass der Zug beendet ist
 					HexCellTHM objCellCur = this.getCellCurrent();
-					EventTileDroppedToCellTHM objEventDropped = new EventTileDroppedToCellTHM(this.getTile(), 1003, objCellCur.getMapX(), objCellCur.getMapY());
+					
+					//Merke: 
+					//Hier wird eine Backend-Validierung vorgeschaltet. Dadurch würde verhindert, dass alle registrierten Zellen durchlaufen werden.
+					//Die Frontend-Validierung bleibt zunächst bestehen (20170730). Sie soll an Inkonsitenzen erinnern.
+					
 
-					//EventBroker - Nun hat er über das Beenden des Zuges zu informieren
-					TileMoveEventBrokerTHM eventBroker = this.getSenderUsed();
-					eventBroker.fireEvent(objEventDropped);
-					boolean bContinue = eventBroker.getContinue(); //Abfrage, ob eine Komponente etwas dagegen hat.
-					//#############################################
-					if( !bContinue){ //Also einer Zelle hinzufügen, aber nur, wenn der aufgeworfene Event o.k. war.
-						System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": Keine gültiges Zielkomponente, hier darf dieser Spielstein nicht abgesetzt werden.");
-					}else{
-						//#####################################
-						//TODO GOON 20170711: Das wäre dann meiner Meinung nach die Stelle, an der die Persistierung in der Datenbank geändert werden kann.
-						//TODO GOON 20170711: Hole die UniqueID, die vom Backend vergeben worden ist, und in die UI-Componente ders "Tile"-Objekts geschrieben wurde.
-						//                                  Nur daraus kann man das richtige Backend-Objekt holen.
+						//#####################################						
+					    // 1. Hole die UniqueID, die vom Backend vergeben worden ist, und in die UI-Componente ders "Tile"-Objekts geschrieben wurde.
+						//                                 Nur daraus kann man das richtige Backend-Objekt holen.
 						String sUniquename = this.getTile().getUniquename();
 						System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": Uniquename des abgesetzten Spielsteins " + sUniquename);
 						
-						//FGL: 20170703 - Hier erst einmal im Backend prüfen, ob eine neue Army hier überhaupt erstellt werden darf.
-						   boolean bGoon = false;					   					   
-							//Die in eine Methode gekapselte (DAO Klasse) Vorgehensweise verwenden. //Der Code stammt aus HexMapTH.fillMap_createNewTiles(...)
-						   //Allerdings müssen erst einmal alle Voraussetzungen erfüllt werden. KernelObjekt..., HibernateContext..., PrimaryKey..., AreaCell Objekt...,
-						   KernelZZZ objKernel = this.getTile().getMapPanel().getKernelObject();
-						   HibernateContextProviderSingletonTHM objContextHibernate;
+						//2. Erst einmal im Backend prüfen, ob eine neue Army hier überhaupt erstellt werden darf.
+						boolean bGoon = false;					   					   
+						//Die in eine Methode gekapselte (DAO Klasse) Vorgehensweise verwenden. //Der Code stammt aus HexMapTH.fillMap_createNewTiles(...)
+						//Allerdings müssen erst einmal alle Voraussetzungen erfüllt werden. KernelObjekt..., HibernateContext..., PrimaryKey..., AreaCell Objekt...,
+						KernelZZZ objKernel = this.getTile().getMapPanel().getKernelObject();
+						HibernateContextProviderSingletonTHM objContextHibernate;
 						try {
 							objContextHibernate = HibernateContextProviderSingletonTHM.getInstance(objKernel);						
-						   AreaCellDao objAreaDao = new AreaCellDao(objContextHibernate);
+							AreaCellDao objAreaDao = new AreaCellDao(objContextHibernate);
 						    
 						    String sXDropped = objCellCur.getMapX();
 							String sYDropped = objCellCur.getMapY();
@@ -420,15 +410,22 @@ public class TileMouseMotionHandlerTHM extends MouseAdapter implements MouseMoti
 						    AreaCell objCellTemp = objAreaDao.findByKey(primaryKeyCell);//Spannend. Eine Transaction = Eine Session, d.h. es müsste dann wieder eine neue Session gemacht werden, beim zweiten DAO Aufruf.
 						    System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": Werte der neuen Zelle (X/Y): " + objCellTemp.getMapX() + "/" + objCellTemp.getMapY());
 							
+						    //TODO GOON 20170730: Mache hier eine Fallunterscheidung, je nachdem welcher Typ Spielstein gezogen wurde, Flotte oder Armee....
+							//###########################
+						    //A) FLOTTE
+						    //................................
+							//###########################
 						    
+							//###########################
+						    //B) ARMEE
 							TroopArmyDaoFacade objTroopDaoFacade = new TroopArmyDaoFacade(objContextHibernate);
-							
-							//TODO GOON: 201707213: Darin müssen erste noch einige HQLs getestet werden, etc. 
-							bGoon = objTroopDaoFacade.updateTroopArmyPosition(sUniquename, objCellTemp);//Falls das aus irgendwelchen Gründen nicht erlaubt ist, ein Veto einlegen.					
-							//DAS FUNKTIOINIERT IST ABER HIER SINNLOS
+							bGoon = objTroopDaoFacade.updateTroopArmyPosition(sUniquename, objCellTemp);//Falls das aus irgendwelchen Gründen nicht erlaubt ist, anschliessend ein Veto einlegen.					
+
+							//DAS FUNKTIOINIERT IST ABER HIER DIE FALSCHE FUNKTIONALITÄT
+							//TODO GOON 20170730: Stelle im UI einen Button/Menüeintrag hierfür zur Verfügung
 							//bGoon = objTroopDaoFacade.deleteTroopArmy(sUniquename);//Falls das aus irgendwelchen Gründen nicht erlaubt ist, ein Veto einlegen.
 							if(!bGoon){
-								//20170703: Hole auch irgendwie einen Grund ab, warum an dieser Stelle nix upgedatet werden darf.//Dies muss aus TroopArmyDaoFacade abgeholt werden.							
+								//Hole aus TroopArmyDaoFacade einen Grund ab, warum an dieser Stelle nix upgedatet werden darf.							
 								String sMessage = objTroopDaoFacade.getFacadeResult().getMessage(); //Hole die Meldung ab.
 								
 								//Mache nun eine Ausgabe, wie sonst in AreaCellTHM.onTileCreated(EventTileCreatedInCellTHM) 				
@@ -436,6 +433,21 @@ public class TileMouseMotionHandlerTHM extends MouseAdapter implements MouseMoti
 								
 								//###########################
 							}else{
+								
+								//### Nach erfolgreicher vorgeschalteten Backendprüfung....
+//								TODO: Für den Spielstein eine "Undo-Möglichkeit anbieten, die durch den Doppelclick auf den Spielstein als Button sichtbar wird. Falls man den Stein versehentlich zu früh losgelassen hat.
+								//Event für das UI losschicken, dass der Zug beendet ist								
+								EventTileDroppedToCellTHM objEventDropped = new EventTileDroppedToCellTHM(this.getTile(), 1003, objCellCur.getMapX(), objCellCur.getMapY());
+
+								//EventBroker - Nun hat er über das Beenden des Zuges zu informieren
+								TileMoveEventBrokerTHM eventBroker = this.getSenderUsed();
+								eventBroker.fireEvent(objEventDropped);
+								boolean bContinue = eventBroker.getContinue(); //Abfrage, ob eine Komponente etwas dagegen hat.
+								//#############################################
+								if( !bContinue){ //Also einer Zelle hinzufügen, aber nur, wenn der aufgeworfene Event o.k. war.
+									System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": Keine gültiges Zielkomponente, hier darf dieser Spielstein nicht abgesetzt werden (UI).");
+								}else{
+								
 								//###########################
 								//Also: Wenn auch die Backendvalidierung und -aktualiaiserung funktioniert hat:
 								//TODO: Als eigene Methode extrahieren
@@ -466,13 +478,12 @@ public class TileMouseMotionHandlerTHM extends MouseAdapter implements MouseMoti
 								System.out.println("Ende der Bewegung: " + sMessage);
 								
 								//################
-							}
-							
+							}												
+					} //bContinue == false
 						} catch (ExceptionZZZ e) {
 							// TODO Auto-generated catch block
 							e.printStackTrace();
 						}
-					} //bContinue == false
 				} //end if objMapItem instanceof HexCellTHM
 			}//end if objMapItem!=null
 			

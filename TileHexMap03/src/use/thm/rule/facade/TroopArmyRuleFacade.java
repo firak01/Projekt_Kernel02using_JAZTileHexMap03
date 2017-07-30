@@ -39,7 +39,7 @@ public class TroopArmyRuleFacade  extends GeneralRuleHibernateFacadeZZZ{
 	}
 	
 	public boolean onUpdateTroopArmyPosition(HexCell objPersistedHexTarget, String sCallingFlag) throws ExceptionZZZ{
-		boolean bReturn = true;// true=alles o.k., false=Regel schlägt zu, wird also verletzte. Daher wird später, d.h. beim Persistieren ein Veto eingelegt.
+		boolean bReturn = true;// true=alles o.k., false=Regelverletzung schlägt zu. Daher wird später, d.h. beim Persistieren ein Veto eingelegt.
 		main:{
 			System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": Hexcell Objekt von der Klasse: " + objPersistedHexTarget.getClass().getName());
 			if(objPersistedHexTarget instanceof use.thm.persistence.model.AreaCellOcean){
@@ -48,30 +48,52 @@ public class TroopArmyRuleFacade  extends GeneralRuleHibernateFacadeZZZ{
 				bReturn = false;
 				
 			}else if(objPersistedHexTarget instanceof use.thm.persistence.model.AreaCellLand){
-				
-				//TODO GOON 20170726: Stacking Limit prüfen
+				//################################
+				//### Stacking Limit prüfen
+				//#################################
 				//MERKE: Lass CODE stehen. Nur zur Erinnerung wie (ggfs.) andere Zellen gefunden werden könnten
 				//CellId primaryKeyCellStarted = new CellId("EINS", Integer.toString(iXStarted), Integer.toString(iYStarted));
 				//AreaCell objCellStarted = objAreaDaoSource.findByKey(primaryKeyCellStarted);//Spannend. Eine Transaction = Eine Session, d.h. es müsste dann wieder eine neue Session gemacht werden, beim zweiten DAO Aufruf.
 								
-				//Session session = this.getSession();	//Vesuch eine neue Session zu bekommen. Merke: Die Session wird hier nicht gespeichert! Wg. 1 Transaktion ==> 1 Session
-				//VERSUCH AUF ANDEREM WEG EINE SESSION ZU BEKOMMEN OHNE DIE AKTUELLE ZU SCHLIESEN
-				IHibernateContextProviderZZZ objContextHibernate = this.getHibernateContext();
-				//Session session = objContextHibernate.getSessionFactory().getCurrentSession();
-				Session session = objContextHibernate.getSessionFactory().openSession();
+				//Die bisherigen Ansätze eine Session zu holen scheiterten. Wie auch schon zuvor in den DAO-Klassen.
+				//1. Ansatz:
+				//Session session = this.getSession(); //Vesuch eine neue Session zu bekommen. Merke: Die Session wird hier nicht gespeichert! Wg. 1 Transaktion ==> 1 Session
+				//ABER: Später: session isClosed() Fehler
 				
+				//ALSO: GANZ neue Session aufmachen
+				//2. Ansatz
 				/*Zum Erstellen einer neuen SessionFactory.....
 				 *  Configuration cfg = this.getConfiguration();
-		      ServiceRegistry sr = new ServiceRegistryBuilder().applySettings(cfg.getProperties()).buildServiceRegistry();		    
-		      SessionFactory sf = cfg.buildSessionFactory(sr);
+		             ServiceRegistry sr = new ServiceRegistryBuilder().applySettings(cfg.getProperties()).buildServiceRegistry();		    
+		             SessionFactory sf = cfg.buildSessionFactory(sr);
 				 */
-				if(session == null) break main;			
-				session.getTransaction().begin();//Ein zu persistierendes Objekt - eine Transaction, auch wenn mehrere in einer Transaction abzuhandeln wären, aber besser um Fehler abfangen zu können.
+				//Session session = objContextHibernate.getSessionFactory().openSession(); 
+
+				//ABER: Fehlermeldung  Exception in thread "AWT-EventQueue-0" org.hibernate.HibernateException: Illegal attempt to associate a collection with two open sessions
+				//womit die Collection der TileBag in den Area-Objekten gemeint sind.
 				
+				//3. Ansatz
+				//also versuch am Ende diese Session wieder zu schliessen				
+//				session.getTransaction().commit();
+//				session.clear();
+//				session.close();				
+				
+				//ABER: später trotzdem: Database is locked()-Fehler
+				
+				//4. Ansatz
+				//VERSUCH AUF ANDEREM WEG EINE SESSION ZU BEKOMMEN OHNE DIE AKTUELLE ZU SCHLIESEN:						
+				//VERSUCH DIE AKTUELLE SESSION WEITERZUVERWENDEN & DIE AKTUELLE TRANSACTION. ICH FÜRCHTE DAS IST ABER NUR MÖGLICH BEI REINEN LESEOPERATIONEN!!!
+				Session session = this.getSessionCurrent();
+				if(session == null) break main;			
+				//session.getTransaction();//NEIN, FEHLERMEDUNG: NESTED TRANSACTION NOT ALLOWED, also mit der aktuellen Session und der aktuellen Transaction weiterarbeiten.
+				                                      //Daher nur zum Lesen zu gebrauchen!!!
+
+				//Update, d.h. Initialisierung innerhalb dieser Session ist wichtig, weil die Zelle ggfs. noch nie zuvor betreten worden ist.
+				session.update(objPersistedHexTarget);//20170703: GROSSE PROBLEME WG. LAZY INITIALISIERUNG DES PERSISTENTBAG in dem area-Objekt. Versuche damit das zu inisiteliesen.
 				PersistentBag pbag = new PersistentBag((SessionImplementor) session, objPersistedHexTarget.getTileBag());
 				System.out.println("Zielzelle. Anzahl Tiles=" + objPersistedHexTarget.getTileBag().size() + " / PersistentBag. Anzahl Tiles= " + pbag.size());
 				
-				//TODO: Hole ggfs. pro Gelädetyp das Stackinglimit
+				//TODO: Hole ggfs. pro Gelädetyp das Stackinglimit für einen Truppentyp
 				int iStackingLimitUsed = 0;
 				int iStackingLimitUsedDefault = 1;
 				if(StringZZZ.isEmpty(sCallingFlag)){
@@ -88,7 +110,7 @@ public class TroopArmyRuleFacade  extends GeneralRuleHibernateFacadeZZZ{
 					bReturn = false;
 				}
 				
-				
+			
 			}else if (objPersistedHexTarget instanceof use.thm.persistence.model.AreaCell){
 				
 				AreaCell area = (AreaCell) this.getTroop().getHexCell(); //TODO GOON 20170630: DIES STELLE WIRFT EINEN FEHLER, BEIM TESTEN "EINFUEGEN" IN EIN SCHON BESETZTES FELD
@@ -106,6 +128,8 @@ public class TroopArmyRuleFacade  extends GeneralRuleHibernateFacadeZZZ{
 					if(session == null) break main;			
 					session.getTransaction().begin();//Ein zu persistierendes Objekt - eine Transaction, auch wenn mehrere in einer Transaction abzuhandeln wären, aber besser um Fehler abfangen zu können.
 					
+					//Update, d.h. Initialisierung ist wichtig, weil die Zelle ggfs. noch nie zuvor betreten worden ist.
+					session.update(objPersistedHexTarget);//20170703: GROSSE PROBLEME WG. LAZY INITIALISIERUNG DES PERSISTENTBAG in dem area-Objekt. Versuche damit das zu inisiteliesen.
 					PersistentBag pbag = new PersistentBag((SessionImplementor) session, objPersistedHexTarget.getTileBag());
 					System.out.println("Zielzelle. Anzahl Tiles=" + objPersistedHexTarget.getTileBag().size() + " / PersistentBag. Anzahl Tiles= " + pbag.size());
 					
@@ -115,6 +139,11 @@ public class TroopArmyRuleFacade  extends GeneralRuleHibernateFacadeZZZ{
 						bReturn = false;
 					}
 					
+					//Schliesse die neu geholte Session...
+					//wg. der Collection in der Zelle, die ja wieder beim Aktualisieren geholt werden muss. Ohne das Schliessen gibt es folgende Fehlermeldung: Exception in thread "AWT-EventQueue-0" org.hibernate.HibernateException: Illegal attempt to associate a collection with two open sessions
+//					session.getTransaction().commit();
+					//session.clear();
+					//session.close();					
 				}		
 			}else{
 				System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": UNERWARTETER FALL. Hexcell Objekt von der Klasse: " + objPersistedHexTarget.getClass().getName());

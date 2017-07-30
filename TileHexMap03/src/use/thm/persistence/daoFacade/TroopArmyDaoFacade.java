@@ -18,6 +18,7 @@ import basic.persistence.util.HibernateUtil;
 import basic.zBasic.ExceptionZZZ;
 import basic.zBasic.ReflectCodeZZZ;
 import basic.zBasic.persistence.HibernateContextProviderZZZ;
+import basic.zBasic.util.abstractList.VectorExtendedZZZ;
 import use.thm.client.component.ArmyTileTHM;
 import use.thm.client.event.EventTileCreatedInCellTHM;
 import use.thm.persistence.dao.AreaCellDao;
@@ -30,6 +31,8 @@ import use.thm.persistence.model.CellId;
 import use.thm.persistence.model.Tile;
 import use.thm.persistence.model.TileId;
 import use.thm.persistence.model.TroopArmy;
+import use.thm.rule.facade.TroopArmyRuleFacade;
+import use.thm.rule.model.TroopArmyRuleType;
 
 /**Soll die notwendigen Schritte für bestimmte Aktionen kapseln. 
  * 
@@ -173,6 +176,37 @@ public class TroopArmyDaoFacade extends GeneralDaoFacadeZZZ{
 			TroopArmy objTroopArmy = objTroopArmyDao.searchTroopArmyByUniquename(sUniqueName);
 
 			//#############################
+			//2. Mache die vorgeschaltete Validierung
+			//############################# 
+			//Wichtig: Vor dem ganzen Ablauf die Validierung durchführen, sonst muss man nach der Validierung wieder alles rückgängig machen.
+			TroopArmyRuleFacade objRuleFacade = new TroopArmyRuleFacade(getHibernateContext(), objTroopArmy);
+			bGoon = objRuleFacade.onUpdateTroopArmyPosition(objAreaTarget,"PREINSERT");//Die PREINSERT  Angaebe ist notwendig wg. anderen Stacking Limits. Mögliche Werte UPDATE / PREINSERT.
+			if(!bGoon){	
+				//NEGATIVES Ergebnis der vorgeschalteten Validierung
+				System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": Vorgeschaltete Validierung NICHT erfolgreich");
+				
+				//Hole die Meldungen aus dem Regelwerk ab.
+				String sResultMessage = new String("");				
+				VectorExtendedZZZ<Enum<?>> vecMessage = objRuleFacade.getFacadeRuleResult().getMessageVector();				
+				for(Object objMessage :  vecMessage){
+					@SuppressWarnings("unchecked")
+					Enum<TroopArmyRuleType> rule = (Enum<TroopArmyRuleType>) objMessage;					
+					String sMessageTemp = rule.toString();
+					if(sResultMessage.length()==0){
+						sResultMessage = sMessageTemp;
+					}else{
+						sResultMessage += "\n" + sMessageTemp; 
+					}
+				}//end for
+				sMessage = sResultMessage;
+
+				//Mache die Ausgabe im UI nicht selbst, sondern stelle lediglich die Daten zur Verfügung. Grund: Hier stehen u.a. die UI Komponenten nicht zur Verfügung
+				this.getFacadeResult().setMessage(sMessage);
+				break validEntry;
+			}//Vorgeschaltetet Validierung
+			System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": Vorgeschaltete Validierung erfolgreich");
+			
+			//#############################
 			//3. Hole die Backendentsprechung der Ausgangszelle, daraus muss die TroopArmy entfernt werden.
 			//############################# 
 			AreaCellDao objAreaDaoSource = new AreaCellDao(objContextHibernate);
@@ -181,47 +215,49 @@ public class TroopArmyDaoFacade extends GeneralDaoFacadeZZZ{
 			CellId primaryKeyCellStarted = new CellId("EINS", Integer.toString(iXStarted), Integer.toString(iYStarted));
 			AreaCell objCellStarted = objAreaDaoSource.findByKey(primaryKeyCellStarted);//Spannend. Eine Transaction = Eine Session, d.h. es müsste dann wieder eine neue Session gemacht werden, beim zweiten DAO Aufruf.
 			
-			System.out.println("Ausgangszelle. Anzahl Tiles=" + objCellStarted.getTileBag().size());
-			Session session = this.getSession();	//Vesuch eine neue Session zu bekommen. Merke: Die Session wird hier nicht gespeichert! Wg. 1 Transaktion ==> 1 Session
-			if(session == null) break main;			
-			session.getTransaction().begin();//Ein zu persistierendes Objekt - eine Transaction, auch wenn mehrere in einer Transaction abzuhandeln wären, aber besser um Fehler abfangen zu können.
+			//#############################
+			//4. Mache die Datenbankoperationen
+			//############################# 
 			
-			//Aber damit das funktioniert war eigentlich das Überschreiben der equals() MEthode in Troop - Entity wichtig und notwendig
-			PersistentBag pbag = new PersistentBag((SessionImplementor) session, objCellStarted.getTileBag());
-			boolean bSuccessfulRemoved = pbag.remove(objTroopArmy);
-			System.out.println("Ergebnis des Entfernenversuchs: " + bSuccessfulRemoved);
-			
-			//sondern:
-			//objCellStarted.getTileBag().clear();
-			System.out.println("Ausgangszelle. Anzahl Tiles=" + objCellStarted.getTileBag().size());
-			//session.saveOrUpdate(objCellStarted); //Hibernate Interceptor wird aufgerufen
-			session.update(objCellStarted); //Hibernate Interceptor wird aufgerufen
-			System.out.println("Ausgangszelle. Anzahl Tiles nach UPDATE =" + objCellStarted.getTileBag().size());
-			session.flush();
-			session.getTransaction().commit();
-			if (!session.getTransaction().wasCommitted()) {
-				//session.flush(); //Datenbank synchronisation, d.h. Inserts und Updates werden gemacht. ABER es wird noch nix committed.
-				
-				//VErsuch die Werte der neuen xSpalte yZeile in der Datenbank zu aktualisiere, mit flush()... 
-				//session.flush(); //Datenbank synchronisation, d.h. Inserts und Updates werden gemacht. ABER es wird noch nix committed.
-				//session.getTransaction().commit(); //onPreInsertListener wird ausgeführt   //!!! TODO: WARUM WIRD wg. des FLUSH NIX MEHR AUSGEFÜHRT AN LISTENERN, ETC ???
-				
-				//bGoon = HibernateUtil.wasCommitSuccessful(objContextHibernate,"save",session.getTransaction());//EventType.PRE_INSERT
-				VetoFlag4ListenerZZZ objResult = HibernateUtil.getCommitResult(this.getHibernateContext(),"update",session.getTransaction());
-				sMessage = objResult.getVetoMessage();
-				bGoon = !objResult.isVeto();
-			}
-			if(!bGoon){
-				//Mache die Ausgabe im UI nicht selbst, sondern stelle lediglich die Daten zur Verfügung. Grund: Hier stehen u.a. die UI Komponenten nicht zur Verfügung
-				this.getFacadeResult().setMessage(sMessage);
-				break validEntry;
-			}
+				//+++ 4.1 Datenbankoperationen: Entferne aus der Ausgangszelle
+				System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": Ausgangszelle. Anzahl Tiles=" + objCellStarted.getTileBag().size());
+				Session session = this.getSession();	//Vesuch eine neue Session zu bekommen. Merke: Die Session wird hier nicht gespeichert! Wg. 1 Transaktion ==> 1 Session
+				if(session == null) break main;			
+				session.getTransaction().begin();//Ein zu persistierendes Objekt - eine Transaction, auch wenn mehrere in einer Transaction abzuhandeln wären, aber besser um Fehler abfangen zu können.
+					
+				//Update, d.h. Initialisierung ist wichtig, weil die Zelle ggfs. noch nie zuvor betreten/genutzt worden ist.
+				//session.update(objCellStarted);//20170703: GROSSE PROBLEME WG. LAZY INITIALISIERUNG DES PERSISTENTBAG in dem area-Objekt. Versuche damit das zu inisiteliesen.
+				PersistentBag pbag = new PersistentBag((SessionImplementor) session, objCellStarted.getTileBag());
+				boolean bSuccessfulRemoved = pbag.remove(objTroopArmy);//Aber damit das funktioniert war eigentlich das Überschreiben der equals() Methode in Troop - Entity wichtig und notwendig
+				System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": Ergebnis des Entfernenversuchs: " + bSuccessfulRemoved);
+				System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": Ausgangszelle. Anzahl Tiles=" + objCellStarted.getTileBag().size());
+				//session.saveOrUpdate(objCellStarted); //Hibernate Interceptor wird aufgerufen
+				session.update(objCellStarted); //Hibernate Interceptor wird aufgerufen			
+				session.flush();
+				session.getTransaction().commit();
+				if (!session.getTransaction().wasCommitted()) {
+					//session.flush(); //Datenbank synchronisation, d.h. Inserts und Updates werden gemacht. ABER es wird noch nix committed.
+					
+					//VErsuch die Werte der neuen xSpalte yZeile in der Datenbank zu aktualisiere, mit flush()... 
+					//session.flush(); //Datenbank synchronisation, d.h. Inserts und Updates werden gemacht. ABER es wird noch nix committed.
+					//session.getTransaction().commit(); //onPreInsertListener wird ausgeführt   //!!! TODO: WARUM WIRD wg. des FLUSH NIX MEHR AUSGEFÜHRT AN LISTENERN, ETC ???
+					
+					//bGoon = HibernateUtil.wasCommitSuccessful(objContextHibernate,"save",session.getTransaction());//EventType.PRE_INSERT
+					VetoFlag4ListenerZZZ objResult = HibernateUtil.getCommitResult(this.getHibernateContext(),"update",session.getTransaction());
+					sMessage = objResult.getVetoMessage();
+					bGoon = !objResult.isVeto();
+				}			
+				if(!bGoon){
+					//Mache die Ausgabe im UI nicht selbst, sondern stelle lediglich die Daten zur Verfügung. Grund: Hier stehen u.a. die UI Komponenten nicht zur Verfügung
+					this.getFacadeResult().setMessage(sMessage);
+					break validEntry;
+				}
 			
 			
 			//#############################
-			//4. Hole die Backendentsprechung der Zielzelle
+			//Hole die Backendentsprechung der Zielzelle
 			//#############################
-			/*nicht notwendig, wird von aussen übergeben
+			/*nicht notwendig, wird von aussen übergeben, LASS DEN CODE ABER STEHEN, ZUR ANSCHAUUNG
 			AreaCellDao objAreaDao = new AreaCellDao(objContextHibernate);
 			int iXDropped = objArea.getMapX();
 			int iYDropped = objArea.getMapY();
@@ -229,14 +265,10 @@ public class TroopArmyDaoFacade extends GeneralDaoFacadeZZZ{
 			AreaCell objCellTarget = objAreaDao.findByKey(primaryKeyCell);//Spannend. Eine Transaction = Eine Session, d.h. es müsste dann wieder eine neue Session gemacht werden, beim zweiten DAO Aufruf.
 			*/ 
 			   
-			//+++ Datenbankoperationen
-			//Session session = this.getSession();	//Vesuch eine neue Session zu bekommen. Merke: Die Session wird hier nicht gespeichert! Wg. 1 Transaktion ==> 1 Session
+			//+++ 4.2: Datenbankoperation: Aktualisiere die Troop mit der neuen Position/dem neuien HexFeld.		
 			session = this.getSession();	//Vesuch eine neue Session zu bekommen. Merke: Die Session wird hier nicht gespeichert! Wg. 1 Transaktion ==> 1 Session
 			if(session == null) break main;			
 			session.getTransaction().begin();//Ein zu persistierendes Objekt - eine Transaction, auch wenn mehrere in einer Transaction abzuhandeln wären, aber besser um Fehler abfangen zu können.
-			
-			//objTroopArmy.setMapX(iXDropped);
-			//objTroopArmy.setMapY(iYDropped);
 			
 			//Update, d.h. Initialisierung ist wichtig, weil die Zelle ggfs. noch nie zuvor betreten worden ist.
 			session.update(objAreaTarget);//20170703: GROSSE PROBLEME WG. LAZY INITIALISIERUNG DES PERSISTENTBAG in dem area-Objekt. Versuche damit das zu inisiteliesen.
@@ -305,9 +337,7 @@ public class TroopArmyDaoFacade extends GeneralDaoFacadeZZZ{
 			}
 			*/
 			
-			//###################
-			//3. Aktualisiere die Hex-Zelle, füge die TroopArmy der Liste hinzu, damit die Hex-Zelle weiss welche TroopArmies in ihr stehen.
-			//####################		
+			//++++++++ 4.3 Datanbankoperationen Aktualisiere die Hex-Zelle, füge die TroopArmy der Liste hinzu, damit die Hex-Zelle weiss welche TroopArmies in ihr stehen.		
 			session = this.getSession();			//Vesuch eine neue Session zu bekommen. Merke: Die Session wird hier nicht gespeichert! Wg. 1 Transaktion ==> 1 Session
 			if(session == null) break main;			
 			session.getTransaction().begin();
@@ -367,8 +397,7 @@ public class TroopArmyDaoFacade extends GeneralDaoFacadeZZZ{
 			
 			//Falls alles glatt durchgeht....
 			bReturn = true;
-		}//end validEntry:
-					
+		}//end validEntry:		
 		}//end main:
 		return bReturn;
 	}

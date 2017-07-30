@@ -8,6 +8,7 @@ import javax.persistence.PersistenceException;
 import org.hibernate.Session;
 import org.hibernate.SessionBuilder;
 import org.hibernate.SessionFactory;
+import org.hibernate.Transaction;
 import org.hibernate.cfg.AnnotationConfiguration;
 import org.hibernate.cfg.Configuration;
 import org.hibernate.event.service.spi.EventListenerRegistry;
@@ -244,6 +245,22 @@ public abstract class HibernateContextProviderZZZ  extends KernelUseObjectZZZ im
 			}
 		}
 		this.objSession=objSession;
+	}
+	
+	public Session getSessionCurrent() throws ExceptionZZZ{
+		if(this.objSession==null){
+			this.objSession = this.getSession();
+		}else{
+			//Exception in thread "main" org.hibernate.TransactionException: nested transactions not supported
+			//darum ggfs. vorhandene Transaction der Session schliessen.
+//NEIN, das bewirkt ggfs. eine Endlosschleife.
+//			Transaction tr = this.objSession.getTransaction();
+//			if(tr!=null){
+//				tr.commit();
+//			}
+			//DIE TRANSAKTION MUSS ALSO VORHER GESCHLOSSEN WORDEN SEIN.
+		}
+		return this.objSession;
 	}
 	
 	public boolean fillConfiguration() throws ExceptionZZZ{

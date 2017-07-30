@@ -154,12 +154,14 @@ public class SaveOrUpdateListenerTHM extends DefaultSaveOrUpdateEventListener im
 			//			AreaCellDao areaDao = new AreaCellDao(objHibernateContext);
 			//			AreaCell area = areaDao.findByKey(hex.getId());
 			
-			
-			
-			//TODO GOON AreaCellTHM.onTileDrop(event) und darin .isAcessibleBy(.... ) wird vorher aufgerufen. 
-			//                    Dadurch, dass die Area schon vom UI nicht betreten werden kann, wird alles abgebrochen und diese Validierung passiert nicht.
-			//                    Statt dessen PreInsertListener.onPreInsert() zum Teseten des TroopArmyRuleFacade verwenden. Dieser greift beim Ziehen des Spielsteins von Aussen in die Karte. 
-			//TODO GOON 20170724: Teste auch hier die Verwendung hier die RuleFacade.....
+						
+			//####################
+			//### BACKEND Validierung
+			//####################
+			//Merke: 
+			//AreaCellTHM.onTileDrop(event) und darin .isAcessibleBy(.... ) erst nach der BackendValidierung aufrufen. 
+			//Grund: Dadurch, dass die Area schon vom UI nicht betreten werden kann, wird alles abgebrochen und diese Backend-Validierung passiert nicht.
+				
 			TroopArmyRuleFacade objRuleFacade = new TroopArmyRuleFacade(objHibernateContext, troop);
 			boolean bValid = objRuleFacade.onUpdateTroopArmyPosition(hex,"UPDATE");//Die UPDATE Angaebe ist notwednig wg. anderen Stacking Limits als z.B. im PREINSERT.
 			bReturn = !bValid;
@@ -269,6 +271,4 @@ public class SaveOrUpdateListenerTHM extends DefaultSaveOrUpdateEventListener im
 		public VetoFlag4ListenerZZZ getCommitResult(){
 			return this.objLastResult;
 		}
-
-	
 }

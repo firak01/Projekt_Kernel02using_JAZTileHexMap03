@@ -163,8 +163,7 @@ public class Tile implements Serializable, IOptimisticLocking{
 			Integer intValue = new Integer(iValue);
 			String sX = intValue.toString();
 			
-			//TODO GOON 20170715: Müsste hier jetzt nicht die korrekte HexCell ermittelt werden? Das Setzen klappt so nämlich nicht...
-//			if(this.getHexCell()!=null){
+			//TODO GOON 20170715: Müsste hier jetzt nicht die korrekte HexCell ermittelt werden? 
 //				this.getHexCell().getId().setMapX(sX);
 //			}
 		}

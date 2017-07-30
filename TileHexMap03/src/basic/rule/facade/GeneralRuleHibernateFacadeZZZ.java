@@ -29,4 +29,12 @@ public class GeneralRuleHibernateFacadeZZZ extends GeneralRuleFacadeZZZ{
 		return objReturn;
 	}
 
+	protected Session getSessionCurrent() throws ExceptionZZZ{
+		Session objReturn = null;		
+		IHibernateContextProviderZZZ objHibernateContext = this.getHibernateContext();
+		if(objHibernateContext!=null){
+			objReturn = objHibernateContext.getSessionCurrent();
+		}
+		return objReturn;
+	}
 }

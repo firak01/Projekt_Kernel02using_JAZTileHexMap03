@@ -12,37 +12,38 @@ import use.thm.persistence.hibernate.HibernateContextProviderSingletonTHM;
 import use.thm.persistence.model.AreaCell;
 import use.thm.persistence.model.Troop;
 import use.thm.persistence.model.TroopArmy;
+import use.thm.persistence.model.TroopFleet;
 import basic.zBasic.ExceptionZZZ;
 import basic.zBasic.persistence.GeneralDaoZZZ;
-public class TroopArmyDao<T> extends TroopDao<T> {
+public class TroopFleetDao<T> extends TroopDao<T> {
 	private static final long serialVersionUID = 1L;
 
 	/* Constructor */
-	public TroopArmyDao() throws ExceptionZZZ{
+	public TroopFleetDao() throws ExceptionZZZ{
 		super();
-		this.installLoger(TroopArmy.class);//Durch das Installieren des Loggers mit der korrekten Klasse wird GeneralDao.getT() erst korrekt ermöglicht.
+		this.installLoger(TroopFleet.class);//Durch das Installieren des Loggers mit der korrekten Klasse wird GeneralDao.getT() erst korrekt ermöglicht.
 	}
-	public TroopArmyDao(HibernateContextProviderSingletonTHM objContextHibernate) throws ExceptionZZZ{
+	public TroopFleetDao(HibernateContextProviderSingletonTHM objContextHibernate) throws ExceptionZZZ{
 		super(objContextHibernate);		
-		this.installLoger(TroopArmy.class);//Durch das Installieren des Loggers mit der korrekten Klasse wird GeneralDao.getT() erst korrekt ermöglicht.
+		this.installLoger(TroopFleet.class);//Durch das Installieren des Loggers mit der korrekten Klasse wird GeneralDao.getT() erst korrekt ermöglicht.
 	}
-	public TroopArmyDao(HibernateContextProviderSingletonTHM objContextHibernate, String sFlagControl) throws ExceptionZZZ{
+	public TroopFleetDao(HibernateContextProviderSingletonTHM objContextHibernate, String sFlagControl) throws ExceptionZZZ{
 		super(objContextHibernate, sFlagControl);
-		this.installLoger(TroopArmy.class);//Durch das Installieren des Loggers mit der korrekten Klasse wird GeneralDao.getT() erst korrekt ermöglicht.
+		this.installLoger(TroopFleet.class);//Durch das Installieren des Loggers mit der korrekten Klasse wird GeneralDao.getT() erst korrekt ermöglicht.
 	}
-	public TroopArmyDao(HibernateContextProviderSingletonTHM objContextHibernate, String[] saFlagControl) throws ExceptionZZZ{
+	public TroopFleetDao(HibernateContextProviderSingletonTHM objContextHibernate, String[] saFlagControl) throws ExceptionZZZ{
 		super(objContextHibernate, saFlagControl);
-		this.installLoger(TroopArmy.class);//Durch das Installieren des Loggers mit der korrekten Klasse wird GeneralDao.getT() erst korrekt ermöglicht.
+		this.installLoger(TroopFleet.class);//Durch das Installieren des Loggers mit der korrekten Klasse wird GeneralDao.getT() erst korrekt ermöglicht.
 	}
 	
     public List<T> findLazyAll(int first, int max){
-    	return this.findLazyAll("TroopArmy", first, max);
+    	return this.findLazyAll("TroopFleet", first, max);
     }
     
 	@Override
 	public int count(){
-		this.getLog().debug("counting TroopArmies");
-		Query q = getSession().createQuery("select count(t) from TroopArmy t");
+		this.getLog().debug("counting TroopFleets");
+		Query q = getSession().createQuery("select count(t) from TroopFleet t");
 		int count = ((Long)q.uniqueResult()).intValue();
 		return count;
 	}
@@ -53,7 +54,7 @@ public class TroopArmyDao<T> extends TroopDao<T> {
 	 */
 	@Override
 	public int countByCriteria(Map<String, Object> whereBy, 	Map<String, String> filter) {
-		return this.countByCriteria("TroopArmy", whereBy, filter);
+		return this.countByCriteria("TroopFleet", whereBy, filter);
 	}
 
 
@@ -87,8 +88,8 @@ public class TroopArmyDao<T> extends TroopDao<T> {
 	
 	//####### EIGENE METHODEN ###########
 	//....
-		public TroopArmy searchTroopArmyByUniquename(String sUniquename){
-			TroopArmy objReturn = null;
+		public TroopFleet searchTroopFleetByUniquename(String sUniquename){
+			TroopFleet objReturn = null;
 			
 //			select mate
 //			from Cat as cat
@@ -131,19 +132,19 @@ public class TroopArmyDao<T> extends TroopDao<T> {
 			//Query query = session.createQuery("from Tile as tableTile where tableTile.objHexCell.id.mapAlias = :mapAlias AND tableTile.objHexCell.id.mapX = :mapX AND tableTile.objHexCell.id.mapY = :mapY");
 			//Query query = session.createQuery("from TroopArmy as tableTile where tableTile.objHexCell.id.mapAlias = :mapAlias AND tableTile.objHexCell.id.mapX = :mapX AND tableTile.objHexCell.id.mapY = :mapY");
 			
-			Query query = session.createQuery("from TroopArmy as tableTile where tableTile.tileIdObject.uniquename = :uniqueName");//Merke: In TroopArmy ist der uniquename transient. Also kommt man über das Objekt daran.
+			Query query = session.createQuery("from TroopFleet as tableTile where tableTile.tileIdObject.uniquename = :uniqueName");//Merke: In TroopArmy ist der uniquename transient. Also kommt man über das Objekt daran.
 			query.setString("uniqueName", sUniquename);
 
 			
 			Object objResult = query.uniqueResult();//für einen einzelwert		
 			//listReturn = query.list(); //Für meherer Werte
 			
-			objReturn = (TroopArmy) objResult;
+			objReturn = (TroopFleet) objResult;
 			return objReturn;
 		}
 		
-		public List<TroopArmy> searchTroopArmyCollectionByHexCell(String sMapAlias, String sX, String sY){
-			List<TroopArmy> listReturn = new ArrayList<TroopArmy>();
+		public List<TroopFleet> searchTroopFleetCollectionByHexCell(String sMapAlias, String sX, String sY){
+			List<TroopFleet> listReturn = new ArrayList<TroopFleet>();
 			
 //			select mate
 //			from Cat as cat
@@ -175,7 +176,7 @@ public class TroopArmyDao<T> extends TroopDao<T> {
 			//JA, das funktioniert
 			//Query query = session.createQuery("from Tile as tableTile where tableTile.objHexCell.id.mapAlias = :mapAlias");
 			//Query query = session.createQuery("from Tile as tableTile where tableTile.objHexCell.id.mapAlias = :mapAlias AND tableTile.objHexCell.id.mapX = :mapX AND tableTile.objHexCell.id.mapY = :mapY");
-			Query query = session.createQuery("from TroopArmy as tableTile where tableTile.objHexCell.id.mapAlias = :mapAlias AND tableTile.objHexCell.id.mapX = :mapX AND tableTile.objHexCell.id.mapY = :mapY");
+			Query query = session.createQuery("from TroopFleet as tableTile where tableTile.objHexCell.id.mapAlias = :mapAlias AND tableTile.objHexCell.id.mapX = :mapX AND tableTile.objHexCell.id.mapY = :mapY");
 			
 			query.setString("mapAlias", sMapAlias);
 			query.setString("mapX", sX);

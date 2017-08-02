@@ -8,7 +8,7 @@ import basic.zBasic.persistence.interfaces.IHibernateContextProviderZZZ;
 public class GeneralRuleHibernateFacadeZZZ extends GeneralRuleFacadeZZZ{
 	private IHibernateContextProviderZZZ objContextHibernate = null;
 	
-	public GeneralRuleHibernateFacadeZZZ(){
+	protected GeneralRuleHibernateFacadeZZZ(){
 		super();
 	}
 	

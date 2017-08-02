@@ -13,12 +13,16 @@ import custom.zKernel.LogZZZ;
 import use.thm.persistence.dao.AreaCellDao;
 import use.thm.persistence.hibernate.HibernateContextProviderSingletonTHM;
 import use.thm.persistence.model.AreaCell;
+import use.thm.persistence.model.AreaCellLand;
+import use.thm.persistence.model.AreaCellOcean;
 import use.thm.persistence.model.CellId;
 import use.thm.persistence.model.HexCell;
 import use.thm.persistence.model.Tile;
 import use.thm.persistence.model.TroopArmy;
 import use.thm.persistence.model.TroopFleet;
+import use.thm.rule.facade.AreaCellRuleFacade;
 import use.thm.rule.facade.TroopArmyRuleFacade;
+import use.thm.rule.facade.TroopFleetRuleFacade;
 import use.thm.rule.model.TroopArmyRuleType;
 import basic.zBasic.ExceptionZZZ;
 import basic.zBasic.KernelSingletonTHM;
@@ -81,69 +85,14 @@ public class PreInsertListenerTHM implements PreInsertEventListener,IKernelUserZ
 			String sType = hex.getHexType();
 			System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": HexFeld vom Typ="+sType);
 			
-			//TODO GOON 20170724: Teste die Verwendung hier die RuleFacade.....
-			//TODO: Mache darin auch die Überprüfung, ob es noch einen anderen Spielstein in dem Feld gibt, also das StckingLimit überschritten wird.
+			//RuleFacade: Mache darin auch die Überprüfung, ob es noch einen anderen Spielstein in dem Feld gibt, also das StckingLimit überschritten wird, ob auf ein betretbares Feld gesetzt wird, etc.
 			TroopArmyRuleFacade objRuleFacade = new TroopArmyRuleFacade(objHibernateContext, troop);
 			boolean bValid	 = objRuleFacade.onUpdateTroopArmyPosition(hex,"PREINSERT");//false bedeutet, dass einer Regel verletzt wurde.	//Die PREINSERT ANGABE ist notwendig, wg. anderen STACKING_LIMITS.		
 			bReturn = !bValid;
 			if(!bValid){
-				String sResultMessage = new String("");
-			
-				VectorExtendedZZZ<Enum<?>> vecMessage = objRuleFacade.getFacadeRuleResult().getMessageVector();				
-				for(Object objMessage :  vecMessage){
-					@SuppressWarnings("unchecked")
-					Enum<TroopArmyRuleType> rule = (Enum<TroopArmyRuleType>) objMessage;					
-					String sMessage = rule.toString();
-					if(sResultMessage.length()==0){
-						sResultMessage = sMessage;
-					}else{
-						sResultMessage += "\n" + sMessage; 
-					}
-				}//end for
-				sReturnMessage = sResultMessage;
-			}
-		
-						
-			/* TODO GOON ERsetze dies alles durch die RuleFacade 
-			//Aber, das das mit den DAO-Klassen hier nicht klappt (wg. Sessionproblemen: 1. Lock Database oder 2. Nested Transaction not allowed),
-			//versuchen doch direkt die AreaCell zu bekommen, um den AreaTyp zu bekommen.
-			AreaCell area = (AreaCell) troop.getHexCell();
-			String sTypeArea = area.getAreaType();
-			System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": Area vom Typ="+sTypeArea);
-			
-			if(!sTypeArea.equalsIgnoreCase("LA")){
-				bReturn = true; //Der Returnwert true bedeutet "VETO"
-				sReturnMessage = "Armee kann in dem Gebiet vom Typ '" + area.getAreaTypeObject().name() + "' nicht eingesetzt werden.";
-			}else{
-				bReturn = false;
-				
-				//Nun prüfen, ob es bereits in dem Feld einen anderen Spielstein gibt.
-				//TODO GOON 20170703
-				//event.getSession().update(area); //Versuche damit das Problem des Lazy Loading zu beseitigen
-				Collection<Tile> setTile = area.getTileBag();				
-				if(setTile==null){
-					bReturn = false;
-				}else{				
-					if(setTile.size()>=1){
-						bReturn = true; //Der Returnwert true bedeutet "VETO"
-						sReturnMessage = "Armee kann in einem Gebiet mit anderem Spielstein nicht eingesetzt werden.";
-					}else{
-						bReturn = false;
-					}		
-				}
-				//Problem: Exception in thread "main" org.hibernate.AssertionFailure: collection [use.thm.persistence.model.HexCell.objbagTile] was not processed by flush()
-				//event.getSession().merge(area); //versuch das mal am Schluss nach dem Zugriff aufzurufen.
-				//Wenn man das hier macht, dann kommt man in eine Endlosschleife .... event.getSession().flush();
-			}
-			
-			*/
-			
-			//Merke: 20170415: Hier hatte ich zuerst versuch über ein DAO Objekt die notwendigen Informationen zu bekommen. daoArea.findByKey(cellid);
-			//                           Aber, zumindest mit SQLite bekommt man dann Probleme, wenn man
-			//                           A) Eine zweite Session erstellt (Database locked)
-			//                           B) In ein und derselben Session versucht eine zweite Transaktion zu starten, bevor die andere Transaktion beendet ist (Nested Transaction not allowed).			
-			//                               In der DAO wird aber eine neue Transaction gemact....
-			
+				//Hole die Meldungen aus dem Regelwerk ab.			
+				sReturnMessage = objRuleFacade.getMessagesAsString();
+			}			
 		}else if(obj instanceof TroopFleet){
 			System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": Eine Flotte soll eingefügt werden.");
 			TroopFleet troop = (TroopFleet) obj;
@@ -154,36 +103,25 @@ public class PreInsertListenerTHM implements PreInsertEventListener,IKernelUserZ
 			String sType = hex.getHexType();
 			System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": HexFeld vom Typ="+sType);
 			
-			//Aber, das das mit den DAO-Klassen hier nicht klappt (wg. Sessionproblemen: 1. Lock Database oder 2. Nested Transaction not allowed),
-			//versuchen doch direkt die AreaCell zu bekommen, um den AreaTyp zu bekommen.
-			AreaCell area = (AreaCell) troop.getHexCell();
-			String sTypeArea = area.getAreaType();
-			System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": Area vom Typ="+sTypeArea);
+			TroopFleetRuleFacade objRuleFacade = new TroopFleetRuleFacade(objHibernateContext, troop);
+			boolean bValid	 = objRuleFacade.onUpdateTroopFleetPosition(hex,"PREINSERT");//false bedeutet, dass einer Regel verletzt wurde.	//Die PREINSERT ANGABE ist notwendig, wg. anderen STACKING_LIMITS.		
+			bReturn = !bValid;
+			if(!bValid){
+				//Hole die Meldungen aus dem Regelwerk ab.			
+				sReturnMessage = objRuleFacade.getMessagesAsString();
+			}	
+		}else if(obj instanceof AreaCellLand || obj instanceof AreaCellOcean || obj instanceof AreaCell){
+			System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": Eine Area soll eingefügt werden.");
+			AreaCell area = (AreaCell) obj;
+			System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": FIELDALIAS ="+area.getFieldAlias());
 			
-			if(!sTypeArea.equalsIgnoreCase("OC")){
-				bReturn = true; //Der Returnwert true bedeutet "VETO"
-				sReturnMessage = "Flotte kann in dem Gebiet vom Typ '" + area.getAreaTypeObject().name() + "' nicht eingesetzt werden.";
-			}else{
-				bReturn = false;
-				
-				//Nun prüfen, ob es bereits in dem Feld einen anderen Spielstein gibt.
-				//TODO GOON 20170703
-				Collection<Tile>setTile = area.getTileBag();
-				if(setTile.size()>=1){
-					bReturn = true; //Der Returnwert true bedeutet "VETO"
-					sReturnMessage = "Flotte kann in einem Gebiet mit anderem Spielstein nicht eingesetzt werden.";
-				}else{
-					bReturn = false;
-				}		
-				
-			}
-			
-			//Merke: 20170415: Hier hatte ich zuerst versuch über ein DAO Objekt die notwendigen Informationen zu bekommen. daoArea.findByKey(cellid);
-			//                           Aber, zumindest mit SQLite bekommt man dann Probleme, wenn man
-			//                           A) Eine zweite Session erstellt (Database locked)
-			//                           B) In ein und derselben Session versucht eine zweite Transaktion zu starten, bevor die andere Transaktion beendet ist (Nested Transaction not allowed).			
-			//                               In der DAO wird aber eine neue Transaction gemact....
-			
+			AreaCellRuleFacade objRuleFacade = new AreaCellRuleFacade(objHibernateContext, area);
+			boolean bValid	 = objRuleFacade.onUpdateAreaCell(area,"PREINSERT");//false bedeutet, dass einer Regel verletzt wurde.	//Die PREINSERT ANGABE ist notwendig, wg. anderen STACKING_LIMITS.		
+			bReturn = !bValid;
+			if(!bValid){
+				//Hole die Meldungen aus dem Regelwerk ab.			
+				sReturnMessage = objRuleFacade.getMessagesAsString();
+			}	
 			
 		}else{
 			System.out.println(ReflectCodeZZZ.getPositionCurrent()+": eingefügt wird ein Objekt der Klasse: " + obj.getClass().getName());

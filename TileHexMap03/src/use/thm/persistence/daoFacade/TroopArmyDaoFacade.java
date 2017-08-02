@@ -185,20 +185,8 @@ public class TroopArmyDaoFacade extends GeneralDaoFacadeZZZ{
 				//NEGATIVES Ergebnis der vorgeschalteten Validierung
 				System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": Vorgeschaltete Validierung NICHT erfolgreich");
 				
-				//Hole die Meldungen aus dem Regelwerk ab.
-				String sResultMessage = new String("");				
-				VectorExtendedZZZ<Enum<?>> vecMessage = objRuleFacade.getFacadeRuleResult().getMessageVector();				
-				for(Object objMessage :  vecMessage){
-					@SuppressWarnings("unchecked")
-					Enum<TroopArmyRuleType> rule = (Enum<TroopArmyRuleType>) objMessage;					
-					String sMessageTemp = rule.toString();
-					if(sResultMessage.length()==0){
-						sResultMessage = sMessageTemp;
-					}else{
-						sResultMessage += "\n" + sMessageTemp; 
-					}
-				}//end for
-				sMessage = sResultMessage;
+				//Hole die Meldungen aus dem Regelwerk ab.			
+				sMessage = objRuleFacade.getMessagesAsString();
 
 				//Mache die Ausgabe im UI nicht selbst, sondern stelle lediglich die Daten zur Verfügung. Grund: Hier stehen u.a. die UI Komponenten nicht zur Verfügung
 				this.getFacadeResult().setMessage(sMessage);

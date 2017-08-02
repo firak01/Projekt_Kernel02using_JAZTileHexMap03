@@ -14,7 +14,7 @@ import use.thm.persistence.model.Troop;
 import use.thm.persistence.model.TroopArmy;
 import basic.zBasic.ExceptionZZZ;
 import basic.zBasic.persistence.GeneralDaoZZZ;
-public class TroopDao<T> extends GeneralDaoZZZ<T> {
+public class TroopDao<T> extends TileDao<T> {
 	private static final long serialVersionUID = 1L;
 
 	/* Constructor */
@@ -87,7 +87,62 @@ public class TroopDao<T> extends GeneralDaoZZZ<T> {
 	
 	//####### EIGENE METHODEN ###########
 	//....
-	public List<TroopArmy> searchTileIdCollectionByHexCell(String sMapAlias, String sX, String sY){
+	public Troop searchTroopByUniquename(String sUniquename){
+		Troop objReturn = null;
+		
+//		select mate
+//		from Cat as cat
+//		    inner join cat.mate as mate
+		    
+		//1. Beispiel: wenn man aber die WHERE Parameter so als String reinprogrammiert, ist das anfällig für SQL injection.
+		//String sHql = "SELECT id from Tile as tableTile";								
+		//listReturn = this.findByHQL(sHql, 0, 0);//start ist indexwert also 0 = erster Wert, Danach folgt maximale Anzahl von Objekten.
+		
+		//2. Beispiel: Etwas sicherer ist es die Parameter mit Platzhaltern zu füllen
+		Session session = this.getSession();
+		//liefert die ID Spalte als Integer zurück, also nicht das TileId Objekt...  Query query = session.createQuery("SELECT id from Tile as tableTile");
+		//                                                       wird nicht gefunden Query query = session.createQuery("SELECT TileIdObject from Tile as tableTile");
+		
+		//Also über die HEXCELL gehen...
+		//JA, das liefert die HEXCELL-Objekte zurück
+		//Query query = session.createQuery("SELECT objHexCell from Tile as tableTile");
+						
+		//JA, das liefert die CellId-Objekte der Hexcell zurück
+		//Query query = session.createQuery("SELECT objHexCell.id from Tile as tableTile");
+		
+		//JA, das liefert die Alias Map-Werte zurück
+		//Query query = session.createQuery("SELECT objHexCell.id.mapAlias from Tile as tableTile");
+		
+		//DARAUS VERSUCHEN DIE ABFRAGE ZU BAUEN....
+		//Query query = session.createQuery("SELECT objHexCell from Tile as tableTile where tableTile.objHexCell.Id.MapAlias IN (:mapAlias)");
+		
+		
+		/* Weiteres Beispiel aus TroopDao...	
+		//Query query = session.createQuery("from TroopArmy as tableTile where tableTile.objHexCell.id.mapAlias = :mapAlias AND tableTile.objHexCell.id.mapX = :mapX AND tableTile.objHexCell.id.mapY = :mapY");
+		Query query = session.createQuery("from TroopArmy as tableTile where tableTile.objHexCell.id.mapAlias = :mapAlias AND tableTile.objHexCell.id.mapX = :mapX AND tableTile.objHexCell.id.mapY = :mapY");
+		
+		query.setString("mapAlias", sMapAlias);
+		query.setString("mapX", sX);
+		query.setString("mapY", sY);
+		 */
+			
+		//JA, das funktioniert, andere Beispiele
+		//Query query = session.createQuery("from Tile as tableTile where tableTile.objHexCell.id.mapAlias = :mapAlias");
+		//Query query = session.createQuery("from Tile as tableTile where tableTile.objHexCell.id.mapAlias = :mapAlias AND tableTile.objHexCell.id.mapX = :mapX AND tableTile.objHexCell.id.mapY = :mapY");
+		//Query query = session.createQuery("from TroopArmy as tableTile where tableTile.objHexCell.id.mapAlias = :mapAlias AND tableTile.objHexCell.id.mapX = :mapX AND tableTile.objHexCell.id.mapY = :mapY");
+		
+		Query query = session.createQuery("from Troop as tableTile where tableTile.tileIdObject.uniquename = :uniqueName");//Merke: In TroopArmy ist der uniquename transient. Also kommt man über das Objekt daran.
+		query.setString("uniqueName", sUniquename);
+
+		
+		Object objResult = query.uniqueResult();//für einen einzelwert		
+		//listReturn = query.list(); //Für meherer Werte
+		
+		objReturn = (Troop) objResult;
+		return objReturn;
+	}
+	
+	public List<TroopArmy> searchTroopCollectionByHexCell(String sMapAlias, String sX, String sY){
 		List<TroopArmy> listReturn = new ArrayList<TroopArmy>();
 		
 //		select mate
@@ -120,7 +175,7 @@ public class TroopDao<T> extends GeneralDaoZZZ<T> {
 		//JA, das funktioniert
 		//Query query = session.createQuery("from Tile as tableTile where tableTile.objHexCell.id.mapAlias = :mapAlias");
 		//Query query = session.createQuery("from Tile as tableTile where tableTile.objHexCell.id.mapAlias = :mapAlias AND tableTile.objHexCell.id.mapX = :mapX AND tableTile.objHexCell.id.mapY = :mapY");
-		Query query = session.createQuery("from TroopArmy as tableTile where tableTile.objHexCell.id.mapAlias = :mapAlias AND tableTile.objHexCell.id.mapX = :mapX AND tableTile.objHexCell.id.mapY = :mapY");
+		Query query = session.createQuery("from Troop as tableTile where tableTile.objHexCell.id.mapAlias = :mapAlias AND tableTile.objHexCell.id.mapX = :mapX AND tableTile.objHexCell.id.mapY = :mapY");
 		
 		query.setString("mapAlias", sMapAlias);
 		query.setString("mapX", sX);

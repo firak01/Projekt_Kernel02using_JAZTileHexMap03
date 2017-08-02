@@ -29,11 +29,11 @@ public class DebugTroopDao {
 				TroopArmyDao daoTroop = new TroopArmyDao(objContextHibernate);
 				
 				//TODO GOON 2017-06-14: Hier CellId-Schlüsselwerte vorbereiten und an die daoTroop.readByCellId(...) übergeben...
-				List<TroopArmy> list = daoTroop.searchTileIdCollectionByHexCell("EINS", "5", "5");
+				List<TroopArmy> list = daoTroop.searchTroopArmyCollectionByHexCell("EINS", "5", "5");
 				System.out.println("1. Abfrage: Anzahl gefundener Armeen = " + list.size());
 				if(list.size()>=1) System.out.println("Da wurde keine Armee, sondern eine Flotte erwartet");
 				
-				List<TroopArmy> list02 = daoTroop.searchTileIdCollectionByHexCell("EINS", "1", "3");
+				List<TroopArmy> list02 = daoTroop.searchTroopArmyCollectionByHexCell("EINS", "1", "3");
 				System.out.println("2. Abfrage: Anzahl gefundener Armeen = " + list02.size());
 				
 				for(TroopArmy objArmy : list02){

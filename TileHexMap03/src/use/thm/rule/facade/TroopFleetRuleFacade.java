@@ -11,6 +11,7 @@ import org.hibernate.service.ServiceRegistryBuilder;
 import use.thm.persistence.model.AreaCell;
 import use.thm.persistence.model.HexCell;
 import use.thm.persistence.model.TroopArmy;
+import use.thm.persistence.model.TroopFleet;
 import use.thm.rule.model.TroopArmyRuleType;
 import use.thm.rule.model.TroopFleetRuleType;
 import basic.rule.facade.GeneralRuleHibernateFacadeZZZ;
@@ -19,36 +20,36 @@ import basic.zBasic.ReflectCodeZZZ;
 import basic.zBasic.persistence.interfaces.IHibernateContextProviderZZZ;
 import basic.zBasic.util.datatype.string.StringZZZ;
 
-public class TroopArmyRuleFacade  extends GeneralRuleFacadeTHM{
-	private TroopArmy objTroopArmy = null;
+public class TroopFleetRuleFacade  extends GeneralRuleFacadeTHM{
+	private TroopFleet objTroopFleet = null;
 	
-	private TroopArmyRuleFacade(){
+	private TroopFleetRuleFacade(){
 		super();
 	}
-	public TroopArmyRuleFacade(IHibernateContextProviderZZZ objContextHibernate){
+	public TroopFleetRuleFacade(IHibernateContextProviderZZZ objContextHibernate){
 		super(objContextHibernate);
 	}
 	
-	public TroopArmyRuleFacade(TroopArmy troop){
+	public TroopFleetRuleFacade(TroopFleet troop){
 		this();
 		this.setTroop(troop);
 	}
 	
-	public TroopArmyRuleFacade(IHibernateContextProviderZZZ objContextHibernate, TroopArmy troop){
+	public TroopFleetRuleFacade(IHibernateContextProviderZZZ objContextHibernate, TroopFleet troop){
 		this(objContextHibernate);
 		this.setTroop(troop);
 	}
 	
-	public boolean onUpdateTroopArmyPosition(HexCell objPersistedHexTarget, String sCallingFlag) throws ExceptionZZZ{
+	public boolean onUpdateTroopFleetPosition(HexCell objPersistedHexTarget, String sCallingFlag) throws ExceptionZZZ{
 		boolean bReturn = true;// true=alles o.k., false=Regelverletzung schlägt zu. Daher wird später, d.h. beim Persistieren ein Veto eingelegt.
 		main:{
 			System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": Hexcell Objekt von der Klasse: " + objPersistedHexTarget.getClass().getName());
-			if(objPersistedHexTarget instanceof use.thm.persistence.model.AreaCellOcean){
-				System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": FEHLER beim committen eines Armee Spielsteins (1)");
-				this.getFacadeRuleResult().addMessage(TroopArmyRuleType.AREATYPE);
+			if(objPersistedHexTarget instanceof use.thm.persistence.model.AreaCellLand){
+				System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": FEHLER beim committen eines Flotte Spielsteins (1)");
+				this.getFacadeRuleResult().addMessage(TroopFleetRuleType.AREATYPE);
 				bReturn = false;
 				
-			}else if(objPersistedHexTarget instanceof use.thm.persistence.model.AreaCellLand){
+			}else if(objPersistedHexTarget instanceof use.thm.persistence.model.AreaCellOcean){
 				//################################
 				//### Stacking Limit prüfen
 				//#################################
@@ -93,24 +94,25 @@ public class TroopArmyRuleFacade  extends GeneralRuleFacadeTHM{
 				session.update(objPersistedHexTarget);//20170703: GROSSE PROBLEME WG. LAZY INITIALISIERUNG DES PERSISTENTBAG in dem area-Objekt. Versuche damit das zu inisiteliesen.
 				PersistentBag pbag = new PersistentBag((SessionImplementor) session, objPersistedHexTarget.getTileBag());
 				System.out.println("Zielzelle. Anzahl Tiles=" + objPersistedHexTarget.getTileBag().size() + " / PersistentBag. Anzahl Tiles= " + pbag.size());
-				
+								
 				int iStackingLimitUsed = this.computeStackingLimit(sCallingFlag);
-				if(pbag.size()>=iStackingLimitUsed){ //STACKING LIMIT von 1 beim  PRE_INSERT, aber die Armee ist schon in der HEXCelle. Das sollte nur noch nicht committed sein...
-					System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": FEHLER beim committen eines Armee Spielsteins (1.2)");
+				if(pbag.size()>=iStackingLimitUsed){ 
+					System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": FEHLER beim committen eines Flotte Spielsteins (1.2)");
 					System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": Maximum erlaubtes StackingLimit im Gebiet überschritten: " + objPersistedHexTarget.getMapX() + "/" + objPersistedHexTarget.getMapY() );
-					this.getFacadeRuleResult().addMessage(TroopArmyRuleType.STACKING_LIMIT_MAX);
+					this.getFacadeRuleResult().addMessage(TroopFleetRuleType.STACKING_LIMIT_MAX);
 					bReturn = false;
 				}
 				
+			
 			}else if (objPersistedHexTarget instanceof use.thm.persistence.model.AreaCell){
 				
 				AreaCell area = (AreaCell) this.getTroop().getHexCell(); //TODO GOON 20170630: DIES STELLE WIRFT EINEN FEHLER, BEIM TESTEN "EINFUEGEN" IN EIN SCHON BESETZTES FELD
 				String sTypeArea = area.getAreaType();
 				System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": Area vom Typ="+sTypeArea);
 				
-				if(!sTypeArea.equalsIgnoreCase("LA")){						
-					System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": FEHLER beim committen eines Armee Spielsteins (2)");
-					this.getFacadeRuleResult().addMessage(TroopArmyRuleType.AREATYPE);
+				if(!sTypeArea.equalsIgnoreCase("OC")){						
+					System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": FEHLER beim committen eines Flotte Spielsteins (2)");
+					this.getFacadeRuleResult().addMessage(TroopFleetRuleType.AREATYPE);
 					bReturn = false;
 				}else{
 										
@@ -125,7 +127,7 @@ public class TroopArmyRuleFacade  extends GeneralRuleFacadeTHM{
 					System.out.println("Zielzelle. Anzahl Tiles=" + objPersistedHexTarget.getTileBag().size() + " / PersistentBag. Anzahl Tiles= " + pbag.size());
 					
 					if(pbag.size()>=1){ //STACKING LIMIT von 1
-						System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": FEHLER beim committen eines Armee Spielsteins (2.2)");
+						System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": FEHLER beim committen eines Flotte Spielsteins (2.2)");
 						this.getFacadeRuleResult().addMessage(TroopArmyRuleType.STACKING_LIMIT_MAX);
 						bReturn = false;
 					}
@@ -144,12 +146,12 @@ public class TroopArmyRuleFacade  extends GeneralRuleFacadeTHM{
 		}
 		return bReturn;
 	}
-	
-	public void setTroop(TroopArmy troop){
-		this.objTroopArmy = troop;
+		
+	public void setTroop(TroopFleet troop){
+		this.objTroopFleet = troop;
 	}
-	public TroopArmy getTroop(){
-		return this.objTroopArmy;
+	public TroopFleet getTroop(){
+		return this.objTroopFleet;
 	}
 	
 }

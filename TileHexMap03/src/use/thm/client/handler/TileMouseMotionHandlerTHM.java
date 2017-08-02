@@ -7,7 +7,6 @@ import java.awt.Point;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionListener;
-import java.awt.geom.Rectangle2D;
 import java.util.ArrayList;
 
 import javax.swing.JOptionPane;
@@ -17,7 +16,6 @@ import basic.zBasic.ExceptionZZZ;
 import basic.zBasic.ReflectCodeZZZ;
 import basic.zKernel.KernelZZZ;
 import basic.zKernelUI.component.KernelJPanelCascadedZZZ;
-import use.thm.client.component.ArmyTileTHM;
 import use.thm.client.component.HexCellTHM;
 import use.thm.client.component.TileTHM;
 import use.thm.client.event.EventCellEnteredTHM;
@@ -26,12 +24,18 @@ import use.thm.client.event.EventTileDroppedToCellTHM;
 import use.thm.client.event.ITileMoveEventBrokerUserTHM;
 import use.thm.client.event.TileMoveEventBrokerTHM;
 import use.thm.persistence.dao.AreaCellDao;
+import use.thm.persistence.dao.TileDao;
 import use.thm.persistence.daoFacade.TroopArmyDaoFacade;
+import use.thm.persistence.daoFacade.TroopFleetDaoFacade;
 import use.thm.persistence.hibernate.HibernateContextProviderSingletonTHM;
 import use.thm.persistence.model.AreaCell;
 import use.thm.persistence.model.CellId;
+import use.thm.persistence.model.Tile;
+import use.thm.persistence.model.TileType;
+import use.thm.persistence.model.Troop;
+import use.thm.persistence.model.TroopType;
 
-/** Mit dieser Klasse werden alle Maus-Ereignisse f�r die Spielsteine zusammengfasst
+/** Mit dieser Klasse werden alle Maus-Ereignisse für die Spielsteine zusammengfasst
  * Dadurch k�nnen gemeinsam genutzte Eigenschaften (z.B. Die Start-Zelle einer DragDrop-Bewegung oder der Spielstein selbst) einfacher verwendet werden.
  * 
  * Das Interface ITileMoveEventBroker erm�glicht es an die an den EventBroker registrierten Komponenten eine Event zu schicken (Zelle wurde betreten, Zelle wurde verlassen) 
@@ -100,7 +104,7 @@ public class TileMouseMotionHandlerTHM extends MouseAdapter implements MouseMoti
 		alCellEntered.add(objCell);
 	}
 	
-	/** Verk�rzt den bisher zurückgelegten Weg bis zu der angegebenen Zelle
+	/** Verkürzt den bisher zurückgelegten Weg bis zu der angegebenen Zelle
 	 * 
 	* @param objCell, Feld, das auf dem Weg liegen muss
 	* @return Anzahl der Felder, die eingespart wurden.
@@ -116,7 +120,7 @@ public class TileMouseMotionHandlerTHM extends MouseAdapter implements MouseMoti
 			
 	//		+++ TODO als eigenen Methode 
 			//In diesem Drag-Drop wurde bereits einmal auf diese Zelle gezogen.
-			//==> Die vorher �berquerten Felder werden aus der Liste genommen. Diese Z�ge werden quasi r�ckg�ngig gemacht.
+			//==> Die vorher überquerten Felder werden aus der Liste genommen. Diese Züge werden quasi rückgängig gemacht.
 			//         Bis zu dem Feld, auf dem man jetzt steht
 			
 			int iPosLast = alCellEntered.size() - 1; //-1 da der Index mit 0 anf�ngt
@@ -385,7 +389,7 @@ public class TileMouseMotionHandlerTHM extends MouseAdapter implements MouseMoti
 					
 					//Merke: 
 					//Hier wird eine Backend-Validierung vorgeschaltet. Dadurch würde verhindert, dass alle registrierten Zellen durchlaufen werden.
-					//Die Frontend-Validierung bleibt zunächst bestehen (20170730). Sie soll an Inkonsitenzen erinnern.
+					//Die Frontend-Validierung bleibt zunächst bestehen (20170730). Sie soll an Inkonsitenzen zwischen UI und Backen erinnern.
 					
 
 						//#####################################						
@@ -410,29 +414,65 @@ public class TileMouseMotionHandlerTHM extends MouseAdapter implements MouseMoti
 						    AreaCell objCellTemp = objAreaDao.findByKey(primaryKeyCell);//Spannend. Eine Transaction = Eine Session, d.h. es müsste dann wieder eine neue Session gemacht werden, beim zweiten DAO Aufruf.
 						    System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": Werte der neuen Zelle (X/Y): " + objCellTemp.getMapX() + "/" + objCellTemp.getMapY());
 							
-						    //TODO GOON 20170730: Mache hier eine Fallunterscheidung, je nachdem welcher Typ Spielstein gezogen wurde, Flotte oder Armee....
-							//###########################
-						    //A) FLOTTE
-						    //................................
-							//###########################
-						    
-							//###########################
-						    //B) ARMEE
-							TroopArmyDaoFacade objTroopDaoFacade = new TroopArmyDaoFacade(objContextHibernate);
-							bGoon = objTroopDaoFacade.updateTroopArmyPosition(sUniquename, objCellTemp);//Falls das aus irgendwelchen Gründen nicht erlaubt ist, anschliessend ein Veto einlegen.					
-
-							//DAS FUNKTIOINIERT IST ABER HIER DIE FALSCHE FUNKTIONALITÄT
+						    //DAS FUNKTIOINIERT IST ABER HIER DIE FALSCHE FUNKTIONALITÄT
 							//TODO GOON 20170730: Stelle im UI einen Button/Menüeintrag hierfür zur Verfügung
 							//bGoon = objTroopDaoFacade.deleteTroopArmy(sUniquename);//Falls das aus irgendwelchen Gründen nicht erlaubt ist, ein Veto einlegen.
-							if(!bGoon){
-								//Hole aus TroopArmyDaoFacade einen Grund ab, warum an dieser Stelle nix upgedatet werden darf.							
-								String sMessage = objTroopDaoFacade.getFacadeResult().getMessage(); //Hole die Meldung ab.
-								
-								//Mache nun eine Ausgabe, wie sonst in AreaCellTHM.onTileCreated(EventTileCreatedInCellTHM) 				
-								JOptionPane.showMessageDialog (objCellCur, sMessage);
-								
+						    
+						    //##################################
+						    //Mache hier eine Fallunterscheidung, je nachdem welcher Typ Spielstein gezogen wurde, Flotte oder Armee....						 
+						    //2.1. hole aus dem Uniquename den Art des Spielsteins.
+						    //TODO GOON 20170801: TileDaoFacace.... isTroop() .isFleet() .getTroopTile() Also diese if-Verschachtelung in eine flachere switch -Anweisung ändern.						    
+						    TileDao objTileDao = new TileDao(objContextHibernate);
+						    Tile objTileBackend = objTileDao.searchTileByUniquename(sUniquename);
+						    if(objTileBackend==null){
+						    	ExceptionZZZ ez = new ExceptionZZZ("Kein Spielstein mit dem Uniquename '" + sUniquename + "' gefunden.", ExceptionZZZ.iERROR_PARAMETER_VALUE, ReflectCodeZZZ.getPositionCurrent());
+						    	throw ez;
+						    }
+						    
+						    
+						    
+						    if(objTileBackend.getTileType().equalsIgnoreCase(TileType.TROOP.getAbbreviation())){
+							    Troop objTroopBackend = (Troop) objTileBackend;
+							    
+							    if(objTroopBackend.getTroopType().equalsIgnoreCase(TroopType.FLEET.getAbbreviation())){
+							    	//###########################
+							    	//A) FLOTTE
+							    	TroopFleetDaoFacade objTroopDaoFacade = new TroopFleetDaoFacade(objContextHibernate);
+									bGoon = objTroopDaoFacade.updateTroopFleetPosition(sUniquename, objCellTemp);//Falls das aus irgendwelchen Gründen nicht erlaubt ist, anschliessend ein Veto einlegen.
+									if(!bGoon){
+										//Hole aus TroopArmyDaoFacade einen Grund ab, warum an dieser Stelle nix upgedatet werden darf.							
+										String sMessage = objTroopDaoFacade.getFacadeResult().getMessage(); //Hole die Meldung ab.
+										
+										//Mache nun eine Ausgabe, wie sonst in AreaCellTHM.onTileCreated(EventTileCreatedInCellTHM) 				
+										JOptionPane.showMessageDialog (objCellCur, sMessage);
+									}
+							    	//###########################
+							    } else if(objTroopBackend.getTroopType().equalsIgnoreCase(TroopType.ARMY.getAbbreviation())){ 	
+							    	//###########################
+								    //B) ARMEE						    
+									TroopArmyDaoFacade objTroopDaoFacade = new TroopArmyDaoFacade(objContextHibernate);
+									bGoon = objTroopDaoFacade.updateTroopArmyPosition(sUniquename, objCellTemp);//Falls das aus irgendwelchen Gründen nicht erlaubt ist, anschliessend ein Veto einlegen.
+									if(!bGoon){
+										//Hole aus TroopArmyDaoFacade einen Grund ab, warum an dieser Stelle nix upgedatet werden darf.							
+										String sMessage = objTroopDaoFacade.getFacadeResult().getMessage(); //Hole die Meldung ab.
+										
+										//Mache nun eine Ausgabe, wie sonst in AreaCellTHM.onTileCreated(EventTileCreatedInCellTHM) 				
+										JOptionPane.showMessageDialog (objCellCur, sMessage);
+									}
 								//###########################
-							}else{
+							    }else{
+							    	ExceptionZZZ ez = new ExceptionZZZ("Armee mit dem Uniquename '" + sUniquename + "' gefunden. Aber der Typ '" + objTroopBackend.getTroopType() + "' wird hier noch nicht behandelt.", ExceptionZZZ.iERROR_PARAMETER_VALUE, ReflectCodeZZZ.getPositionCurrent());
+							    	throw ez;							    	
+							    }
+						    }else{
+						    	ExceptionZZZ ez = new ExceptionZZZ("Spielstein mit dem Uniquename '" + sUniquename + "' gefunden. Aber der Typ '" + objTileBackend.getTileType() + "' wird hier noch nicht behandelt.", ExceptionZZZ.iERROR_PARAMETER_VALUE, ReflectCodeZZZ.getPositionCurrent());
+						    	throw ez;
+						    }
+						    						    							
+						
+						    //##################################	
+						    //### 3. Mache im UI weiter, wenn das Backend O.k. gibt.
+							if(bGoon){
 								
 								//### Nach erfolgreicher vorgeschalteten Backendprüfung....
 //								TODO: Für den Spielstein eine "Undo-Möglichkeit anbieten, die durch den Doppelclick auf den Spielstein als Button sichtbar wird. Falls man den Stein versehentlich zu früh losgelassen hat.
@@ -479,7 +519,7 @@ public class TileMouseMotionHandlerTHM extends MouseAdapter implements MouseMoti
 								
 								//################
 							}												
-					} //bContinue == false
+					} //bGoon == false
 						} catch (ExceptionZZZ e) {
 							// TODO Auto-generated catch block
 							e.printStackTrace();

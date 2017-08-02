@@ -830,7 +830,7 @@ public class HexMapTHM extends KernelUseObjectZZZ implements ITileEventUserTHM {
 				String sY = objId.getMapY();
 								
 				//Anfangsaufstellung: TRUPPEN Komponente in einer Datenbank persistieren und in einer bestimmten Zelle per Event hinzufügen 			
-				if(sX.equals("1") && sY.equals("2")  | (sX.equals("1") & sY.equals("3")) | (sX.equals("1") & sY.equals("4"))){
+				if((sX.equals("1") && sY.equals("2"))  | (sX.equals("1") && sY.equals("3")) ){
 						boolean bGoon = false;
 						//20170629: Dies in eine Methode kapseln (DAO Klasse?). Ziel: Dies ohne Redundanz beim Einsetzen eines neuen Spielsteins verwenden.
 						TroopArmyDaoFacade objTroopDaoFacade = new TroopArmyDaoFacade(objContextHibernate);
@@ -855,7 +855,7 @@ public class HexMapTHM extends KernelUseObjectZZZ implements ITileEventUserTHM {
 							//Mache nun eine Ausgabe, wie sonst in AreaCellTHM.onTileCreated(EventTileCreatedInCellTHM) 				
 							JOptionPane.showMessageDialog (panelMap, sMessage);//TODO GOON: Eigentlich hier nicht ausgeben, sondern das Ergebnis für irgendwelche Frontend-Klassen zur Verfügung stellen, die dann ggfs. auch eine UI Komponente haben.
 						}
-				}else if(sX.equals("5")&& sY.equals("5")){
+				}else if((sX.equals("5") && sY.equals("5")) | (sX.equals("4") && sY.equals("6"))){
 					boolean bGoon = false;
 					//20170629: Dies in eine Methode kapseln (DAO Klasse?). Ziel: Dies ohne Redundanz beim Einsetzen eines neuen Spielsteins verwenden.
 					TroopFleetDaoFacade objFleetDaoFacade = new TroopFleetDaoFacade(objContextHibernate);
@@ -908,7 +908,7 @@ public class HexMapTHM extends KernelUseObjectZZZ implements ITileEventUserTHM {
 					}					
 				}																
 				
-				if(bUseTestOccupied && sX.equals("1") && sY.equals("4")){	//Das nicht in einen else---Fall packen, sonst wird dieser Fall ggfs. nicht ausgeführt.					
+				if(bUseTestOccupied && sX.equals("1") && sY.equals("3")){	//Das nicht in einen else---Fall packen, sonst wird dieser Fall ggfs. nicht ausgeführt.					
 					//TEST: FALSCHES PLATZIEREN DER TRUPPEN Komponente in einer bestimmten Zelle (Vom richtigen Geländetyp), die aber schon BESETZT ist per Event hinzufügen
 					boolean bGoon = false;	
 

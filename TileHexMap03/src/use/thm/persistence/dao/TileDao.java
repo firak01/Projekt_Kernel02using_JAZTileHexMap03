@@ -10,39 +10,40 @@ import org.hibernate.Session;
 
 import use.thm.persistence.hibernate.HibernateContextProviderSingletonTHM;
 import use.thm.persistence.model.AreaCell;
+import use.thm.persistence.model.Tile;
 import use.thm.persistence.model.Troop;
 import use.thm.persistence.model.TroopArmy;
 import basic.zBasic.ExceptionZZZ;
 import basic.zBasic.persistence.GeneralDaoZZZ;
-public class TroopArmyDao<T> extends TroopDao<T> {
+public class TileDao<T> extends GeneralDaoZZZ<T> {
 	private static final long serialVersionUID = 1L;
 
 	/* Constructor */
-	public TroopArmyDao() throws ExceptionZZZ{
+	public TileDao() throws ExceptionZZZ{
 		super();
-		this.installLoger(TroopArmy.class);//Durch das Installieren des Loggers mit der korrekten Klasse wird GeneralDao.getT() erst korrekt ermöglicht.
+		this.installLoger(Tile.class);//Durch das Installieren des Loggers mit der korrekten Klasse wird GeneralDao.getT() erst korrekt ermöglicht.
 	}
-	public TroopArmyDao(HibernateContextProviderSingletonTHM objContextHibernate) throws ExceptionZZZ{
+	public TileDao(HibernateContextProviderSingletonTHM objContextHibernate) throws ExceptionZZZ{
 		super(objContextHibernate);		
-		this.installLoger(TroopArmy.class);//Durch das Installieren des Loggers mit der korrekten Klasse wird GeneralDao.getT() erst korrekt ermöglicht.
+		this.installLoger(Tile.class);//Durch das Installieren des Loggers mit der korrekten Klasse wird GeneralDao.getT() erst korrekt ermöglicht.
 	}
-	public TroopArmyDao(HibernateContextProviderSingletonTHM objContextHibernate, String sFlagControl) throws ExceptionZZZ{
+	public TileDao(HibernateContextProviderSingletonTHM objContextHibernate, String sFlagControl) throws ExceptionZZZ{
 		super(objContextHibernate, sFlagControl);
-		this.installLoger(TroopArmy.class);//Durch das Installieren des Loggers mit der korrekten Klasse wird GeneralDao.getT() erst korrekt ermöglicht.
+		this.installLoger(Tile.class);//Durch das Installieren des Loggers mit der korrekten Klasse wird GeneralDao.getT() erst korrekt ermöglicht.
 	}
-	public TroopArmyDao(HibernateContextProviderSingletonTHM objContextHibernate, String[] saFlagControl) throws ExceptionZZZ{
+	public TileDao(HibernateContextProviderSingletonTHM objContextHibernate, String[] saFlagControl) throws ExceptionZZZ{
 		super(objContextHibernate, saFlagControl);
-		this.installLoger(TroopArmy.class);//Durch das Installieren des Loggers mit der korrekten Klasse wird GeneralDao.getT() erst korrekt ermöglicht.
+		this.installLoger(Tile.class);//Durch das Installieren des Loggers mit der korrekten Klasse wird GeneralDao.getT() erst korrekt ermöglicht.
 	}
 	
     public List<T> findLazyAll(int first, int max){
-    	return this.findLazyAll("TroopArmy", first, max);
+    	return this.findLazyAll("Tile", first, max);
     }
     
 	@Override
 	public int count(){
-		this.getLog().debug("counting TroopArmies");
-		Query q = getSession().createQuery("select count(t) from TroopArmy t");
+		this.getLog().debug("counting Tiles");
+		Query q = getSession().createQuery("select count(t) from Tile t");
 		int count = ((Long)q.uniqueResult()).intValue();
 		return count;
 	}
@@ -53,7 +54,7 @@ public class TroopArmyDao<T> extends TroopDao<T> {
 	 */
 	@Override
 	public int countByCriteria(Map<String, Object> whereBy, 	Map<String, String> filter) {
-		return this.countByCriteria("TroopArmy", whereBy, filter);
+		return this.countByCriteria("Tile", whereBy, filter);
 	}
 
 
@@ -87,8 +88,8 @@ public class TroopArmyDao<T> extends TroopDao<T> {
 	
 	//####### EIGENE METHODEN ###########
 	//....
-		public TroopArmy searchTroopArmyByUniquename(String sUniquename){
-			TroopArmy objReturn = null;
+		public Tile searchTileByUniquename(String sUniquename){
+			Tile objReturn = null;
 			
 //			select mate
 //			from Cat as cat
@@ -131,19 +132,19 @@ public class TroopArmyDao<T> extends TroopDao<T> {
 			//Query query = session.createQuery("from Tile as tableTile where tableTile.objHexCell.id.mapAlias = :mapAlias AND tableTile.objHexCell.id.mapX = :mapX AND tableTile.objHexCell.id.mapY = :mapY");
 			//Query query = session.createQuery("from TroopArmy as tableTile where tableTile.objHexCell.id.mapAlias = :mapAlias AND tableTile.objHexCell.id.mapX = :mapX AND tableTile.objHexCell.id.mapY = :mapY");
 			
-			Query query = session.createQuery("from TroopArmy as tableTile where tableTile.tileIdObject.uniquename = :uniqueName");//Merke: In TroopArmy ist der uniquename transient. Also kommt man über das Objekt daran.
+			Query query = session.createQuery("from Tile as tableTile where tableTile.tileIdObject.uniquename = :uniqueName");//Merke: In TroopArmy ist der uniquename transient. Also kommt man über das Objekt daran.
 			query.setString("uniqueName", sUniquename);
 
 			
 			Object objResult = query.uniqueResult();//für einen einzelwert		
 			//listReturn = query.list(); //Für meherer Werte
 			
-			objReturn = (TroopArmy) objResult;
+			objReturn = (Tile) objResult;
 			return objReturn;
 		}
 		
-		public List<TroopArmy> searchTroopArmyCollectionByHexCell(String sMapAlias, String sX, String sY){
-			List<TroopArmy> listReturn = new ArrayList<TroopArmy>();
+		public List<Tile> searchTileCollectionByHexCell(String sMapAlias, String sX, String sY){
+			List<Tile> listReturn = new ArrayList<Tile>();
 			
 //			select mate
 //			from Cat as cat
@@ -175,7 +176,7 @@ public class TroopArmyDao<T> extends TroopDao<T> {
 			//JA, das funktioniert
 			//Query query = session.createQuery("from Tile as tableTile where tableTile.objHexCell.id.mapAlias = :mapAlias");
 			//Query query = session.createQuery("from Tile as tableTile where tableTile.objHexCell.id.mapAlias = :mapAlias AND tableTile.objHexCell.id.mapX = :mapX AND tableTile.objHexCell.id.mapY = :mapY");
-			Query query = session.createQuery("from TroopArmy as tableTile where tableTile.objHexCell.id.mapAlias = :mapAlias AND tableTile.objHexCell.id.mapX = :mapX AND tableTile.objHexCell.id.mapY = :mapY");
+			Query query = session.createQuery("from Tile as tableTile where tableTile.objHexCell.id.mapAlias = :mapAlias AND tableTile.objHexCell.id.mapX = :mapX AND tableTile.objHexCell.id.mapY = :mapY");
 			
 			query.setString("mapAlias", sMapAlias);
 			query.setString("mapX", sX);

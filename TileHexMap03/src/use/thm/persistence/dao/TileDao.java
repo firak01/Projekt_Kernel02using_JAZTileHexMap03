@@ -11,10 +11,14 @@ import org.hibernate.Session;
 import use.thm.persistence.hibernate.HibernateContextProviderSingletonTHM;
 import use.thm.persistence.model.AreaCell;
 import use.thm.persistence.model.Tile;
+import use.thm.persistence.model.TileType;
 import use.thm.persistence.model.Troop;
 import use.thm.persistence.model.TroopArmy;
+import use.thm.persistence.model.TroopType;
 import basic.zBasic.ExceptionZZZ;
+import basic.zBasic.ReflectCodeZZZ;
 import basic.zBasic.persistence.GeneralDaoZZZ;
+import basic.zBasic.util.datatype.string.StringZZZ;
 public class TileDao<T> extends GeneralDaoZZZ<T> {
 	private static final long serialVersionUID = 1L;
 
@@ -136,7 +140,7 @@ public class TileDao<T> extends GeneralDaoZZZ<T> {
 			query.setString("uniqueName", sUniquename);
 
 			
-			Object objResult = query.uniqueResult();//für einen einzelwert		
+			Object objResult = query.uniqueResult();//für einen einzelwert, darum ist es wichtig, das der uniquename beim Einfügen eines Spielsteins auch wirklich unique ist... Bei 2 gefundenen Werten kammt es hier zum begründeten Fehler. 		
 			//listReturn = query.list(); //Für meherer Werte
 			
 			objReturn = (Tile) objResult;
@@ -190,4 +194,53 @@ public class TileDao<T> extends GeneralDaoZZZ<T> {
 					
 			return listReturn;
 		}
+		
+		public String readTileType(Tile objTile) throws ExceptionZZZ{
+			String sReturn = null;//Wenn der Spielstein keine Troop ist (egal ob Armee oder Flotte) wird NULL zurückgeliefert.
+			main:{
+				if(objTile==null){
+					ExceptionZZZ ez = new ExceptionZZZ("Kein Spielstein übergeben", ExceptionZZZ.iERROR_PARAMETER_MISSING, ReflectCodeZZZ.getPositionCurrent());
+			    	throw ez;
+				}
+				
+				sReturn = this.readTroopType(objTile);
+				if(!StringZZZ.isEmpty(sReturn)) break main;
+				
+				//TODO: Falls es mal andere Spielsteine als Truppen (also: Flotten / Armeen) gibt, diese hier abfragen.
+				
+				
+			}//end main
+			return sReturn;
+		}
+		
+		public String readTroopType(Tile objTile) throws ExceptionZZZ{
+			String sReturn = null;//Wenn der Spielstein keine Troop ist (egal ob Armee oder Flotte) wird NULL zurückgeliefert.
+			main:{
+				if(objTile==null){
+					ExceptionZZZ ez = new ExceptionZZZ("Kein Spielstein übergeben", ExceptionZZZ.iERROR_PARAMETER_MISSING, ReflectCodeZZZ.getPositionCurrent());
+			    	throw ez;
+				}
+				
+				if(this.isTroop(objTile)){
+					Troop objTroopBackend = (Troop) objTile;
+				    sReturn = objTroopBackend.getTroopType();				    
+				}
+								
+			}//end main:
+			return sReturn;
+		}
+		public boolean isTroop(Tile objTile) throws ExceptionZZZ{
+			boolean bReturn = false;
+			main:{
+				if(objTile==null){
+					ExceptionZZZ ez = new ExceptionZZZ("Kein Spielstein übergeben", ExceptionZZZ.iERROR_PARAMETER_MISSING, ReflectCodeZZZ.getPositionCurrent());
+			    	throw ez;
+				}
+				
+				bReturn = TileType.TROOP.getAbbreviation().equalsIgnoreCase(objTile.getTileType());
+
+			}//end main:
+			return bReturn;
+		}
+		
 }

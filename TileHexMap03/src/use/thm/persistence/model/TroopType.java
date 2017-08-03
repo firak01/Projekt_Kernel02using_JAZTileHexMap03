@@ -8,7 +8,8 @@ import javax.persistence.Embeddable;
 }
 */
 
-//20170201: Mache diesen AreaType embeddable. Ziel: Es soll nicht mehr als BLOB in der Datenbank (SQLITE) gespeichert werden.
+//Embeddable. Ziel: Es soll nicht mehr als BLOB in der Datenbank (SQLITE) gespeichert werden.
+//WICHTIG: Die Abkürzungen sollen für alle Spielsteine unterschiedlich sein. Das verflacht die Fallunterscheidung . TileMouseMotionHandlerTHM.onMouseRelease(...) und TileDao.getTroopType()  (20170802) 
 @Embeddable
 public enum TroopType { 
 ARMY("Armee", "AR"),

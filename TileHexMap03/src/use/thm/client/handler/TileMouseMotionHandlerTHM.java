@@ -174,7 +174,7 @@ public class TileMouseMotionHandlerTHM extends MouseAdapter implements MouseMoti
 				sComponentDetail = "Klasse: " + objMapItem.getClass().getName();
 				//if(objMapItem.getClass().getName().equals(HexCellTHM.class.getName())){
 				if(!(objMapItem instanceof HexCellTHM)){
-					sComponentDetail = "KEIN G�LTIGES ZIEL.";
+					sComponentDetail = "KEIN GÜLTIGES ZIEL.";
 				}else{
 					//++++++++++ Aktuelle Zelle setzen
 					HexCellTHM objCell = (HexCellTHM) objMapItem;				
@@ -236,11 +236,11 @@ public class TileMouseMotionHandlerTHM extends MouseAdapter implements MouseMoti
 					HexCellTHM objCell = (HexCellTHM) objMapItem;
 					sComponentDetail = "; X=" + objCell.getMapX() + "/Y=" + objCell.getMapY();
 				}else{
-					sComponentDetail = "KEIN G�LTIGES ZIEL.";
+					sComponentDetail = "KEIN GÜLTIGES ZIEL.";
 				}
 			}//end if objMapItem!=null
 						
-			String sMessage = "Bin �ber der Komponente: " + sComponentDetail;
+			String sMessage = "Bin über der Komponente: " + sComponentDetail;
 			//JOptionPane.showMessageDialog(this.getTile(), sMessage, "Ende der Bewegung...", JOptionPane.INFORMATION_MESSAGE, null);
 			System.out.println("Start der Bewegung: " + sMessage);
 			//END DEBUG AUSGABE ++++++++++++++++++++++++++++++++++++++
@@ -259,7 +259,7 @@ public class TileMouseMotionHandlerTHM extends MouseAdapter implements MouseMoti
 
 	public void mouseMoved(MouseEvent arg0) {
 		//MERKE DER EVENT WIRD IMMER AUGEF�HRT, SOBALD SICH DER CURSOR �BER DER COMPONENTE BEFINDET....
-		System.out.println("�BER DER COMPONENTE "+this.getTile().getMapX() + "/" + this.getTile().getMapY());
+		System.out.println("ÜBER DER COMPONENTE "+this.getTile().getMapX() + "/" + this.getTile().getMapY());
 		Cursor objCursor = new Cursor(Cursor.HAND_CURSOR);		
 		this.getTile().setCursor(objCursor);  //Den Cursor zum "IsMovable setzen"
 		/*
@@ -280,7 +280,7 @@ public class TileMouseMotionHandlerTHM extends MouseAdapter implements MouseMoti
 	public void mouseClicked(MouseEvent arg0) {
 		
 		//TODO: Vom objTile aus kann man auf den TileStore zugreifen.
-		//             Daraus k�nnen dann Informationen entnommen werden, Truppenst�rke, etc.
+		//             Daraus können dann Informationen entnommen werden, Truppenstärke, etc.
 		
 		//Momentan beim Doppelclick nur die Position anzeigen lassen
 		int iCount =arg0.getClickCount();
@@ -289,9 +289,9 @@ public class TileMouseMotionHandlerTHM extends MouseAdapter implements MouseMoti
 		case 1:
 			break;
 		case 2:
-			//TODO: Dies als eigene Dialogbox mit einem Customizbaren Panel, in dem z.B. eine Aktion "Aufl�sen" eingebaut wird.
+			//TODO: Dies als eigene Dialogbox mit einem Customizbaren Panel, in dem z.B. eine Aktion "Auflösen" eingebaut wird.
 			/*
-			// +++ Nicht einfach L�schen, sondern mal abfragen
+			// +++ Nicht einfach Löschen, sondern mal abfragen
 			iErg = JOptionPane.showConfirmDialog(this.getTile(), "Would you realy like to remove this square ?", "Remove square ?", JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE);
 			if(iErg == JOptionPane.YES_OPTION){
 				// L�schen
@@ -305,7 +305,7 @@ public class TileMouseMotionHandlerTHM extends MouseAdapter implements MouseMoti
 			JOptionPane.showMessageDialog(this.getTile(), sMessage, "Detailangaben....", JOptionPane.INFORMATION_MESSAGE, null);
 			
 			break;
-		} //END Swithc
+		} //END Switch
 		
 		/*
 		//aktuelles Quadrat entfernen, wenn Doppelclick
@@ -421,7 +421,7 @@ public class TileMouseMotionHandlerTHM extends MouseAdapter implements MouseMoti
 						    //##################################
 						    //Mache hier eine Fallunterscheidung, je nachdem welcher Typ Spielstein gezogen wurde, Flotte oder Armee....						 
 						    //2.1. hole aus dem Uniquename den Art des Spielsteins.
-						    //TODO GOON 20170801: TileDaoFacace.... isTroop() .isFleet() .getTroopTile() Also diese if-Verschachtelung in eine flachere switch -Anweisung ändern.						    
+						    //TODO GOON 20170801: TileDaoFacade.... isTroop() .isFleet() .getTroopTile() Also diese if-Verschachtelung in eine flachere switch -Anweisung ändern.						    
 						    TileDao objTileDao = new TileDao(objContextHibernate);
 						    Tile objTileBackend = objTileDao.searchTileByUniquename(sUniquename);
 						    if(objTileBackend==null){
@@ -429,12 +429,10 @@ public class TileMouseMotionHandlerTHM extends MouseAdapter implements MouseMoti
 						    	throw ez;
 						    }
 						    
+						    String  sTileType = objTileDao.readTileType(objTileBackend);//Merke: Dann muss der Type über alle Tiles unique sein.
+						    //switch(sTileType){ //ab Java 1.7 Strings in switch prüfbar.
 						    
-						    
-						    if(objTileBackend.getTileType().equalsIgnoreCase(TileType.TROOP.getAbbreviation())){
-							    Troop objTroopBackend = (Troop) objTileBackend;
-							    
-							    if(objTroopBackend.getTroopType().equalsIgnoreCase(TroopType.FLEET.getAbbreviation())){
+							    if(TroopType.FLEET.getAbbreviation().equalsIgnoreCase(sTileType)){ 
 							    	//###########################
 							    	//A) FLOTTE
 							    	TroopFleetDaoFacade objTroopDaoFacade = new TroopFleetDaoFacade(objContextHibernate);
@@ -447,7 +445,7 @@ public class TileMouseMotionHandlerTHM extends MouseAdapter implements MouseMoti
 										JOptionPane.showMessageDialog (objCellCur, sMessage);
 									}
 							    	//###########################
-							    } else if(objTroopBackend.getTroopType().equalsIgnoreCase(TroopType.ARMY.getAbbreviation())){ 	
+							    } else if(TroopType.ARMY.getAbbreviation().equalsIgnoreCase(sTileType)){ 	
 							    	//###########################
 								    //B) ARMEE						    
 									TroopArmyDaoFacade objTroopDaoFacade = new TroopArmyDaoFacade(objContextHibernate);
@@ -459,13 +457,9 @@ public class TileMouseMotionHandlerTHM extends MouseAdapter implements MouseMoti
 										//Mache nun eine Ausgabe, wie sonst in AreaCellTHM.onTileCreated(EventTileCreatedInCellTHM) 				
 										JOptionPane.showMessageDialog (objCellCur, sMessage);
 									}
-								//###########################
-							    }else{
-							    	ExceptionZZZ ez = new ExceptionZZZ("Armee mit dem Uniquename '" + sUniquename + "' gefunden. Aber der Typ '" + objTroopBackend.getTroopType() + "' wird hier noch nicht behandelt.", ExceptionZZZ.iERROR_PARAMETER_VALUE, ReflectCodeZZZ.getPositionCurrent());
-							    	throw ez;							    	
-							    }
+								//###########################							
 						    }else{
-						    	ExceptionZZZ ez = new ExceptionZZZ("Spielstein mit dem Uniquename '" + sUniquename + "' gefunden. Aber der Typ '" + objTileBackend.getTileType() + "' wird hier noch nicht behandelt.", ExceptionZZZ.iERROR_PARAMETER_VALUE, ReflectCodeZZZ.getPositionCurrent());
+						    	ExceptionZZZ ez = new ExceptionZZZ("Spielstein mit dem Uniquename '" + sUniquename + "' gefunden. Aber der Typ '" + sTileType + "' wird hier noch nicht behandelt.", ExceptionZZZ.iERROR_PARAMETER_VALUE, ReflectCodeZZZ.getPositionCurrent());
 						    	throw ez;
 						    }
 						    						    							

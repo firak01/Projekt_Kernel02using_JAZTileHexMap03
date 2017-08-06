@@ -1720,7 +1720,7 @@ public abstract class GeneralDAO<T> implements IDaoInterface<T>{
 	
 	
 	/**
-	 * This method return all elemnts from one column.
+	 * This method return all elements from one column.
 	 * 
 	 * @param column
 	 * @return

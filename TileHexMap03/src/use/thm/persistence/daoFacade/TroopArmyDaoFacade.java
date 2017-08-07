@@ -31,6 +31,7 @@ import use.thm.persistence.model.CellId;
 import use.thm.persistence.model.Tile;
 import use.thm.persistence.model.TileId;
 import use.thm.persistence.model.TroopArmy;
+import use.thm.persistence.model.TroopType;
 import use.thm.rule.facade.TroopArmyRuleFacade;
 import use.thm.rule.model.TroopArmyRuleType;
 
@@ -41,7 +42,7 @@ import use.thm.rule.model.TroopArmyRuleType;
  * @author Fritz Lindhauer
  *
  */
-public class TroopArmyDaoFacade extends GeneralDaoFacadeZZZ{
+public class TroopArmyDaoFacade extends TileDaoFacade{
 		
 	public TroopArmyDaoFacade(HibernateContextProviderZZZ objContextHibernate){
 		super(objContextHibernate);
@@ -521,5 +522,11 @@ public class TroopArmyDaoFacade extends GeneralDaoFacadeZZZ{
 					
 		}//end main:
 		return bReturn;
+	}
+	
+	
+	@Override
+	public String getFacadeType() {
+		return TroopType.ARMY.name();
 	}
 }

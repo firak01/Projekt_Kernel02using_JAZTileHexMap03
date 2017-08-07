@@ -106,7 +106,8 @@ public class GhostDropManagerHexMapPanelTHM extends AbstractGhostDropManager imp
 					    AreaCell objCellTemp = objAreaDao.findByKey(primaryKeyCell);//Spannend. Eine Transaction = Eine Session, d.h. es müsste dann wieder eine neue Session gemacht werden, beim zweiten DAO Aufruf.
 					    
 						TroopArmyDaoFacade objTroopDaoFacade = new TroopArmyDaoFacade(objContextHibernate);
-						String sUniquename = "ARMY UNIQUE NEW"; //TODO GOON 20170703: BERECHNE DEN NÄCHSTEN uniquenamen einer Truppe.
+						//String sUniquename = "ARMY UNIQUE NEW"; //TODO GOON 20170703: BERECHNE DEN NÄCHSTEN uniquenamen einer Truppe.
+						String sUniquename = objTroopDaoFacade.computeUniquename();
 						bGoon = objTroopDaoFacade.insertTroopArmy(sUniquename, objCellTemp);//Falls das aus irgendwelchen Gründen nicht erlaubt ist, ein Veto einlegen.
 						if(!bGoon){
 							//0170703: Hole auch irgendwie einen Grund ab, warum an dieser Stelle nix eingefügt werden darf.//Dies muss aus TroopArmyDaoFacade abgeholt werden.							

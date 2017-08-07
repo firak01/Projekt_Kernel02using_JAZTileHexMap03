@@ -834,7 +834,8 @@ public class HexMapTHM extends KernelUseObjectZZZ implements ITileEventUserTHM {
 						boolean bGoon = false;
 						//20170629: Dies in eine Methode kapseln (DAO Klasse?). Ziel: Dies ohne Redundanz beim Einsetzen eines neuen Spielsteins verwenden.
 						TroopArmyDaoFacade objTroopDaoFacade = new TroopArmyDaoFacade(objContextHibernate);
-						String sUniquename = "ARMY UNIQUE " + sY;//TODO GOON : sY als Uniquename zu verwenden ist nur heuristisch und nicht wirklich UNIQUE
+						//String sUniquename = "ARMY UNIQUE " + sY;//TODO GOON : sY als Uniquename zu verwenden ist nur heuristisch und nicht wirklich UNIQUE
+						String sUniquename = objTroopDaoFacade.computeUniquename();
 						bGoon = objTroopDaoFacade.insertTroopArmy(sUniquename, objCellTemp);
 						if(bGoon){
 														
@@ -859,7 +860,8 @@ public class HexMapTHM extends KernelUseObjectZZZ implements ITileEventUserTHM {
 					boolean bGoon = false;
 					//20170629: Dies in eine Methode kapseln (DAO Klasse?). Ziel: Dies ohne Redundanz beim Einsetzen eines neuen Spielsteins verwenden.
 					TroopFleetDaoFacade objFleetDaoFacade = new TroopFleetDaoFacade(objContextHibernate);
-					String sUniquename = "FLEET UNIQUE " + sY;//TODO GOON : sY als Uniquename zu verwenden ist nur heuristisch und nicht wirklich UNIQUE
+					//String sUniquename = "FLEET UNIQUE " + sY;//TODO GOON : sY als Uniquename zu verwenden ist nur heuristisch und nicht wirklich UNIQUE
+					String sUniquename = objFleetDaoFacade.computeUniquename();
 					bGoon = objFleetDaoFacade.insertTroopFleet(sUniquename, objCellTemp);
 					if(bGoon){
 						

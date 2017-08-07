@@ -1,0 +1,33 @@
+package use.thm.persistence.daoFacade;
+
+import basic.persistence.daoFacade.GeneralDaoFacadeZZZ;
+import basic.zBasic.persistence.HibernateContextProviderZZZ;
+import basic.zBasic.persistence.interfaces.IBackendPersistenceFacadeZZZ;
+import basic.zBasic.util.datatype.dateTime.DateTimeZZZ;
+
+public abstract class TileDaoFacade extends GeneralDaoFacadeZZZ implements IBackendPersistenceFacadeZZZ{
+	public TileDaoFacade(HibernateContextProviderZZZ objContextHibernate){
+		super(objContextHibernate);
+	}
+	
+	public abstract String getFacadeType();
+	
+	public  String computeUniquename(){
+		String sReturn = new String("");
+		main:{
+			String sFacadeType = this.getFacadeType();
+			sReturn = TileDaoFacade.computeUniquename(sFacadeType);			
+		}
+		return sReturn;
+	}
+	
+	public static String computeUniquename(String sFacadeType){
+		String sReturn = new String("");
+		main:{
+			String sTimestamp = DateTimeZZZ.computeTimestampUniqueString();
+			sReturn = sFacadeType + "_" + sTimestamp;
+		}//end main:
+		return sReturn;
+	}
+	
+}

@@ -206,7 +206,7 @@ public class TileDao<T> extends GeneralDaoZZZ<T> {
 				sReturn = this.readTroopType(objTile);
 				if(!StringZZZ.isEmpty(sReturn)) break main;
 				
-				//TODO: Falls es mal andere Spielsteine als Truppen (also: Flotten / Armeen) gibt, diese hier abfragen.
+				//TODO: Falls es mal andere Spielsteine als Truppen (also anderer als: Flotten / Armeen) gibt, diese hier abfragen.
 				
 				
 			}//end main

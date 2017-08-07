@@ -17,7 +17,7 @@ import use.thm.persistence.model.TroopArmy;
 import use.thm.persistence.model.TroopType;
 import basic.zBasic.ExceptionZZZ;
 import basic.zBasic.ReflectCodeZZZ;
-import basic.zBasic.persistence.GeneralDaoZZZ;
+import basic.zBasic.persistence.dao.GeneralDaoZZZ;
 import basic.zBasic.util.datatype.string.StringZZZ;
 public class TileDao<T> extends GeneralDaoZZZ<T> {
 	private static final long serialVersionUID = 1L;
@@ -206,7 +206,7 @@ public class TileDao<T> extends GeneralDaoZZZ<T> {
 				sReturn = this.readTroopType(objTile);
 				if(!StringZZZ.isEmpty(sReturn)) break main;
 				
-				//TODO: Falls es mal andere Spielsteine als Truppen (also anderer als: Flotten / Armeen) gibt, diese hier abfragen.
+				//TODO: Falls es mal andere Spielsteine als Truppen (also andere als: Flotten / Armeen) gibt, diese hier abfragen.
 				
 				
 			}//end main

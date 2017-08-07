@@ -13,7 +13,7 @@ import use.thm.persistence.model.AreaCell;
 import use.thm.persistence.model.Troop;
 import use.thm.persistence.model.TroopArmy;
 import basic.zBasic.ExceptionZZZ;
-import basic.zBasic.persistence.GeneralDaoZZZ;
+import basic.zBasic.persistence.dao.GeneralDaoZZZ;
 public class TroopArmyDao<T> extends TroopDao<T> {
 	private static final long serialVersionUID = 1L;
 

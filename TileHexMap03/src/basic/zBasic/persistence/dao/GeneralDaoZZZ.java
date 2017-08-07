@@ -1,4 +1,4 @@
-package basic.zBasic.persistence;
+package basic.zBasic.persistence.dao;
 
 import java.util.HashMap;
 import java.util.List;

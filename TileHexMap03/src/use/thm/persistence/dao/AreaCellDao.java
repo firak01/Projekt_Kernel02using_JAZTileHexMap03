@@ -9,7 +9,7 @@ import org.hibernate.Query;
 import use.thm.persistence.hibernate.HibernateContextProviderSingletonTHM;
 import use.thm.persistence.model.AreaCell;
 import basic.zBasic.ExceptionZZZ;
-import basic.zBasic.persistence.GeneralDaoZZZ;
+import basic.zBasic.persistence.dao.GeneralDaoZZZ;
 public class AreaCellDao extends GeneralDaoZZZ<AreaCell> {
 	private static final long serialVersionUID = 1L;
 

@@ -14,7 +14,7 @@ import use.thm.persistence.model.Troop;
 import use.thm.persistence.model.TroopArmy;
 import use.thm.persistence.model.TroopFleet;
 import basic.zBasic.ExceptionZZZ;
-import basic.zBasic.persistence.GeneralDaoZZZ;
+import basic.zBasic.persistence.dao.GeneralDaoZZZ;
 public class TroopFleetDao<T> extends TroopDao<T> {
 	private static final long serialVersionUID = 1L;
 

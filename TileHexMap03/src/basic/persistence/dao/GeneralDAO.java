@@ -914,7 +914,7 @@ public abstract class GeneralDAO<T> implements IDaoInterface<T>{
 		this.commit();
 		return list;
 	}
-	
+		
 	protected List<Integer> findIDColumnByHQL(String hql) {
 		this.begin();
 		Query q = getSession().createQuery(hql);
@@ -1651,6 +1651,66 @@ public abstract class GeneralDAO<T> implements IDaoInterface<T>{
 	//return this.refreshList(list);
 	return timestamp;
 	
+}
+	
+	
+	/**FGL: Gib den Maximalwert einer IntegerSpalte zurück. 
+	 *          Inspiriert aus maxDateByCriteria(...)
+	 * @param tableName
+	 * @param column
+	 * @param whereBy
+	 * @return
+	 */
+	protected Integer maxIntegerByCriteria(String tableName, String column, Map<String, Object> whereBy) {
+		
+	this.begin();
+	
+	//initialize
+	String hql = "select max("+column+") from "+tableName+" g ";
+
+	//Create hql String
+	hql += this.createHQLCriteria(whereBy, new ArrayList<String>(), new HashMap<String, String>());
+	
+	//create query, hql is here complete		
+	Query q = getSession().createQuery(hql);
+	//add criteria(whereBy) Elements to the List
+	this.addWhereByElements(q, whereBy);
+	Integer result = ((Integer)q.uniqueResult());
+	this.commit();
+	
+	Integer intReturn  = (result != null) ? result : null;
+	//return this.refreshList(list);
+	return intReturn;
+	
+}
+	
+	/**FGL: Gib den Minimalwert einer IntegerSpalte zurück. 
+	 *          Inspiriert aus maxDateByCriteria(...)
+	 * @param tableName
+	 * @param column
+	 * @param whereBy
+	 * @return
+	 */
+	protected Integer minIntegerByCriteria(String tableName, String column, Map<String, Object> whereBy) {
+		
+	this.begin();
+	
+	//initialize
+	String hql = "select min("+column+") from "+tableName+" g ";
+
+	//Create hql String
+	hql += this.createHQLCriteria(whereBy, new ArrayList<String>(), new HashMap<String, String>());
+	
+	//create query, hql is here complete		
+	Query q = getSession().createQuery(hql);
+	//add criteria(whereBy) Elements to the List
+	this.addWhereByElements(q, whereBy);
+	Integer result = ((Integer)q.uniqueResult());
+	this.commit();
+	
+	Integer intReturn  = (result != null) ? result : null;
+	//return this.refreshList(list);
+	return intReturn;	
 }
 	
 	protected List<T> findByCriteriaAndDaysBefore(String table, String column, Map<String, Object> whereBy, int daysBefore){

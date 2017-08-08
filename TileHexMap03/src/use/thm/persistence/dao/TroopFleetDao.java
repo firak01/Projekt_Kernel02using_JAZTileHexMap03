@@ -36,26 +36,28 @@ public class TroopFleetDao<T> extends TroopDao<T> {
 		this.installLoger(TroopFleet.class);//Durch das Installieren des Loggers mit der korrekten Klasse wird GeneralDao.getT() erst korrekt ermöglicht.
 	}
 	
-    public List<T> findLazyAll(int first, int max){
-    	return this.findLazyAll("TroopFleet", first, max);
-    }
-    
-	@Override
-	public int count(){
-		this.getLog().debug("counting TroopFleets");
-		Query q = getSession().createQuery("select count(t) from TroopFleet t");
-		int count = ((Long)q.uniqueResult()).intValue();
-		return count;
-	}
-	
-	
-	/* (non-Javadoc)
-	 * @see use.thm.persistence.dao.GeneralDAO#countByCriteria(java.util.Map, java.util.Map)
-	 */
-	@Override
-	public int countByCriteria(Map<String, Object> whereBy, 	Map<String, String> filter) {
-		return this.countByCriteria("TroopFleet", whereBy, filter);
-	}
+	//Den Namen des Aktuellen Objekts kann ich nun auslesen.
+	//Darum diese Methode generisch in die DaoZZZ - Klasse ausgelagert.
+//    public List<T> findLazyAll(int first, int max){
+//    	return this.findLazyAll("TroopFleet", first, max);
+//    }
+//    
+//	@Override
+//	public int count(){
+//		this.getLog().debug("counting TroopFleets");
+//		Query q = getSession().createQuery("select count(t) from TroopFleet t");
+//		int count = ((Long)q.uniqueResult()).intValue();
+//		return count;
+//	}
+//	
+//	
+//	/* (non-Javadoc)
+//	 * @see use.thm.persistence.dao.GeneralDAO#countByCriteria(java.util.Map, java.util.Map)
+//	 */
+//	@Override
+//	public int countByCriteria(Map<String, Object> whereBy, 	Map<String, String> filter) {
+//		return this.countByCriteria("TroopFleet", whereBy, filter);
+//	}
 
 
 	/* (non-Javadoc)

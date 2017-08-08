@@ -9,6 +9,7 @@ import org.hibernate.Query;
 import use.thm.persistence.hibernate.HibernateContextProviderSingletonTHM;
 import use.thm.persistence.model.AreaCell;
 import basic.zBasic.ExceptionZZZ;
+import basic.zBasic.ReflectCodeZZZ;
 import basic.zBasic.persistence.dao.GeneralDaoZZZ;
 public class AreaCellDao extends GeneralDaoZZZ<AreaCell> {
 	private static final long serialVersionUID = 1L;
@@ -31,26 +32,28 @@ public class AreaCellDao extends GeneralDaoZZZ<AreaCell> {
 		this.installLoger(AreaCell.class);//Durch das Installieren des Loggers mit der korrekten Klasse wird GeneralDao.getT() erst korrekt ermöglicht.
 	}
 	
-    public List<AreaCell> findLazyAll(int first, int max){
-    	return this.findLazyAll("AreaCell", first, max);
-    }
-    
-	@Override
-	public int count(){
-		this.getLog().debug("counting AreaCells");
-		Query q = getSession().createQuery("select count(c) from AreaCell c");
-		int count = ((Long)q.uniqueResult()).intValue();
-		return count;
-	}
-	
+	//Den Namen des Aktuellen Objekts kann ich nun auslesen.
+	//Darum diese Methoden generisch in die DaoZZZ - Klasse ausgelagert.
+//    public List<AreaCell> findLazyAll(int first, int max){
+//    	return this.findLazyAll("AreaCell", first, max);
+//    }
+//    
+//	@Override
+//	public int count(){
+//		this.getLog().debug("counting AreaCells");
+//		Query q = getSession().createQuery("select count(c) from AreaCell c");
+//		int count = ((Long)q.uniqueResult()).intValue();
+//		return count;
+//	}
+//	
 	
 	/* (non-Javadoc)
 	 * @see use.thm.persistence.dao.GeneralDAO#countByCriteria(java.util.Map, java.util.Map)
 	 */
-	@Override
-	public int countByCriteria(Map<String, Object> whereBy, 	Map<String, String> filter) {
-		return this.countByCriteria("AreaCell", whereBy, filter);
-	}
+//	@Override
+//	public int countByCriteria(Map<String, Object> whereBy, 	Map<String, String> filter) {
+//		return this.countByCriteria("AreaCell", whereBy, filter);
+//	}
 
 
 	/* (non-Javadoc)

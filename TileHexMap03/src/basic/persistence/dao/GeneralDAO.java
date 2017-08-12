@@ -27,6 +27,7 @@ import org.hibernate.StaleObjectStateException;
 import basic.persistence.model.IPrimaryKeys;
 import basic.persistence.type.IntLongTupel;
 import basic.persistence.util.HibernateUtilByAnnotation;
+import basic.zBasic.persistence.IConstantHibernateZZZ;
 import use.thm.persistence.model.AreaCell;
 
 /**
@@ -1790,6 +1791,32 @@ public abstract class GeneralDAO<T> implements IDaoInterface<T>{
 		List<?> list = q.list();
 		
 		return list;
+	}
+	
+	/**
+	 * This method return all elements from one column.
+	 * FGL 20170809: Sortiert nach den Werten einer anderen Spalte, aufsteigend, absteigend oder unsortiert.
+	 * @param column
+	 * @return
+	 */
+	protected List<?> getColumnSortedByColumn(String sTableName, String sColumn,  int iSortingDirection, String sColumnSorted) {
+		List<?> listReturn = null;
+		Query q = null;
+		switch (iSortingDirection){
+		case IConstantHibernateZZZ.iSORT_ASCENDING:
+			q = getSession().createQuery("select "+ sColumn +" from "+ sTableName +" g " + "order by " + sColumnSorted + " " + IConstantHibernateZZZ.sSORT_ASCENDING);
+			break;
+		case IConstantHibernateZZZ.iSORT_DESCENDING:
+			q = getSession().createQuery("select "+ sColumn +" from "+ sTableName +" g " + "order by " + sColumnSorted + " " + IConstantHibernateZZZ.sSORT_DESCENDING);
+			break;
+		case IConstantHibernateZZZ.iSORT_NONE:
+			q= getSession().createQuery("select "+ sColumn +" from "+ sTableName +" g " + "order by " + sColumnSorted);
+			break;
+		default:			
+		}
+		if(q!=null){ listReturn = q.list(); }
+
+		return listReturn;
 	}
 	
 	/*

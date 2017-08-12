@@ -7,6 +7,7 @@ import use.thm.persistence.dao.TroopArmyDao;
 import use.thm.persistence.hibernate.HibernateContextProviderSingletonTHM;
 import use.thm.persistence.model.TroopArmy;
 import basic.zBasic.ExceptionZZZ;
+import basic.zBasic.persistence.IConstantHibernateZZZ;
 import basic.zKernel.KernelZZZ;
 
 public class DebugTroopDao {
@@ -15,6 +16,7 @@ public class DebugTroopDao {
 		DebugTroopDao objDebug = new DebugTroopDao();
 		objDebug.debugReadByCellId();
 		objDebug.debugFndColumnMaxValue();
+		objDebug.debugFindColumnSortedByColumn();
 	}
 	public DebugTroopDao(){		
 	}
@@ -85,9 +87,41 @@ public class DebugTroopDao {
 								
 				TroopArmyDao daoTroop = new TroopArmyDao(objContextHibernate);
 				
-				//TODO GOON 20170808 Diese Methode in die daoZZZ - Klasse einbauen
-				//.findColumnSortedByColumn(...)
+				//Merke: uniquename ist @transient, darum muss man tileIdObject verwenden.
+				List<?> listResultUnsorted = daoTroop.findColumnValueSortedByColumn("tileIdObject.uniquename");//Merke Uniquename kommt aus der Objektklasse: TileId. Diese wird in Tile per "Embedding" eingebunden. //Aus searchTroopArmyByUniquename: "from TroopArmy as tableTile where tableTile.tileIdObject.uniquename = :uniqueName"
+				System.out.println("Ergebnis enthält '" + listResultUnsorted.size() + "' Werte. Spaltenwerte unsortiert:");
+				for(Object o : listResultUnsorted){
+					System.out.println(o.toString());
+				}
 				
+				//Merke: uniquename ist @transient, darum muss man tileIdObject verwenden.
+				List<?> listResultDesc = daoTroop.findColumnValueSortedByColumn("tileIdObject.uniquename", IConstantHibernateZZZ.iSORT_DESCENDING);//Merke Uniquename kommt aus der Objektklasse: TileId. Diese wird in Tile per "Embedding" eingebunden. //Aus searchTroopArmyByUniquename: "from TroopArmy as tableTile where tableTile.tileIdObject.uniquename = :uniqueName"
+				System.out.println("Ergebnis enthält '" + listResultDesc.size() + "' Werte. Spaltenwerte absteigend sortiert:");
+				for(Object o : listResultDesc){
+					System.out.println(o.toString());
+				}
+				
+				//Merke: uniquename ist @transient, darum muss man tileIdObject verwenden.
+				List<?> listResultAsc = daoTroop.findColumnValueSortedByColumn("tileIdObject.uniquename", IConstantHibernateZZZ.iSORT_ASCENDING);//Merke Uniquename kommt aus der Objektklasse: TileId. Diese wird in Tile per "Embedding" eingebunden. //Aus searchTroopArmyByUniquename: "from TroopArmy as tableTile where tableTile.tileIdObject.uniquename = :uniqueName"
+				System.out.println("Ergebnis enthält '" + listResultAsc.size() + "' Werte. Spaltenwerte aufsteigend sortiert:");
+				for(Object o : listResultAsc){
+					System.out.println(o.toString());
+				}
+				
+				//#############################
+				//Merke: mapX ist nicht @transient, darum darf man tileIdObject nicht zu verwenden.
+				List<?> listResult02 = daoTroop.findColumnValueSortedByColumn("tileIdObject.uniquename", IConstantHibernateZZZ.iSORT_ASCENDING, "mapX");//Merke Uniquename kommt aus der Objektklasse: TileId. Diese wird in Tile per "Embedding" eingebunden. //Aus searchTroopArmyByUniquename: "from TroopArmy as tableTile where tableTile.tileIdObject.uniquename = :uniqueName"
+				System.out.println("Ergebnis enthält '" + listResult02.size() + "' Werte. Spaltenwerte X aufsteigend sortiert:");
+				for(Object o : listResult02){
+					System.out.println(o.toString());
+				}
+				
+				//Merke: mapX ist nicht @transient, darum darf man tileIdObject nicht zu verwenden.
+				List<?> listResult03 = daoTroop.findColumnValueSortedByColumn("tileIdObject.uniquename", IConstantHibernateZZZ.iSORT_DESCENDING, "mapX");//Merke Uniquename kommt aus der Objektklasse: TileId. Diese wird in Tile per "Embedding" eingebunden. //Aus searchTroopArmyByUniquename: "from TroopArmy as tableTile where tableTile.tileIdObject.uniquename = :uniqueName"
+				System.out.println("Ergebnis enthält '" + listResult03.size() + "' Werte. Spaltenwerte X absteigend sortiert:");
+				for(Object o : listResult03){
+					System.out.println(o.toString());
+				}
 				
 			} catch (ExceptionZZZ e) {
 				// TODO Auto-generated catch block

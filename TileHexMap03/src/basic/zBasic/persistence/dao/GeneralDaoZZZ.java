@@ -17,6 +17,7 @@ import basic.zBasic.IFlagZZZ;
 import basic.zBasic.IObjectZZZ;
 import basic.zBasic.ObjectZZZ;
 import basic.zBasic.ReflectCodeZZZ;
+import basic.zBasic.persistence.IConstantHibernateZZZ;
 import basic.zBasic.persistence.interfaces.IHibernateContextProviderUserZZZ;
 import basic.zBasic.persistence.interfaces.IHibernateContextProviderZZZ;
 import basic.zBasic.util.datatype.string.StringZZZ;
@@ -118,9 +119,19 @@ public abstract class GeneralDaoZZZ<T> extends GeneralDAO<T> implements IObjectZ
 				   ExceptionZZZ ez = new ExceptionZZZ( sERROR_PARAMETER_EMPTY + "; HashMap für WhereByParameter darf nicht NULL sein.", iERROR_PARAMETER_EMPTY, this.getClass(),ReflectCodeZZZ.getMethodCurrentName()); 
 				   throw ez;		 
 				}
+				if(StringZZZ.isEmpty(sColumn)){
+					 ExceptionZZZ ez = new ExceptionZZZ( sERROR_PARAMETER_EMPTY + "; String für den Spaltennamen darf nicht NULL oder leer sein.", iERROR_PARAMETER_EMPTY, this.getClass(),ReflectCodeZZZ.getMethodCurrentName()); 
+					  throw ez;		 
+				}
+				if(StringZZZ.isEmpty(sTableName)){
+					 ExceptionZZZ ez = new ExceptionZZZ( sERROR_PARAMETER_EMPTY + "; String für den Tabellennamen darf nicht NULL oder leer sein.", iERROR_PARAMETER_EMPTY, this.getClass(),ReflectCodeZZZ.getMethodCurrentName()); 
+					  throw ez;		 
+				}
+				
 				
 				//this.begin();//wird in maxIntegerByCriteria schon gemacht, darf hier nicht gemacht werden.
-					
+				
+			
 				intReturn = this.maxIntegerByCriteria(sTableName, sColumn, hmWhereByParameter);
 			}//end main
 			return intReturn;
@@ -139,12 +150,152 @@ public abstract class GeneralDaoZZZ<T> extends GeneralDAO<T> implements IObjectZ
 				   ExceptionZZZ ez = new ExceptionZZZ( sERROR_PARAMETER_EMPTY + "; HashMap für WhereByParameter darf nicht NULL sein.", iERROR_PARAMETER_EMPTY, this.getClass(),ReflectCodeZZZ.getMethodCurrentName()); 
 				   throw ez;		 
 				}
+				if(StringZZZ.isEmpty(sColumn)){
+					 ExceptionZZZ ez = new ExceptionZZZ( sERROR_PARAMETER_EMPTY + "; String für den Spaltennamen darf nicht NULL oder leer sein.", iERROR_PARAMETER_EMPTY, this.getClass(),ReflectCodeZZZ.getMethodCurrentName()); 
+					  throw ez;		 
+				}
+				if(StringZZZ.isEmpty(sTableName)){
+					 ExceptionZZZ ez = new ExceptionZZZ( sERROR_PARAMETER_EMPTY + "; String für den Tabellennamen darf nicht NULL oder leer sein.", iERROR_PARAMETER_EMPTY, this.getClass(),ReflectCodeZZZ.getMethodCurrentName()); 
+					  throw ez;		 
+				}
 				
 				//this.begin();//wird in maxIntegerByCriteria schon gemacht, darf hier nicht gemacht werden.
 					
 				intReturn = this.minIntegerByCriteria(sTableName, sColumn, hmWhereByParameter);
 			}//end main
 			return intReturn;
+	}
+	
+	public List<?> findColumnValueSortedByColumn(String sColumn) throws ExceptionZZZ{
+		List<?> listReturn = null;
+		main:{
+			if(StringZZZ.isEmpty(sColumn)){
+				 ExceptionZZZ ez = new ExceptionZZZ( sERROR_PARAMETER_EMPTY + "; String für den Spaltennamen darf nicht NULL oder leer sein.", iERROR_PARAMETER_EMPTY, this.getClass(),ReflectCodeZZZ.getMethodCurrentName()); 
+				  throw ez;		 
+			}
+						
+			String sTableName = this.getDaoTableName();
+			listReturn = this.findColumnValueSortedByColumn(sTableName, sColumn);
+		
+		}//end main:
+		return listReturn;
+	}
+	
+	public List<?> findColumnValueSortedByColumn(String sColumn, int iSortingDirection) throws ExceptionZZZ{
+		List<?> listReturn = null;
+		main:{
+			if(StringZZZ.isEmpty(sColumn)){
+				 ExceptionZZZ ez = new ExceptionZZZ( sERROR_PARAMETER_EMPTY + "; String für den Spaltennamen darf nicht NULL oder leer sein.", iERROR_PARAMETER_EMPTY, this.getClass(),ReflectCodeZZZ.getMethodCurrentName()); 
+				  throw ez;		 
+			}
+						
+			String sTableName = this.getDaoTableName();
+			listReturn = this.findColumnValueSortedByColumn(sTableName, sColumn, iSortingDirection);
+		
+		}//end main:
+		return listReturn;
+	}
+	
+	public List<?> findColumnValueSortedByColumn(String sColumn, int iSortingDirection, String sColumnSorted) throws ExceptionZZZ{
+		List<?> listReturn = null;
+		main:{
+			if(StringZZZ.isEmpty(sColumn)){
+				 ExceptionZZZ ez = new ExceptionZZZ( sERROR_PARAMETER_EMPTY + "; String für den Spaltennamen darf nicht NULL oder leer sein.", iERROR_PARAMETER_EMPTY, this.getClass(),ReflectCodeZZZ.getMethodCurrentName()); 
+				  throw ez;		 
+			}
+						
+			String sTableName = this.getDaoTableName();
+			listReturn = this.findColumnValueSortedByColumn(sTableName, sColumn, iSortingDirection, sColumnSorted);
+		
+		}//end main:
+		return listReturn;
+	}
+	
+	
+	public List<?> findColumnValueSortedByColumn(String sTableName, String sColumn) throws ExceptionZZZ{
+		List<?> listReturn = null;
+		main:{
+			if(StringZZZ.isEmpty(sColumn)){
+				 ExceptionZZZ ez = new ExceptionZZZ( sERROR_PARAMETER_EMPTY + "; String für den Spaltennamen darf nicht NULL oder leer sein.", iERROR_PARAMETER_EMPTY, this.getClass(),ReflectCodeZZZ.getMethodCurrentName()); 
+				  throw ez;		 
+			}
+			if(StringZZZ.isEmpty(sTableName)){
+				 ExceptionZZZ ez = new ExceptionZZZ( sERROR_PARAMETER_EMPTY + "; String für den Tabellennamen darf nicht NULL oder leer sein.", iERROR_PARAMETER_EMPTY, this.getClass(),ReflectCodeZZZ.getMethodCurrentName()); 
+				  throw ez;		 
+			}
+								
+			//Nun eine Methode aus GeneralDao aufrufen.
+			String sColumnSorted = sColumn; 
+			listReturn = this.getColumnSortedByColumn(sTableName, sColumn, IConstantHibernateZZZ.iSORT_NONE, sColumnSorted);
+		
+		}//end main:
+		return listReturn;
+	}
+	
+	public List<?> findColumnValueSortedByColumn(String sTableName, String sColumn, int iSortingDirection) throws ExceptionZZZ{
+		List<?> listReturn = null;
+		main:{
+			if(StringZZZ.isEmpty(sColumn)){
+				 ExceptionZZZ ez = new ExceptionZZZ( sERROR_PARAMETER_EMPTY + "; String für den Spaltennamen darf nicht NULL oder leer sein.", iERROR_PARAMETER_EMPTY, this.getClass(),ReflectCodeZZZ.getMethodCurrentName()); 
+				  throw ez;		 
+			}
+			if(StringZZZ.isEmpty(sTableName)){
+				 ExceptionZZZ ez = new ExceptionZZZ( sERROR_PARAMETER_EMPTY + "; String für den Tabellennamen darf nicht NULL oder leer sein.", iERROR_PARAMETER_EMPTY, this.getClass(),ReflectCodeZZZ.getMethodCurrentName()); 
+				  throw ez;		 
+			}
+								
+			//Nun eine Methode aus GeneralDao aufrufen.
+			String sColumnSorted = sColumn; 
+			listReturn = this.getColumnSortedByColumn(sTableName, sColumn, iSortingDirection, sColumnSorted);
+		
+		}//end main:
+		return listReturn;
+	}
+	
+	public List<?> findColumnValueSortedByColumn(String sTableName, String sColumn, String sColumnSorted) throws ExceptionZZZ{
+		List<?> listReturn = null;
+		main:{
+			if(StringZZZ.isEmpty(sColumn)){
+				 ExceptionZZZ ez = new ExceptionZZZ( sERROR_PARAMETER_EMPTY + "; String für den Spaltennamen darf nicht NULL oder leer sein.", iERROR_PARAMETER_EMPTY, this.getClass(),ReflectCodeZZZ.getMethodCurrentName()); 
+				  throw ez;		 
+			}
+			if(StringZZZ.isEmpty(sTableName)){
+				 ExceptionZZZ ez = new ExceptionZZZ( sERROR_PARAMETER_EMPTY + "; String für den Tabellennamen darf nicht NULL oder leer sein.", iERROR_PARAMETER_EMPTY, this.getClass(),ReflectCodeZZZ.getMethodCurrentName()); 
+				  throw ez;		 
+			}
+			if(StringZZZ.isEmpty(sColumnSorted)){
+				 ExceptionZZZ ez = new ExceptionZZZ( sERROR_PARAMETER_EMPTY + "; String für den sortierten Spaltennamen darf nicht NULL oder leer sein.", iERROR_PARAMETER_EMPTY, this.getClass(),ReflectCodeZZZ.getMethodCurrentName()); 
+				  throw ez;		 
+			}
+			
+			//Nun eine Methode aus GeneralDao aufrufen.
+			listReturn = this.getColumnSortedByColumn(sTableName, sColumn, IConstantHibernateZZZ.iSORT_NONE, sColumnSorted);
+		
+		}//end main:
+		return listReturn;
+	}
+	
+	public List<?> findColumnValueSortedByColumn(String sTableName, String sColumn, int iSortingDirection, String sColumnSorted ) throws ExceptionZZZ{
+		List<?> listReturn = null;
+		main:{
+			if(StringZZZ.isEmpty(sColumn)){
+				 ExceptionZZZ ez = new ExceptionZZZ( sERROR_PARAMETER_EMPTY + "; String für den Spaltennamen darf nicht NULL oder leer sein.", iERROR_PARAMETER_EMPTY, this.getClass(),ReflectCodeZZZ.getMethodCurrentName()); 
+				  throw ez;		 
+			}
+			if(StringZZZ.isEmpty(sTableName)){
+				 ExceptionZZZ ez = new ExceptionZZZ( sERROR_PARAMETER_EMPTY + "; String für den Tabellennamen darf nicht NULL oder leer sein.", iERROR_PARAMETER_EMPTY, this.getClass(),ReflectCodeZZZ.getMethodCurrentName()); 
+				  throw ez;		 
+			}
+			if(StringZZZ.isEmpty(sColumnSorted)){
+				 ExceptionZZZ ez = new ExceptionZZZ( sERROR_PARAMETER_EMPTY + "; String für den sortierten Spaltennamen darf nicht NULL oder leer sein.", iERROR_PARAMETER_EMPTY, this.getClass(),ReflectCodeZZZ.getMethodCurrentName()); 
+				  throw ez;		 
+			}
+			
+			//Nun eine Methode aus GeneralDao aufrufen.
+			listReturn = this.getColumnSortedByColumn(sTableName,  sColumn, iSortingDirection, sColumnSorted);
+		
+		}//end main:
+		return listReturn;
 	}
 	
 	/**FGL: Ermittle den Max-Wert einer Spalte.
@@ -155,6 +306,15 @@ public abstract class GeneralDaoZZZ<T> extends GeneralDAO<T> implements IObjectZ
 	public Integer findColumnValueMax(String sTableName, String sColumn) throws ExceptionZZZ{
 			Integer intReturn = null;
 			main:{
+				if(StringZZZ.isEmpty(sColumn)){
+					 ExceptionZZZ ez = new ExceptionZZZ( sERROR_PARAMETER_EMPTY + "; String für den Spaltennamen darf nicht NULL oder leer sein.", iERROR_PARAMETER_EMPTY, this.getClass(),ReflectCodeZZZ.getMethodCurrentName()); 
+					  throw ez;		 
+				}
+				if(StringZZZ.isEmpty(sTableName)){
+					 ExceptionZZZ ez = new ExceptionZZZ( sERROR_PARAMETER_EMPTY + "; String für den Tabellennamen darf nicht NULL oder leer sein.", iERROR_PARAMETER_EMPTY, this.getClass(),ReflectCodeZZZ.getMethodCurrentName()); 
+					  throw ez;		 
+				}
+				
 				//this.begin();//wird in maxIntegerByCriteria schon gemacht, darf hier nicht gemacht werden.
 				
 				//null für die WhereBy-Klausel ist nicht erlaubt.				
@@ -171,6 +331,15 @@ public abstract class GeneralDaoZZZ<T> extends GeneralDAO<T> implements IObjectZ
 	public Integer findColumnValueMin(String sTableName, String sColumn) throws ExceptionZZZ{
 			Integer intReturn = null;
 			main:{
+				if(StringZZZ.isEmpty(sColumn)){
+					 ExceptionZZZ ez = new ExceptionZZZ( sERROR_PARAMETER_EMPTY + "; String für den Spaltennamen darf nicht NULL oder leer sein.", iERROR_PARAMETER_EMPTY, this.getClass(),ReflectCodeZZZ.getMethodCurrentName()); 
+					  throw ez;		 
+				}
+				if(StringZZZ.isEmpty(sTableName)){
+					 ExceptionZZZ ez = new ExceptionZZZ( sERROR_PARAMETER_EMPTY + "; String für den Tabellennamen darf nicht NULL oder leer sein.", iERROR_PARAMETER_EMPTY, this.getClass(),ReflectCodeZZZ.getMethodCurrentName()); 
+					  throw ez;		 
+				}
+				
 				//this.begin();//wird in maxIntegerByCriteria schon gemacht, darf hier nicht gemacht werden.
 				
 				//null für die WhereBy-Klausel ist nicht erlaubt.				
@@ -188,6 +357,11 @@ public abstract class GeneralDaoZZZ<T> extends GeneralDAO<T> implements IObjectZ
 	public Integer findColumnValueMax(String sColumn) throws ExceptionZZZ{
 			Integer intReturn = null;
 			main:{
+				if(StringZZZ.isEmpty(sColumn)){
+					 ExceptionZZZ ez = new ExceptionZZZ( sERROR_PARAMETER_EMPTY + "; String für den Spaltennamen darf nicht NULL oder leer sein.", iERROR_PARAMETER_EMPTY, this.getClass(),ReflectCodeZZZ.getMethodCurrentName()); 
+					  throw ez;		 
+				}
+				
 				//this.begin();//wird in maxIntegerByCriteria schon gemacht, darf hier nicht gemacht werden.
 				
 				String sTableName = this.getDaoTableName();
@@ -208,6 +382,11 @@ public abstract class GeneralDaoZZZ<T> extends GeneralDAO<T> implements IObjectZ
 	public Integer findColumnValueMin(String sColumn) throws ExceptionZZZ{
 			Integer intReturn = null;
 			main:{
+				if(StringZZZ.isEmpty(sColumn)){
+					 ExceptionZZZ ez = new ExceptionZZZ( sERROR_PARAMETER_EMPTY + "; String für den Spaltennamen darf nicht NULL oder leer sein.", iERROR_PARAMETER_EMPTY, this.getClass(),ReflectCodeZZZ.getMethodCurrentName()); 
+					  throw ez;		 
+				}
+				
 				//this.begin();//wird in maxIntegerByCriteria schon gemacht, darf hier nicht gemacht werden.
 				
 				String sTableName = this.getDaoTableName();

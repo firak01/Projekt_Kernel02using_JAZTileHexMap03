@@ -24,6 +24,7 @@ import use.thm.persistence.dao.TroopArmyDao;
 import use.thm.persistence.dao.TroopDao;
 import use.thm.persistence.daoFacade.TroopArmyDaoFacade;
 import use.thm.persistence.daoFacade.TroopFleetDaoFacade;
+import use.thm.persistence.dto.ITileDtoAttribute;
 import use.thm.persistence.hibernate.HibernateContextProviderSingletonTHM;
 import use.thm.persistence.model.AreaCell;
 import use.thm.persistence.model.AreaCellLand;
@@ -36,6 +37,7 @@ import use.thm.persistence.model.TileId;
 import use.thm.persistence.model.Troop;
 import use.thm.persistence.model.TroopArmy;
 import use.thm.persistence.model.TroopFleet;
+import basic.persistence.dto.GenericDTO;
 import basic.persistence.util.HibernateUtil;
 import basic.zBasic.ExceptionZZZ;
 import basic.zBasic.ReflectCodeZZZ;
@@ -437,8 +439,11 @@ public class HexMapTHM extends KernelUseObjectZZZ implements ITileEventUserTHM {
 				String sUniquename = objTroopTemp.getUniquename();//Die Backend-Funkion heisst genauso wie die UI-Funktion, die verwndet wird, um das UI-Objekt mit dem Backend zu identifizieren.
 				
 				
-				//+++ UI Operationen & die TroopArmy noch an das UI-verwendete Objekt weitergeben					
-				ArmyTileTHM objArmyTemp = new ArmyTileTHM(panelMap, objTileMoveEventBroker, sUniquename, sX, sY, this.getSideLength());
+				//+++ UI Operationen & die TroopArmy noch an das UI-verwendete Objekt weitergeben	
+				GenericDTO dto = GenericDTO.getInstance(ITileDtoAttribute.class);
+				dto.set(ITileDtoAttribute.UNIQUENAME, sUniquename);
+				//ArmyTileTHM objArmyTemp = new ArmyTileTHM(panelMap, objTileMoveEventBroker, sUniquename, sX, sY, this.getSideLength());
+				ArmyTileTHM objArmyTemp = new ArmyTileTHM(panelMap, objTileMoveEventBroker, dto, sX, sY, this.getSideLength());
 				EventTileCreatedInCellTHM objEventTileCreated = new EventTileCreatedInCellTHM(objArmyTemp, 1, sX, sY);
 				objTileMetaEventBroker.fireEvent(objEventTileCreated);
 	
@@ -456,8 +461,11 @@ public class HexMapTHM extends KernelUseObjectZZZ implements ITileEventUserTHM {
 				String sUniquename = objTroopTemp.getUniquename();//Die Backend-Funkion heisst genauso wie die UI-Funktion, die verwndet wird, um das UI-Objekt mit dem Backend zu identifizieren.
 				
 				
-				//+++ UI Operationen & die TroopFleet noch an das UI-verwendete Objekt weitergeben				
-				FleetTileTHM objFleetTemp = new FleetTileTHM(panelMap, objTileMoveEventBroker, sUniquename, sX, sY, this.getSideLength());
+				//+++ UI Operationen & die TroopFleet noch an das UI-verwendete Objekt weitergeben	
+				GenericDTO dto = GenericDTO.getInstance(ITileDtoAttribute.class);
+				dto.set(ITileDtoAttribute.UNIQUENAME, sUniquename);
+//				FleetTileTHM objFleetTemp = new FleetTileTHM(panelMap, objTileMoveEventBroker, sUniquename, sX, sY, this.getSideLength());
+				FleetTileTHM objFleetTemp = new FleetTileTHM(panelMap, objTileMoveEventBroker, dto, sX, sY, this.getSideLength());
 				EventTileCreatedInCellTHM objEventTileCreated = new EventTileCreatedInCellTHM(objFleetTemp, 1, sX, sY);
 				objTileMetaEventBroker.fireEvent(objEventTileCreated);
 				
@@ -844,7 +852,10 @@ public class HexMapTHM extends KernelUseObjectZZZ implements ITileEventUserTHM {
 							//20170711: Der Uniquename muss der im UI-verwendeten Objekt übergeben werden. Das ist dann die Verbindung zwischen UI und Backend.
 							//               Diese Verbindung zwischen UI und Backend wird wichtig, wenn der Spielstein weiterbewegt wird und diese Bewegung im Backend verzeichnet werden soll,
 							//                sprich ein Update gemacht werden soll.
-							ArmyTileTHM objArmyTemp = new ArmyTileTHM(panelMap, objTileMoveEventBroker, sUniquename, sX, sY, this.getSideLength());
+							GenericDTO dto = GenericDTO.getInstance(ITileDtoAttribute.class);
+							dto.set(ITileDtoAttribute.UNIQUENAME, sUniquename);
+							//ArmyTileTHM objArmyTemp = new ArmyTileTHM(panelMap, objTileMoveEventBroker, sUniquename, sX, sY, this.getSideLength());
+							ArmyTileTHM objArmyTemp = new ArmyTileTHM(panelMap, objTileMoveEventBroker, dto, sX, sY, this.getSideLength());
 							
 							EventTileCreatedInCellTHM objEventTileCreated = new EventTileCreatedInCellTHM(objArmyTemp, 1, sX, sY);
 							this.getTileMetaEventBroker().fireEvent(objEventTileCreated);						
@@ -872,7 +883,10 @@ public class HexMapTHM extends KernelUseObjectZZZ implements ITileEventUserTHM {
 						
 						
 						//+++ UI Operationen & die TroopFleet noch an das UI-verwendete Objekt weitergeben	
-						FleetTileTHM objFleetTemp = new FleetTileTHM(panelMap, objTileMoveEventBroker, sUniquename, sX, sY, this.getSideLength());
+						GenericDTO dto = GenericDTO.getInstance(ITileDtoAttribute.class);
+						dto.set(ITileDtoAttribute.UNIQUENAME, sUniquename);
+						//FleetTileTHM objFleetTemp = new FleetTileTHM(panelMap, objTileMoveEventBroker, sUniquename, sX, sY, this.getSideLength());
+						FleetTileTHM objFleetTemp = new FleetTileTHM(panelMap, objTileMoveEventBroker, dto, sX, sY, this.getSideLength());
 						
 						EventTileCreatedInCellTHM objEventTileCreated = new EventTileCreatedInCellTHM(objFleetTemp, 1, sX, sY);
 						this.getTileMetaEventBroker().fireEvent(objEventTileCreated);	
@@ -896,7 +910,10 @@ public class HexMapTHM extends KernelUseObjectZZZ implements ITileEventUserTHM {
 						JOptionPane.showMessageDialog (panelMap, sMessage);
 						
 						//+++ UI Operationen & die TroopFleet noch an das UI-verwendete Objekt weitergeben	
-						FleetTileTHM objFleetTemp = new FleetTileTHM(panelMap, objTileMoveEventBroker,sUniquename, sX, sY, this.getSideLength());
+						GenericDTO dto = GenericDTO.getInstance(ITileDtoAttribute.class);
+						dto.set(ITileDtoAttribute.UNIQUENAME, sUniquename);
+						//FleetTileTHM objFleetTemp = new FleetTileTHM(panelMap, objTileMoveEventBroker,sUniquename, sX, sY, this.getSideLength());
+						FleetTileTHM objFleetTemp = new FleetTileTHM(panelMap, objTileMoveEventBroker,dto, sX, sY, this.getSideLength());
 						
 						EventTileCreatedInCellTHM objEventTileCreated = new EventTileCreatedInCellTHM(objFleetTemp, 1, sX, sY);
 						this.getTileMetaEventBroker().fireEvent(objEventTileCreated);	
@@ -924,7 +941,10 @@ public class HexMapTHM extends KernelUseObjectZZZ implements ITileEventUserTHM {
 						JOptionPane.showMessageDialog (panelMap, sMessage);
 													
 						//+++ UI Operationen & die TroopArmy noch an das UI-verwendete Objekt weitergeben
-						ArmyTileTHM objArmyTemp = new ArmyTileTHM(panelMap, objTileMoveEventBroker, sUniquename, sX, sY, this.getSideLength());
+						GenericDTO dto = GenericDTO.getInstance(ITileDtoAttribute.class);
+						dto.set(ITileDtoAttribute.UNIQUENAME, sUniquename);
+						//ArmyTileTHM objArmyTemp = new ArmyTileTHM(panelMap, objTileMoveEventBroker, sUniquename, sX, sY, this.getSideLength());
+						ArmyTileTHM objArmyTemp = new ArmyTileTHM(panelMap, objTileMoveEventBroker, dto, sX, sY, this.getSideLength());
 						
 						EventTileCreatedInCellTHM objEventTileCreated = new EventTileCreatedInCellTHM(objArmyTemp, 1, sX, sY);
 						this.getTileMetaEventBroker().fireEvent(objEventTileCreated);						
@@ -1123,7 +1143,10 @@ public class HexMapTHM extends KernelUseObjectZZZ implements ITileEventUserTHM {
 							em.persist(objTroopTemp);		
 							
 							//+++ UI Operationen & die TroopFleet noch an das UI-verwendete Objekt weitergeben	
-							FleetTileTHM objFleetTemp = new FleetTileTHM(panelMap, objTileMoveEventBroker, sUniquename, sX, sY, this.getSideLength());
+							GenericDTO dto = GenericDTO.getInstance(ITileDtoAttribute.class);
+							dto.set(ITileDtoAttribute.UNIQUENAME, sUniquename);
+							//FleetTileTHM objFleetTemp = new FleetTileTHM(panelMap, objTileMoveEventBroker, sUniquename, sX, sY, this.getSideLength());
+							FleetTileTHM objFleetTemp = new FleetTileTHM(panelMap, objTileMoveEventBroker, dto, sX, sY, this.getSideLength());
 							
 							EventTileCreatedInCellTHM objEventTileCreated = new EventTileCreatedInCellTHM(objFleetTemp, 1, sX, sY);
 							objTileMetaEventBroker.fireEvent(objEventTileCreated);
@@ -1145,7 +1168,10 @@ public class HexMapTHM extends KernelUseObjectZZZ implements ITileEventUserTHM {
 							em.persist(objTroopTemp);
 							
 							//+++ UI Operationen & die TroopArmy noch an das UI-verwendete Objekt weitergeben
-							ArmyTileTHM objArmyTemp = new ArmyTileTHM(panelMap, objTileMoveEventBroker, sUniquename, sX, sY, this.getSideLength());
+							GenericDTO dto = GenericDTO.getInstance(ITileDtoAttribute.class);
+							dto.set(ITileDtoAttribute.UNIQUENAME, sUniquename);
+							//ArmyTileTHM objArmyTemp = new ArmyTileTHM(panelMap, objTileMoveEventBroker, sUniquename, sX, sY, this.getSideLength());
+							ArmyTileTHM objArmyTemp = new ArmyTileTHM(panelMap, objTileMoveEventBroker, dto, sX, sY, this.getSideLength());
 							
 							EventTileCreatedInCellTHM objEventTileCreated = new EventTileCreatedInCellTHM(objArmyTemp, 1, sX, sY);
 							objTileMetaEventBroker.fireEvent(objEventTileCreated);
@@ -1163,8 +1189,11 @@ public class HexMapTHM extends KernelUseObjectZZZ implements ITileEventUserTHM {
 							//Hibernate: session.save(objTroopTemp);
 							em.persist(objTroopTemp);
 							
-							//+++ UI Operationen & die TroopFleet noch an das UI-verwendete Objekt weitergeben											
-							FleetTileTHM objFleetTemp = new FleetTileTHM(panelMap, objTileMoveEventBroker, sUniquename, sX, sY, this.getSideLength());
+							//+++ UI Operationen & die TroopFleet noch an das UI-verwendete Objekt weitergeben	
+							GenericDTO dto = GenericDTO.getInstance(ITileDtoAttribute.class);
+							dto.set(ITileDtoAttribute.UNIQUENAME, sUniquename);
+							//FleetTileTHM objFleetTemp = new FleetTileTHM(panelMap, objTileMoveEventBroker, sUniquename, sX, sY, this.getSideLength());
+							FleetTileTHM objFleetTemp = new FleetTileTHM(panelMap, objTileMoveEventBroker, dto, sX, sY, this.getSideLength());
 							
 							EventTileCreatedInCellTHM objEventTileCreated = new EventTileCreatedInCellTHM(objFleetTemp, 1, sX, sY);
 							objTileMetaEventBroker.fireEvent(objEventTileCreated);
@@ -1192,7 +1221,10 @@ public class HexMapTHM extends KernelUseObjectZZZ implements ITileEventUserTHM {
 			
 							
 							//+++ UI Operationen & die TroopArmy noch an das UI-verwendete Objekt weitergeben
-							ArmyTileTHM objArmyTemp = new ArmyTileTHM(panelMap, objTileMoveEventBroker, sUniquename, sX, sY, this.getSideLength());
+							GenericDTO dto = GenericDTO.getInstance(ITileDtoAttribute.class);
+							dto.set(ITileDtoAttribute.UNIQUENAME, sUniquename);
+							//ArmyTileTHM objArmyTemp = new ArmyTileTHM(panelMap, objTileMoveEventBroker, sUniquename, sX, sY, this.getSideLength());
+							ArmyTileTHM objArmyTemp = new ArmyTileTHM(panelMap, objTileMoveEventBroker, dto, sX, sY, this.getSideLength());
 							
 							EventTileCreatedInCellTHM objEventTileCreated = new EventTileCreatedInCellTHM(objArmyTemp, 1, sX, sY);
 							objTileMetaEventBroker.fireEvent(objEventTileCreated);

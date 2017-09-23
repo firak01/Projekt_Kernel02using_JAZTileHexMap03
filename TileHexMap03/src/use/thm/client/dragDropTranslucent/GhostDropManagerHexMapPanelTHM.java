@@ -18,9 +18,11 @@ import use.thm.client.event.TileMetaEventBrokerTHM;
 import use.thm.client.event.TileMoveEventBrokerTHM;
 import use.thm.persistence.dao.AreaCellDao;
 import use.thm.persistence.daoFacade.TroopArmyDaoFacade;
+import use.thm.persistence.dto.ITileDtoAttribute;
 import use.thm.persistence.hibernate.HibernateContextProviderSingletonTHM;
 import use.thm.persistence.model.AreaCell;
 import use.thm.persistence.model.CellId;
+import basic.persistence.dto.GenericDTO;
 import basic.zBasic.ExceptionZZZ;
 import basic.zBasic.ReflectCodeZZZ;
 import basic.zBasic.util.datatype.string.StringZZZ;
@@ -118,7 +120,10 @@ public class GhostDropManagerHexMapPanelTHM extends AbstractGhostDropManager imp
 							
 						}else{
 					   
-					   objTile = new ArmyTileTHM(objMap.getPanelParent(), objMap.getTileMoveEventBroker(), sUniquename, objCell.getMapX(), objCell.getMapY(), objMap.getSideLength());
+							GenericDTO dto = GenericDTO.getInstance(ITileDtoAttribute.class);
+							dto.set(ITileDtoAttribute.UNIQUENAME, sUniquename);
+							//objTile = new ArmyTileTHM(objMap.getPanelParent(), objMap.getTileMoveEventBroker(), sUniquename, objCell.getMapX(), objCell.getMapY(), objMap.getSideLength());
+							objTile = new ArmyTileTHM(objMap.getPanelParent(), objMap.getTileMoveEventBroker(), dto, objCell.getMapX(), objCell.getMapY(), objMap.getSideLength());
 						}
 				   }
 			   }

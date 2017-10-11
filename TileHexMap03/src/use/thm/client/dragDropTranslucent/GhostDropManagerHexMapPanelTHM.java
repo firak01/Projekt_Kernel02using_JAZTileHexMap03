@@ -18,13 +18,16 @@ import use.thm.client.event.TileMetaEventBrokerTHM;
 import use.thm.client.event.TileMoveEventBrokerTHM;
 import use.thm.persistence.dao.AreaCellDao;
 import use.thm.persistence.daoFacade.TroopArmyDaoFacade;
+import use.thm.persistence.dto.DtoFactoryGenerator;
 import use.thm.persistence.dto.ITileDtoAttribute;
+import use.thm.persistence.dto.TileDtoFactory;
 import use.thm.persistence.hibernate.HibernateContextProviderSingletonTHM;
 import use.thm.persistence.model.AreaCell;
 import use.thm.persistence.model.CellId;
 import basic.persistence.dto.GenericDTO;
 import basic.zBasic.ExceptionZZZ;
 import basic.zBasic.ReflectCodeZZZ;
+import basic.zBasic.persistence.interfaces.IDtoFactoryZZZ;
 import basic.zBasic.util.datatype.string.StringZZZ;
 import basic.zBasic.util.log.ReportLogZZZ;
 import basic.zBasicUI.glassPane.dragDropTranslucent.AbstractGhostDropManager;
@@ -120,7 +123,16 @@ public class GhostDropManagerHexMapPanelTHM extends AbstractGhostDropManager imp
 							
 						}else{
 					   
-							GenericDTO dto = GenericDTO.getInstance(ITileDtoAttribute.class);
+							//GenericDTO dto = GenericDTO.getInstance(ITileDtoAttribute.class);
+							//FGL 20171011: Ersetzt durch eine Factory - Klasse
+//							TileDtoFactory factoryTile = new TileDtoFactory();
+//							GenericDTO dto = factoryTile.createDTO();			
+							
+							//FGL 20171112: Hole die Factory - Klasse generisch per FactoryGenerator:
+							DtoFactoryGenerator objFactoryGenerator = new DtoFactoryGenerator();
+							IDtoFactoryZZZ objFactory = objFactoryGenerator.getDtoFactory(ArmyTileTHM.class);
+							GenericDTO dto = objFactory.createDTO();	
+							
 							dto.set(ITileDtoAttribute.UNIQUENAME, sUniquename);
 							//objTile = new ArmyTileTHM(objMap.getPanelParent(), objMap.getTileMoveEventBroker(), sUniquename, objCell.getMapX(), objCell.getMapY(), objMap.getSideLength());
 							objTile = new ArmyTileTHM(objMap.getPanelParent(), objMap.getTileMoveEventBroker(), dto, objCell.getMapX(), objCell.getMapY(), objMap.getSideLength());

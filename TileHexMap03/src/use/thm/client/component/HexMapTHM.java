@@ -24,7 +24,9 @@ import use.thm.persistence.dao.TroopArmyDao;
 import use.thm.persistence.dao.TroopDao;
 import use.thm.persistence.daoFacade.TroopArmyDaoFacade;
 import use.thm.persistence.daoFacade.TroopFleetDaoFacade;
+import use.thm.persistence.dto.DtoFactoryGenerator;
 import use.thm.persistence.dto.ITileDtoAttribute;
+import use.thm.persistence.dto.TileDtoFactory;
 import use.thm.persistence.hibernate.HibernateContextProviderSingletonTHM;
 import use.thm.persistence.model.AreaCell;
 import use.thm.persistence.model.AreaCellLand;
@@ -42,6 +44,7 @@ import basic.persistence.util.HibernateUtil;
 import basic.zBasic.ExceptionZZZ;
 import basic.zBasic.ReflectCodeZZZ;
 import basic.zBasic.persistence.SQLiteUtilZZZ;
+import basic.zBasic.persistence.interfaces.IDtoFactoryZZZ;
 import basic.zBasic.util.abstractList.HashMapMultiZZZ;
 import basic.zBasic.util.datatype.string.StringZZZ;
 import basic.zBasicUI.glassPane.dragDropTranslucent.GhostDropListener;
@@ -440,7 +443,14 @@ public class HexMapTHM extends KernelUseObjectZZZ implements ITileEventUserTHM {
 				
 				
 				//+++ UI Operationen & die TroopArmy noch an das UI-verwendete Objekt weitergeben	
-				GenericDTO dto = GenericDTO.getInstance(ITileDtoAttribute.class);
+				//GenericDTO dto = GenericDTO.getInstance(ITileDtoAttribute.class);
+				//FGL 20171011: Ersetzt durch eine Factory - Klasse
+				//TileDtoFactory factoryTile = new TileDtoFactory();
+				
+				//FGL: 20171012: Nun hole die Factory "generisch"
+				DtoFactoryGenerator objFactoryGenerator = new DtoFactoryGenerator();
+				IDtoFactoryZZZ factoryTile = objFactoryGenerator.getDtoFactory(ArmyTileTHM.class);
+				GenericDTO dto = factoryTile.createDTO();	
 				dto.set(ITileDtoAttribute.UNIQUENAME, sUniquename);
 				//ArmyTileTHM objArmyTemp = new ArmyTileTHM(panelMap, objTileMoveEventBroker, sUniquename, sX, sY, this.getSideLength());
 				ArmyTileTHM objArmyTemp = new ArmyTileTHM(panelMap, objTileMoveEventBroker, dto, sX, sY, this.getSideLength());
@@ -462,7 +472,16 @@ public class HexMapTHM extends KernelUseObjectZZZ implements ITileEventUserTHM {
 				
 				
 				//+++ UI Operationen & die TroopFleet noch an das UI-verwendete Objekt weitergeben	
-				GenericDTO dto = GenericDTO.getInstance(ITileDtoAttribute.class);
+				//GenericDTO dto = GenericDTO.getInstance(ITileDtoAttribute.class);
+				//FGL 20171011: Ersetzt durch eine Factory - Klasse
+//				TileDtoFactory factoryTile = new TileDtoFactory();				
+//				GenericDTO dto = factoryTile.createDTO();	
+				
+				//FGL 20171112: Hole die Factory - Klasse generisch per FactoryGenerator:
+				DtoFactoryGenerator objFactoryGenerator = new DtoFactoryGenerator();
+				IDtoFactoryZZZ objFactory = objFactoryGenerator.getDtoFactory(ArmyTileTHM.class);
+				GenericDTO dto = objFactory.createDTO();
+				
 				dto.set(ITileDtoAttribute.UNIQUENAME, sUniquename);
 //				FleetTileTHM objFleetTemp = new FleetTileTHM(panelMap, objTileMoveEventBroker, sUniquename, sX, sY, this.getSideLength());
 				FleetTileTHM objFleetTemp = new FleetTileTHM(panelMap, objTileMoveEventBroker, dto, sX, sY, this.getSideLength());
@@ -852,7 +871,16 @@ public class HexMapTHM extends KernelUseObjectZZZ implements ITileEventUserTHM {
 							//20170711: Der Uniquename muss der im UI-verwendeten Objekt übergeben werden. Das ist dann die Verbindung zwischen UI und Backend.
 							//               Diese Verbindung zwischen UI und Backend wird wichtig, wenn der Spielstein weiterbewegt wird und diese Bewegung im Backend verzeichnet werden soll,
 							//                sprich ein Update gemacht werden soll.
-							GenericDTO dto = GenericDTO.getInstance(ITileDtoAttribute.class);
+							
+							//GenericDTO dto = GenericDTO.getInstance(ITileDtoAttribute.class);
+							//FGL 20171011: Ersetzt durch eine Factory - Klasse
+							//TileDtoFactory factoryTile = new TileDtoFactory();
+							
+							//FGL 20171112: Hole die Factory - Klasse generisch per FactoryGenerator:
+							DtoFactoryGenerator objFactoryGenerator = new DtoFactoryGenerator();
+							IDtoFactoryZZZ objFactory = objFactoryGenerator.getDtoFactory(ArmyTileTHM.class);
+							GenericDTO dto = objFactory.createDTO();
+
 							dto.set(ITileDtoAttribute.UNIQUENAME, sUniquename);
 							//ArmyTileTHM objArmyTemp = new ArmyTileTHM(panelMap, objTileMoveEventBroker, sUniquename, sX, sY, this.getSideLength());
 							ArmyTileTHM objArmyTemp = new ArmyTileTHM(panelMap, objTileMoveEventBroker, dto, sX, sY, this.getSideLength());
@@ -883,7 +911,16 @@ public class HexMapTHM extends KernelUseObjectZZZ implements ITileEventUserTHM {
 						
 						
 						//+++ UI Operationen & die TroopFleet noch an das UI-verwendete Objekt weitergeben	
-						GenericDTO dto = GenericDTO.getInstance(ITileDtoAttribute.class);
+						//GenericDTO dto = GenericDTO.getInstance(ITileDtoAttribute.class);
+						//FGL 20171011: Ersetzt durch eine Factory - Klasse
+						//TileDtoFactory factoryTile = new TileDtoFactory();
+						//GenericDTO dto = factoryTile.createDTO();
+						
+						//FGL 20171112: Hole die Factory - Klasse generisch per FactoryGenerator:
+						DtoFactoryGenerator objFactoryGenerator = new DtoFactoryGenerator();
+						IDtoFactoryZZZ objFactory = objFactoryGenerator.getDtoFactory(ArmyTileTHM.class);
+						GenericDTO dto = objFactory.createDTO();
+						
 						dto.set(ITileDtoAttribute.UNIQUENAME, sUniquename);
 						//FleetTileTHM objFleetTemp = new FleetTileTHM(panelMap, objTileMoveEventBroker, sUniquename, sX, sY, this.getSideLength());
 						FleetTileTHM objFleetTemp = new FleetTileTHM(panelMap, objTileMoveEventBroker, dto, sX, sY, this.getSideLength());
@@ -909,8 +946,17 @@ public class HexMapTHM extends KernelUseObjectZZZ implements ITileEventUserTHM {
 						String sMessage = "FALSCHES TESTERGEBNIS: HIER DARF NIX ERZEUGT WERDEN, WG. PASSENDES GEBIET REGEL.";			
 						JOptionPane.showMessageDialog (panelMap, sMessage);
 						
-						//+++ UI Operationen & die TroopFleet noch an das UI-verwendete Objekt weitergeben	
-						GenericDTO dto = GenericDTO.getInstance(ITileDtoAttribute.class);
+						//+++ UI Operationen & die TroopFleet noch an das UI-verwendete Objekt weitergeben
+						//GenericDTO dto = GenericDTO.getInstance(ITileDtoAttribute.class);
+						//FGL 20171011: Ersetzt durch eine Factory - Klasse
+//						TileDtoFactory factoryTile = new TileDtoFactory();
+//						GenericDTO dto = factoryTile.createDTO();	
+						
+						//FGL 20171112: Hole die Factory - Klasse generisch per FactoryGenerator:
+						DtoFactoryGenerator objFactoryGenerator = new DtoFactoryGenerator();
+						IDtoFactoryZZZ objFactory = objFactoryGenerator.getDtoFactory(ArmyTileTHM.class);
+						GenericDTO dto = objFactory.createDTO();
+						
 						dto.set(ITileDtoAttribute.UNIQUENAME, sUniquename);
 						//FleetTileTHM objFleetTemp = new FleetTileTHM(panelMap, objTileMoveEventBroker,sUniquename, sX, sY, this.getSideLength());
 						FleetTileTHM objFleetTemp = new FleetTileTHM(panelMap, objTileMoveEventBroker,dto, sX, sY, this.getSideLength());
@@ -941,7 +987,16 @@ public class HexMapTHM extends KernelUseObjectZZZ implements ITileEventUserTHM {
 						JOptionPane.showMessageDialog (panelMap, sMessage);
 													
 						//+++ UI Operationen & die TroopArmy noch an das UI-verwendete Objekt weitergeben
-						GenericDTO dto = GenericDTO.getInstance(ITileDtoAttribute.class);
+						//GenericDTO dto = GenericDTO.getInstance(ITileDtoAttribute.class);
+						//FGL 20171011: Ersetzt durch eine Factory - Klasse
+//						TileDtoFactory factoryTile = new TileDtoFactory();
+//						GenericDTO dto = factoryTile.createDTO();	
+						
+						//FGL 20171112: Hole die Factory - Klasse generisch per FactoryGenerator:
+						DtoFactoryGenerator objFactoryGenerator = new DtoFactoryGenerator();
+						IDtoFactoryZZZ objFactory = objFactoryGenerator.getDtoFactory(ArmyTileTHM.class);
+						GenericDTO dto = objFactory.createDTO();
+						
 						dto.set(ITileDtoAttribute.UNIQUENAME, sUniquename);
 						//ArmyTileTHM objArmyTemp = new ArmyTileTHM(panelMap, objTileMoveEventBroker, sUniquename, sX, sY, this.getSideLength());
 						ArmyTileTHM objArmyTemp = new ArmyTileTHM(panelMap, objTileMoveEventBroker, dto, sX, sY, this.getSideLength());
@@ -1143,7 +1198,16 @@ public class HexMapTHM extends KernelUseObjectZZZ implements ITileEventUserTHM {
 							em.persist(objTroopTemp);		
 							
 							//+++ UI Operationen & die TroopFleet noch an das UI-verwendete Objekt weitergeben	
-							GenericDTO dto = GenericDTO.getInstance(ITileDtoAttribute.class);
+							//GenericDTO dto = GenericDTO.getInstance(ITileDtoAttribute.class);
+							//FGL 20171011: Ersetzt durch eine Factory - Klasse
+//							TileDtoFactory factoryTile = new TileDtoFactory();
+//							GenericDTO dto = factoryTile.createDTO();	
+							
+							//FGL 20171112: Hole die Factory - Klasse generisch per FactoryGenerator:
+							DtoFactoryGenerator objFactoryGenerator = new DtoFactoryGenerator();
+							IDtoFactoryZZZ objFactory = objFactoryGenerator.getDtoFactory(ArmyTileTHM.class);
+							GenericDTO dto = objFactory.createDTO();
+							
 							dto.set(ITileDtoAttribute.UNIQUENAME, sUniquename);
 							//FleetTileTHM objFleetTemp = new FleetTileTHM(panelMap, objTileMoveEventBroker, sUniquename, sX, sY, this.getSideLength());
 							FleetTileTHM objFleetTemp = new FleetTileTHM(panelMap, objTileMoveEventBroker, dto, sX, sY, this.getSideLength());
@@ -1168,7 +1232,16 @@ public class HexMapTHM extends KernelUseObjectZZZ implements ITileEventUserTHM {
 							em.persist(objTroopTemp);
 							
 							//+++ UI Operationen & die TroopArmy noch an das UI-verwendete Objekt weitergeben
-							GenericDTO dto = GenericDTO.getInstance(ITileDtoAttribute.class);
+							//GenericDTO dto = GenericDTO.getInstance(ITileDtoAttribute.class);
+							//FGL 20171011: Ersetzt durch eine Factory - Klasse
+//							TileDtoFactory factoryTile = new TileDtoFactory();
+//							GenericDTO dto = factoryTile.createDTO();	
+							
+							//FGL 20171112: Hole die Factory - Klasse generisch per FactoryGenerator:
+							DtoFactoryGenerator objFactoryGenerator = new DtoFactoryGenerator();
+							IDtoFactoryZZZ objFactory = objFactoryGenerator.getDtoFactory(ArmyTileTHM.class);
+							GenericDTO dto = objFactory.createDTO();
+							
 							dto.set(ITileDtoAttribute.UNIQUENAME, sUniquename);
 							//ArmyTileTHM objArmyTemp = new ArmyTileTHM(panelMap, objTileMoveEventBroker, sUniquename, sX, sY, this.getSideLength());
 							ArmyTileTHM objArmyTemp = new ArmyTileTHM(panelMap, objTileMoveEventBroker, dto, sX, sY, this.getSideLength());
@@ -1190,7 +1263,16 @@ public class HexMapTHM extends KernelUseObjectZZZ implements ITileEventUserTHM {
 							em.persist(objTroopTemp);
 							
 							//+++ UI Operationen & die TroopFleet noch an das UI-verwendete Objekt weitergeben	
-							GenericDTO dto = GenericDTO.getInstance(ITileDtoAttribute.class);
+							//GenericDTO dto = GenericDTO.getInstance(ITileDtoAttribute.class);
+							//FGL 20171011: Ersetzt durch eine Factory - Klasse
+//							TileDtoFactory factoryTile = new TileDtoFactory();
+//							GenericDTO dto = factoryTile.createDTO();	
+//							
+							//FGL 20171112: Hole die Factory - Klasse generisch per FactoryGenerator:
+							DtoFactoryGenerator objFactoryGenerator = new DtoFactoryGenerator();
+							IDtoFactoryZZZ objFactory = objFactoryGenerator.getDtoFactory(ArmyTileTHM.class);
+							GenericDTO dto = objFactory.createDTO();
+							
 							dto.set(ITileDtoAttribute.UNIQUENAME, sUniquename);
 							//FleetTileTHM objFleetTemp = new FleetTileTHM(panelMap, objTileMoveEventBroker, sUniquename, sX, sY, this.getSideLength());
 							FleetTileTHM objFleetTemp = new FleetTileTHM(panelMap, objTileMoveEventBroker, dto, sX, sY, this.getSideLength());
@@ -1221,7 +1303,16 @@ public class HexMapTHM extends KernelUseObjectZZZ implements ITileEventUserTHM {
 			
 							
 							//+++ UI Operationen & die TroopArmy noch an das UI-verwendete Objekt weitergeben
-							GenericDTO dto = GenericDTO.getInstance(ITileDtoAttribute.class);
+							//GenericDTO dto = GenericDTO.getInstance(ITileDtoAttribute.class);
+							//FGL 20171011: Ersetzt durch eine Factory - Klasse
+//							TileDtoFactory factoryTile = new TileDtoFactory();
+//							GenericDTO dto = factoryTile.createDTO();
+							
+							//FGL 20171112: Hole die Factory - Klasse generisch per FactoryGenerator:
+							DtoFactoryGenerator objFactoryGenerator = new DtoFactoryGenerator();
+							IDtoFactoryZZZ objFactory = objFactoryGenerator.getDtoFactory(ArmyTileTHM.class);
+							GenericDTO dto = objFactory.createDTO();
+							
 							dto.set(ITileDtoAttribute.UNIQUENAME, sUniquename);
 							//ArmyTileTHM objArmyTemp = new ArmyTileTHM(panelMap, objTileMoveEventBroker, sUniquename, sX, sY, this.getSideLength());
 							ArmyTileTHM objArmyTemp = new ArmyTileTHM(panelMap, objTileMoveEventBroker, dto, sX, sY, this.getSideLength());

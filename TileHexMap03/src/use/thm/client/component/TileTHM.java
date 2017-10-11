@@ -8,14 +8,19 @@ import java.awt.Graphics;
 import javax.swing.JPanel;
 
 import basic.persistence.dto.GenericDTO;
+import basic.zBasic.ExceptionZZZ;
 import basic.zBasic.persistence.interfaces.IBackendPersistenceUser4UiZZZ;
+import basic.zBasic.persistence.interfaces.IDtoFactoryZZZ;
+import basic.zBasic.util.log.ReportLogZZZ;
 import basic.zBasic.util.math.MathZZZ;
 import basic.zKernel.IKernelUserZZZ;
 import basic.zKernelUI.component.KernelJPanelCascadedZZZ;
 import use.thm.IMapPositionableTHM;
 import use.thm.client.event.TileMoveEventBrokerTHM;
 import use.thm.client.handler.TileMouseMotionHandlerTHM;
+import use.thm.persistence.dto.DtoFactoryGenerator;
 import use.thm.persistence.dto.ITileDtoAttribute;
+import use.thm.persistence.dto.TileDtoFactory;
 
 public class TileTHM extends JPanel implements IMapPositionableTHM, IBackendPersistenceUser4UiZZZ {
 	private String sUniquename; //Ein eindeutige Bezeichnung. Über diese wird die UI Komponente mit der BackendPersistence-Entsprechung verbunden.
@@ -229,7 +234,24 @@ public class TileTHM extends JPanel implements IMapPositionableTHM, IBackendPers
 	@Override
 	public GenericDTO<ITileDtoAttribute> getDto() {
 		if(this.objDto==null){
-			this.objDto =GenericDTO.getInstance(ITileDtoAttribute.class); //ITileDtoAttribute bestimmt also welche Properties in der DTO-Klasse gespeicehrt sind.
+			//this.objDto =GenericDTO.getInstance(ITileDtoAttribute.class); //ITileDtoAttribute bestimmt also welche Properties in der DTO-Klasse gespeicehrt sind.
+			
+			//FGL 20171011: Ersetzt durch eine Factory - Klasse
+//			TileDtoFactory factoryTile = new TileDtoFactory();
+//			GenericDTO dto = factoryTile.createDTO();	
+			
+			//FGL 20171112: Hole die Factory - Klasse generisch per FactoryGenerator:
+			DtoFactoryGenerator objFactoryGenerator = new DtoFactoryGenerator();
+			IDtoFactoryZZZ objFactory;
+			try {
+				objFactory = objFactoryGenerator.getDtoFactory(this.getClass());
+				GenericDTO dto = objFactory.createDTO();				
+				this.objDto = dto;				
+			} catch (ExceptionZZZ e) {
+				e.printStackTrace();
+				System.out.println("Ein Fehler ist aufgetreten: " + e.getDetailAllLast());
+				ReportLogZZZ.write(ReportLogZZZ.ERROR, e.getDetailAllLast());
+			}						
 		}
 		return this.objDto;
 	}

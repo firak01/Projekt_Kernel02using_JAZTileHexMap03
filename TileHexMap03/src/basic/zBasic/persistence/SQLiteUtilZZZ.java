@@ -34,17 +34,17 @@ public class SQLiteUtilZZZ  extends ObjectZZZ{
 		boolean bReturn = false;
 		main:{
 			if(objHibernateContext == null){
-				ExceptionZZZ ez  = new ExceptionZZZ("HibernateContextProviderTHM", iERROR_PARAMETER_MISSING, FileEasyZZZ.class.getName(), ReflectCodeZZZ.getMethodCurrentName());
+				ExceptionZZZ ez  = new ExceptionZZZ("HibernateContextProviderTHM", iERROR_PARAMETER_MISSING, SQLiteUtilZZZ.class.getName(), ReflectCodeZZZ.getMethodCurrentName());
 				throw ez;
 			}
 			Configuration objConfig = objHibernateContext.getConfiguration();
 			if(objConfig==null){
-				ExceptionZZZ ez  = new ExceptionZZZ("HibernateContextProviderTHM enthält kein Configuration Objekt", iERROR_PARAMETER_VALUE, FileEasyZZZ.class.getName(), ReflectCodeZZZ.getMethodCurrentName());
+				ExceptionZZZ ez  = new ExceptionZZZ("HibernateContextProviderTHM enthält kein Configuration Objekt", iERROR_PARAMETER_VALUE, SQLiteUtilZZZ.class.getName(), ReflectCodeZZZ.getMethodCurrentName());
 				throw ez;
 			}
 			String sUrl = objConfig.getProperty("hibernate.connection.url");
 			if(StringZZZ.isEmpty(sUrl)){
-				ExceptionZZZ ez  = new ExceptionZZZ("Leere URL aus 'HibernateContextProviderTHM Configuration Objekt'", iERROR_PARAMETER_VALUE, FileEasyZZZ.class.getName(), ReflectCodeZZZ.getMethodCurrentName());
+				ExceptionZZZ ez  = new ExceptionZZZ("Leere URL aus 'HibernateContextProviderTHM Configuration Objekt'", iERROR_PARAMETER_VALUE, SQLiteUtilZZZ.class.getName(), ReflectCodeZZZ.getMethodCurrentName());
 				throw ez;
 			}
 			//Aus folgenden Konfigurations-String den Dateipfad holen
@@ -112,7 +112,7 @@ public class SQLiteUtilZZZ  extends ObjectZZZ{
 				}
 			}else{
 				//databaseType nicht gefunden
-				ExceptionZZZ ez  = new ExceptionZZZ("Datenbanktyp nicht gefunden, der im Konfigurationsstring genannt wird: '" + sUrl +"'", iERROR_PARAMETER_VALUE, FileEasyZZZ.class.getName(), ReflectCodeZZZ.getMethodCurrentName());
+				ExceptionZZZ ez  = new ExceptionZZZ("Datenbanktyp nicht gefunden, der im Konfigurationsstring genannt wird: '" + sUrl +"'", iERROR_PARAMETER_VALUE, SQLiteUtilZZZ.class.getName(), ReflectCodeZZZ.getMethodCurrentName());
 				throw ez;
 			}//end if databaseType != null
 		}//end main:		

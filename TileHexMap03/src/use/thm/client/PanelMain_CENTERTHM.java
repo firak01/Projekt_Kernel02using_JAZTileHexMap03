@@ -5,6 +5,7 @@ import java.awt.Dimension;
 
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 
 import basic.zBasic.ExceptionZZZ;
 import basic.zBasic.util.datatype.string.StringZZZ;
@@ -96,6 +97,12 @@ public class PanelMain_CENTERTHM extends KernelJPanelCascadedZZZ implements IHex
 		} catch (ExceptionZZZ ez) {				
 			this.getLogObject().WriteLineDate(ez.getDetailAllLast());
 			ReportLogZZZ.write(ReportLogZZZ.ERROR, ez.getDetailAllLast());
+			
+			String sMessage = "Ein Fehler ist aufgetreten; " + ez.getDetailAllLast();
+			System.out.println(sMessage);
+			
+			//Mache nun eine Ausgabe, im UI, da der Fehler ja für den Anwender sichtbar werden muss. 				
+			JOptionPane.showMessageDialog (panelParent, sMessage);//TODO GOON: Eigentlich hier nicht ausgeben, sondern das Ergebnis für irgendwelche Frontend-Klassen zur Verfügung stellen, die dann ggfs. auch eine UI Komponente haben.
 		}
 }
 

@@ -479,7 +479,7 @@ public class HexMapTHM extends KernelUseObjectZZZ implements ITileEventUserTHM {
 				
 				//FGL 20171112: Hole die Factory - Klasse generisch per FactoryGenerator:
 				DtoFactoryGenerator objFactoryGenerator = new DtoFactoryGenerator();
-				IDtoFactoryZZZ objFactory = objFactoryGenerator.getDtoFactory(ArmyTileTHM.class);
+				IDtoFactoryZZZ objFactory = objFactoryGenerator.getDtoFactory(FleetTileTHM.class);
 				GenericDTO dto = objFactory.createDTO();
 				
 				dto.set(ITileDtoAttribute.UNIQUENAME, sUniquename);
@@ -918,7 +918,7 @@ public class HexMapTHM extends KernelUseObjectZZZ implements ITileEventUserTHM {
 						
 						//FGL 20171112: Hole die Factory - Klasse generisch per FactoryGenerator:
 						DtoFactoryGenerator objFactoryGenerator = new DtoFactoryGenerator();
-						IDtoFactoryZZZ objFactory = objFactoryGenerator.getDtoFactory(ArmyTileTHM.class);
+						IDtoFactoryZZZ objFactory = objFactoryGenerator.getDtoFactory(FleetTileTHM.class);
 						GenericDTO dto = objFactory.createDTO();
 						
 						dto.set(ITileDtoAttribute.UNIQUENAME, sUniquename);
@@ -954,7 +954,7 @@ public class HexMapTHM extends KernelUseObjectZZZ implements ITileEventUserTHM {
 						
 						//FGL 20171112: Hole die Factory - Klasse generisch per FactoryGenerator:
 						DtoFactoryGenerator objFactoryGenerator = new DtoFactoryGenerator();
-						IDtoFactoryZZZ objFactory = objFactoryGenerator.getDtoFactory(ArmyTileTHM.class);
+						IDtoFactoryZZZ objFactory = objFactoryGenerator.getDtoFactory(FleetTileTHM.class);
 						GenericDTO dto = objFactory.createDTO();
 						
 						dto.set(ITileDtoAttribute.UNIQUENAME, sUniquename);

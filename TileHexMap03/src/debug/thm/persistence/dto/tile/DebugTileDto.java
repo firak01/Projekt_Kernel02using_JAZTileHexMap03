@@ -39,8 +39,11 @@ public class DebugTileDto {
 		//3. Variante: Hole die Verwendete Factory per Generator aus dem Objekt, das ein DTO nutzen will.
 		try {
 			DtoFactoryGenerator objFactoryGenerator = DtoFactoryGenerator.getInstance();
-			IDtoFactoryZZZ objFactory = objFactoryGenerator.getDtoFactory(ArmyTileTHM.class);
-			GenericDTO dtoByFactoryGenerated = objFactory.createDTO();
+			
+			//20171014: Dies durch eine einzelne "Komfortfunktion" ersetzt
+			//IDtoFactoryZZZ objFactory = objFactoryGenerator.getDtoFactory(ArmyTileTHM.class);
+			//GenericDTO dtoByFactoryGenerated = objFactory.createDTO();
+			GenericDTO dtoByFactoryGenerated = objFactoryGenerator.createDtoForClass(ArmyTileTHM.class);
 			
 			//o.k.
 			dtoByFactoryGenerated.set(ITileDtoAttribute.UNIQUENAME, "Mein drittes DTO");

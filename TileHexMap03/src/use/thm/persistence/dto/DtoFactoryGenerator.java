@@ -2,6 +2,8 @@ package use.thm.persistence.dto;
 
 import use.thm.client.component.ArmyTileTHM;
 import use.thm.client.component.FleetTileTHM;
+import basic.persistence.dto.GenericDTO;
+import basic.persistence.dto.IDTOAttributeGroup;
 import basic.zBasic.ExceptionZZZ;
 import basic.zBasic.ReflectCodeZZZ;
 import basic.zBasic.persistence.interfaces.IDtoFactoryGeneratorZZZ;
@@ -75,6 +77,21 @@ public class DtoFactoryGenerator  extends KernelUseObjectZZZ implements IDtoFact
 //		}
 		return objReturn;
 		}
-
+	
+	//#####################
+	/** Komfortfunktion: 
+	 *   Damit muss man an den nutzenden Stellen die einzelnen DTO Factories nicht erst erzeugen. 
+	 *   Das spart eine Zeile Code, wenn das die Generator Klasse selbst liefert.
+	 */
+	public GenericDTO<IDTOAttributeGroup> createDtoForClass(Class classUsingTheDto) throws ExceptionZZZ{
+		
+		//1. Hole die zu verwendende Factory für diese Klasse.
+		IDtoFactoryZZZ objFactory = this.getDtoFactory(classUsingTheDto);
+				
+	    //2. Erzeuge dann generisch das DTO
+		GenericDTO<IDTOAttributeGroup> dto = (GenericDTO<IDTOAttributeGroup>) objFactory.createDTO();
+		
+		return dto;
+	}
 
 }

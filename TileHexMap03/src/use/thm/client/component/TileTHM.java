@@ -240,11 +240,10 @@ public class TileTHM extends JPanel implements IMapPositionableTHM, IBackendPers
 //			TileDtoFactory factoryTile = new TileDtoFactory();
 //			GenericDTO dto = factoryTile.createDTO();	
 			
-			//FGL 20171112: Hole die Factory - Klasse generisch per FactoryGenerator:
-			DtoFactoryGenerator objFactoryGenerator = new DtoFactoryGenerator();
-			IDtoFactoryZZZ objFactory;
+			//FGL 20171112: Hole die Factory - Klasse generisch per FactoryGenerator, die ls Singleton umgebaut wurde:
 			try {
-				objFactory = objFactoryGenerator.getDtoFactory(this.getClass());
+				DtoFactoryGenerator objFactoryGenerator = DtoFactoryGenerator.getInstance();
+				IDtoFactoryZZZ objFactory = objFactoryGenerator.getDtoFactory(this.getClass());
 				GenericDTO dto = objFactory.createDTO();				
 				this.objDto = dto;				
 			} catch (ExceptionZZZ e) {

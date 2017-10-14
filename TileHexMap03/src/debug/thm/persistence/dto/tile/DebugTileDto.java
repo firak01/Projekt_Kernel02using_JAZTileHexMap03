@@ -37,8 +37,8 @@ public class DebugTileDto {
 		
 		//####################################
 		//3. Variante: Hole die Verwendete Factory per Generator aus dem Objekt, das ein DTO nutzen will.
-		DtoFactoryGenerator objFactoryGenerator = new DtoFactoryGenerator();
 		try {
+			DtoFactoryGenerator objFactoryGenerator = DtoFactoryGenerator.getInstance();
 			IDtoFactoryZZZ objFactory = objFactoryGenerator.getDtoFactory(ArmyTileTHM.class);
 			GenericDTO dtoByFactoryGenerated = objFactory.createDTO();
 			

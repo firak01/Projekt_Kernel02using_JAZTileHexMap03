@@ -129,7 +129,7 @@ public class GhostDropManagerHexMapPanelTHM extends AbstractGhostDropManager imp
 //							GenericDTO dto = factoryTile.createDTO();			
 							
 							//FGL 20171112: Hole die Factory - Klasse generisch per FactoryGenerator:
-							DtoFactoryGenerator objFactoryGenerator = new DtoFactoryGenerator();
+							DtoFactoryGenerator objFactoryGenerator = DtoFactoryGenerator.getInstance();
 							IDtoFactoryZZZ objFactory = objFactoryGenerator.getDtoFactory(ArmyTileTHM.class);
 							GenericDTO dto = objFactory.createDTO();	
 							

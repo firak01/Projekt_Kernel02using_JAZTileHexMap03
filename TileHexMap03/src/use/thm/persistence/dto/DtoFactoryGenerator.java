@@ -9,11 +9,44 @@ import basic.zBasic.persistence.interfaces.IDtoFactoryZZZ;
 import basic.zBasic.util.file.FileEasyZZZ;
 import basic.zKernel.KernelUseObjectZZZ;
 
-/* TODO Mache daraus ein Singleton */
+/** Als Singleton umgesetzt. 
+ * 
+     * Merke:
+	 * Mache die Factory - Klassen selbst NICHT zum Singleton:
+	 * Diese erweitern eine abstrakte Kalsse. Singelteon funktioniert in der abstrakten Klasse nicht.
+	 * Grund: In einer abstrakten Klasse kann zwar ein Konsturktor vorhanden sein, .... 
+	 * ABER:  Es kann die Abstrakte Klasse nicht instantiiert werden.*/
 public class DtoFactoryGenerator  extends KernelUseObjectZZZ implements IDtoFactoryGeneratorZZZ {
-	public DtoFactoryGenerator(){		
+	private static DtoFactoryGenerator objFactorySingelton; //muss als Singleton static sein
+
+	public static DtoFactoryGenerator getInstance() throws ExceptionZZZ{
+		if(objFactorySingelton==null){
+			objFactorySingelton = new DtoFactoryGenerator(); //Das geht in abstrakter Klasse eben nicht... !!!!!!!!!!!!!!!!!!!!1
+		}
+		return objFactorySingelton;	
 	}
 	
+	//Die Konstruktoren nun verbergen, wg. Singleton
+	private DtoFactoryGenerator() throws ExceptionZZZ{
+		//super();
+	}
+	
+	//TODO: Erlaube das setzen von Flags im Konstruktor.... 
+	//dazu muss die Klasse aber auch die getFlag() / set Flag() Methodik verwenden, die in anderen Kernel-Objekten genutzt wird.
+	//Diese Flags müssen vererbbar sein....
+
+//	public static  TileDtoFactory getInstance(String sFlagControl) throws ExceptionZZZ{
+//		if(objFactorySingelton==null){
+//			objFactorySingelton = new TileDtoFactory(sFlagControl);
+//		}
+//		return objFactorySingelton;	
+//	}
+	
+	
+	
+
+	
+	//###########################################################################
 	@Override
 	public IDtoFactoryZZZ getDtoFactory(Class classUsingTheDto) throws ExceptionZZZ{
 		IDtoFactoryZZZ objReturn = null;

@@ -3,6 +3,7 @@ package use.thm.client.component;
 import java.awt.Color;
 import java.awt.Cursor;
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.Graphics;
 
 import javax.swing.JPanel;
@@ -149,13 +150,31 @@ public class TileTHM extends JPanel implements IMapPositionableTHM, IBackendPers
 	public void paintComponent(Graphics g){
 		//super.paintComponent(g);
 
+		//Der Hintergrund des Spielsteins
 		int iTileSideLength = this.getTileSideLength();	
 		g.setColor(Color.red);
 		//g.fillRect(0,0, 30,30);
 		g.fillRect(0,0, iTileSideLength,iTileSideLength);
+		
+		
+		//Die Beschriftung des Spielsteins
 		g.setColor(Color.green);
 		//g.drawString("test",0,15);
-		g.drawString("test",0,(int)(iTileSideLength/2));
+		//g.drawString("test",0,(int)(iTileSideLength/2));
+		
+		//Die Schriftgöße ändern, hier des aktuellen Fonts
+		Font font = g.getFont().deriveFont( 8.0f );
+		
+		//Die Schriftgröße ändern, hier einen bestimmten Font setzen
+		// Font f = new Font("Comic Sans MS", Font.BOLD, 20);
+		
+		g.setFont( font );
+		
+		//TODO GOON: Einen Namen (Kurz, nomal, lang) als Eigenschaft den Objekten hinzufügen. 
+		//                      und dann die "Kurzform" hier anzeigen.
+		String sUniquename = this.getUniquename();
+		g.drawString(sUniquename,0,(int)(iTileSideLength/2));
+		
 		setOpaque(false);
 	}
 	

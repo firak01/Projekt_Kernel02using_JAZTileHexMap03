@@ -12,6 +12,7 @@ import basic.persistence.dto.GenericDTO;
 import basic.zBasic.ExceptionZZZ;
 import basic.zBasic.persistence.interfaces.IBackendPersistenceUser4UiZZZ;
 import basic.zBasic.persistence.interfaces.IDtoFactoryZZZ;
+import basic.zBasic.util.datatype.string.StringZZZ;
 import basic.zBasic.util.log.ReportLogZZZ;
 import basic.zBasic.util.math.MathZZZ;
 import basic.zKernel.IKernelUserZZZ;
@@ -173,6 +174,15 @@ public class TileTHM extends JPanel implements IMapPositionableTHM, IBackendPers
 		//TODO GOON: Einen Namen (Kurz, nomal, lang) als Eigenschaft den Objekten hinzufügen. 
 		//                      und dann die "Kurzform" hier anzeigen.
 		String sUniquename = this.getUniquename();
+		
+		//Den gefundenen Namen abkürzen 
+		try {
+			sUniquename = StringZZZ.toShorten(sUniquename, StringZZZ.iSHORTEN_METHOD_VOWEL, 0);//Entferne aus dem String die Vokale 
+			sUniquename = StringZZZ.abbreviateDynamic(sUniquename, 8 );//Nach 8 Zeichen soll der Name abgekürzt werden, d.h. abgeschnitten und "..." am Ende, um das Abkürzen zu kennzeichnen..
+		} catch (ExceptionZZZ e) {
+			e.printStackTrace();
+		}
+
 		g.drawString(sUniquename,0,(int)(iTileSideLength/2));
 		
 		setOpaque(false);
@@ -182,10 +192,10 @@ public class TileTHM extends JPanel implements IMapPositionableTHM, IBackendPers
 		this.bDragModeStarted = bStarted;
 		if(bStarted==true){  //Merke: im MouseMove - Event des MouseMotionHandlers wird der Cursor zum "isMovable" Cursor.
 			Cursor objCursor = new Cursor(Cursor.CROSSHAIR_CURSOR);		
-			this.setCursor(objCursor);  //Den Cursor wieder zur�cksetzen
+			this.setCursor(objCursor);  //Den Cursor wieder zurücksetzen
 		}else{
 			Cursor objCursor = new Cursor(Cursor.DEFAULT_CURSOR);		
-			this.setCursor(objCursor);  //Den Cursor wieder zur�cksetzen
+			this.setCursor(objCursor);  //Den Cursor wieder zurücksetzen
 		}
 	}
 	public boolean isDragModeStarted(){

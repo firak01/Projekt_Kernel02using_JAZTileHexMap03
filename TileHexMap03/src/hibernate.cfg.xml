@@ -38,6 +38,9 @@
 		<mapping class="use.thm.persistence.model.AreaCellLand"></mapping>
 		<mapping class="use.thm.persistence.model.TroopArmy"></mapping>
 		<mapping class="use.thm.persistence.model.TroopFleet"></mapping>
+		
+		<!-- FGL: 20171019 - Mapping für die Schlüsselwerttabellen -->
+		<mapping class="use.thm.persistence.model.TileDefaulttextValue"></mapping>
 
 		<!-- FGL: So werden die Klassen für das Mapping herangezogen, aber: Dabei 
 			werden Annotations verwendet. -->

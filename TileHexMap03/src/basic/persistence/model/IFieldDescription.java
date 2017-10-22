@@ -7,6 +7,8 @@ package basic.persistence.model;
 
 	/**
 	 * Zur Benutzeradressierten Beschreibung von Feldern (Enum Werten). Auswertung erfolgt in generischem Editor.
+	 * 
+	 * FGL: Was ich so verstanden habe, ist, dass dadurch MEto Informationen für die Nutzung in Frameworks SPRING angegeben werden.
 	 */
 	@Retention(RetentionPolicy.RUNTIME)
 	@Target(ElementType.FIELD)

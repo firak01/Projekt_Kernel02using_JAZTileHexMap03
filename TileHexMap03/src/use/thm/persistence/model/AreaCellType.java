@@ -2,7 +2,7 @@ package use.thm.persistence.model;
 
 import javax.persistence.Embeddable;
 
-/* alte VErsion, hier funktioniert nicht das deserialisieren 
+/* alte Version, hier funktioniert nicht das deserialisieren 
  public enum AreaType {
  	OCEAN, LAND
 }

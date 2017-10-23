@@ -17,5 +17,7 @@ package basic.persistence.model;
 	     * Der beschreibende Text für den Anwender.
 	     * @return eine Beschreibung des Feldes und was sein Zweck ist.
 	     */
-	    String description();
+	    String description();	    
 	}
+	
+

@@ -44,7 +44,8 @@ public class DebugKeyTableZZZ {
 				TileDefaulttextType[] objaType = TileDefaulttextType.values();
 				//String s = objaType[0].name(); //Prasenzstudium .... also entsprechend was als Eigenschaft vorgeschlagen wird von TileDefaulttextType.Praesenzstudium
 				//String s = objaType[0].toString(); //dito
-				String s = objaType[0].description();
+				//String s = objaType[0].description(); //gibt es nicht, das @description wohl nur etwas für Tool ist, welches diese Metasprachlichen Annotiations auswertet.
+				String s = objaType[0].name();
 				objValue.setDefaulttext(s);
 			
 				//Merke: EINE TRANSACTION = EINE SESSION ==>  neue session von der SessionFactory holen

@@ -11,10 +11,10 @@ import basic.persistence.util.HibernateUtil;
 import basic.zBasic.ExceptionZZZ;
 import basic.zKernel.KernelZZZ;
 
-public class DebugKeyTableZZZ {
+public class DebugKeyTable_Version_TileDefaulttextValueTHM {
 
 	public static void main(String[] args) {
-		DebugKeyTableZZZ objDebug = new DebugKeyTableZZZ();
+		DebugKeyTable_Version_TileDefaulttextValueTHM objDebug = new DebugKeyTable_Version_TileDefaulttextValueTHM();
 		objDebug.debugCreateEntry();
 		
 		//objDebug.debugFindColumnValueMax();

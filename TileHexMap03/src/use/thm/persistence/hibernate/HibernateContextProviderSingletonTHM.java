@@ -26,6 +26,7 @@ import use.thm.persistence.model.AreaCellLand;
 import use.thm.persistence.model.AreaCellOcean;
 import use.thm.persistence.model.HexCell;
 import use.thm.persistence.model.Tile;
+import use.thm.persistence.model.TileDefaulttext;
 import use.thm.persistence.model.TileDefaulttextValue;
 import use.thm.persistence.model.Troop;
 import use.thm.persistence.model.TroopArmy;
@@ -91,7 +92,8 @@ public class HibernateContextProviderSingletonTHM extends HibernateContextProvid
 		bReturn = addConfigurationAnnotatedClass(cfg, TroopArmy.class);
 		bReturn = addConfigurationAnnotatedClass(cfg, TroopFleet.class);
 		
-		bReturn = addConfigurationAnnotatedClass(cfg, TileDefaulttextValue.class);
+		bReturn = addConfigurationAnnotatedClass(cfg, TileDefaulttextValue.class);//wird aber nicht genutz. Nur Demonstrator
+		bReturn = addConfigurationAnnotatedClass(cfg, TileDefaulttext.class);
 		
 		//FGL 20170409: Versuch Callbacks in Hibernate
 		//this.getConfiguration().setListener("persist",new TroopArmyListener());

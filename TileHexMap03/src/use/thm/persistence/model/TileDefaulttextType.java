@@ -2,7 +2,12 @@ package use.thm.persistence.model;
 
 import basic.persistence.model.IFieldDescription;
 import basic.persistence.model.IKeyEnum;
-
+/** Nicht verwendete Lösung. Statt dessen wird in den Entity Klassen für die Schlüsselerttabellen und den Defaultwerten 
+ *   eine interen Klasse für das enum verwendet.
+ *   
+ * @author Fritz Lindhauer
+ *
+ */
 public enum TileDefaulttextType implements IKeyEnum<Long>{		
 	
     /**

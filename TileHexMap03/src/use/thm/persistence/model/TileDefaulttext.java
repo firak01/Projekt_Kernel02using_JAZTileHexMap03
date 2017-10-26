@@ -129,8 +129,8 @@ public class TileDefaulttext  extends AbstractValue<TileDefaulttext> implements 
 	
 	 // @Override
     @Transient
-	   public Class<EnumSetInnerMappedTestTypeZZZ> getThiskeyEnumClass() {
-	       return EnumSetInnerMappedTestTypeZZZ.class;
+	   public Class<EnumTileDefaulttext> getThiskeyEnumClass() {
+	       return EnumTileDefaulttext.class;
 	   }
 
 	//#######################################################

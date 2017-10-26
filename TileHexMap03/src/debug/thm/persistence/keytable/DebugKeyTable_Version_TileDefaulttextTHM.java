@@ -1,6 +1,7 @@
 package debug.thm.persistence.keytable;
 
 import java.util.Collection;
+import java.util.Set;
 
 import org.hibernate.Session;
 
@@ -13,24 +14,26 @@ import use.thm.persistence.model.TileDefaulttextValue;
 import basic.persistence.util.HibernateUtil;
 import basic.zBasic.ExceptionZZZ;
 import basic.zBasic.util.datatype.enums.EnumZZZ;
+import basic.zBasic.util.genericEnum.EnumSetInnerUtilZZZ;
 import basic.zKernel.KernelZZZ;
-
-/** Nicht genutzte Variante. 
- * Statt dessen habe ich mich für eine Variante entschieden, in der die Enumeration als innere Klasse der Entity Klasse gehalten wird.
+/** In dieser Variante werden innere Klassen verwendet, welche die Enumation sind.
  *  
- *  In dieser Variante werden die Enums aus der Klasse: EnumSetInnerMappedTestTypeZZZ Verwendet.
  * @author Fritz Lindhauer
  *
  */
-public class DebugKeyTable_Version_TileDefaulttextValueTHM {
+public class DebugKeyTable_Version_TileDefaulttextTHM {
 
 	public static void main(String[] args) {
-		DebugKeyTable_Version_TileDefaulttextValueTHM objDebug = new DebugKeyTable_Version_TileDefaulttextValueTHM();
+		DebugKeyTable_Version_TileDefaulttextTHM objDebug = new DebugKeyTable_Version_TileDefaulttextTHM();
 		
+		//Hole alle Einträge des Enums
 		objDebug.getEntrySetDefaultValues();
 		
-		objDebug.debugCreateEntry();
+		//objDebug.debugCreateEntry();
 		
+		
+		
+		//####################
 		//objDebug.debugFindColumnValueMax();
 		//objDebug.debugFindColumnMinValue();
 	}
@@ -40,13 +43,14 @@ public class DebugKeyTable_Version_TileDefaulttextValueTHM {
 		main:{
 //			try {
 				
-				TileDefaulttextValue objValue = new TileDefaulttextValue();				
+				TileDefaulttext objValue = new TileDefaulttext();				
+				Long lngObj = new Long(1);
 				Collection<String> colsName = EnumZZZ.getNames(objValue.getThiskeyEnumClass());
 				for(String s : colsName){
-					System.out.println("Gefundener Enum-Name: " + s);
+					System.out.println("Gefundener Enum-Name: " + s);					
 				}
 				
-				
+				//EnumSetInnerUtilZZZ.getThiskeyOf(objValue);
 				//KernelZZZ objKernel = new KernelZZZ(); //Merke: Die Service Klasse selbst kann wohl nicht das KernelObjekt extenden!
 				
 				
@@ -59,7 +63,6 @@ public class DebugKeyTable_Version_TileDefaulttextValueTHM {
 		}//end main:
 		return bReturn;	
 	}
-	
 	
 	public boolean debugCreateEntry(){
 		boolean bReturn = false;

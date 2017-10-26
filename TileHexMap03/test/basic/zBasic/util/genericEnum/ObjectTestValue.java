@@ -14,13 +14,13 @@ import javax.persistence.InheritanceType;
 import javax.persistence.Table;
 import javax.persistence.TableGenerator;
 
+import base.datatype.KeyEnum;
 import basic.persistence.model.IFieldDescription;
 import basic.persistence.model.IKeyEnum;
 import basic.persistence.model.IOptimisticLocking;
 import basic.zBasic.persistence.interfaces.enums.AbstractValue;
 import basic.zBasic.persistence.interfaces.enums.IKeyProviderZZZ;
 import basic.zBasic.persistence.interfaces.enums.IKeyValueZZZ;
-import basic.zBasic.persistence.interfaces.enums.KeyEnum;
 
 //Merke: Diese Klasse könnte auch als Entity in eine Tabelle für Schlüsselwortlisten verwendet werden.
 //           Da das aber hier nicht das ziel ist, habe ich entsprechende Annotationen einfach auskkommentiert.

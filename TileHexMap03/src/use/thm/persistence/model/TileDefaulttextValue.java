@@ -15,13 +15,13 @@ import javax.persistence.Table;
 import javax.persistence.TableGenerator;
 import javax.persistence.Transient;
 
+import base.datatype.KeyEnum;
 import basic.persistence.model.IFieldDescription;
 import basic.persistence.model.IKeyEnum;
 import basic.persistence.model.IOptimisticLocking;
 import basic.zBasic.persistence.interfaces.enums.AbstractValue;
 import basic.zBasic.persistence.interfaces.enums.IKeyProviderZZZ;
 import basic.zBasic.persistence.interfaces.enums.IKeyValueZZZ;
-import basic.zBasic.persistence.interfaces.enums.KeyEnum;
 
 /**
 *  Variante - nicht vewendet - : Hier wird ein Enum - Klasse ausserhalb verwendet.

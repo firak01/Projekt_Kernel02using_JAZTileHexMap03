@@ -99,19 +99,15 @@ import com.google.common.collect.Sets;
 
 
 /**
- * Utility class that supports working with applicationkeys.
+ * Utility Klasse um mit den Enumerationen zu arbeiten, die als innere Klasse in den Entities verwaltet werden.
+ * Bei Schlüsselworttabellen, sind das beispielsweise die Defaulttexte der Spielsteine. 
  *
- * Company: HIS
- * @author T.Neumann
- * @version $Revision: 1.8 $
  */
 // TODO REFACTOR: Extract methods using Dto's
 public class EnumSetInnerUtilZZZ {
     /**
      * Checked exception which indicates that an hiskey enum mapping has failed.
      *
-     * @author mweyland
-     * @version $Revision: 1.8 $
      */
     public static class ThiskeyEnumMappingExceptionZZZ extends Exception {
         private static final long serialVersionUID = 1L;

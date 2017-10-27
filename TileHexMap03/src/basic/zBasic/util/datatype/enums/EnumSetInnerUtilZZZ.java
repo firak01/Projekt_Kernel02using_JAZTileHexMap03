@@ -78,7 +78,7 @@
  * Revision 1.1  2009-09-29 11:58:49  t.neumann#his.de
  * utility class for hiskey handling
  */
-package basic.zBasic.util.genericEnum;
+package basic.zBasic.util.datatype.enums;
 
 import static com.google.common.base.Objects.equal;
 import static com.google.common.collect.Collections2.transform;

@@ -1,7 +1,7 @@
 package basic.zBasic.util.genericEnum;
 
 import use.thm.persistence.model.TileDefaulttextValue;
-import basic.zBasic.util.genericEnum.EnumSetInnerUtilZZZ;
+import basic.zBasic.util.datatype.enums.EnumSetInnerUtilZZZ;
 
 /** Klasse zum Ausprobieren und Testen, der "EnumSetInnerUtilZZZ" Klasse.
  *  Hiermit soll dann auf enums zugegriffen werden, die innerhalb einer Klasse 

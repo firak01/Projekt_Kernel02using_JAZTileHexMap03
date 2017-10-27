@@ -13,8 +13,8 @@ import use.thm.persistence.model.TileDefaulttextType;
 import use.thm.persistence.model.TileDefaulttextValue;
 import basic.persistence.util.HibernateUtil;
 import basic.zBasic.ExceptionZZZ;
+import basic.zBasic.util.datatype.enums.EnumSetInnerUtilZZZ;
 import basic.zBasic.util.datatype.enums.EnumZZZ;
-import basic.zBasic.util.genericEnum.EnumSetInnerUtilZZZ;
 import basic.zKernel.KernelZZZ;
 /** In dieser Variante werden innere Klassen verwendet, welche die Enumation sind.
  *  

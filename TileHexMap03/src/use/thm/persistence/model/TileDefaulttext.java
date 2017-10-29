@@ -16,7 +16,7 @@ import javax.persistence.Table;
 import javax.persistence.TableGenerator;
 import javax.persistence.Transient;
 
-import use.thm.persistence.interfaces.enums.IEnumSetDefaulttextMappedTHM;
+import use.thm.persistence.interfaces.enums.IEnumSetDefaulttextTHM;
 import basic.persistence.model.IFieldDescription;
 import basic.persistence.model.IKeyEnum;
 import basic.persistence.model.IOptimisticLocking;
@@ -129,15 +129,17 @@ public class TileDefaulttext  extends AbstractValue<TileDefaulttext> implements 
 	
 	 // @Override
     @Transient
-	   public Class<EnumTileDefaulttext> getThiskeyEnumClass() {
-	       return EnumTileDefaulttext.class;
+    public Class<EnumTileDefaulttext> getThiskeyEnumClass() {
+	   //public Class<IEnumSetDefaulttextTHM> getThiskeyEnumClass() {
+	      return EnumTileDefaulttext.class;
+    	//return IEnumSetDefaulttextTHM.class;
 	   }
 
 	//#######################################################
 	//### Eingebettete Enum-Klasse mit den Defaultwerten, diese Werte werden auch per Konstruktor übergeben.
 	//### int Key, String shorttext, String longtext, String description
 	//#######################################################
-	public enum EnumTileDefaulttext implements IEnumSetDefaulttextMappedTHM,  IKeyProviderZZZ<Long>{//Folgendes geht nicht, da alle Enums schon von einer Java BasisKlasse erben... extends EnumSetMappedBaseZZZ{
+	public enum EnumTileDefaulttext implements IEnumSetDefaulttextTHM,  IKeyProviderZZZ<Long>{//Folgendes geht nicht, da alle Enums schon von einer Java BasisKlasse erben... extends EnumSetMappedBaseZZZ{
 		
    	 @IFieldDescription(description = "ARMY TEXTVALUES") 
    	ARMY(1,"Army","Land army","A tile which cannot enter ocean fields."),

@@ -8,11 +8,15 @@ import org.hibernate.Session;
 import use.thm.persistence.dao.TileDao;
 import use.thm.persistence.event.VetoFlag4ListenerZZZ;
 import use.thm.persistence.hibernate.HibernateContextProviderSingletonTHM;
+import use.thm.persistence.interfaces.enums.IEnumSetDefaulttextTHM;
 import use.thm.persistence.model.TileDefaulttext;
+import use.thm.persistence.model.TileDefaulttext.EnumTileDefaulttext;
 import use.thm.persistence.model.TileDefaulttextType;
 import use.thm.persistence.model.TileDefaulttextValue;
 import basic.persistence.util.HibernateUtil;
 import basic.zBasic.ExceptionZZZ;
+import basic.zBasic.util.abstractEnum.EnumSetDefaulttextTestTypeTHM;
+import basic.zBasic.util.datatype.enums.EnumSetDefaulttextUtilZZZ;
 import basic.zBasic.util.datatype.enums.EnumSetInnerUtilZZZ;
 import basic.zBasic.util.datatype.enums.EnumZZZ;
 import basic.zKernel.KernelZZZ;
@@ -47,12 +51,29 @@ public class DebugKeyTable_Version_TileDefaulttextTHM {
 				Long lngObj = new Long(1);
 				Collection<String> colsName = EnumZZZ.getNames(objValue.getThiskeyEnumClass());
 				for(String s : colsName){
-					System.out.println("Gefundener Enum-Name: " + s);					
+					System.out.println("Gefundener Enum-Name: " + s);			
+					
+					//Direktes Reinschreiben geht wieder nicht wg. "bound exception"
+					//EnumSetDefaulttextUtilZZZ.getEnumConstant_DescriptionValue(EnumSetDefaulttextTestTypeTHM.class, s);
+					
+					//Also: Klasse holen und danach CASTEN.
+					Class<?> objClass = objValue.getThiskeyEnumClass();
+					String sName = EnumSetDefaulttextUtilZZZ.getEnumConstant_NameValue((Class<IEnumSetDefaulttextTHM>) objClass, s);
+					System.out.println("Gefundener Spielsteintypname: " + sName);
+					
+					String sShorttext = EnumSetDefaulttextUtilZZZ.getEnumConstant_ShorttextValue((Class<IEnumSetDefaulttextTHM>) objClass, s);
+					System.out.println("Gefundener Spielsteintypkurztext: " + sShorttext);
+					
+					String sLongtext = EnumSetDefaulttextUtilZZZ.getEnumConstant_LongtextValue((Class<IEnumSetDefaulttextTHM>) objClass, s);
+					System.out.println("Gefundener Spielsteintyplangtext: " + sLongtext);
+					
+					String sDescription = EnumSetDefaulttextUtilZZZ.getEnumConstant_DescriptionValue((Class<IEnumSetDefaulttextTHM>) objClass, s);
+					System.out.println("Gefundene Description: " + sDescription);			
+
+					
 				}
 				
-				//EnumSetInnerUtilZZZ.getThiskeyOf(objValue);
-				//KernelZZZ objKernel = new KernelZZZ(); //Merke: Die Service Klasse selbst kann wohl nicht das KernelObjekt extenden!
-				
+			
 				
 				
 				

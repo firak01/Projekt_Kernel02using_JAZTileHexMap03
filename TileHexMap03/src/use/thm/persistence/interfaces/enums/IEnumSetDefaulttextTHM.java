@@ -2,7 +2,7 @@ package use.thm.persistence.interfaces.enums;
 
 import java.util.EnumSet;
 
-public interface IEnumSetDefaulttextMappedTHM {
+public interface IEnumSetDefaulttextTHM {
 	
 	//Ds bring ENUM von sich auch mit
 	public String getName();  //Das ist name() von Enum

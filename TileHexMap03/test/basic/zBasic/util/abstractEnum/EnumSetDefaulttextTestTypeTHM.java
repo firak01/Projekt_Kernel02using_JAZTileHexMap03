@@ -2,7 +2,7 @@ package basic.zBasic.util.abstractEnum;
 
 import java.util.EnumSet;
 
-import use.thm.persistence.interfaces.enums.IEnumSetDefaulttextMappedTHM;
+import use.thm.persistence.interfaces.enums.IEnumSetDefaulttextTHM;
 import use.thm.persistence.model.TileDefaulttext.EnumTileDefaulttext;
 import basic.persistence.model.IFieldDescription;
 import basic.zBasic.persistence.interfaces.enums.IKeyProviderZZZ;
@@ -16,7 +16,7 @@ import basic.zBasic.persistence.interfaces.enums.IKeyProviderZZZ;
 	//### Eingebettete Enum-Klasse mit den Defaultwerten, diese Werte werden auch per Konstruktor übergeben.
 	//### int Key, String shorttext, String longtext, String description
 	//#######################################################
-	public enum EnumSetDefaulttextTestType implements IEnumSetDefaulttextMappedTHM,  IKeyProviderZZZ<Long>{//Folgendes geht nicht, da alle Enums schon von einer Java BasisKlasse erben... extends EnumSetMappedBaseZZZ{
+	public enum EnumSetDefaulttextTestTypeTHM implements IEnumSetDefaulttextTHM,  IKeyProviderZZZ<Long>{//Folgendes geht nicht, da alle Enums schon von einer Java BasisKlasse erben... extends EnumSetMappedBaseZZZ{
 		
  	 @IFieldDescription(description = "The TEXTVALUE01") 
  	TESTVALUE01(1,"Test01","Test01 long","A Test01 value description"),
@@ -32,7 +32,7 @@ import basic.zBasic.persistence.interfaces.enums.IKeyProviderZZZ;
  
 
  //Merke: Enums haben keinen public Konstruktor, können also nicht intiantiiert werden, z.B. durch Java-Reflektion.
- EnumSetDefaulttextTestType(int iKey, String sShorttext, String sLongtext, String sDescription){
+ EnumSetDefaulttextTestTypeTHM(int iKey, String sShorttext, String sLongtext, String sDescription){
  	this.lKey = Long.valueOf(iKey);
      this.sShorttext = sShorttext;
      this.sLongtext = sLongtext;
@@ -41,7 +41,7 @@ import basic.zBasic.persistence.interfaces.enums.IKeyProviderZZZ;
  
  //Merke: Enums haben keinen public Konstruktor, können also nicht intiantiiert werden, z.B. durch Java-Reflektion.
  //           In der Util-Klasse habe ich aber einen Workaround gefunden ( basic/zBasic/util/abstractEnum/EnumSetMappedUtilZZZ.java ).
- EnumSetDefaulttextTestType(){	
+ EnumSetDefaulttextTestTypeTHM(){	
  }
 
 //##################################################
@@ -92,8 +92,8 @@ import basic.zBasic.persistence.interfaces.enums.IKeyProviderZZZ;
 	
 	
  // the valueOfMethod <--- Translating from DB
- public static EnumSetDefaulttextTestType fromShorttext(String s) {
-     for (EnumSetDefaulttextTestType state : values()) {
+ public static EnumSetDefaulttextTestTypeTHM fromShorttext(String s) {
+     for (EnumSetDefaulttextTestTypeTHM state : values()) {
          if (s.equals(state.getShorttext()))
              return state;
      }
@@ -113,12 +113,12 @@ import basic.zBasic.persistence.interfaces.enums.IKeyProviderZZZ;
  	//ArrayList<Class<?>> listEmbedded = ReflectClassZZZ.getEmbeddedClasses(this.getClass(), sFilterName);
  	
  	//Erstelle nun ein EnumSet, speziell für diese Klasse, basierend auf  allen Enumrations  dieser Klasse.
- 	Class<EnumSetDefaulttextTestType> enumClass = EnumSetDefaulttextTestType.class;
- 	EnumSet<EnumSetDefaulttextTestType> set = EnumSet.noneOf(enumClass);//Erstelle ein leeres EnumSet
+	 Class<EnumSetDefaulttextTestTypeTHM> enumClass = EnumSetDefaulttextTestTypeTHM.class;
+ 	EnumSet<EnumSetDefaulttextTestTypeTHM> set = EnumSet.noneOf(enumClass);//Erstelle ein leeres EnumSet
  	
- 	for(Object obj : EnumSetDefaulttextTestType.class.getEnumConstants()){
+ 	for(Object obj : EnumSetDefaulttextTestTypeTHM.class.getEnumConstants()){
  		//System.out.println(obj + "; "+obj.getClass().getName());
- 		set.add((EnumSetDefaulttextTestType) obj);
+ 		set.add((EnumSetDefaulttextTestTypeTHM) obj);
  	}
  	return set;
  	

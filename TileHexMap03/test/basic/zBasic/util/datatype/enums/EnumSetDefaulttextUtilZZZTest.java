@@ -3,28 +3,27 @@ package basic.zBasic.util.datatype.enums;
 import java.util.EnumSet;
 import java.util.Set;
 
+import use.thm.persistence.interfaces.enums.IEnumSetDefaulttextTHM;
 import junit.framework.TestCase;
 import basic.zBasic.ExceptionZZZ;
-import basic.zBasic.util.abstractEnum.EnumSetDefaulttextTestType;
-import basic.zBasic.util.abstractEnum.EnumSetTestFactoryZZZ;
-import basic.zBasic.util.abstractEnum.EnumSetMappedTestTypeZZZ;
+import basic.zBasic.util.abstractEnum.EnumSetDefaulttextTestTypeTHM;
+import basic.zBasic.util.abstractEnum.EnumSetTestFactoryTHM;
 import basic.zBasic.util.abstractEnum.IEnumSetFactoryZZZ;
-import basic.zBasic.util.abstractEnum.IEnumSetMappedZZZ;
 import basic.zBasic.util.abstractList.HashMapExtendedZZZ;
 import basic.zBasic.util.datatype.enums.EnumSetMappedUtilZZZ;
 
-public class EnumSetDefaulttextUtilZZZTest  extends TestCase{
-	 private HashMapExtendedZZZ<String, EnumSetDefaulttextTestType> hmTestGenerics = null;
+public class EnumSetDefaulttextUtilZZZTest<E>  extends TestCase{
+	 private HashMapExtendedZZZ<String, EnumSetDefaulttextTestTypeTHM> hmTestGenerics = null;
 	 
 	    protected void setUp(){
 	      
 		//try {			
 		
 			//### Das spezielle Generics Testobjekt			
-			hmTestGenerics = new HashMapExtendedZZZ<String, EnumSetDefaulttextTestType>();
+			hmTestGenerics = new HashMapExtendedZZZ<String, EnumSetDefaulttextTestTypeTHM>();
 			
-			Set<EnumSetDefaulttextTestType> allTypes = EnumSet.allOf(EnumSetDefaulttextTestType.class);
-			for(EnumSetDefaulttextTestType myType : allTypes) {
+			Set<EnumSetDefaulttextTestTypeTHM> allTypes = EnumSet.allOf(EnumSetDefaulttextTestTypeTHM.class);
+			for(EnumSetDefaulttextTestTypeTHM myType : allTypes) {
 				//String sType = myType.getAbbreviation();
 				String sName = myType.name();
 				hmTestGenerics.put(sName,myType);
@@ -45,13 +44,13 @@ public class EnumSetDefaulttextUtilZZZTest  extends TestCase{
 				
 				//Static Zugriff
 				//EnumSet soll von der EnumerationZZZ-Klasse schon "generisch/per Reflektion" erzeugt und mitgebracht werden.
-				EnumSet setEnumGenerated = EnumSetDefaulttextTestType.getEnumSet();		
+				EnumSet setEnumGenerated = EnumSetDefaulttextTestTypeTHM.getEnumSet();		
 				int iSize = setEnumGenerated.size();
 				assertTrue("3 Elemente im Set erwartet.", iSize==3);
 				
 				//Generischer Zugriff, ist  nicht ganz möglich, darum Verwendung der Factory Klasse
-				IEnumSetFactoryZZZ objFactory = EnumSetTestFactoryZZZ.getInstance();				
-				Class objClass = EnumSetDefaulttextTestType.class;
+				IEnumSetFactoryZZZ objFactory = EnumSetTestFactoryTHM.getInstance();				
+				Class objClass = EnumSetDefaulttextTestTypeTHM.class;
 				EnumSetDefaulttextUtilZZZ enumSetUtil = new EnumSetDefaulttextUtilZZZ(objFactory, objClass);
 				
 				//Beim Wiederholten Zugriff über die Util-Klasse soll das einmal erstellte EnumSet wiederverwendet werden.	
@@ -74,45 +73,47 @@ public class EnumSetDefaulttextUtilZZZTest  extends TestCase{
 
 				//Variante A) EnumSet selbst erzeugen
 				//Positivfall
-				EnumSet<EnumSetDefaulttextTestType> setEnumCurrent = EnumSet.of(EnumSetDefaulttextTestType.TESTVALUE01, EnumSetDefaulttextTestType.TESTVALUE02, EnumSetDefaulttextTestType.TESTVALUE03);
+
+				EnumSet<EnumSetDefaulttextTestTypeTHM> setEnumCurrent = EnumSet.of(EnumSetDefaulttextTestTypeTHM.TESTVALUE01, EnumSetDefaulttextTestTypeTHM.TESTVALUE02, EnumSetDefaulttextTestTypeTHM.TESTVALUE03);
 				assertNotNull(setEnumCurrent);
 				btemp = EnumSetDefaulttextUtilZZZ.startsWithAnyAlias("TESTVALUE01", setEnumCurrent);
 				assertTrue("A) Prüfstring sollte in der Enumeration vorhanden sein.", btemp);
 				
 				//Negativfall
-				EnumSet<EnumSetDefaulttextTestType> setEnumCurrent02 = EnumSet.of(EnumSetDefaulttextTestType.TESTVALUE01, EnumSetDefaulttextTestType.TESTVALUE02, EnumSetDefaulttextTestType.TESTVALUE03);
+				EnumSet<EnumSetDefaulttextTestTypeTHM> setEnumCurrent02 = EnumSet.of(EnumSetDefaulttextTestTypeTHM.TESTVALUE01, EnumSetDefaulttextTestTypeTHM.TESTVALUE02, EnumSetDefaulttextTestTypeTHM.TESTVALUE03);
 				assertNotNull(setEnumCurrent02);
-				btemp = EnumSetMappedUtilZZZ.startsWithAnyAlias("Nixdaaa", setEnumCurrent02);
+				btemp = EnumSetDefaulttextUtilZZZ.startsWithAnyAlias("Nixdaaa", setEnumCurrent02);
 				assertFalse("A) Prüfstring sollte in der Enumeration NICHT vorhanden sein .", btemp);
 				
 				//Variante B) EnumSet per statischer Methode holen
 				//Positivfall
-				EnumSet<?> setEnumGenerated = EnumSetDefaulttextTestType.getEnumSet();
+				EnumSet<?> setEnumGenerated = EnumSetDefaulttextTestTypeTHM.getEnumSet();
 				assertNotNull(setEnumGenerated);
 				btemp = EnumSetDefaulttextUtilZZZ.startsWithAnyAlias("TESTVALUE02", setEnumGenerated);
 				assertTrue("B) Prüfstring sollte in der Enumeration vorhanden sein.", btemp);
 				
 				//Negativvall
-				EnumSet<?> setEnumGenerated02 = EnumSetDefaulttextTestType.getEnumSet();
+				EnumSet<?> setEnumGenerated02 = EnumSetDefaulttextTestTypeTHM.getEnumSet();
 				assertNotNull(setEnumGenerated02);
 				btemp = EnumSetDefaulttextUtilZZZ.startsWithAnyAlias("NIXDA", setEnumGenerated02);
 				assertFalse("B) Prüfstring sollte in der Enumeration NICHT vorhanden sein.", btemp);
 				
 				//Variante C) direkter
 				//Generischer Zugriff, ist  nicht ganz möglich, darum Verwendung der Factory Klasse
-				IEnumSetFactoryZZZ objFactory = EnumSetTestFactoryZZZ.getInstance();	
-				Class objClass = EnumSetDefaulttextUtilZZZ.class;
+				IEnumSetFactoryZZZ objFactory = EnumSetTestFactoryTHM.getInstance();	
+				//Class objClass = EnumSetDefaulttextUtilZZZ.class;  //TODO
+				Class objClass = EnumSetDefaulttextTestTypeTHM.class;
 				EnumSetDefaulttextUtilZZZ enumSetUtil = new EnumSetDefaulttextUtilZZZ(objFactory, objClass);
 				
 				
 				///FGL########## dann hören hier ggfs. die Geminsamkeiten mit der mapped... Struktur auf, heir haben wir Defaulttexte.
 				
 				//Positivfall
-				btemp = enumSetUtil.startsWithAnyAbbreviation("3");
+				btemp = enumSetUtil.startsWithAnyShorttext("Test03");
 				assertTrue("C) Prüfstring sollte in der Enumeration vorhanden sein.", btemp);
 												
 				//Negativfall
-				btemp = enumSetUtil.startsWithAnyAbbreviation("XXXX");
+				btemp = enumSetUtil.startsWithAnyShorttext("XXXX");
 				assertFalse("C) Prüfstring sollte in der Enumeration NICHT vorhanden sein.", btemp);
 				
 			} catch (ExceptionZZZ ez) {
@@ -124,7 +125,7 @@ public class EnumSetDefaulttextUtilZZZTest  extends TestCase{
 	    	//Merke: Die Spezielle Enum Struktur unterscheidet sich dann ab einem bestimmten Punkt von der normalen Enum Struktur.
 	    	//           Das bedeutet, dass auch die Utility-Klasse ganz andere Methoden braucht.
 	    	
-	    	Class<?> objClass = EnumSetDefaulttextTestType.class;
+	    	Class<?> objClass = EnumSetDefaulttextTestTypeTHM.class;
 	    	String sName = EnumSetDefaulttextUtilZZZ.getEnumConstant_NameValue(objClass, "TESTVALUE01");
 	    	assertTrue("Prüfstring solllte als Ergebnis 'TESTVALUE01' sein", "TESTVALUE01".equals(sName));
 	    	
@@ -134,24 +135,23 @@ public class EnumSetDefaulttextUtilZZZTest  extends TestCase{
 	    	Integer intOrdinal = EnumSetDefaulttextUtilZZZ.getEnumConstant_OrdinalValue(objClass, "TESTVALUE01");
 	    	assertEquals("Prüfinteger solllte als Ergebnis 0 sein", intOrdinal.intValue(),0);
 	    	
-	    	//FGL TODO GOON 20171027
-	    	///FGL########## dann hören hier ggfs. die Gemeinsamkeiten mit der mapped... Struktur auf, heir haben wir Defaulttexte.				    	
+	    	//#### Dann hören hier ggfs. die Gemeinsamkeiten mit der mapped... Struktur auf, hieir haben wir Defaulttexte.				    	
 	     	@SuppressWarnings("unchecked")
-			String sDescription = EnumSetDefaulttextUtilZZZ.getEnumConstant_DescriptionValue((Class<IEnumSetMappedZZZ>) objClass, "ONE");
-	    	assertTrue("Prüfstring solllte als Ergebnis 'eins' sein", "eins".equals(sDescription));
-	    	assertEquals("StringValue sollte gleich DescriptionValue sein", sString, sDescription);
+			String sDescription = EnumSetDefaulttextUtilZZZ.getEnumConstant_DescriptionValue((Class<IEnumSetDefaulttextTHM>) objClass, "TESTVALUE01");
+	     	//String sDescription = EnumSetDefaulttextUtilZZZ.getEnumConstant_DescriptionValue((Class<E>)objClass, "TESTVALUE01");
+	    	assertTrue("Prüfstring solllte als Ergebnis 'A Test01 value description' sein", "A Test01 value description".equals(sDescription));
 	    	
 	    	@SuppressWarnings("unchecked")
-			String sAbbreviation = EnumSetDefaulttextUtilZZZ.getEnumConstant_AbbreviationValue((Class<IEnumSetMappedZZZ>) objClass, "ONE");
-	    	assertTrue("Prüfstring solllte als Ergebnis '1' sein", "1".equals(sAbbreviation));
+			String sAbbreviation = EnumSetDefaulttextUtilZZZ.getEnumConstant_ShorttextValue((Class<IEnumSetDefaulttextTHM>) objClass, "TESTVALUE01");
+	    	assertTrue("Prüfstring solllte als Ergebnis 'Test01' sein", "Test01".equals(sAbbreviation));
 	    	
 	    	@SuppressWarnings("unchecked")
-			Integer intPosition = EnumSetDefaulttextUtilZZZ.getEnumConstant_PositionValue((Class<IEnumSetMappedZZZ>) objClass, "ONE");
+			Integer intPosition = EnumSetDefaulttextUtilZZZ.getEnumConstant_PositionValue((Class<IEnumSetDefaulttextTHM>) objClass, "TESTVALUE01");
 	    	assertEquals("Prüfinteger solllte als Ergebnis 1 sein", intPosition.intValue(),1);
 
 	    	
 	    	@SuppressWarnings("unchecked")
-			Integer intIndex = EnumSetDefaulttextUtilZZZ.getEnumConstant_IndexValue((Class<IEnumSetMappedZZZ>) objClass, "ONE");
+			Integer intIndex = EnumSetDefaulttextUtilZZZ.getEnumConstant_IndexValue((Class<IEnumSetDefaulttextTHM>) objClass, "TESTVALUE01");
 	    	assertEquals("Prüfinteger solllte als Ergebnis 0 sein", intIndex.intValue(),0);
 	    	assertEquals("Prüfinteger solllte als Ergebnis dem ordinal - Wert entsprechen", intIndex.intValue(), intOrdinal.intValue());
 	    	assertEquals("Prüfinteger solllte als Ergebnis um 1 höher als der Index sein", intPosition.intValue(),intIndex.intValue()+1);	    	

@@ -109,7 +109,7 @@ public class TileDefaulttextValue extends AbstractValue<TileDefaulttextValue>{ /
      * @return hiskeyId
      */
   //  @Override
-    public Long getThiskeyId() {
+    public Long getThiskey() {
         return hiskeyId;
     }
 
@@ -118,7 +118,7 @@ public class TileDefaulttextValue extends AbstractValue<TileDefaulttextValue>{ /
      * @param newValue
      */
   //  @Override
-    public void setThiskeyId(Long newValue) {
+    public void setThiskey(Long newValue) {
         this.hiskeyId = newValue;
     }
 

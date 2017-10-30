@@ -217,12 +217,12 @@ public class EnumSetInnerUtilZZZ {
         }
 
         for (E e : hisKeyValue.getThiskeyEnumClass().getEnumConstants()) {
-            if (e.getThiskey().equals(hisKeyValue.getThiskeyId())) {
+            if (e.getThiskey().equals(hisKeyValue.getThiskey())) {
                 return e;
             }
         }
 
-        throw new ThiskeyEnumMappingExceptionZZZ("Supplied Enum type does not contain key!", hisKeyValue.getThiskeyEnumClass(), hisKeyValue.getThiskeyId());
+        throw new ThiskeyEnumMappingExceptionZZZ("Supplied Enum type does not contain key!", hisKeyValue.getThiskeyEnumClass(), hisKeyValue.getThiskey());
     }
 
     /**
@@ -339,7 +339,7 @@ public class EnumSetInnerUtilZZZ {
         return new Function<IKeyValueZZZ<E>, Long>() {
             @Override
             public Long apply(IKeyValueZZZ<E> input) {
-                return input.getThiskeyId();
+                return input.getThiskey();
             }
         };
     }
@@ -364,7 +364,7 @@ public class EnumSetInnerUtilZZZ {
             return false;
         }
 
-        return equal(firstValue.getThiskeyId(), secondValue.getThiskeyId());
+        return equal(firstValue.getThiskey(), secondValue.getThiskey());
     }
 
     /**
@@ -387,7 +387,7 @@ public class EnumSetInnerUtilZZZ {
             return false;
         }
 
-        return equal(value.getThiskeyId(), provider.getThiskey());
+        return equal(value.getThiskey(), provider.getThiskey());
     }
 
     /**

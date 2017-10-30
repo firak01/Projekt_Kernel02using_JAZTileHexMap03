@@ -18,6 +18,7 @@ import use.thm.persistence.model.AreaCellOcean;
 import use.thm.persistence.model.CellId;
 import use.thm.persistence.model.HexCell;
 import use.thm.persistence.model.Tile;
+import use.thm.persistence.model.TileDefaulttext;
 import use.thm.persistence.model.TroopArmy;
 import use.thm.persistence.model.TroopFleet;
 import use.thm.rule.facade.AreaCellRuleFacade;
@@ -75,6 +76,8 @@ public class PreInsertListenerTHM implements PreInsertEventListener,IKernelUserZ
 				
 		//Versuch nun mehr über den Event herauszubekommen....
 		Object obj = event.getEntity(); 
+		System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": obj="+obj.getClass().getSimpleName());
+
 		if(obj instanceof TroopArmy){
 			System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": Eine Armee soll eingefügt werden.");
 			TroopArmy troop = (TroopArmy) obj;
@@ -122,6 +125,12 @@ public class PreInsertListenerTHM implements PreInsertEventListener,IKernelUserZ
 				//Hole die Meldungen aus dem Regelwerk ab.			
 				sReturnMessage = objRuleFacade.getMessagesAsString();
 			}	
+			
+		}else if(obj instanceof TileDefaulttext){
+			System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": Ein Defaulttext soll eingefügt werden.");
+			TileDefaulttext defaulttext = (TileDefaulttext) obj;
+			System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": DefaulttextALIAS ="+defaulttext.toString());
+			bReturn = false; //gibt hier keine weiteren Überprüfungen //Der Returnwert true bedeutet "VETO"
 			
 		}else{
 			System.out.println(ReflectCodeZZZ.getPositionCurrent()+": eingefügt wird ein Objekt der Klasse: " + obj.getClass().getName());

@@ -601,6 +601,32 @@ public class EnumSetDefaulttextUtilZZZ extends ObjectZZZ{
 		}
 		
 		@SuppressWarnings({ "unchecked", "rawtypes" })
+		public static Long getEnumConstant_ThiskeyValue(Class<IEnumSetDefaulttextTHM> clazz, String name) {
+			Long lngReturn = new Long(0);
+			main:{
+		    if (clazz==null || name==null || name.isEmpty()) break main;
+		  
+		    
+		    IEnumSetDefaulttextTHM[] enumaSetMapped = clazz.getEnumConstants();
+			for(IEnumSetDefaulttextTHM driver : enumaSetMapped) {
+//					  System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": Driver ALIAS  als driver.name() from Enumeration="+driver.name());
+//					  System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": Driver als driver.toString() from Enumeration="+driver.toString());
+//					  System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": Driver als driver.abbreviaton from Enumeration="+driver.getAbbreviation());
+				
+	            String sTest = new String(driver.getThiskey().toString());
+				if(!StringZZZ.isEmpty(sTest)){
+				  if(driver.getName().equals(name)){
+					  lngReturn = driver.getThiskey();
+					  break main;
+				  }
+			  }
+		
+			}//end for
+			}//end main:
+			return lngReturn;
+		}
+		
+		@SuppressWarnings({ "unchecked", "rawtypes" })
 		public static Integer getEnumConstant_PositionValue(Class<IEnumSetDefaulttextTHM> clazz, String name) {
 			Integer intValue = null;
 			main:{

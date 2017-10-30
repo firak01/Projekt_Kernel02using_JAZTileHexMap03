@@ -136,7 +136,7 @@ public class ObjectTestValue extends AbstractValue<ObjectTestValue> implements S
      * @return hiskeyId
      */
   //  @Override
-    public Long getThiskeyId() {
+    public Long getThiskey() {
         return hiskeyId;
     }
 
@@ -145,7 +145,7 @@ public class ObjectTestValue extends AbstractValue<ObjectTestValue> implements S
      * @param newValue
      */
   //  @Override
-    public void setThiskeyId(Long newValue) {
+    public void setThiskey(Long newValue) {
         this.hiskeyId = newValue;
     }
 

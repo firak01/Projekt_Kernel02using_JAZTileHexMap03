@@ -204,8 +204,10 @@ public class ObjectTestMappedValue extends AbstractValue<ObjectTestMappedValue> 
     /**
      * @return hiskeyId
      */
-  //  @Override
-    public Long getThiskeyId() {
+    @Override
+   //Merke: Wenn das dann im Entity eingesetzt werden soll, uniquewert festlegen
+    //@Column(name="thiskey_id",  nullable=false, unique=true, columnDefinition="LONG NOT NULL UNIQUE  DEFAULT 1")	
+    public Long getThiskey() {
         return hiskeyId;
     }
 
@@ -213,8 +215,8 @@ public class ObjectTestMappedValue extends AbstractValue<ObjectTestMappedValue> 
     /**
      * @param newValue
      */
-  //  @Override
-    public void setThiskeyId(Long newValue) {
+   @Override
+    public void setThiskey(Long newValue) {
         this.hiskeyId = newValue;
     }
 
@@ -240,5 +242,6 @@ public class ObjectTestMappedValue extends AbstractValue<ObjectTestMappedValue> 
         return tmp;
     }
     /* GENERATED_END */
+	
 	
 }//end class

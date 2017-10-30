@@ -2,6 +2,8 @@ package basic.zBasic.persistence.interfaces.enums;
 
 import java.util.ArrayList;
 
+import use.thm.persistence.model.TileDefaulttext.EnumTileDefaulttext;
+
 /**
  * Oberklasse für internationalisierbare (Schlüssel-)Entities.
  *
@@ -168,4 +170,5 @@ public abstract class AbstractValue<V extends AbstractValue<V>> implements IKeyV
     // public String toString() {
     // return super.toString() + ", uniquename=" + uniquename;
     // }
+    
 }

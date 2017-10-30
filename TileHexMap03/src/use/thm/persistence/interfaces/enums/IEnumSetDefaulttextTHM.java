@@ -2,9 +2,12 @@ package use.thm.persistence.interfaces.enums;
 
 import java.util.EnumSet;
 
-public interface IEnumSetDefaulttextTHM {
+import basic.zBasic.persistence.interfaces.enums.IKeyProviderZZZ;
+import basic.zBasic.persistence.interfaces.enums.IKeyValueZZZ;
+
+public interface IEnumSetDefaulttextTHM extends IKeyProviderZZZ<Long>{
 	
-	//Ds bring ENUM von sich auch mit
+	//Das bring ENUM von sich auch mit
 	public String getName();  //Das ist name() von Enum
 	public int getIndex();      //Das ist ordinal() von Enum
 	public String toString();

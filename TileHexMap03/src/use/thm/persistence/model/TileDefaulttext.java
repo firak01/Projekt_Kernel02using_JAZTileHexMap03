@@ -49,7 +49,7 @@ public class TileDefaulttext  extends AbstractValue<TileDefaulttext> implements 
 	//Entsprechend der internen Enumeration. 
 	//Merke: Die Enumeration dient der Festlegung der Defaultwerte. In den Feldern des Entities werden die gespeicherten Werte gehalten.
 	private Long lKey;
-	   private String sLongtext, sShorttext, sDescription;
+	private String sLongtext, sShorttext, sDescription;
 	
 	
 	
@@ -67,13 +67,13 @@ public class TileDefaulttext  extends AbstractValue<TileDefaulttext> implements 
 		 this.iMyTestSequence = iLid;
 	 }
 	 
-	 @Column(name="thiskey_id", nullable=false)	
+	 @Column(name="thiskey_id",  nullable=false, unique=true, columnDefinition="LONG NOT NULL UNIQUE  DEFAULT 1")	
 	 @Override
-	public Long getThiskeyId() {
+	public Long getThiskey() {
 		 return this.lKey;
 	}
 	@Override
-	public void setThiskeyId(Long thiskeyId) {
+	public void setThiskey(Long thiskeyId) {
 		this.lKey = thiskeyId;
 	}
 	   
@@ -134,6 +134,10 @@ public class TileDefaulttext  extends AbstractValue<TileDefaulttext> implements 
 	      return EnumTileDefaulttext.class;
     	//return IEnumSetDefaulttextTHM.class;
 	   }
+    
+    public static Class<EnumTileDefaulttext> getThiskeyEnumClassStatic(){
+    	return EnumTileDefaulttext.class;
+    }
 
 	//#######################################################
 	//### Eingebettete Enum-Klasse mit den Defaultwerten, diese Werte werden auch per Konstruktor übergeben.
@@ -153,7 +157,7 @@ public class TileDefaulttext  extends AbstractValue<TileDefaulttext> implements 
 
    //Merke: Enums haben keinen public Konstruktor, können also nicht intiantiiert werden, z.B. durch Java-Reflektion.
    EnumTileDefaulttext(int iKey, String sShorttext, String sLongtext, String sDescription){
-   	this.lKey = Long.valueOf(iKey);
+       this.lKey = Long.valueOf(iKey);
        this.sShorttext = sShorttext;
        this.sLongtext = sLongtext;
        this.sDescription = sDescription;
@@ -261,5 +265,6 @@ public class TileDefaulttext  extends AbstractValue<TileDefaulttext> implements 
  
 
    }//End inner class
+
 		
 }//end class

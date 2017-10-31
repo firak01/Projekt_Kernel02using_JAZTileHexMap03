@@ -40,33 +40,30 @@ import basic.zBasic.persistence.interfaces.enums.IKeyValueZZZ;
 //@Inheritance(strategy =  InheritanceType.JOINED )//ZIEL: Nur bestimmte Entiteis in einer eigenen Klasse //InheritanceType.TABEL_PER_CLASS) //Ziel: Jedes Entity der Vererbungshierarchie in einer eigenen Tabelle // InheritanceType.SINGLE_TABLE) //Hiermit werden alle Datensätze der Vererbungshierarchieklassen in einer Tabelle zusammengafasst und nur anhan ddes Discriminator Wertes unterschieden 
 //Bei InheritanceType.TABLE_PER_CLASS gilt, es darf keinen Discriminator geben ... @DiscriminatorColumn(name="Disc", discriminatorType = DiscriminatorType.STRING) //Bei InheritanceType.SINGLE_TABLE) gilt: Voraussetzung für DiscriminatorValue in der AreaCell-Klasse. //Wird es wg. der Vererbung von HEXCell zu AreaType immer geben. Ohne Annotation ist das DTYPE und der wert ist gleich dem Klassennamen.
 @Table(name="k_tile_defaulttext_value")
-public class TileDefaulttextValue extends AbstractValue<TileDefaulttextValue>{ //implements Serializable, IOptimisticLocking{
-	
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
+public class TileDefaulttextValue extends Key implements Serializable, IOptimisticLocking{ //AbstractValue<TileDefaulttextValue>{ //implements Serializable, IOptimisticLocking{
+	private static final long serialVersionUID = 3656054848317395826L;
 
 	//Variante 2: Realisierung eines Schlüssel über eine eindeutige ID, die per Generator erzeugt wird
 	//@Id //hier notwendig für AccessType.FIELD
-	private int iMyTestSequence;
+//	private int iMyTestSequence;
 	
 	private String sTextDefault;
 	
 	
 	//### Variante 2: Verwende auf dieser Ebene einen Generator, zum Erstellen einer ID
-	 @Id	//hier notwendig für AccessType.PROPERTY			
-	 @TableGenerator(name="lidGeneratorDefaulttext002", table="COMMON_FUER_IDGENERATOR_DEFAULTTEXT002",pkColumnName="nutzende_Klasse_als_String", pkColumnValue="SequenceTester",valueColumnName="naechster_id_wert",  initialValue=1, allocationSize=1)//@TableGenerator Name muss einzigartig im ganzen Projekt sein.
-	 @GeneratedValue(strategy = GenerationType.TABLE, generator="lidGeneratorDefaulttext002")		 //Das Klappt mit Hibernate Session, aber nicht mit dem JPA EntityManager...
-	 //Bei dieser Column Definition ist die Spalte nicht für @OneToMany mit @JoinTable zu gebrauchen @Column(name="TILE_ID_INCREMENTED", nullable=false, unique=true, columnDefinition="INTEGER NOT NULL UNIQUE  DEFAULT 1")
-	 //Entferne also das unique...
-	 @Column(name="DEFAULTTEXT_ID_INCREMENTED", nullable=false)
-	 public int getId(){
-		 return this.iMyTestSequence;
-	 }
-	 public void setId(int iLid){
-		 this.iMyTestSequence = iLid;
-	 }
+	//ABER NICHT AUF DIESER EBENEN, DA SIE ERBT VON KEY.java
+//	 @Id	//hier notwendig für AccessType.PROPERTY			
+//	 @TableGenerator(name="lidGeneratorDefaulttext002", table="COMMON_FUER_IDGENERATOR_DEFAULTTEXT002",pkColumnName="nutzende_Klasse_als_String", pkColumnValue="SequenceTester",valueColumnName="naechster_id_wert",  initialValue=1, allocationSize=1)//@TableGenerator Name muss einzigartig im ganzen Projekt sein.
+//	 @GeneratedValue(strategy = GenerationType.TABLE, generator="lidGeneratorDefaulttext002")		 //Das Klappt mit Hibernate Session, aber nicht mit dem JPA EntityManager...
+//	 //Bei dieser Column Definition ist die Spalte nicht für @OneToMany mit @JoinTable zu gebrauchen @Column(name="TILE_ID_INCREMENTED", nullable=false, unique=true, columnDefinition="INTEGER NOT NULL UNIQUE  DEFAULT 1")
+//	 //Entferne also das unique...
+//	 @Column(name="DEFAULTTEXT_ID_INCREMENTED", nullable=false)
+//	 public int getId(){
+//		 return this.iMyTestSequence;
+//	 }
+//	 public void setId(int iLid){
+//		 this.iMyTestSequence = iLid;
+//	 }
      
 	@Column(name="defaulttext", nullable=false)	 
 	public String getDefaulttext(){
@@ -86,7 +83,8 @@ public class TileDefaulttextValue extends AbstractValue<TileDefaulttextValue>{ /
      * cut&paste out of 'GENERATED'-Block to modify
      */
     public TileDefaulttextValue() {
-       // super();
+       super();
+    	this.setKeyType("DEFAULTTEXTVALUE"); //TODO: Ggfs. DEFAULTTEXTVALUE auch in einer Enumeration aller möglichen Schlüsselwerte hinterlegen.
     }
 
     /**
@@ -98,32 +96,24 @@ public class TileDefaulttextValue extends AbstractValue<TileDefaulttextValue>{ /
 //    //    setObjGuid(objGuid.toString());
 //    }
     
-    // @Override
+   //### ABSTRACTE METHODEN
     @Transient
     public Class<TileDefaulttextType> getThiskeyEnumClass() {
         return TileDefaulttextType.class;
     }
  
-
-    /**
-     * @return hiskeyId
-     */
-  //  @Override
+   @Column(name="thiskey_id",  nullable=false, unique=true, columnDefinition="LONG NOT NULL UNIQUE  DEFAULT 1")
+   @Override
     public Long getThiskey() {
         return hiskeyId;
     }
-
-
-    /**
-     * @param newValue
-     */
-  //  @Override
+    @Override
     public void setThiskey(Long newValue) {
         this.hiskeyId = newValue;
     }
 
 
-    private static final java.util.List<String> allAttributeNames = java.util.Arrays.asList(new String[]{"hiskeyId"});
+    private static final java.util.List<String> allAttributeNames = java.util.Arrays.asList(new String[]{});
 
     /**
      * {@inheritDoc}

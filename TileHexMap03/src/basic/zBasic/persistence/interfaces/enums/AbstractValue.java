@@ -12,7 +12,7 @@ import use.thm.persistence.model.TileDefaulttext.EnumTileDefaulttext;
  * @param <V> the concrete value class
  */
 //@MappedSuperclass
-public abstract class AbstractValue<V extends AbstractValue<V>> implements IKeyValueZZZ { //!!! noch ein zweites extends dahinter!!!  extends I18nValueImpl implents KeyValue, UniqueNameValue, SortorderValue, Comparable<V> {
+public abstract class AbstractValue<V extends AbstractValue<V>> { //!!! noch ein zweites extends dahinter!!!  extends I18nValueImpl implents KeyValue, UniqueNameValue, SortorderValue, Comparable<V> {
 
 //    /** Value cache region identifier. */
 //    public static final String VALUE_CACHE_REGION = "de.his.appserver.ValueCache";

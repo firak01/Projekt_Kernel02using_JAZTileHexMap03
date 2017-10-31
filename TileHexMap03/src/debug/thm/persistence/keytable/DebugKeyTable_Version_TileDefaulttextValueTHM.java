@@ -87,6 +87,9 @@ public class DebugKeyTable_Version_TileDefaulttextValueTHM {
 				//String s = objaType[0].description(); //gibt es nicht, das @description wohl nur etwas für Tool ist, welches diese Metasprachlichen Annotiations auswertet.
 				String s = objaType[0].name();
 				objValue.setDefaulttext(s);
+				
+			    Long lngThiskey = objaType[0].getThiskey(); //Das darf nicht NULL sein, sonst Fehler. Über diesen Schlüssel wird der Wert dann gefunden.
+				objValue.setThiskey(lngThiskey);
 			
 				//Merke: EINE TRANSACTION = EINE SESSION ==>  neue session von der SessionFactory holen
 				session.save(objValue); //Hibernate Interceptor wird aufgerufen																				

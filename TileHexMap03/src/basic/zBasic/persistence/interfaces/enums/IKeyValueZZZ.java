@@ -43,17 +43,17 @@ public interface IKeyValueZZZ<E extends Enum<E> & IKeyProviderZZZ<Long>> extends
      *
      * @return a value representing the his key identifier
      */
-    public Long getThiskey();
+   abstract Long getThiskey();
 
     /**
      * Sets the his key identifier.
      *
      * @param hisKeyId  a value representing the his key identifier to be set
      */
-    public void setThiskey(Long thisKeyId);
+   abstract void setThiskey(Long thisKeyId);
 
     /**
      * @return HisKeyProvider<Long> Enum mit allen unterstützten Hiskeys
      */
-    public Class<E> getThiskeyEnumClass();
+   abstract Class<E> getThiskeyEnumClass();
 }

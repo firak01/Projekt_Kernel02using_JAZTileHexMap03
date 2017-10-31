@@ -126,32 +126,32 @@ public class EnumSetDefaulttextUtilZZZTest<E>  extends TestCase{
 	    	//           Das bedeutet, dass auch die Utility-Klasse ganz andere Methoden braucht.
 	    	
 	    	Class<?> objClass = EnumSetDefaulttextTestTypeTHM.class;
-	    	String sName = EnumSetDefaulttextUtilZZZ.getEnumConstant_NameValue(objClass, "TESTVALUE01");
+	    	String sName = EnumSetDefaulttextUtilZZZ.readEnumConstant_NameValue(objClass, "TESTVALUE01");
 	    	assertTrue("Prüfstring solllte als Ergebnis 'TESTVALUE01' sein", "TESTVALUE01".equals(sName));
 	    	
-	    	String sString = EnumSetDefaulttextUtilZZZ.getEnumConstant_StringValue(objClass, "TESTVALUE01");
+	    	String sString = EnumSetDefaulttextUtilZZZ.readEnumConstant_StringValue(objClass, "TESTVALUE01");
 	    	assertTrue("Prüfstring solllte als Ergebnis 'Test01' sein", "Test01".equals(sString));
 	    	
-	    	Integer intOrdinal = EnumSetDefaulttextUtilZZZ.getEnumConstant_OrdinalValue(objClass, "TESTVALUE01");
+	    	Integer intOrdinal = EnumSetDefaulttextUtilZZZ.readEnumConstant_OrdinalValue(objClass, "TESTVALUE01");
 	    	assertEquals("Prüfinteger solllte als Ergebnis 0 sein", intOrdinal.intValue(),0);
 	    	
 	    	//#### Dann hören hier ggfs. die Gemeinsamkeiten mit der mapped... Struktur auf, hieir haben wir Defaulttexte.				    	
 	     	@SuppressWarnings("unchecked")
-			String sDescription = EnumSetDefaulttextUtilZZZ.getEnumConstant_DescriptionValue((Class<IEnumSetDefaulttextTHM>) objClass, "TESTVALUE01");
+			String sDescription = EnumSetDefaulttextUtilZZZ.readEnumConstant_DescriptionValue((Class<IEnumSetDefaulttextTHM>) objClass, "TESTVALUE01");
 	     	//String sDescription = EnumSetDefaulttextUtilZZZ.getEnumConstant_DescriptionValue((Class<E>)objClass, "TESTVALUE01");
 	    	assertTrue("Prüfstring solllte als Ergebnis 'A Test01 value description' sein", "A Test01 value description".equals(sDescription));
 	    	
 	    	@SuppressWarnings("unchecked")
-			String sAbbreviation = EnumSetDefaulttextUtilZZZ.getEnumConstant_ShorttextValue((Class<IEnumSetDefaulttextTHM>) objClass, "TESTVALUE01");
+			String sAbbreviation = EnumSetDefaulttextUtilZZZ.readEnumConstant_ShorttextValue((Class<IEnumSetDefaulttextTHM>) objClass, "TESTVALUE01");
 	    	assertTrue("Prüfstring solllte als Ergebnis 'Test01' sein", "Test01".equals(sAbbreviation));
 	    	
 	    	@SuppressWarnings("unchecked")
-			Integer intPosition = EnumSetDefaulttextUtilZZZ.getEnumConstant_PositionValue((Class<IEnumSetDefaulttextTHM>) objClass, "TESTVALUE01");
+			Integer intPosition = EnumSetDefaulttextUtilZZZ.readEnumConstant_PositionValue((Class<IEnumSetDefaulttextTHM>) objClass, "TESTVALUE01");
 	    	assertEquals("Prüfinteger solllte als Ergebnis 1 sein", intPosition.intValue(),1);
 
 	    	
 	    	@SuppressWarnings("unchecked")
-			Integer intIndex = EnumSetDefaulttextUtilZZZ.getEnumConstant_IndexValue((Class<IEnumSetDefaulttextTHM>) objClass, "TESTVALUE01");
+			Integer intIndex = EnumSetDefaulttextUtilZZZ.readEnumConstant_IndexValue((Class<IEnumSetDefaulttextTHM>) objClass, "TESTVALUE01");
 	    	assertEquals("Prüfinteger solllte als Ergebnis 0 sein", intIndex.intValue(),0);
 	    	assertEquals("Prüfinteger solllte als Ergebnis dem ordinal - Wert entsprechen", intIndex.intValue(), intOrdinal.intValue());
 	    	assertEquals("Prüfinteger solllte als Ergebnis um 1 höher als der Index sein", intPosition.intValue(),intIndex.intValue()+1);	    	

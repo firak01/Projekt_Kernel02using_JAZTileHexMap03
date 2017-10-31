@@ -108,6 +108,14 @@ public interface IDaoInterface<T> extends Serializable {
 	 */
 	public List<T> findLazyAll(int first, int max);
 	
+	/**FGL:
+	 * Load from Element all, without restriction to first or max elements
+	 * @param first
+	 * @param max
+	 * @return
+	 */
+	public List<T> findLazyAll();
+	
 	/**
 	 * Count the Elements in the Database.
 	 * @return

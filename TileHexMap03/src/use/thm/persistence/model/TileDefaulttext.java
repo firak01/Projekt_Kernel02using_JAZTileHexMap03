@@ -30,6 +30,7 @@ import basic.zBasic.util.genericEnum.ObjectTestMappedValue.EnumSetInnerMappedTes
  * Hier wird eine innere Klasse verwendet, um ein enum anbieten zu können.
  * 
  * @author Fritz Lindhauer
+ * @param <IEnumTileDefaulttext>
  *
  */
 
@@ -40,7 +41,7 @@ import basic.zBasic.util.genericEnum.ObjectTestMappedValue.EnumSetInnerMappedTes
 //@Inheritance(strategy =  InheritanceType.JOINED )//ZIEL: Nur bestimmte Entiteis in einer eigenen Klasse //InheritanceType.TABEL_PER_CLASS) //Ziel: Jedes Entity der Vererbungshierarchie in einer eigenen Tabelle // InheritanceType.SINGLE_TABLE) //Hiermit werden alle Datensätze der Vererbungshierarchieklassen in einer Tabelle zusammengafasst und nur anhan ddes Discriminator Wertes unterschieden 
 //Bei InheritanceType.TABLE_PER_CLASS gilt, es darf keinen Discriminator geben ... @DiscriminatorColumn(name="Disc", discriminatorType = DiscriminatorType.STRING) //Bei InheritanceType.SINGLE_TABLE) gilt: Voraussetzung für DiscriminatorValue in der AreaCell-Klasse. //Wird es wg. der Vererbung von HEXCell zu AreaType immer geben. Ohne Annotation ist das DTYPE und der wert ist gleich dem Klassennamen.
 @Table(name="k_tile_defaulttext")
-public class TileDefaulttext  extends Key implements Serializable, IOptimisticLocking{
+public class TileDefaulttext<IEnumTileDefaulttext>  extends Key implements Serializable, IOptimisticLocking{
 	
 	/**
 	 * 
@@ -79,7 +80,7 @@ public class TileDefaulttext  extends Key implements Serializable, IOptimisticLo
 	 
 	//### ABSTRACTE METHODEN
 	 @Transient
-    public Class<EnumTileDefaulttext> getThiskeyEnumClass() {
+    public Class getThiskeyEnumClass() {
 	      return TileDefaulttext.getThiskeyEnumClassStatic();
 	   }
 	 
@@ -143,7 +144,7 @@ public class TileDefaulttext  extends Key implements Serializable, IOptimisticLo
     /* GENERATED_END */
 	
     //### Statische Methode (um einfacher darauf zugreifen zu können)
-    public static Class<EnumTileDefaulttext> getThiskeyEnumClassStatic(){
+    public static Class getThiskeyEnumClassStatic(){
     	return EnumTileDefaulttext.class;
     }
 

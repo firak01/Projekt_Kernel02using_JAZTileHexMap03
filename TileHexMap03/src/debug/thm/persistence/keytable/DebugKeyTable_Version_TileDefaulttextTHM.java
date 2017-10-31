@@ -62,16 +62,16 @@ public class DebugKeyTable_Version_TileDefaulttextTHM {
 					
 					//Also: Klasse holen und danach CASTEN.
 					Class<?> objClass = objValue.getThiskeyEnumClass();
-					String sName = EnumSetDefaulttextUtilZZZ.getEnumConstant_NameValue((Class<IEnumSetDefaulttextTHM>) objClass, s);
+					String sName = EnumSetDefaulttextUtilZZZ.readEnumConstant_NameValue((Class<IEnumSetDefaulttextTHM>) objClass, s);
 					System.out.println("Gefundener Spielsteintypname: " + sName);
 					
-					String sShorttext = EnumSetDefaulttextUtilZZZ.getEnumConstant_ShorttextValue((Class<IEnumSetDefaulttextTHM>) objClass, s);
+					String sShorttext = EnumSetDefaulttextUtilZZZ.readEnumConstant_ShorttextValue((Class<IEnumSetDefaulttextTHM>) objClass, s);
 					System.out.println("Gefundener Spielsteintypkurztext: " + sShorttext);
 					
-					String sLongtext = EnumSetDefaulttextUtilZZZ.getEnumConstant_LongtextValue((Class<IEnumSetDefaulttextTHM>) objClass, s);
+					String sLongtext = EnumSetDefaulttextUtilZZZ.readEnumConstant_LongtextValue((Class<IEnumSetDefaulttextTHM>) objClass, s);
 					System.out.println("Gefundener Spielsteintyplangtext: " + sLongtext);
 					
-					String sDescription = EnumSetDefaulttextUtilZZZ.getEnumConstant_DescriptionValue((Class<IEnumSetDefaulttextTHM>) objClass, s);
+					String sDescription = EnumSetDefaulttextUtilZZZ.readEnumConstant_DescriptionValue((Class<IEnumSetDefaulttextTHM>) objClass, s);
 					System.out.println("Gefundene Description: " + sDescription);			
 
 				}
@@ -183,23 +183,23 @@ public class DebugKeyTable_Version_TileDefaulttextTHM {
 					
 					//Also: Klasse holen und danach CASTEN.
 					Class<?> objClass = objValue.getThiskeyEnumClass();
-					String sName = EnumSetDefaulttextUtilZZZ.getEnumConstant_NameValue((Class<IEnumSetDefaulttextTHM>) objClass, s);
+					String sName = EnumSetDefaulttextUtilZZZ.readEnumConstant_NameValue((Class<IEnumSetDefaulttextTHM>) objClass, s);
 					System.out.println("Gefundener Spielsteintypname: " + sName);
 					
-					String sShorttext = EnumSetDefaulttextUtilZZZ.getEnumConstant_ShorttextValue((Class<IEnumSetDefaulttextTHM>) objClass, s);
+					String sShorttext = EnumSetDefaulttextUtilZZZ.readEnumConstant_ShorttextValue((Class<IEnumSetDefaulttextTHM>) objClass, s);
 					System.out.println("Gefundener Spielsteintypkurztext: " + sShorttext);
 					objValue.setShorttext(sShorttext);
 					
-					String sLongtext = EnumSetDefaulttextUtilZZZ.getEnumConstant_LongtextValue((Class<IEnumSetDefaulttextTHM>) objClass, s);
+					String sLongtext = EnumSetDefaulttextUtilZZZ.readEnumConstant_LongtextValue((Class<IEnumSetDefaulttextTHM>) objClass, s);
 					System.out.println("Gefundener Spielsteintyplangtext: " + sLongtext);
 					objValue.setLongtext(sLongtext);
 					
 					
-					String sDescription = EnumSetDefaulttextUtilZZZ.getEnumConstant_DescriptionValue((Class<IEnumSetDefaulttextTHM>) objClass, s);
+					String sDescription = EnumSetDefaulttextUtilZZZ.readEnumConstant_DescriptionValue((Class<IEnumSetDefaulttextTHM>) objClass, s);
 					System.out.println("Gefundene Description: " + sDescription);			
 					objValue.setDescription(sDescription);
 					
-				    Long lngThiskey = EnumSetDefaulttextUtilZZZ.getEnumConstant_ThiskeyValue((Class<IEnumSetDefaulttextTHM>) objClass, s);//Das darf nicht NULL sein, sonst Fehler. Über diesen Schlüssel wird der Wert dann gefunden.
+				    Long lngThiskey = EnumSetDefaulttextUtilZZZ.readEnumConstant_ThiskeyValue((Class<IEnumSetDefaulttextTHM>) objClass, s);//Das darf nicht NULL sein, sonst Fehler. Über diesen Schlüssel wird der Wert dann gefunden.
 				    System.out.println("Gefundener Thiskey: " + lngThiskey.toString());	
 					objValue.setThiskey(lngThiskey);
 				

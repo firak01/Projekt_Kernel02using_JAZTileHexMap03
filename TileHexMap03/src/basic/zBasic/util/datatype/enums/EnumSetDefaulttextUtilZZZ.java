@@ -9,6 +9,7 @@ import java.util.Set;
 
 import use.thm.persistence.interfaces.enums.IEnumSetDefaulttextTHM;
 import use.thm.persistence.model.TileDefaulttext;
+import use.thm.persistence.model.TileDefaulttext.EnumTileDefaulttext;
 import basic.zBasic.ExceptionZZZ;
 import basic.zBasic.IFlagZZZ;
 import basic.zBasic.ObjectZZZ;
@@ -381,8 +382,11 @@ public class EnumSetDefaulttextUtilZZZ extends ObjectZZZ{
 	public static boolean startsWithAnyAlias(String sToFind, EnumSet<?> setEnumCurrent){
 		boolean bReturn = false;
 		main:{
+			if(setEnumCurrent==null) break main; 			
+			
 			@SuppressWarnings("unchecked")
 			Set<IEnumSetDefaulttextTHM> drivers = (Set<IEnumSetDefaulttextTHM>) setEnumCurrent;//..allOf(JdbcDriverClassTypeZZZ.class);
+		    
 			for(IEnumSetDefaulttextTHM driver : drivers) {
 //			  System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": Driver ALIAS  als driver.name() from Enumeration="+driver.name());
 //			  System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": Driver als driver.toString() from Enumeration="+driver.toString());
@@ -411,6 +415,8 @@ public class EnumSetDefaulttextUtilZZZ extends ObjectZZZ{
 	public static IEnumSetDefaulttextTHM startsWithAnyAlias_EnumMappedObject(String sToFind, EnumSet<?> setEnumCurrent){
 		IEnumSetDefaulttextTHM objReturn = null;
 		main:{
+			if(setEnumCurrent==null) break main; 
+			
 			@SuppressWarnings("unchecked")
 			Set<IEnumSetDefaulttextTHM> drivers = (Set<IEnumSetDefaulttextTHM>) setEnumCurrent;//..allOf(JdbcDriverClassTypeZZZ.class);
 			for(IEnumSetDefaulttextTHM driver : drivers) {
@@ -442,6 +448,8 @@ public class EnumSetDefaulttextUtilZZZ extends ObjectZZZ{
 	public static boolean startsWithAnyShorttext(String sToFind, EnumSet<?> setEnumCurrent){
 		boolean bReturn = false;
 		main:{
+			if(setEnumCurrent==null) break main; 
+			
 			Set<IEnumSetDefaulttextTHM> drivers = (Set<IEnumSetDefaulttextTHM>) setEnumCurrent;//..allOf(JdbcDriverClassTypeZZZ.class);
 			for(IEnumSetDefaulttextTHM driver : drivers) {
 //			  System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": Driver ALIAS  als driver.name() from Enumeration="+driver.name());
@@ -473,6 +481,8 @@ public class EnumSetDefaulttextUtilZZZ extends ObjectZZZ{
 		public static boolean startsWithAnyDescription(String sToFind, EnumSet<?> setEnumCurrent){
 			boolean bReturn = false;
 			main:{
+				if(setEnumCurrent==null) break main; 
+				
 				Set<IEnumSetDefaulttextTHM> drivers = (Set<IEnumSetDefaulttextTHM>) setEnumCurrent;//..allOf(JdbcDriverClassTypeZZZ.class);
 				for(IEnumSetDefaulttextTHM driver : drivers) {
 //				  System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": Driver ALIAS  als driver.name() from Enumeration="+driver.name());
@@ -491,7 +501,7 @@ public class EnumSetDefaulttextUtilZZZ extends ObjectZZZ{
 		}
 		
 		@SuppressWarnings({ "unchecked", "rawtypes" })
-		public static String getEnumConstant_NameValue(Class<?> clazz, String name) {
+		public static String readEnumConstant_NameValue(Class<?> clazz, String name) {
 		    if (clazz==null || name==null || name.isEmpty()) {
 		        return null;
 		    }
@@ -500,7 +510,7 @@ public class EnumSetDefaulttextUtilZZZ extends ObjectZZZ{
 		}
 		
 		@SuppressWarnings({ "unchecked", "rawtypes" })
-		public static String getEnumConstant_StringValue(Class<?> clazz, String name) {
+		public static String readEnumConstant_StringValue(Class<?> clazz, String name) {
 		    if (clazz==null || name==null || name.isEmpty()) {
 		        return null;
 		    }
@@ -509,7 +519,7 @@ public class EnumSetDefaulttextUtilZZZ extends ObjectZZZ{
 		}
 		
 		@SuppressWarnings({ "unchecked", "rawtypes" })
-		public static Integer getEnumConstant_OrdinalValue(Class<?> clazz, String name) {
+		public static Integer readEnumConstant_OrdinalValue(Class<?> clazz, String name) {
 		    if (clazz==null || name==null || name.isEmpty()) {
 		        return null;
 		    }
@@ -522,7 +532,7 @@ public class EnumSetDefaulttextUtilZZZ extends ObjectZZZ{
 		@SuppressWarnings({ "unchecked", "rawtypes" })
 		
 		//public static String getEnumConstant_DescriptionValue(Class<TileDefaulttext.EnumTileDefaulttext> clazz, String name) {
-		public static String getEnumConstant_DescriptionValue(Class<IEnumSetDefaulttextTHM> clazz, String name) {
+		public static String readEnumConstant_DescriptionValue(Class<IEnumSetDefaulttextTHM> clazz, String name) {
 		//public static <E extends Enum<E>> String getEnumConstant_DescriptionValue(Class<E> clazz, String name) {
 			String sReturn = null;
 			main:{
@@ -530,6 +540,8 @@ public class EnumSetDefaulttextUtilZZZ extends ObjectZZZ{
 		  
 		    
 		    IEnumSetDefaulttextTHM[] enumaSetMapped = (IEnumSetDefaulttextTHM[]) clazz.getEnumConstants();
+		    if(enumaSetMapped==null) break main; //Das ist der Fall, wenn es isch um die übergebene Klasse nicht um eine Enumeration handelt
+		    
 			for(IEnumSetDefaulttextTHM driver : enumaSetMapped) {
 //			  System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": Driver ALIAS  als driver.name() from Enumeration="+driver.name());
 //			  System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": Driver als driver.toString() from Enumeration="+driver.toString());
@@ -549,13 +561,15 @@ public class EnumSetDefaulttextUtilZZZ extends ObjectZZZ{
 		}
 		
 		@SuppressWarnings({ "unchecked", "rawtypes" })
-		public static String getEnumConstant_ShorttextValue(Class<IEnumSetDefaulttextTHM> clazz, String name) {
+		public static String readEnumConstant_ShorttextValue(Class<IEnumSetDefaulttextTHM> clazz, String name) {
 			String sReturn = null;
 			main:{
 		    if (clazz==null || name==null || name.isEmpty()) break main;
 		  
 		    
 		    IEnumSetDefaulttextTHM[] enumaSetMapped = clazz.getEnumConstants();
+		    if(enumaSetMapped==null) break main; //Das ist der Fall, wenn es isch um die übergebene Klasse nicht um eine Enumeration handelt
+		    
 			for(IEnumSetDefaulttextTHM driver : enumaSetMapped) {
 //					  System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": Driver ALIAS  als driver.name() from Enumeration="+driver.name());
 //					  System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": Driver als driver.toString() from Enumeration="+driver.toString());
@@ -575,13 +589,15 @@ public class EnumSetDefaulttextUtilZZZ extends ObjectZZZ{
 		}
 		
 		@SuppressWarnings({ "unchecked", "rawtypes" })
-		public static String getEnumConstant_LongtextValue(Class<IEnumSetDefaulttextTHM> clazz, String name) {
+		public static String readEnumConstant_LongtextValue(Class<IEnumSetDefaulttextTHM> clazz, String name) {
 			String sReturn = null;
 			main:{
 		    if (clazz==null || name==null || name.isEmpty()) break main;
 		  
 		    
 		    IEnumSetDefaulttextTHM[] enumaSetMapped = clazz.getEnumConstants();
+		    if(enumaSetMapped==null) break main; //Das ist der Fall, wenn es isch um die übergebene Klasse nicht um eine Enumeration handelt
+		    
 			for(IEnumSetDefaulttextTHM driver : enumaSetMapped) {
 //					  System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": Driver ALIAS  als driver.name() from Enumeration="+driver.name());
 //					  System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": Driver als driver.toString() from Enumeration="+driver.toString());
@@ -601,13 +617,15 @@ public class EnumSetDefaulttextUtilZZZ extends ObjectZZZ{
 		}
 		
 		@SuppressWarnings({ "unchecked", "rawtypes" })
-		public static Long getEnumConstant_ThiskeyValue(Class<IEnumSetDefaulttextTHM> clazz, String name) {
+		public static Long readEnumConstant_ThiskeyValue(Class<IEnumSetDefaulttextTHM> clazz, String name) {
 			Long lngReturn = new Long(0);
 			main:{
 		    if (clazz==null || name==null || name.isEmpty()) break main;
 		  
 		    
 		    IEnumSetDefaulttextTHM[] enumaSetMapped = clazz.getEnumConstants();
+		    if(enumaSetMapped==null) break main; //Das ist der Fall, wenn es isch um die übergebene Klasse nicht um eine Enumeration handelt
+		    
 			for(IEnumSetDefaulttextTHM driver : enumaSetMapped) {
 //					  System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": Driver ALIAS  als driver.name() from Enumeration="+driver.name());
 //					  System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": Driver als driver.toString() from Enumeration="+driver.toString());
@@ -627,13 +645,15 @@ public class EnumSetDefaulttextUtilZZZ extends ObjectZZZ{
 		}
 		
 		@SuppressWarnings({ "unchecked", "rawtypes" })
-		public static Integer getEnumConstant_PositionValue(Class<IEnumSetDefaulttextTHM> clazz, String name) {
+		public static Integer readEnumConstant_PositionValue(Class<IEnumSetDefaulttextTHM> clazz, String name) {
 			Integer intValue = null;
 			main:{
 		    if (clazz==null || name==null || name.isEmpty()) break main;
 		  
 		    
 		    IEnumSetDefaulttextTHM[] enumaSetMapped = clazz.getEnumConstants();
+		    if(enumaSetMapped==null) break main; //Das ist der Fall, wenn es isch um die übergebene Klasse nicht um eine Enumeration handelt
+		    
 			for(IEnumSetDefaulttextTHM driver : enumaSetMapped) {
 //					  System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": Driver ALIAS  als driver.name() from Enumeration="+driver.name());
 //					  System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": Driver als driver.toString() from Enumeration="+driver.toString());
@@ -650,13 +670,15 @@ public class EnumSetDefaulttextUtilZZZ extends ObjectZZZ{
 		}
 		
 		@SuppressWarnings({ "unchecked", "rawtypes" })
-		public static Integer getEnumConstant_IndexValue(Class<IEnumSetDefaulttextTHM> clazz, String name) {
+		public static Integer readEnumConstant_IndexValue(Class<IEnumSetDefaulttextTHM> clazz, String name) {
 			Integer intValue = null;
 			main:{
 		    if (clazz==null || name==null || name.isEmpty()) break main;
 		  
 		    
 		    IEnumSetDefaulttextTHM[] enumaSetMapped = clazz.getEnumConstants();
+		    if(enumaSetMapped==null) break main; //Das ist der Fall, wenn es isch um die übergebene Klasse nicht um eine Enumeration handelt
+		    
 			for(IEnumSetDefaulttextTHM driver : enumaSetMapped) {
 //					  System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": Driver ALIAS  als driver.name() from Enumeration="+driver.name());
 //					  System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": Driver als driver.toString() from Enumeration="+driver.toString());
@@ -671,6 +693,7 @@ public class EnumSetDefaulttextUtilZZZ extends ObjectZZZ{
 			}//end main:
 			return intValue;
 		}
+		
 			
 		/* TODO GOON: Weitere Ideen für die Utitlity Klasse
 		 * hier kombineren von zwei Enumerations:

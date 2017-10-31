@@ -19,7 +19,9 @@ import javax.persistence.Table;
 import javax.persistence.TableGenerator;
 import javax.persistence.Transient;
 
+import use.thm.persistence.hibernate.HibernateContextProviderSingletonTHM;
 import basic.persistence.model.IOptimisticLocking;
+import basic.zBasic.ExceptionZZZ;
 import basic.zBasic.persistence.interfaces.enums.AbstractValue;
 import basic.zBasic.persistence.interfaces.enums.IKeyValueZZZ;
 import basic.zBasic.util.datatype.string.StringZZZ;

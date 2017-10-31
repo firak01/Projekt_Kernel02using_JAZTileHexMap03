@@ -447,6 +447,11 @@ public abstract class GeneralDaoZZZ<T> extends GeneralDAO<T> implements IObjectZ
 		return this.findLazyAll(sTableName, first, max);
 	}
 	
+	public List<T> findLazyAll(){
+		String sTableName = this.getDaoTableName();
+		return this.findLazyAll(sTableName);
+	}
+	
 	//######## METHODEN, DIE VON GENERALDAO ÜBERSCHREIEBEN WERDEN ################
 	public Session getSession() {		
 		Session objReturn = null;

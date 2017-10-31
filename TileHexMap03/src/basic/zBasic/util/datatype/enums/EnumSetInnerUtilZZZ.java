@@ -101,6 +101,7 @@ import com.google.common.collect.Sets;
 /**
  * Utility Klasse um mit den Enumerationen zu arbeiten, die als innere Klasse in den Entities verwaltet werden.
  * Bei Schlüsselworttabellen, sind das beispielsweise die Defaulttexte der Spielsteine. 
+ * FGL: Denke an den Ursprung von Thiskey.
  *
  */
 // TODO REFACTOR: Extract methods using Dto's

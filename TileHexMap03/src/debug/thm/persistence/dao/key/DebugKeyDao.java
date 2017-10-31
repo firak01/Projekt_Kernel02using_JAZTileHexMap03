@@ -31,8 +31,7 @@ public class DebugKeyDao {
 				objContextHibernate.getConfiguration().setProperty("hibernate.hbm2ddl.auto", "update");  //! Jetzt erst wird jede Tabelle über den Anwendungsstart hinaus gespeichert UND auch wiedergeholt.				
 				KeyDao daoKey = new KeyDao(objContextHibernate);
 				String sKeytype = new String("");
-				
-				//TODO GOON 2017-06-14: Hier CellId-Schlüsselwerte vorbereiten und an die daoTroop.readByCellId(...) übergeben...
+
 				sKeytype = "NIXVALUE";
 				Long lngThiskey = new Long(1);
 				Key objKey = daoKey.searchKey(sKeytype, lngThiskey);

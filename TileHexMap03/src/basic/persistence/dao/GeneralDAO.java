@@ -1201,14 +1201,36 @@ public abstract class GeneralDAO<T> implements IDaoInterface<T>{
 		Session objSession = this.getSession();		
 		Query q = objSession.createQuery("from "+table+" p") ;
 		
-		q.setFirstResult(first);
-		q.setMaxResults(max);
+		//FGL: 20171031 - Sinnvolle Erweiterung
+		if(first <= -1) {
+			//nix setzen. Es werden die Defaults genommen
+		}else{
+			q.setFirstResult(first);
+		}
+		
+		if(max <= 0){
+			//nix setzen. Es werden die Defaults genommen
+		}else{
+			q.setMaxResults(max);
+		}
+		
 		@SuppressWarnings("unchecked")
 		List<T> list = q.list();
 		
 		this.commit();
 		
 		//return this.refreshList(list);
+		return list;
+	}
+	
+	/**
+	 * FGL: Sinnvolle Ergänzung: Nimm alles, wenn es keine Parameter gibt.
+	 * @param table
+	 * @return
+	 */
+	protected List<T> findLazyAll(String table){
+		log.debug("find all without size restrictions"+this.getClass().toString());		
+		List<T> list = this.findLazyAll(table, 0,-1);
 		return list;
 	}
 

@@ -20,8 +20,8 @@ import basic.persistence.model.IFieldDescription;
 import basic.persistence.model.IKeyEnum;
 import basic.persistence.model.IOptimisticLocking;
 import basic.zBasic.persistence.interfaces.enums.AbstractValue;
-import basic.zBasic.persistence.interfaces.enums.IKeyProviderZZZ;
-import basic.zBasic.persistence.interfaces.enums.IKeyValueZZZ;
+import basic.zBasic.persistence.interfaces.enums.IThiskeyProviderZZZ;
+import basic.zBasic.persistence.interfaces.enums.IThiskeyValueZZZ;
 
 /**
 *  Variante - nicht vewendet - : Hier wird ein Enum - Klasse ausserhalb verwendet.

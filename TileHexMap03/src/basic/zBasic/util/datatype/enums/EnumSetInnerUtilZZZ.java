@@ -88,8 +88,8 @@ import java.util.HashSet;
 import java.util.Set;
 
 import basic.zBasic.persistence.interfaces.enums.IKeyAccessorZZZ;
-import basic.zBasic.persistence.interfaces.enums.IKeyProviderZZZ;
-import basic.zBasic.persistence.interfaces.enums.IKeyValueZZZ;
+import basic.zBasic.persistence.interfaces.enums.IThiskeyProviderZZZ;
+import basic.zBasic.persistence.interfaces.enums.IThiskeyValueZZZ;
 import basic.zBasic.persistence.interfaces.enums.IThiskeyValueDto;
 
 import com.google.common.base.Function;
@@ -159,10 +159,10 @@ public class EnumSetInnerUtilZZZ {
      * @param enumset set of HisKeyProvider enums
      * @return set of his keys covered by the given set of enums
      */
-    public static <E extends Enum<E> & IKeyProviderZZZ<K>, K> Set<K> getThiskeySet(Set<? extends E> enumset) {
+    public static <E extends Enum<E> & IThiskeyProviderZZZ<K>, K> Set<K> getThiskeySet(Set<? extends E> enumset) {
         Set<K> hiskeys = new HashSet<K>();
         if (enumset != null) {
-            for (IKeyProviderZZZ<K> enumValue : enumset) {
+            for (IThiskeyProviderZZZ<K> enumValue : enumset) {
                 K hiskey = enumValue != null ? enumValue.getThiskey() : null;
                 if (hiskey != null) {
                     hiskeys.add(hiskey);
@@ -186,7 +186,7 @@ public class EnumSetInnerUtilZZZ {
      *
      * @throws HisKeyEnumMappingException    if the passed enumerator does not contain the searched key.
      */
-    public static <E extends Enum<E> & IKeyProviderZZZ<K>, K> E getThiskeyEnum(Class<E> enu, K key) throws ThiskeyEnumMappingExceptionZZZ {
+    public static <E extends Enum<E> & IThiskeyProviderZZZ<K>, K> E getThiskeyEnum(Class<E> enu, K key) throws ThiskeyEnumMappingExceptionZZZ {
         if (key == null) {
             return null;
         }
@@ -212,7 +212,7 @@ public class EnumSetInnerUtilZZZ {
      *
      * @throws HisKeyEnumMappingException    if the value could not be converted.
      */
-    public static <E extends Enum<E> & IKeyProviderZZZ<Long>> E getThiskeyEnum(IKeyValueZZZ<E> hisKeyValue) throws ThiskeyEnumMappingExceptionZZZ {
+    public static <E extends Enum<E> & IThiskeyProviderZZZ<Long>> E getThiskeyEnum(IThiskeyValueZZZ<E> hisKeyValue) throws ThiskeyEnumMappingExceptionZZZ {
         if (hisKeyValue == null) {
             return null;
         }
@@ -238,7 +238,7 @@ public class EnumSetInnerUtilZZZ {
      *
      * @return  the found enum
      */
-    public static <E extends Enum<E> & IKeyProviderZZZ<K>, K> E getThiskeyEnumUnchecked(Class<E> enu, K key) {
+    public static <E extends Enum<E> & IThiskeyProviderZZZ<K>, K> E getThiskeyEnumUnchecked(Class<E> enu, K key) {
         try {
             return getThiskeyEnum(enu, key);
         } catch (ThiskeyEnumMappingExceptionZZZ e) {
@@ -255,7 +255,7 @@ public class EnumSetInnerUtilZZZ {
      *
      * @return a set of the collected hiskeys
      */
-    public static <E extends IKeyProviderZZZ<K>, K> Set<K> thiskeysOf(E firstHiskeyProvider, E secondHiskeyProvider) {
+    public static <E extends IThiskeyProviderZZZ<K>, K> Set<K> thiskeysOf(E firstHiskeyProvider, E secondHiskeyProvider) {
         Set<K> hiskeys = Sets.newLinkedHashSet();
         hiskeys.add(firstHiskeyProvider.getThiskey());
         hiskeys.add(secondHiskeyProvider.getThiskey());
@@ -270,18 +270,18 @@ public class EnumSetInnerUtilZZZ {
      *
      * @return a set of the collected hiskey-ids
      */
-    public static <E extends IKeyProviderZZZ<Long>> Set<Long> thiskeyIdsOf(Set<E> hiskeyProviders) {
+    public static <E extends IThiskeyProviderZZZ<Long>> Set<Long> thiskeyIdsOf(Set<E> hiskeyProviders) {
         return newHashSet(transform(hiskeyProviders, toThiskey()));
     }
 
     /**
-     * Returns a predicate that matches if a {@link IKeyProviderZZZ} has the given hiskey.
+     * Returns a predicate that matches if a {@link IThiskeyProviderZZZ} has the given hiskey.
      *
      * @param hiskey    the required hiskey
      *
      * @return a predicate
      */
-    public static <E extends Enum<E> & IKeyProviderZZZ<K>, K> Predicate<E> hasThiskey(final K hiskey) {
+    public static <E extends Enum<E> & IThiskeyProviderZZZ<K>, K> Predicate<E> hasThiskey(final K hiskey) {
         return new Predicate<E>() {
             @Override
             public boolean apply(E hiskeyProvider) {
@@ -291,14 +291,14 @@ public class EnumSetInnerUtilZZZ {
     }
 
     /**
-     * Returns a function that returns the hiskey provided by a {@link IKeyProviderZZZ}.
+     * Returns a function that returns the hiskey provided by a {@link IThiskeyProviderZZZ}.
      *
      * @return a function
      */
-    public static Function<IKeyProviderZZZ<Long>, Long> toThiskey() {
-        return new Function<IKeyProviderZZZ<Long>, Long>() {
+    public static Function<IThiskeyProviderZZZ<Long>, Long> toThiskey() {
+        return new Function<IThiskeyProviderZZZ<Long>, Long>() {
             @Override
-            public Long apply(IKeyProviderZZZ<Long> hiskeyProvider) {
+            public Long apply(IThiskeyProviderZZZ<Long> hiskeyProvider) {
                 return hiskeyProvider.getThiskey();
             }
         };
@@ -332,21 +332,21 @@ public class EnumSetInnerUtilZZZ {
     }
 
     /**
-     * Returns a function that returns the hiskey ID provided by a {@link IKeyValueZZZ}.
+     * Returns a function that returns the hiskey ID provided by a {@link IThiskeyValueZZZ}.
      *
      * @return a function
      */
-    public static <E extends Enum<E> & IKeyProviderZZZ<Long>> Function<IKeyValueZZZ<E>, Long> valueToThiskey() {
-        return new Function<IKeyValueZZZ<E>, Long>() {
+    public static <E extends Enum<E> & IThiskeyProviderZZZ<Long>> Function<IThiskeyValueZZZ<E>, Long> valueToThiskey() {
+        return new Function<IThiskeyValueZZZ<E>, Long>() {
             @Override
-            public Long apply(IKeyValueZZZ<E> input) {
+            public Long apply(IThiskeyValueZZZ<E> input) {
                 return input.getThiskey();
             }
         };
     }
 
     /**
-     * Returns whether a {@link IKeyValueZZZ} equals another {@link IKeyValueZZZ}
+     * Returns whether a {@link IThiskeyValueZZZ} equals another {@link IThiskeyValueZZZ}
      * with respect to the hiskey.
      *
      * <p>If one of the arguments ({@code firstValue, secondValue}) is {@code null}
@@ -356,7 +356,7 @@ public class EnumSetInnerUtilZZZ {
      * @param secondValue   another hiskey value
      * @return {@code true} if the hiskeys of the value are equal
      */
-    public static <E extends Enum<E> & IKeyProviderZZZ<Long>> boolean equalsThiskey(IKeyValueZZZ<E> firstValue, IKeyValueZZZ<E> secondValue) {
+    public static <E extends Enum<E> & IThiskeyProviderZZZ<Long>> boolean equalsThiskey(IThiskeyValueZZZ<E> firstValue, IThiskeyValueZZZ<E> secondValue) {
         if (firstValue == null) {
             return false;
         }
@@ -369,7 +369,7 @@ public class EnumSetInnerUtilZZZ {
     }
 
     /**
-     * Returns whether a {@link IKeyValueZZZ} equals a specified {@link IKeyProviderZZZ}
+     * Returns whether a {@link IThiskeyValueZZZ} equals a specified {@link IThiskeyProviderZZZ}
      * with respect to the hiskey.
      *
      * <p>If one of the arguments ({@code value, provider}) is {@code null}
@@ -379,7 +379,7 @@ public class EnumSetInnerUtilZZZ {
      * @param provider  the hiskey provider
      * @return {@code true} if the hiskeys of the provider and the value are equal
      */
-    public static <E extends Enum<E> & IKeyProviderZZZ<Long>> boolean equalsThiskey(IKeyValueZZZ<E> value, IKeyProviderZZZ<Long> provider) {
+    public static <E extends Enum<E> & IThiskeyProviderZZZ<Long>> boolean equalsThiskey(IThiskeyValueZZZ<E> value, IThiskeyProviderZZZ<Long> provider) {
         if (value == null) {
             return false;
         }
@@ -392,7 +392,7 @@ public class EnumSetInnerUtilZZZ {
     }
 
     /**
-     * Returns whether a {@link IThiskeyValueDto} equals a specified {@link IKeyProviderZZZ}
+     * Returns whether a {@link IThiskeyValueDto} equals a specified {@link IThiskeyProviderZZZ}
      * with respect to the hiskey.
      *
      * <p>If one of the arguments ({@code value, provider}) is {@code null}
@@ -403,7 +403,7 @@ public class EnumSetInnerUtilZZZ {
      *
      * @return {@code true} if the hiskeys of the provider and the value are equal
      */
-    public static boolean equalsThiskey(IThiskeyValueDto value, IKeyProviderZZZ<Long> provider) {
+    public static boolean equalsThiskey(IThiskeyValueDto value, IThiskeyProviderZZZ<Long> provider) {
         if (value == null) {
             return false;
         }

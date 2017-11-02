@@ -19,8 +19,8 @@ import basic.persistence.model.IFieldDescription;
 import basic.persistence.model.IKeyEnum;
 import basic.persistence.model.IOptimisticLocking;
 import basic.zBasic.persistence.interfaces.enums.AbstractValue;
-import basic.zBasic.persistence.interfaces.enums.IKeyProviderZZZ;
-import basic.zBasic.persistence.interfaces.enums.IKeyValueZZZ;
+import basic.zBasic.persistence.interfaces.enums.IThiskeyProviderZZZ;
+import basic.zBasic.persistence.interfaces.enums.IThiskeyValueZZZ;
 
 //Merke: Diese Klasse könnte auch als Entity in eine Tabelle für Schlüsselwortlisten verwendet werden.
 //           Da das aber hier nicht das ziel ist, habe ich entsprechende Annotationen einfach auskkommentiert.
@@ -66,7 +66,7 @@ public class ObjectTestValue extends AbstractValue<ObjectTestValue> implements S
     private Long hiskeyId;
 
     /** */
-    public enum EnumSetInnerTestTypeZZZ  implements IKeyProviderZZZ<Long> {
+    public enum EnumSetInnerTestTypeZZZ  implements IThiskeyProviderZZZ<Long> {
 
         /**
          * Erster Testwert

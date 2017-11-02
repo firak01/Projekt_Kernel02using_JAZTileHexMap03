@@ -5,7 +5,7 @@ import java.util.EnumSet;
 import use.thm.persistence.interfaces.enums.IEnumSetDefaulttextTHM;
 import use.thm.persistence.model.TileDefaulttext.EnumTileDefaulttext;
 import basic.persistence.model.IFieldDescription;
-import basic.zBasic.persistence.interfaces.enums.IKeyProviderZZZ;
+import basic.zBasic.persistence.interfaces.enums.IThiskeyProviderZZZ;
 
 //MERKE:	Solche Enums werden für die Schlüsseltabellen einer datenbank in den entsprechenden Entities verwendet.
 //				Diese sind dann aber als innere Klassen implementiert. Siehe unten
@@ -16,7 +16,7 @@ import basic.zBasic.persistence.interfaces.enums.IKeyProviderZZZ;
 	//### Eingebettete Enum-Klasse mit den Defaultwerten, diese Werte werden auch per Konstruktor übergeben.
 	//### int Key, String shorttext, String longtext, String description
 	//#######################################################
-	public enum EnumSetDefaulttextTestTypeTHM implements IEnumSetDefaulttextTHM,  IKeyProviderZZZ<Long>{//Folgendes geht nicht, da alle Enums schon von einer Java BasisKlasse erben... extends EnumSetMappedBaseZZZ{
+	public enum EnumSetDefaulttextTestTypeTHM implements IEnumSetDefaulttextTHM,  IThiskeyProviderZZZ<Long>{//Folgendes geht nicht, da alle Enums schon von einer Java BasisKlasse erben... extends EnumSetMappedBaseZZZ{
 		
  	 @IFieldDescription(description = "The TEXTVALUE01") 
  	TESTVALUE01(1,"Test01","Test01 long","A Test01 value description"),

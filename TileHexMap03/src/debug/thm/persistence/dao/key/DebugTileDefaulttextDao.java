@@ -27,6 +27,7 @@ public class DebugTileDefaulttextDao {
 		
 		objDebug.debugFindAll();
 		
+		objDebug.debugDeleteAll();
 	}
 	public DebugTileDefaulttextDao(){		
 	}
@@ -122,6 +123,27 @@ public class DebugTileDefaulttextDao {
 					
 				}		
 				
+			} catch (ExceptionZZZ e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}//end main:
+		return bReturn;		
+	}
+	
+	public boolean debugDeleteAll(){
+		boolean bReturn = false;
+		main:{
+			try {				
+				
+				KernelZZZ objKernel = new KernelZZZ(); //Merke: Die Service Klasse selbst kann wohl nicht das KernelObjekt extenden!
+				HibernateContextProviderSingletonTHM objContextHibernate;
+				
+				objContextHibernate = HibernateContextProviderSingletonTHM.getInstance(objKernel);					
+				objContextHibernate.getConfiguration().setProperty("hibernate.hbm2ddl.auto", "update");  //! Jetzt erst wird jede Tabelle über den Anwendungsstart hinaus gespeichert UND auch wiedergeholt.				
+				TileDefaulttextDao daoKey = new TileDefaulttextDao(objContextHibernate);
+				boolean bSuccess = daoKey.deleteAll();
+
 			} catch (ExceptionZZZ e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();

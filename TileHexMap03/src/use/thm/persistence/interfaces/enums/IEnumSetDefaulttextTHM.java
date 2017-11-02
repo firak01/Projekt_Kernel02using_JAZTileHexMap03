@@ -2,10 +2,10 @@ package use.thm.persistence.interfaces.enums;
 
 import java.util.EnumSet;
 
-import basic.zBasic.persistence.interfaces.enums.IKeyProviderZZZ;
-import basic.zBasic.persistence.interfaces.enums.IKeyValueZZZ;
+import basic.zBasic.persistence.interfaces.enums.IThiskeyProviderZZZ;
+import basic.zBasic.persistence.interfaces.enums.IThiskeyValueZZZ;
 
-public interface IEnumSetDefaulttextTHM extends IKeyProviderZZZ<Long>{
+public interface IEnumSetDefaulttextTHM extends IThiskeyProviderZZZ<Long>{
 	
 	//Das bring ENUM von sich auch mit
 	public String getName();  //Das ist name() von Enum

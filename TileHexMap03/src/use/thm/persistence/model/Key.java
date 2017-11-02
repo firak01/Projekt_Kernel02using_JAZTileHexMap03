@@ -23,7 +23,7 @@ import use.thm.persistence.hibernate.HibernateContextProviderSingletonTHM;
 import basic.persistence.model.IOptimisticLocking;
 import basic.zBasic.ExceptionZZZ;
 import basic.zBasic.persistence.interfaces.enums.AbstractValue;
-import basic.zBasic.persistence.interfaces.enums.IKeyValueZZZ;
+import basic.zBasic.persistence.interfaces.enums.IThiskeyValueZZZ;
 import basic.zBasic.util.datatype.string.StringZZZ;
 
 /**Klasse für einen Spielstein - persistierbar per JPA. Wird nach Troop vererbt. 
@@ -39,7 +39,7 @@ import basic.zBasic.util.datatype.string.StringZZZ;
 @Inheritance(strategy =  InheritanceType.JOINED )//ZIEL: Nur bestimmte Entiteis in einer eigenen Klasse //InheritanceType.TABEL_PER_CLASS) //Ziel: Jedes Entity der Vererbungshierarchie in einer eigenen Tabelle // InheritanceType.SINGLE_TABLE) //Hiermit werden alle Datensätze der Vererbungshierarchieklassen in einer Tabelle zusammengafasst und nur anhan ddes Discriminator Wertes unterschieden 
 //Bei InheritanceType.TABLE_PER_CLASS gilt, es darf keinen Discriminator geben ... @DiscriminatorColumn(name="Disc", discriminatorType = DiscriminatorType.STRING) //Bei InheritanceType.SINGLE_TABLE) gilt: Voraussetzung für DiscriminatorValue in der AreaCell-Klasse. //Wird es wg. der Vererbung von HEXCell zu AreaType immer geben. Ohne Annotation ist das DTYPE und der wert ist gleich dem Klassennamen.
 @Table(name="Key")
-public class Key extends AbstractValue<Key> implements IKeyValueZZZ, Serializable, IOptimisticLocking{
+public class Key extends AbstractValue<Key> implements IThiskeyValueZZZ, Serializable, IOptimisticLocking{
 	private static final long serialVersionUID = 1113434456411176970L;
 	
 	//Variante 2: Realisierung eines Schlüssel über eine eindeutige ID, die per Generator erzeugt wird

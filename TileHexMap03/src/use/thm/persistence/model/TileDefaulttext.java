@@ -21,7 +21,7 @@ import basic.persistence.model.IFieldDescription;
 import basic.persistence.model.IKeyEnum;
 import basic.persistence.model.IOptimisticLocking;
 import basic.zBasic.persistence.interfaces.enums.AbstractValue;
-import basic.zBasic.persistence.interfaces.enums.IKeyProviderZZZ;
+import basic.zBasic.persistence.interfaces.enums.IThiskeyProviderZZZ;
 import basic.zBasic.util.abstractEnum.IEnumSetMappedZZZ;
 import basic.zBasic.util.genericEnum.ObjectTestMappedValue.EnumSetInnerMappedTestTypeZZZ;
 
@@ -152,7 +152,7 @@ public class TileDefaulttext<IEnumTileDefaulttext>  extends Key implements Seria
 	//### Eingebettete Enum-Klasse mit den Defaultwerten, diese Werte werden auch per Konstruktor übergeben.
 	//### int Key, String shorttext, String longtext, String description
 	//#######################################################
-	public enum EnumTileDefaulttext implements IEnumSetDefaulttextTHM,  IKeyProviderZZZ<Long>{//Folgendes geht nicht, da alle Enums schon von einer Java BasisKlasse erben... extends EnumSetMappedBaseZZZ{
+	public enum EnumTileDefaulttext implements IEnumSetDefaulttextTHM,  IThiskeyProviderZZZ<Long>{//Folgendes geht nicht, da alle Enums schon von einer Java BasisKlasse erben... extends EnumSetMappedBaseZZZ{
 		
    	 @IFieldDescription(description = "ARMY TEXTVALUES") 
    	ARMY(1,"Army","Land army","A tile which cannot enter ocean fields."),

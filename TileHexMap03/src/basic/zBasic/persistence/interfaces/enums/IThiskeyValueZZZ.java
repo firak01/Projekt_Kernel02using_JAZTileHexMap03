@@ -36,7 +36,7 @@ import java.io.Serializable;
  * @author mweyland
  * @version $Revision: 1.7 $
  */
-public interface IKeyValueZZZ<E extends Enum<E> & IKeyProviderZZZ<Long>> extends Serializable {
+public interface IThiskeyValueZZZ<E extends Enum<E> & IThiskeyProviderZZZ<Long>> extends Serializable {
 
     /**
      * Returns the his key identifier.

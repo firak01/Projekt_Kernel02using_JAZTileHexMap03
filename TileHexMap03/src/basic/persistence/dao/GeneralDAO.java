@@ -72,17 +72,22 @@ public abstract class GeneralDAO<T> implements IDaoInterface<T>{
 			
 			//open session in view
 			session = HibernateUtilByAnnotation.getHibernateUtil().getCurrentSession();
+		}else{
+			System.out.println("GeneralDAO.getSession(): Session ungleich NULL ");
 		}
 		
 		
 		//empty or closed? make a new session
 		if(session==null || !session.isOpen()) {
+			System.out.println("GeneralDAO.getSession(): Session ungleich NULL ABER NICHT OPEN ");
 			SessionFactory sf = HibernateUtilByAnnotation.getHibernateUtil().getSessionFactory();
 			if (sf!=null){
 				sf.openSession();
 			}else{
 				System.out.println("SessionFactory kann nicht erstellt werden. Tip: Alternativ den EntityManager verwenden oder ... (Need to specify class name in environment or system property, or as an applet parameter, or in an application resource file:  java.naming.factory.initial). ");
 			}
+		}else{
+			System.out.println("GeneralDAO.getSession(): Session ungleich NULL und OPEN ");
 		}
 		
 		return session;
@@ -130,7 +135,11 @@ public abstract class GeneralDAO<T> implements IDaoInterface<T>{
 			Session session = this.getSession();
 			session.beginTransaction();
 		} catch (Exception e) {
-			this.getLog().error("Method begin failed +\n" + session.hashCode() + "\n ThreadID:" + Thread.currentThread().getId() +"\n", e);
+			if(session!=null){
+				this.getLog().error("Method begin failed +\n" + session.hashCode() + "\n ThreadID:" + Thread.currentThread().getId() +"\n", e);
+			}else{
+				this.getLog().error("Method begin failed +\n" + "ThreadID:" + Thread.currentThread().getId() +"\n", e);
+			}
 		}
 	}
 
@@ -145,7 +154,11 @@ public abstract class GeneralDAO<T> implements IDaoInterface<T>{
 			}
 			getSession().flush();
 		} catch (Exception e) {
-			this.getLog().error("Method commit failed +\n" + session.hashCode() + "\n ThreadID:" + Thread.currentThread().getId() + "\n", e);
+			if(session!=null){
+				this.getLog().error("Method commit failed +\n" + session.hashCode() + "\n ThreadID:" + Thread.currentThread().getId() + "\n", e);
+			}else{
+				this.getLog().error("Method commit failed +\n"+  "ThreadID:" + Thread.currentThread().getId() + "\n", e);
+			}
 		}
 //		this.session = null;
 	}
@@ -166,8 +179,12 @@ public abstract class GeneralDAO<T> implements IDaoInterface<T>{
 		try {
 			this.getSession().close();
 		} catch (HibernateException e) {
-			log.error("Method rollback failed +\n" + session.hashCode() +"\n ThreadID:" + Thread.currentThread().getId() + "\n" , e);
+			if(session!=null){
+				log.error("Method rollback failed +\n" + session.hashCode() +"\n ThreadID:" + Thread.currentThread().getId() + "\n" , e);
 //			System.out.println(e.getMessage());
+			}else{
+				this.getLog().error("Method rollback failed +\n"+  "ThreadID:" + Thread.currentThread().getId() + "\n", e);
+			}
 		}
 		session = null;
 	}

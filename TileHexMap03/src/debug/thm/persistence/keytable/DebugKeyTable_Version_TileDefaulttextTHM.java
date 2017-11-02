@@ -6,6 +6,7 @@ import java.util.Set;
 import org.hibernate.Session;
 
 import use.thm.persistence.dao.TileDao;
+import use.thm.persistence.dao.TileDefaulttextDao;
 import use.thm.persistence.event.VetoFlag4ListenerZZZ;
 import use.thm.persistence.hibernate.HibernateContextProviderSingletonTHM;
 import use.thm.persistence.interfaces.enums.IEnumSetDefaulttextTHM;
@@ -28,23 +29,56 @@ import basic.zKernel.KernelZZZ;
 public class DebugKeyTable_Version_TileDefaulttextTHM {
 
 	public static void main(String[] args) {
+		try {
 		DebugKeyTable_Version_TileDefaulttextTHM objDebug = new DebugKeyTable_Version_TileDefaulttextTHM();
 		
 		//Hole alle Einträge des Enums
 		objDebug.getEntrySetDefaultValues();
 		
-		//TODO GOON: Lösche alle erzeugten Einträge vor dem Test. D.h. es muss eine DAO-Klasse für die DefaultValues geben	
-		//objDebug.debugCreateEntry();
-	
+		//Lösche alle erzeugten Einträge vor dem Test. D.h. es muss eine DAO-Klasse für die DefaultValues geben
+		KernelZZZ objKernel = new KernelZZZ();		
+		HibernateContextProviderSingletonTHM objContextHibernate;		
+		objContextHibernate = HibernateContextProviderSingletonTHM.getInstance(objKernel);					
+		objContextHibernate.getConfiguration().setProperty("hibernate.hbm2ddl.auto", "update");  //! Jetzt erst wird jede Tabelle über den Anwendungsstart hinaus gespeichert UND auch wiedergeholt.				
+		TileDefaulttextDao daoKey = new TileDefaulttextDao(objContextHibernate);
+		daoKey.deleteAll();
 		
-		//TODO GOON: Lösche alle erzeugten Einträge vor dem Test.  D.h. es muss eine DAO-Klasse für die DefaultValues geben		
+		int iFound = -1;
+		
+		//Zähle die Anzahl der Einträge
+		iFound = daoKey.count();
+		System.out.println("Anzahl gefundener Einträge nach Löschung aller Einträge: " + iFound);
+		
+		//Erzeuge nun einen Eintrag
+		objDebug.debugCreateEntry();
+		
+		//Zähle die Anzahl der Einträge
+		iFound = daoKey.count();
+		System.out.println("Anzahl gefundener Einträge nach Erzeugen eines Eintrags " + iFound);
+		
+		//Lösche alle Einträge
+		daoKey.deleteAll();
+		
+		//Zähle die Anzahl der Einträge
+		iFound = daoKey.count();
+		System.out.println("Anzahl gefundener Einträge nach Löschung aller Einträge: " + iFound);
+			
+		//Lösche alle erzeugten Einträge vor dem Test.  D.h. es muss eine DAO-Klasse für die DefaultValues geben		
 		objDebug.debugCreateEntriesAll();
 		
-	
-		
+		//Zähle die Anzahl der Einträge
+		iFound = daoKey.count();
+		System.out.println("Anzahl gefundener Einträge nach Erzugung aller Einträge: " + iFound);
+
 		//####################
 		//objDebug.debugFindColumnValueMax();
 		//objDebug.debugFindColumnMinValue();
+		
+		} catch (ExceptionZZZ e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} 
+		
 	}
 	
 	public boolean getEntrySetDefaultValues(){

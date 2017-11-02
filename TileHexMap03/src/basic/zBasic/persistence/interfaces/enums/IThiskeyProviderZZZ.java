@@ -30,7 +30,7 @@ package basic.zBasic.persistence.interfaces.enums;
  * @param <Key>   the type of the his key to be provided, most of the time Long, sometimes Integer
  *
  */
-public interface IKeyProviderZZZ<Key> {
+public interface IThiskeyProviderZZZ<Key> {
     /**
      * Returns a defined his key.
      *

@@ -7,11 +7,17 @@ import java.util.Map;
 import javax.persistence.EntityManager;
 
 import org.apache.commons.logging.LogFactory;
+import org.hibernate.HibernateException;
+import org.hibernate.NonUniqueObjectException;
 import org.hibernate.Query;
 import org.hibernate.Session;
+import org.hibernate.SessionFactory;
+import org.hibernate.StaleObjectStateException;
+import org.hibernate.Transaction;
 
 import basic.persistence.dao.GeneralDAO;
 import basic.persistence.model.IPrimaryKeys;
+import basic.persistence.util.HibernateUtilByAnnotation;
 import basic.zBasic.ExceptionZZZ;
 import basic.zBasic.IFlagZZZ;
 import basic.zBasic.IObjectZZZ;
@@ -89,12 +95,48 @@ public abstract class GeneralDaoZZZ<T> extends GeneralDAO<T> implements IObjectZ
 	
 	@Override
 	public int count(){
+		int iReturn = -1;
+		try{
 		String sTableName = this.getDaoTableName();
 		
 		this.getLog().debug(ReflectCodeZZZ.getPositionCurrent() + ": Counting '" + sTableName);
+		
+//		20171101: daoKey.count "locked" die Datenbank. 
+//		Lösungsidee: Es wurde hier keine Transaktion gebraucht? Das Ziel muss aber sein 1 Session : 1 Transaktion.
+//		                    Daher this.begin() und this.commit(), um die Transaktion wieder zu schliessen.
+		
+		Session session = getSession();
+		this.begin();
+			
 		Query q = getSession().createQuery("select count(t) from " + sTableName + " t");
-		int count = ((Long)q.uniqueResult()).intValue();
-		return count;
+		iReturn = ((Long)q.uniqueResult()).intValue();
+		
+		this.commit();
+		
+//		catch (NonUniqueObjectException non) {
+//			log.error("Method delete failed NonUniqueObjectException +\n" + session.hashCode() + "\n ThreadID:" + Thread.currentThread().getId() +"\n" , non);
+//			System.out.println("NON UNIQUE!!!");
+//			return this.helpCatchException(non, instance);			
+//		}
+//		catch(StaleObjectStateException er){
+//			log.error("Method delete failed StaleObjectStateException +\n" + session.hashCode() + "\n ThreadID:" + Thread.currentThread().getId() +"\n" , er);
+//			System.out.println("STALE!!!");
+//			return this.staleObjectStateException(instance, er);
+		}catch(HibernateException he){
+			log.error("Method delete failed HibernateException +\n" + session.hashCode() + "\n ThreadID:" + Thread.currentThread().getId() +"\n" , he);
+			System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": HIBERNATE EXCEPTION!!!!");
+			he.printStackTrace();
+			 iReturn = -1;
+		}finally {
+			if (getSession().getTransaction().isActive()) {
+				this.rollback();
+				log.debug(ReflectCodeZZZ.getPositionCurrent() + ": rollback executed");
+				System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": HIBERNATE ROLLBACK EXECUTED!!!!");
+				iReturn = -1;
+			}
+		}
+
+		return iReturn;
 	}
 	
 //	@Override
@@ -469,6 +511,60 @@ public abstract class GeneralDaoZZZ<T> extends GeneralDAO<T> implements IObjectZ
 				}else{
 					this.setSession(objReturn);
 				}				
+			}
+			
+			// Fehler: "Session Closed", wenn man eine Dao-Methode mehrfach hintereinander ausführen will. Ziel ist: 1 Session für 1 Transaction
+			if(!this.session.isOpen()){
+				//LÖSUNGSANSATZ: Eine neue, offene Session erstellen.
+				
+				//Dazu Verschiedenen Alternativen an die SessionFactory zu kommen, die aber alle nicht funktionieren
+				//LÖSUNGSANSATZ: JNDI
+				//DAS KLAPPT NICHT WG. JNDI ist falsch....
+//				SessionFactory sf = HibernateUtilByAnnotation.getHibernateUtil().getSessionFactory();
+//				if (sf!=null){
+//					sf.openSession();
+//				}else{
+//					System.out.println("SessionFactory kann nicht erstellt werden. Tip: Alternativ den EntityManager verwenden oder ... (Need to specify class name in environment or system property, or as an applet parameter, or in an application resource file:  java.naming.factory.initial). ");
+//				}
+				
+				//LÖSUNGSANSATZ: Den EntityManager verwenden
+				//###################### 
+				//Option 1 through EntityManagerFactory
+				//
+				//If you use Hibernate >= 4.3 and JPA 2.1 you can accces the SessionFactory from a EntityManagerFactory through <T> T EntityManagarFactory#unwrap(Class<T> cls).
+				//
+				//SessionFactory sessionFactory = entityManagerFactory.unwrap(SessionFactory.class);
+				//
+				//Option 2 through EntityManager
+				//
+				//If you use Hibernate >= 4.3 and JPA >= 2.0 then you can accces the SessionFactory from a EntityManager through <T> T EntityManagar#unwrap(Class<T> cls).
+				//
+				//Session session = entityManager.unwrap(Session.class);
+				//SessionFactory sessionFactory = session.getSessionFactory();
+				//#################################
+
+				//allerdings setze ich Hibernate 4.2.xx ein...., d.h. es funktioniert der unwrap für SessionFactory nicht...
+				
+				//EntityManager em = objContextHibernate.getEntityManager("TileHexMap03");
+//				String sSchemaName = "TileHexMap03";
+//				EntityManager em = this.getHibernateContextProvider().getEntityManager(sSchemaName);
+//				SessionFactory sf = em.unwrap(SessionFactory.class);
+//				if (sf!=null){
+//					sf.openSession();
+//				}else{
+//					System.out.println("Alternativ den EntityManager verwenden  hat nix gebracht... ");
+//				}
+				
+				
+				//############################
+				//LÖSUNGSANSATZ: Versuch auf die bestehende SessionFactory zuzugreifen.
+				IHibernateContextProviderZZZ objHibernateContext = this.getHibernateContextProvider();
+				if(objHibernateContext==null){					
+				}else{
+					SessionFactory sf = objHibernateContext.getSessionFactory();
+					objReturn = sf.openSession();
+					this.session = objReturn;
+				}
 			}
 		} catch (ExceptionZZZ e) {
 			// TODO Auto-generated catch block

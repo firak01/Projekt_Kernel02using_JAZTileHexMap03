@@ -15,6 +15,9 @@ import use.thm.persistence.model.Troop;
 import use.thm.persistence.model.TroopArmy;
 import basic.zBasic.ExceptionZZZ;
 import basic.zBasic.persistence.dao.GeneralDaoZZZ;
+import basic.zBasic.util.datatype.enums.EnumSetDefaulttextUtilZZZ;
+import basic.zBasic.util.datatype.enums.EnumSetInnerUtilZZZ;
+import basic.zBasic.util.datatype.enums.EnumSetInnerUtilZZZ.ThiskeyEnumMappingExceptionZZZ;
 public class TileDefaulttextDao<T> extends KeyDao<T> {
 	private static final long serialVersionUID = 1L;
 
@@ -90,5 +93,29 @@ public class TileDefaulttextDao<T> extends KeyDao<T> {
 	
 	//####### EIGENE METHODEN ###########
 	//....
+	public boolean deleteAll(){
+		boolean bReturn = false;
+		main:{
+			//Nun alle holen
+			ArrayList<TileDefaulttext> listaTileDefaulttext = (ArrayList<TileDefaulttext>) this.findLazyAll();
+			
+			for(TileDefaulttext text : listaTileDefaulttext){
+				System.out.println("Lösche: TileDefaulttext.toString(): " + text.toString());
+				String sDescriptionStored = text.getDescription();
+				System.out.println("Description (gespeichert): " + sDescriptionStored);	
+
+				this.delete(text);
+			}//End for
+			bReturn = true;
+			
+		}//End main
+		return bReturn;				
+	}
 	
+	public void delete(TileDefaulttext text) {
+		main:{
+			if(text==null)break main;
+			super.delete((T) text);
+		}//end main
+	}
 }

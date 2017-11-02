@@ -20,8 +20,8 @@ import basic.persistence.model.IFieldDescription;
 import basic.persistence.model.IKeyEnum;
 import basic.persistence.model.IOptimisticLocking;
 import basic.zBasic.persistence.interfaces.enums.AbstractValue;
-import basic.zBasic.persistence.interfaces.enums.IKeyProviderZZZ;
-import basic.zBasic.persistence.interfaces.enums.IKeyValueZZZ;
+import basic.zBasic.persistence.interfaces.enums.IThiskeyProviderZZZ;
+import basic.zBasic.persistence.interfaces.enums.IThiskeyValueZZZ;
 import basic.zBasic.util.abstractEnum.EnumSetMappedTestTypeZZZ;
 import basic.zBasic.util.abstractEnum.IEnumSetMappedZZZ;
 import use.thm.persistence.model.Key;
@@ -76,7 +76,7 @@ public class ObjectTestMappedValue extends Key  implements Serializable, IOptimi
 		this.sTextDefault = s;
 	}
 		    
-    public enum EnumSetInnerMappedTestTypeZZZ implements IEnumSetMappedZZZ,  IKeyProviderZZZ<Long>{//Folgendes geht nicht, da alle Enums schon von einer Java BasisKlasse erben... extends EnumSetMappedBaseZZZ{
+    public enum EnumSetInnerMappedTestTypeZZZ implements IEnumSetMappedZZZ,  IThiskeyProviderZZZ<Long>{//Folgendes geht nicht, da alle Enums schon von einer Java BasisKlasse erben... extends EnumSetMappedBaseZZZ{
     	 @IFieldDescription(description = "Erster Testwert") 
     	ONE(1,"eins","e."),
     	

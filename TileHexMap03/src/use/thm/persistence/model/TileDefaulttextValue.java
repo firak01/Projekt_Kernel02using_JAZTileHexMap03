@@ -45,25 +45,27 @@ public class TileDefaulttextValue extends Key implements Serializable, IOptimist
 
 	//Variante 2: Realisierung eines Schlüssel über eine eindeutige ID, die per Generator erzeugt wird
 	//@Id //hier notwendig für AccessType.FIELD
-//	private int iMyTestSequence;
+	private int iMyTestSequence;
 	
 	private String sTextDefault;
 	
 	
 	//### Variante 2: Verwende auf dieser Ebene einen Generator, zum Erstellen einer ID
 	//ABER NICHT AUF DIESER EBENEN, DA SIE ERBT VON KEY.java
-//	 @Id	//hier notwendig für AccessType.PROPERTY			
-//	 @TableGenerator(name="lidGeneratorDefaulttext002", table="COMMON_FUER_IDGENERATOR_DEFAULTTEXT002",pkColumnName="nutzende_Klasse_als_String", pkColumnValue="SequenceTester",valueColumnName="naechster_id_wert",  initialValue=1, allocationSize=1)//@TableGenerator Name muss einzigartig im ganzen Projekt sein.
-//	 @GeneratedValue(strategy = GenerationType.TABLE, generator="lidGeneratorDefaulttext002")		 //Das Klappt mit Hibernate Session, aber nicht mit dem JPA EntityManager...
-//	 //Bei dieser Column Definition ist die Spalte nicht für @OneToMany mit @JoinTable zu gebrauchen @Column(name="TILE_ID_INCREMENTED", nullable=false, unique=true, columnDefinition="INTEGER NOT NULL UNIQUE  DEFAULT 1")
-//	 //Entferne also das unique...
-//	 @Column(name="DEFAULTTEXT_ID_INCREMENTED", nullable=false)
-//	 public int getId(){
-//		 return this.iMyTestSequence;
-//	 }
-//	 public void setId(int iLid){
-//		 this.iMyTestSequence = iLid;
-//	 }
+	//ABER: BEIM ERBEN VON KEY wira automatisch eine Tabelle Key erstellt.... das will ich nicht
+	
+	 @Id	//hier notwendig für AccessType.PROPERTY			
+	 @TableGenerator(name="lidGeneratorDefaulttext002", table="COMMON_FUER_IDGENERATOR_DEFAULTTEXT002",pkColumnName="nutzende_Klasse_als_String", pkColumnValue="SequenceTester",valueColumnName="naechster_id_wert",  initialValue=1, allocationSize=1)//@TableGenerator Name muss einzigartig im ganzen Projekt sein.
+	 @GeneratedValue(strategy = GenerationType.TABLE, generator="lidGeneratorDefaulttext002")		 //Das Klappt mit Hibernate Session, aber nicht mit dem JPA EntityManager...
+	 //Bei dieser Column Definition ist die Spalte nicht für @OneToMany mit @JoinTable zu gebrauchen @Column(name="TILE_ID_INCREMENTED", nullable=false, unique=true, columnDefinition="INTEGER NOT NULL UNIQUE  DEFAULT 1")
+	 //Entferne also das unique...
+	 @Column(name="DEFAULTTEXT_ID_INCREMENTED", nullable=false)
+	 public int getId(){
+		 return this.iMyTestSequence;
+	 }
+	 public void setId(int iLid){
+		 this.iMyTestSequence = iLid;
+	 }
      
 	@Column(name="defaulttext", nullable=false)	 
 	public String getDefaulttext(){

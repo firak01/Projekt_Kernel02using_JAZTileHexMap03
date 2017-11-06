@@ -33,17 +33,21 @@ import basic.zBasic.util.datatype.string.StringZZZ;
 *
 */
 
+//Merke: Neue Entities immer auch in HibernateContextProviderSingletonTHM hinzufügen. In hibernate.cfg.xml reicht nicht.
+
 //Vgl. Buch "Java Persistence API 2", Seite 34ff. für @Table, @UniqueConstraint
-@Entity  //Ich will eigentlich  keine Tabelle für TILE haben, geht aber nicht. 
-@Access(AccessType.PROPERTY)
-@Inheritance(strategy =  InheritanceType.JOINED )//ZIEL: Nur bestimmte Entiteis in einer eigenen Klasse //InheritanceType.TABEL_PER_CLASS) //Ziel: Jedes Entity der Vererbungshierarchie in einer eigenen Tabelle // InheritanceType.SINGLE_TABLE) //Hiermit werden alle Datensätze der Vererbungshierarchieklassen in einer Tabelle zusammengafasst und nur anhan ddes Discriminator Wertes unterschieden 
-//Bei InheritanceType.TABLE_PER_CLASS gilt, es darf keinen Discriminator geben ... @DiscriminatorColumn(name="Disc", discriminatorType = DiscriminatorType.STRING) //Bei InheritanceType.SINGLE_TABLE) gilt: Voraussetzung für DiscriminatorValue in der AreaCell-Klasse. //Wird es wg. der Vererbung von HEXCell zu AreaType immer geben. Ohne Annotation ist das DTYPE und der wert ist gleich dem Klassennamen.
-@Table(name="Key")
+
+//Ich will kein eigenes Entity für Key haben
+//@Entity  //Wenn man "Hibernate"-Vererbung nutzt, dann gibt es immer eine Tabelle der Entity Klasse 
+//@Access(AccessType.PROPERTY)
+//@Inheritance(strategy =  InheritanceType.JOINED )//ZIEL: Nur bestimmte Entiteis in einer eigenen Klasse //InheritanceType.TABEL_PER_CLASS) //Ziel: Jedes Entity der Vererbungshierarchie in einer eigenen Tabelle // InheritanceType.SINGLE_TABLE) //Hiermit werden alle Datensätze der Vererbungshierarchieklassen in einer Tabelle zusammengafasst und nur anhan ddes Discriminator Wertes unterschieden 
+//                                                                          //Bei InheritanceType.TABLE_PER_CLASS gilt, es darf keinen Discriminator geben ... @DiscriminatorColumn(name="Disc", discriminatorType = DiscriminatorType.STRING) //Bei InheritanceType.SINGLE_TABLE) gilt: Voraussetzung für DiscriminatorValue in der AreaCell-Klasse. //Wird es wg. der Vererbung von HEXCell zu AreaType immer geben. Ohne Annotation ist das DTYPE und der wert ist gleich dem Klassennamen.
+//@Table(name="Key")
 public class Key extends AbstractValue<Key> implements IThiskeyValueZZZ, Serializable, IOptimisticLocking{
 	private static final long serialVersionUID = 1113434456411176970L;
 	
 	//Variante 2: Realisierung eines Schlüssel über eine eindeutige ID, die per Generator erzeugt wird
-	private int iMyTestSequence;
+//	private int iMyTestSequence;
     private Long hiskeyId;
 	private String sKeyType;
 	
@@ -54,22 +58,22 @@ public class Key extends AbstractValue<Key> implements IThiskeyValueZZZ, Seriali
 	 }
 	 
 	//### Variante 2: Verwende auf dieser Ebene einen Generator, zum Erstellen einer ID
-		 @Id				
-		 @TableGenerator(name="lidGeneratorKey001", table="COMMON_FUER_IDGENERATOR_KEY",pkColumnName="nutzende_Klasse_als_String", pkColumnValue="SequenceTester",valueColumnName="naechster_id_wert",  initialValue=1, allocationSize=1)//@TableGenerator Name muss einzigartig im ganzen Projekt sein.
-		 @GeneratedValue(strategy = GenerationType.TABLE, generator="lidGeneratorKey001")		 //Das Klappt mit Hibernate Session, aber nicht mit dem JPA EntityManager...
-		 //Bei dieser Column Definition ist die Spalte nicht für @OneToMany mit @JoinTable zu gebrauchen @Column(name="TILE_ID_INCREMENTED", nullable=false, unique=true, columnDefinition="INTEGER NOT NULL UNIQUE  DEFAULT 1")
-		 //Entferne also das unique...
-		 @Column(name="KEY_ID_INCREMENTED", nullable=false)
-		 public int getId(){
-			 return this.iMyTestSequence;
-		 }
-		 public void setId(int iLid){
-			 this.iMyTestSequence = iLid;
-		 }
+//		 @Id				
+//		 @TableGenerator(name="lidGeneratorKey001", table="COMMON_FUER_IDGENERATOR_KEY",pkColumnName="nutzende_Klasse_als_String", pkColumnValue="SequenceTester",valueColumnName="naechster_id_wert",  initialValue=1, allocationSize=1)//@TableGenerator Name muss einzigartig im ganzen Projekt sein.
+//		 @GeneratedValue(strategy = GenerationType.TABLE, generator="lidGeneratorKey001")		 //Das Klappt mit Hibernate Session, aber nicht mit dem JPA EntityManager...
+//		 //Bei dieser Column Definition ist die Spalte nicht für @OneToMany mit @JoinTable zu gebrauchen @Column(name="TILE_ID_INCREMENTED", nullable=false, unique=true, columnDefinition="INTEGER NOT NULL UNIQUE  DEFAULT 1")
+//		 //Entferne also das unique...
+//		 @Column(name="KEY_ID_INCREMENTED", nullable=false)
+//		 public int getId(){
+//			 return this.iMyTestSequence;
+//		 }
+//		 public void setId(int iLid){
+//			 this.iMyTestSequence = iLid;
+//		 }
 	 
 	 //### getter / setter		
-		@Column(name="KEYTYPE")
-		@Access(AccessType.PROPERTY)
+//		@Column(name="KEYTYPE")
+//		@Access(AccessType.PROPERTY)
 		public String getKeyType(){
 			return this.sKeyType;
 		}	
@@ -102,8 +106,8 @@ public class Key extends AbstractValue<Key> implements IThiskeyValueZZZ, Seriali
 	    /**
 	     * {@inheritDoc}
 	     */
-	    @Transient
-	   @java.lang.Override
+//	    @Transient
+//	   @java.lang.Override
 	    public java.util.List<String> getAllAttributeNames() {
 	        return getAllAttributeNamesIntern();
 	    }
@@ -121,8 +125,8 @@ public class Key extends AbstractValue<Key> implements IThiskeyValueZZZ, Seriali
 	    }
 	    /* GENERATED_END */
 
-	    @Transient
-		@Override
+//	    @Transient
+//		@Override
 		public Class getThiskeyEnumClass() {
 			// TODO Auto-generated method stub
 			return null;

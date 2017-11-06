@@ -14,13 +14,12 @@ import org.apache.commons.lang.builder.EqualsBuilder;
 
 import basic.persistence.model.IOptimisticLocking;
 
+//Merke: Neue Entities immer auch in HibernateContextProviderSingletonTHM hinzufügen. In hibernate.cfg.xml reicht nicht.
+
 @Entity //ich will aber keine Tabelle für TROOP haben.
 @DiscriminatorValue("troop") //Wird es wg. der Vererbung(!) von Tile zu Troop immer geben. Ohne Annotation ist das DTYPE und der wert ist gleich dem Klassennamen. //Das muss in dem Root Entity, also in Tile defniert werden. @DiscriminatorColumn(name="Disc", discriminatorType = DiscriminatorType.STRING)                                      
-public class Troop extends Tile implements Serializable, IOptimisticLocking{
-
-	private static final long serialVersionUID = 1L;
+public class Troop extends Tile{
 	
-
 	//s. Buch "Java Persistence API 2", Seite 41ff.
 	//@Type verwendet, weil es eine Fehlermeldung gab, das der Typ nicht gefunden wird. 
 	//Ergänzend zu der Buchlösung die Enumeration anders aufgebaut. So kommt man auch per JPQL an Objekte der Enumeration im Resultset.

@@ -70,7 +70,7 @@ public class TroopArmyVariant  extends Key implements Serializable, IOptimisticL
 	private Long lKey;
 	
 	//Jetzt die verschiedenene Eigenschaften eines Armeetypens hier festlegen.
-	private TileDefaulttext objDefaulttext;
+	private Defaulttext objDefaulttext;
 	
 	//... und weitere Eigenschaften.
 	
@@ -104,11 +104,11 @@ public class TroopArmyVariant  extends Key implements Serializable, IOptimisticL
 		//@Transient //Ich will kein BLOB speichern
 		@OneToOne(fetch = FetchType.LAZY)
 		@JoinColumn(name="defaulttext_thiskey_id", nullable = true)
-	 public TileDefaulttext getDefaulttextObject(){
+	 public Defaulttext getDefaulttextObject(){
 		return this.objDefaulttext;
 	 }
 	 
-	 public void setDefaulttextObject(TileDefaulttext objDefaulttext){
+	 public void setDefaulttextObject(Defaulttext objDefaulttext){
 		 this.objDefaulttext = objDefaulttext;
 	 }
 	 

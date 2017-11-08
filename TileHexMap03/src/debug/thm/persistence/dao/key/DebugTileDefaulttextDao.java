@@ -11,7 +11,7 @@ import use.thm.persistence.hibernate.HibernateContextProviderSingletonTHM;
 import use.thm.persistence.interfaces.enums.IEnumSetDefaulttextTHM;
 import use.thm.persistence.model.Key;
 import use.thm.persistence.model.Tile;
-import use.thm.persistence.model.TileDefaulttext;
+import use.thm.persistence.model.Defaulttext;
 import use.thm.persistence.model.TroopArmy;
 import basic.zBasic.ExceptionZZZ;
 import basic.zBasic.util.datatype.enums.EnumSetDefaulttextUtilZZZ;
@@ -42,19 +42,19 @@ public class DebugTileDefaulttextDao {
 				objContextHibernate.getConfiguration().setProperty("hibernate.hbm2ddl.auto", "update");  //! Jetzt erst wird jede Tabelle über den Anwendungsstart hinaus gespeichert UND auch wiedergeholt.				
 				TileDefaulttextDao daoKey = new TileDefaulttextDao(objContextHibernate);
 				String sKeytype = new String("");
+				Long lngThiskey = new Long(1);
 				
 				//TODO GOON 2017-06-14: Hier CellId-Schlüsselwerte vorbereiten und an die daoTroop.readByCellId(...) übergeben...
-				sKeytype = "NIXVALUE";
-				Long lngThiskey = new Long(1);
-				Key objKey = daoKey.searchKey(sKeytype, lngThiskey);
-				if(objKey==null){
-					System.out.println("1. Abfrage: Erwartetes Ergebnis. Kein Key mit dem KeyType '" + sKeytype + "' und dem Thiskey '" + lngThiskey.toString() + "' gefunden.");
-				}else{
-					System.out.println("1. Abfrage: UNERWARTETES ERGEBNIS. Key mit dem KeyType '" + sKeytype + "' und dem Thiskey '" + lngThiskey.toString() + "' gefunden.");
-				}
+//				sKeytype = "NIXVALUE";
+//				Key objKey = daoKey.searchKey(sKeytype, lngThiskey);
+//				if(objKey==null){
+//					System.out.println("1. Abfrage: Erwartetes Ergebnis. Kein Key mit dem KeyType '" + sKeytype + "' und dem Thiskey '" + lngThiskey.toString() + "' gefunden.");
+//				}else{
+//					System.out.println("1. Abfrage: UNERWARTETES ERGEBNIS. Key mit dem KeyType '" + sKeytype + "' und dem Thiskey '" + lngThiskey.toString() + "' gefunden.");
+//				}
 				
-				sKeytype = "DEFAULTTEXT";
-				TileDefaulttext objKey02 = (TileDefaulttext) daoKey.searchKey(sKeytype, lngThiskey );
+				sKeytype = "TILE";
+				Defaulttext objKey02 = (Defaulttext) daoKey.searchKey(sKeytype, lngThiskey );
 				if(objKey02==null){
 					System.out.println("2. Abfrage: UNERWARTETES ERGEBNIS. Kein Key mit dem KeyType '" + sKeytype + "' und dem Thiskey '" + lngThiskey.toString() + "' gefunden.");
 				}else{
@@ -84,15 +84,15 @@ public class DebugTileDefaulttextDao {
 				String sKeytype = new String("DEFAULTTEXT");		
 				Long lngThiskey = new Long(1);
 
-				TileDefaulttext objKey02 = (TileDefaulttext) daoKey.searchKey(sKeytype, lngThiskey );
+				Defaulttext objKey02 = (Defaulttext) daoKey.searchKey(sKeytype, lngThiskey );
 				if(objKey02==null){
 					System.out.println("2. Abfrage: UNERWARTETES ERGEBNIS. Kein Key mit dem KeyType '" + sKeytype + "' und dem Thiskey '" + lngThiskey.toString() + "' gefunden.");
 				}else{
 					System.out.println("2. Abfrage: Erwartetes Ergebnis. Key mit dem KeyType '" + sKeytype + "' und dem Thiskey '" + lngThiskey.toString() + "' gefunden.");			
 					
 					//Nun alle holen
-					ArrayList<TileDefaulttext> listaTileDefaulttext = (ArrayList<TileDefaulttext>) daoKey.findLazyAll();
-					for(TileDefaulttext text : listaTileDefaulttext){
+					ArrayList<Defaulttext> listaTileDefaulttext = (ArrayList<Defaulttext>) daoKey.findLazyAll();
+					for(Defaulttext text : listaTileDefaulttext){
 						System.out.println("TileDefaulttext.toString(): " + text.toString());
 //						String sTYPE = "ARMY";
 //						String sValue = EnumSetDefaulttextUtilZZZ.readEnumConstant_DescriptionValue(text.getThiskeyEnumClass(), sTYPE);

@@ -1,8 +1,6 @@
 package use.thm.persistence.dao;
 
 import java.util.ArrayList;
-
-
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -13,58 +11,53 @@ import org.hibernate.Session;
 import use.thm.persistence.hibernate.HibernateContextProviderSingletonTHM;
 import use.thm.persistence.model.AreaCell;
 import use.thm.persistence.model.Key;
-import use.thm.persistence.model.Tile;
-import use.thm.persistence.model.TileType;
+import use.thm.persistence.model.Defaulttext;
+import use.thm.persistence.model.TileDefaulttext;
 import use.thm.persistence.model.Troop;
 import use.thm.persistence.model.TroopArmy;
-import use.thm.persistence.model.TroopType;
 import basic.zBasic.ExceptionZZZ;
-import basic.zBasic.ReflectCodeZZZ;
 import basic.zBasic.persistence.dao.GeneralDaoZZZ;
-import basic.zBasic.util.datatype.string.StringZZZ;
-
-/** DAS WÄRE DIE VARIANTE, WENN ES EINE TABELLE "KEY" GÄBE.
- *   ABER DIESE TABELLE WILL ICH NICHT.
- *   Außerdem würden dann alle Entities hier einen Eintrag bekommen. Das will ich auch nicht.
- *   
- * @author Fritz Lindhauer
- *
- * @param <T>
- */
-public class KeyDao<T> extends GeneralDaoZZZ<T> {
+import basic.zBasic.util.datatype.enums.EnumSetDefaulttextUtilZZZ;
+import basic.zBasic.util.datatype.enums.EnumSetInnerUtilZZZ;
+import basic.zBasic.util.datatype.enums.EnumSetInnerUtilZZZ.ThiskeyEnumMappingExceptionZZZ;
+public class DefaulttextDao<T> extends KeyDao<T> {
 	private static final long serialVersionUID = 1L;
 
-	/* Constructor 
+	/* Constructor
 	 * WICHTIG: Der hier angegebenen Name der Entity-Klasse wird von den GeneralDAO - Klassen verwendet.
 	 *                Daher unbedingt beim Einsatz von Vererbung korrekt anpassen.
-	 *                Z.B. Will man mit dem Dao eigentlicht TileDefaulttexte behandel und gibt hier Defaulttext an, werden sowohl die TileDefaulttexte als auch die Defaulttexte mit .findLazyAll() gefunden. */
-	public KeyDao() throws ExceptionZZZ{
+	 *                Z.B. Will man mit dem Dao eigentlicht TileDefaulttexte behandel und gibt hier Defaulttext an, werden sowohl die TileDefaulttexte als auch die Defaulttexte mit .findLazyAll() gefunden. 
+	 *                
+	 * Merke: //!!! FGL 20171108: Das Problem ist, dass in HQL bei einem count() der Superklasse auch die Elemente der Kindklasse gezählt zu werden scheinen!!!	 
+	 *              Darum nicht die Werte in dem Entity der Superklasse speichern, sondern in jeder Kindklasse selbst.               
+	 */
+	public DefaulttextDao() throws ExceptionZZZ{
 		super();
-		this.installLoger(Key.class);//Durch das Installieren des Loggers mit der korrekten Klasse wird GeneralDao.getT() erst korrekt ermöglicht.
+		this.installLoger(Defaulttext.class);//Durch das Installieren des Loggers mit der korrekten Klasse wird GeneralDao.getT() erst korrekt ermöglicht.
 	}
-	public KeyDao(HibernateContextProviderSingletonTHM objContextHibernate) throws ExceptionZZZ{
+	public DefaulttextDao(HibernateContextProviderSingletonTHM objContextHibernate) throws ExceptionZZZ{
 		super(objContextHibernate);		
-		this.installLoger(Key.class);//Durch das Installieren des Loggers mit der korrekten Klasse wird GeneralDao.getT() erst korrekt ermöglicht.
+		this.installLoger(Defaulttext.class);//Durch das Installieren des Loggers mit der korrekten Klasse wird GeneralDao.getT() erst korrekt ermöglicht.
 	}
-	public KeyDao(HibernateContextProviderSingletonTHM objContextHibernate, String sFlagControl) throws ExceptionZZZ{
+	public DefaulttextDao(HibernateContextProviderSingletonTHM objContextHibernate, String sFlagControl) throws ExceptionZZZ{
 		super(objContextHibernate, sFlagControl);
-		this.installLoger(Key.class);//Durch das Installieren des Loggers mit der korrekten Klasse wird GeneralDao.getT() erst korrekt ermöglicht.
+		this.installLoger(Defaulttext.class);//Durch das Installieren des Loggers mit der korrekten Klasse wird GeneralDao.getT() erst korrekt ermöglicht.
 	}
-	public KeyDao(HibernateContextProviderSingletonTHM objContextHibernate, String[] saFlagControl) throws ExceptionZZZ{
+	public DefaulttextDao(HibernateContextProviderSingletonTHM objContextHibernate, String[] saFlagControl) throws ExceptionZZZ{
 		super(objContextHibernate, saFlagControl);
-		this.installLoger(Key.class);//Durch das Installieren des Loggers mit der korrekten Klasse wird GeneralDao.getT() erst korrekt ermöglicht.
+		this.installLoger(Defaulttext.class);//Durch das Installieren des Loggers mit der korrekten Klasse wird GeneralDao.getT() erst korrekt ermöglicht.
 	}
 	
 	//Den Namen des Aktuellen Objekts kann ich nun auslesen.
 	//Darum diese Methode generisch in die DaoZZZ - Klasse ausgelagert.
 //    public List<T> findLazyAll(int first, int max){
-//    	return this.findLazyAll("Tile", first, max);
+//    	return this.findLazyAll("Troop", first, max);
 //    }
 //    
 //	@Override
 //	public int count(){
-//		this.getLog().debug("counting Tiles");
-//		Query q = getSession().createQuery("select count(t) from Tile t");
+//		this.getLog().debug("counting Troops");
+//		Query q = getSession().createQuery("select count(t) from Troop t");
 //		int count = ((Long)q.uniqueResult()).intValue();
 //		return count;
 //	}
@@ -75,19 +68,19 @@ public class KeyDao<T> extends GeneralDaoZZZ<T> {
 //	 */
 //	@Override
 //	public int countByCriteria(Map<String, Object> whereBy, 	Map<String, String> filter) {
-//		return this.countByCriteria("Tile", whereBy, filter);
+//		return this.countByCriteria("Troop", whereBy, filter);
 //	}
 
 
 	/* (non-Javadoc)
 	 * @see use.thm.persistence.dao.GeneralDAO#getID(tryout.hibernate.AreaCell)
 	 */
-	@Override
-	public Map<String, Object> getID(T instance) {
-		Map<String, Object> id = new HashMap<String, Object>();
-		id.put("key", instance);		
-		return id;
-	}
+//	@Override
+//	public Map<String, Object> getID(T instance) {
+//		Map<String, Object> id = new HashMap<String, Object>();
+//		id.put("id", instance.);		
+//		return id;
+//	}
 	
 	public List<T> findByHQL(String hql, int first, int max) {
 		return this.findByHQLGeneral(hql, first, max);
@@ -106,6 +99,34 @@ public class KeyDao<T> extends GeneralDaoZZZ<T> {
 		return null;
 	}
 	
+	
+	//####### EIGENE METHODEN ###########
+	//....
+	public boolean deleteAll(){
+		boolean bReturn = false;
+		main:{
+			//Nun alle holen
+			ArrayList<Defaulttext> listaTileDefaulttext = (ArrayList<Defaulttext>) this.findLazyAll();
+			
+			for(Defaulttext text : listaTileDefaulttext){
+				System.out.println("Lösche: TileDefaulttext.toString(): " + text.toString());
+				String sDescriptionStored = text.getDescription();
+				System.out.println("Description (gespeichert): " + sDescriptionStored);	
+
+				this.delete(text);
+			}//End for
+			bReturn = true;
+			
+		}//End main
+		return bReturn;				
+	}
+	
+	public void delete(Defaulttext text) {
+		main:{
+			if(text==null)break main;
+			super.delete((T) text);
+		}//end main
+	}
 	
 	//####### EIGENE METHODEN ###########
 	//....
@@ -154,7 +175,11 @@ public class KeyDao<T> extends GeneralDaoZZZ<T> {
 			//Query query = session.createQuery("from TroopArmy as tableTile where tableTile.objHexCell.id.mapAlias = :mapAlias AND tableTile.objHexCell.id.mapX = :mapX AND tableTile.objHexCell.id.mapY = :mapY");
 			
 			//Query query = session.createQuery("from Tile as tableTile where tableTile.tileIdObject.uniquename = :uniqueName");//Merke: In TroopArmy ist der uniquename transient. Also kommt man über das Objekt daran.
-			Query query = session.createQuery("from Key as tableKey where tableKey.keyType = :keyType and tableKey.thiskey = :thiskey");
+			//Query query = session.createQuery("from Key as tableKey where tableKey.keyType = :keyType and tableKey.thiskey = :thiskey");
+			
+			//Query query = session.createQuery("from TileDefaulttext as tableKey where tableKey.thiskey = :thiskey");		
+			String sTableNameHql = this.getDaoTableName();
+			Query query = session.createQuery("from " + sTableNameHql + " as tableKey where tableKey.thiskey = :thiskey and tableKey.keyType = :keyType ");
 			query.setString("keyType", sKeyType);
 			query.setLong("thiskey", lngThiskey);
 
@@ -166,5 +191,4 @@ public class KeyDao<T> extends GeneralDaoZZZ<T> {
 			return objReturn;
 		}
 			
-		
-}
+}//end class

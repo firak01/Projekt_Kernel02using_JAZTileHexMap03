@@ -6,6 +6,8 @@ import java.util.EnumSet;
 import javax.persistence.Access;
 import javax.persistence.AccessType;
 import javax.persistence.Column;
+import javax.persistence.DiscriminatorColumn;
+import javax.persistence.DiscriminatorType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -16,10 +18,12 @@ import javax.persistence.Table;
 import javax.persistence.TableGenerator;
 import javax.persistence.Transient;
 
+
 import use.thm.persistence.interfaces.enums.IEnumSetDefaulttextTHM;
 import basic.persistence.model.IFieldDescription;
 import basic.persistence.model.IKeyEnum;
 import basic.persistence.model.IOptimisticLocking;
+import basic.zBasic.ReflectCodeZZZ;
 import basic.zBasic.persistence.interfaces.enums.AbstractValue;
 import basic.zBasic.persistence.interfaces.enums.IThiskeyProviderZZZ;
 import basic.zBasic.util.abstractEnum.IEnumSetMappedZZZ;
@@ -37,29 +41,27 @@ import basic.zBasic.util.genericEnum.ObjectTestMappedValue.EnumSetInnerMappedTes
 //Merke: Neue Entities immer auch in HibernateContextProviderSingletonTHM hinzufügen. In hibernate.cfg.xml reicht nicht.
 
 @Entity
-@Access(AccessType.PROPERTY) ///20171019: damit soll dann enum eingebunden werden, automatisch...
-//@Inheritance(strategy =  InheritanceType.JOINED )//ZIEL: Nur bestimmte Entiteis in einer eigenen Klasse //InheritanceType.TABEL_PER_CLASS) //Ziel: Jedes Entity der Vererbungshierarchie in einer eigenen Tabelle // InheritanceType.SINGLE_TABLE) //Hiermit werden alle Datensätze der Vererbungshierarchieklassen in einer Tabelle zusammengafasst und nur anhan ddes Discriminator Wertes unterschieden 
-//Bei InheritanceType.TABLE_PER_CLASS gilt, es darf keinen Discriminator geben ... @DiscriminatorColumn(name="Disc", discriminatorType = DiscriminatorType.STRING) //Bei InheritanceType.SINGLE_TABLE) gilt: Voraussetzung für DiscriminatorValue in der AreaCell-Klasse. //Wird es wg. der Vererbung von HEXCell zu AreaType immer geben. Ohne Annotation ist das DTYPE und der wert ist gleich dem Klassennamen.
-@Table(name="k_tile_defaulttext")
-public class TileDefaulttext<IEnumDefaulttext>  extends Key implements Serializable, IOptimisticLocking{
-	
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 6479902348197491481L;
-
-	//Variante 2: Realisierung eines Schlüssel über eine eindeutige ID, die per Generator erzeugt wird
-	//@Id //hier notwendig für AccessType.FIELD
-	private int iMyTestSequence;
+@Access(AccessType.PROPERTY) 
+@Inheritance(strategy =  InheritanceType.TABLE_PER_CLASS) //Ziel: Jedes Entity der Vererbungshierarchie in einer eigenen Tabelle  Es ist eine eigene Tabelle notwendig, da Thiskey eindeutig sein soll.
+// InheritanceType.SINGLE_TABLE) //Hiermit werden alle Datensätze der Vererbungshierarchieklassen in einer Tabelle zusammengafasst und nur anhan des Discriminator Wertes unterschieden
+//@Inheritance(strategy =  InheritanceType.JOINED )//ZIEL: Nur bestimmte Entiteis in einer eigenen Klasse //
+//@DiscriminatorColumn(name="KEYTYPE", discriminatorType = DiscriminatorType.STRING) //Bei InheritanceType.SINGLE_TABLE) gilt: Voraussetzung für DiscriminatorValue in der AreaCell-Klasse. //Wird es wg. der Vererbung von HEXCell zu AreaType immer geben. Ohne Annotation ist das DTYPE und der wert ist gleich dem Klassennamen. ////Bei InheritanceType.TABLE_PER_CLASS gilt, es darf keinen Discriminator geben ...
+@Table(name="k_defaulttext")
+public class Defaulttext  extends Key implements IOptimisticLocking{
+	private static final long serialVersionUID = -8400471235691822606L; //auch wenn serialized nicht implementiert wird (sondern in der elternklasse), muss der staische Schlüssel hier eingetragen werden. 
 	
 	//Entsprechend der internen Enumeration. 
 	//Merke: Die Enumeration dient der Festlegung der Defaultwerte. In den Feldern des Entities werden die gespeicherten Werte gehalten.
-	private Long lKey;
 	private String sLongtext, sShorttext, sDescription;
 	
-	public TileDefaulttext(){
+	
+	public Defaulttext(){
 		super();
 		this.setKeyType("DEFAULTTEXT"); //TODO: HIER EINE ENUMERATION MACHEN ÜBER DIE VERSCHIEDENEN SCHLÜSSELWERTE?
+	}
+	public Defaulttext(String sKeyType){
+		super();
+		this.setKeyType(sKeyType);
 	}
 	
 	
@@ -74,28 +76,31 @@ public class TileDefaulttext<IEnumDefaulttext>  extends Key implements Serializa
 	 //Entferne also das unique...
 	 @Column(name="DEFAULTTEXT_ID_INCREMENTED", nullable=false)
 	 public int getId(){
-		 return this.iMyTestSequence;
+		 return super.getId();
 	 }
 	 public void setId(int iLid){
-		 this.iMyTestSequence = iLid;
+		 super.setId(iLid);
 	 }
 	 
 	//### ABSTRACTE METHODEN
-	 @Transient
-    public Class getThiskeyEnumClass() {
-	      return TileDefaulttext.getThiskeyEnumClassStatic();
-	   }
 	 
 	 //Merke: Bei Nutzung der "Hibernate"-Verebung käme dies aus der Key Klasse. ABER: Dann hätte ich auch eine Tabelle "KEY" und das will ich nicht.
 	 //           Also: Hier die Methoden seperat anbieten.
 	 @Column(name="thiskey_id",  nullable=false, unique=true, columnDefinition="LONG NOT NULL UNIQUE  DEFAULT 1")	
-	 @Override
 	public Long getThiskey() {
-		 return this.lKey;
+		 return super.getThiskey();
 	}
-	@Override
 	public void setThiskey(Long thiskeyId) {
-		this.lKey = thiskeyId;
+		super.setThiskey(thiskeyId);
+	}
+	
+	@Column(name="KEYTYPE")
+	@Access(AccessType.PROPERTY)
+	public String getKeyType(){
+		return super.getKeyType();
+	}	
+	public void setKeyType(String sKeyType){
+		super.setKeyType(sKeyType);
 	}
 	   
 	@Column(name="shorttext", nullable=false)	 
@@ -146,30 +151,36 @@ public class TileDefaulttext<IEnumDefaulttext>  extends Key implements Serializa
         return tmp;
     }
     /* GENERATED_END */
+    
+	 @Transient
+    public Class getThiskeyEnumClass() {
+	      return Defaulttext.getThiskeyEnumClassStatic();
+	   }
 	
     //### Statische Methode (um einfacher darauf zugreifen zu können)
     public static Class getThiskeyEnumClassStatic(){
-    	return EnumTileDefaulttext.class;
+    	System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": Diese Methode muss in den daraus erbenden Klassen überschrieben werden.");
+    	return EnumDefaulttext.class;    	
     }
 
 	//#######################################################
 	//### Eingebettete Enum-Klasse mit den Defaultwerten, diese Werte werden auch per Konstruktor übergeben.
 	//### int Key, String shorttext, String longtext, String description
 	//#######################################################
-	public enum EnumTileDefaulttext implements IEnumSetDefaulttextTHM,  IThiskeyProviderZZZ<Long>{//Folgendes geht nicht, da alle Enums schon von einer Java BasisKlasse erben... extends EnumSetMappedBaseZZZ{
+	public enum EnumDefaulttext implements IEnumSetDefaulttextTHM,  IThiskeyProviderZZZ<Long>{//Folgendes geht nicht, da alle Enums schon von einer Java BasisKlasse erben... extends EnumSetMappedBaseZZZ{
 		
-   	 @IFieldDescription(description = "ARMY TEXTVALUES") 
-   	ARMY(1,"Army","Land army","A tile which cannot enter ocean fields."),
+   	 @IFieldDescription(description = "TXT01 TEXTVALUES") 
+   	T01(1,"TXT01","TEXT 01","A test text 01."),
    	
-   	 @IFieldDescription(description = "FLEET TEXTVALUES") 
-   	FLEET(2,"Fleet","Ocean fleet", "A tile which cannot enter landarea fields.");
+   	 @IFieldDescription(description = "TXT02 TEXTVALUES") 
+   	T02(2,"TXT02","TEXT 02", "A test text 02.");
    	   	
    private Long lKey;
    private String sLongtext, sShorttext, sDescription;
    
 
    //Merke: Enums haben keinen public Konstruktor, können also nicht intiantiiert werden, z.B. durch Java-Reflektion.
-   EnumTileDefaulttext(int iKey, String sShorttext, String sLongtext, String sDescription){
+   EnumDefaulttext(int iKey, String sShorttext, String sLongtext, String sDescription){
        this.lKey = Long.valueOf(iKey);
        this.sShorttext = sShorttext;
        this.sLongtext = sLongtext;
@@ -178,7 +189,7 @@ public class TileDefaulttext<IEnumDefaulttext>  extends Key implements Serializa
    
    //Merke: Enums haben keinen public Konstruktor, können also nicht intiantiiert werden, z.B. durch Java-Reflektion.
    //           In der Util-Klasse habe ich aber einen Workaround gefunden ( basic/zBasic/util/abstractEnum/EnumSetMappedUtilZZZ.java ).
-   EnumTileDefaulttext(){	
+   EnumDefaulttext(){	
    }
 
   //##################################################
@@ -229,8 +240,8 @@ public class TileDefaulttext<IEnumDefaulttext>  extends Key implements Serializa
 	
 	
    // the valueOfMethod <--- Translating from DB
-   public static EnumTileDefaulttext fromShorttext(String s) {
-       for (EnumTileDefaulttext state : values()) {
+   public static EnumDefaulttext fromShorttext(String s) {
+       for (EnumDefaulttext state : values()) {
            if (s.equals(state.getShorttext()))
                return state;
        }
@@ -238,7 +249,7 @@ public class TileDefaulttext<IEnumDefaulttext>  extends Key implements Serializa
    }
 
    public EnumSet<?>getEnumSetUsed(){
-   	return EnumTileDefaulttext.getEnumSet();
+   	return EnumDefaulttext.getEnumSet();
    }
 
    @SuppressWarnings("rawtypes")
@@ -250,12 +261,12 @@ public class TileDefaulttext<IEnumDefaulttext>  extends Key implements Serializa
    	//ArrayList<Class<?>> listEmbedded = ReflectClassZZZ.getEmbeddedClasses(this.getClass(), sFilterName);
    	
    	//Erstelle nun ein EnumSet, speziell für diese Klasse, basierend auf  allen Enumrations  dieser Klasse.
-   	Class<EnumTileDefaulttext> enumClass = EnumTileDefaulttext.class;
-   	EnumSet<EnumTileDefaulttext> set = EnumSet.noneOf(enumClass);//Erstelle ein leeres EnumSet
+   	Class<EnumDefaulttext> enumClass = EnumDefaulttext.class;
+   	EnumSet<EnumDefaulttext> set = EnumSet.noneOf(enumClass);//Erstelle ein leeres EnumSet
    	
-   	for(Object obj : EnumTileDefaulttext.class.getEnumConstants()){
+   	for(Object obj : EnumDefaulttext.class.getEnumConstants()){
    		//System.out.println(obj + "; "+obj.getClass().getName());
-   		set.add((EnumTileDefaulttext) obj);
+   		set.add((EnumDefaulttext) obj);
    	}
    	return set;
    	

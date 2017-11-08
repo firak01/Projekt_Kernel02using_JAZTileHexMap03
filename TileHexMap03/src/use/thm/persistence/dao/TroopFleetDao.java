@@ -18,7 +18,10 @@ import basic.zBasic.persistence.dao.GeneralDaoZZZ;
 public class TroopFleetDao<T> extends TroopDao<T> {
 	private static final long serialVersionUID = 1L;
 
-	/* Constructor */
+	/* Constructor 
+	 *  WICHTIG: Der hier angegebenen Name der Entity-Klasse wird von den GeneralDAO - Klassen verwendet.
+	 *                Daher unbedingt beim Einsatz von Vererbung korrekt anpassen.
+	 *                Z.B. Will man mit dem Dao eigentlicht TileDefaulttexte behandel und gibt hier Defaulttext an, werden sowohl die TileDefaulttexte als auch die Defaulttexte mit .findLazyAll() gefunden. */
 	public TroopFleetDao() throws ExceptionZZZ{
 		super();
 		this.installLoger(TroopFleet.class);//Durch das Installieren des Loggers mit der korrekten Klasse wird GeneralDao.getT() erst korrekt ermöglicht.

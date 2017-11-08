@@ -43,11 +43,11 @@ import basic.zBasic.util.datatype.string.StringZZZ;
 //@Inheritance(strategy =  InheritanceType.JOINED )//ZIEL: Nur bestimmte Entiteis in einer eigenen Klasse //InheritanceType.TABEL_PER_CLASS) //Ziel: Jedes Entity der Vererbungshierarchie in einer eigenen Tabelle // InheritanceType.SINGLE_TABLE) //Hiermit werden alle Datensätze der Vererbungshierarchieklassen in einer Tabelle zusammengafasst und nur anhan ddes Discriminator Wertes unterschieden 
 //                                                                          //Bei InheritanceType.TABLE_PER_CLASS gilt, es darf keinen Discriminator geben ... @DiscriminatorColumn(name="Disc", discriminatorType = DiscriminatorType.STRING) //Bei InheritanceType.SINGLE_TABLE) gilt: Voraussetzung für DiscriminatorValue in der AreaCell-Klasse. //Wird es wg. der Vererbung von HEXCell zu AreaType immer geben. Ohne Annotation ist das DTYPE und der wert ist gleich dem Klassennamen.
 //@Table(name="Key")
-public class Key extends AbstractValue<Key> implements IThiskeyValueZZZ, Serializable, IOptimisticLocking{
+public class Key extends AbstractValue<Key> implements IThiskeyValueZZZ, Serializable { //, IOptimisticLocking{
 	private static final long serialVersionUID = 1113434456411176970L;
 	
 	//Variante 2: Realisierung eines Schlüssel über eine eindeutige ID, die per Generator erzeugt wird
-//	private int iMyTestSequence;
+	private int iMyTestSequence;
     private Long hiskeyId;
 	private String sKeyType;
 	
@@ -64,12 +64,12 @@ public class Key extends AbstractValue<Key> implements IThiskeyValueZZZ, Seriali
 //		 //Bei dieser Column Definition ist die Spalte nicht für @OneToMany mit @JoinTable zu gebrauchen @Column(name="TILE_ID_INCREMENTED", nullable=false, unique=true, columnDefinition="INTEGER NOT NULL UNIQUE  DEFAULT 1")
 //		 //Entferne also das unique...
 //		 @Column(name="KEY_ID_INCREMENTED", nullable=false)
-//		 public int getId(){
-//			 return this.iMyTestSequence;
-//		 }
-//		 public void setId(int iLid){
-//			 this.iMyTestSequence = iLid;
-//		 }
+		 public int getId(){
+			 return this.iMyTestSequence;
+		 }
+		 public void setId(int iLid){
+			 this.iMyTestSequence = iLid;
+		 }
 	 
 	 //### getter / setter		
 //		@Column(name="KEYTYPE")
@@ -84,7 +84,7 @@ public class Key extends AbstractValue<Key> implements IThiskeyValueZZZ, Seriali
 	    /**
 	     * @return hiskeyId
 	     */
-	    @Override
+//	    @Override
 	   //Merke: Wenn das dann im Entity eingesetzt werden soll, uniquewert festlegen
 	    //@Column(name="thiskey_id",  nullable=false, unique=true, columnDefinition="LONG NOT NULL UNIQUE  DEFAULT 1")	
 	    public Long getThiskey() {
@@ -95,7 +95,7 @@ public class Key extends AbstractValue<Key> implements IThiskeyValueZZZ, Seriali
 	    /**
 	     * @param newValue
 	     */
-	   @Override
+//	   @Override
 	    public void setThiskey(Long newValue) {
 	        this.hiskeyId = newValue;
 	    }

@@ -7,7 +7,7 @@ import org.hibernate.Session;
 import use.thm.persistence.dao.TileDao;
 import use.thm.persistence.event.VetoFlag4ListenerZZZ;
 import use.thm.persistence.hibernate.HibernateContextProviderSingletonTHM;
-import use.thm.persistence.model.TileDefaulttext;
+import use.thm.persistence.model.Defaulttext;
 import use.thm.persistence.model.TileDefaulttextType;
 import use.thm.persistence.model.TileDefaulttextValue;
 import basic.persistence.util.HibernateUtil;

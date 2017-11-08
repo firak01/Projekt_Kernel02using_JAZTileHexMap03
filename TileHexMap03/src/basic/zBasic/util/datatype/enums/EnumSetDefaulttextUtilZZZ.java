@@ -8,7 +8,7 @@ import java.util.EnumSet;
 import java.util.Set;
 
 import use.thm.persistence.interfaces.enums.IEnumSetDefaulttextTHM;
-import use.thm.persistence.model.TileDefaulttext;
+import use.thm.persistence.model.Defaulttext;
 import use.thm.persistence.model.TileDefaulttext.EnumTileDefaulttext;
 import basic.zBasic.ExceptionZZZ;
 import basic.zBasic.IFlagZZZ;

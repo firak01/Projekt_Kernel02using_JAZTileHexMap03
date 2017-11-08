@@ -22,7 +22,10 @@ import basic.zBasic.util.datatype.string.StringZZZ;
 public class TileDao<T> extends GeneralDaoZZZ<T> {
 	private static final long serialVersionUID = 1L;
 
-	/* Constructor */
+	/* Constructor  
+	 * WICHTIG: Der hier angegebenen Name der Entity-Klasse wird von den GeneralDAO - Klassen verwendet.
+	 *                Daher unbedingt beim Einsatz von Vererbung korrekt anpassen.
+	 *                Z.B. Will man mit dem Dao eigentlicht TileDefaulttexte behandel und gibt hier Defaulttext an, werden sowohl die TileDefaulttexte als auch die Defaulttexte mit .findLazyAll() gefunden. */
 	public TileDao() throws ExceptionZZZ{
 		super();
 		this.installLoger(Tile.class);//Durch das Installieren des Loggers mit der korrekten Klasse wird GeneralDao.getT() erst korrekt ermöglicht.

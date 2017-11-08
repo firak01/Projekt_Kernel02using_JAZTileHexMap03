@@ -5,17 +5,21 @@ import java.util.Set;
 
 import org.hibernate.Session;
 
+import use.thm.persistence.dao.DefaulttextDao;
 import use.thm.persistence.dao.TileDao;
 import use.thm.persistence.dao.TileDefaulttextDao;
 import use.thm.persistence.event.VetoFlag4ListenerZZZ;
 import use.thm.persistence.hibernate.HibernateContextProviderSingletonTHM;
 import use.thm.persistence.interfaces.enums.IEnumSetDefaulttextTHM;
+import use.thm.persistence.model.Defaulttext;
+import use.thm.persistence.model.Defaulttext.EnumDefaulttext;
 import use.thm.persistence.model.TileDefaulttext;
 import use.thm.persistence.model.TileDefaulttext.EnumTileDefaulttext;
 import use.thm.persistence.model.TileDefaulttextType;
 import use.thm.persistence.model.TileDefaulttextValue;
 import basic.persistence.util.HibernateUtil;
 import basic.zBasic.ExceptionZZZ;
+import basic.zBasic.ReflectCodeZZZ;
 import basic.zBasic.util.abstractEnum.EnumSetDefaulttextTestTypeTHM;
 import basic.zBasic.util.datatype.enums.EnumSetDefaulttextUtilZZZ;
 import basic.zBasic.util.datatype.enums.EnumSetInnerUtilZZZ;
@@ -33,29 +37,51 @@ public class DebugKeyTable_Version_TileDefaulttextTHM {
 		DebugKeyTable_Version_TileDefaulttextTHM objDebug = new DebugKeyTable_Version_TileDefaulttextTHM();
 		
 		//Hole alle Einträge des Enums
-		objDebug.getEntrySetDefaultValues();
-		
+		objDebug.getEntrySetDefaulttextValues();
+		objDebug.getEntrySetTileDefaulttextValues();
+
+
 		//Lösche alle erzeugten Einträge vor dem Test. D.h. es muss eine DAO-Klasse für die DefaultValues geben
-		KernelZZZ objKernel = new KernelZZZ();		
+		KernelZZZ objKernel = new KernelZZZ();	
+		
 		HibernateContextProviderSingletonTHM objContextHibernate;		
 		objContextHibernate = HibernateContextProviderSingletonTHM.getInstance(objKernel);					
-		objContextHibernate.getConfiguration().setProperty("hibernate.hbm2ddl.auto", "update");  //! Jetzt erst wird jede Tabelle über den Anwendungsstart hinaus gespeichert UND auch wiedergeholt.				
-		TileDefaulttextDao daoKey = new TileDefaulttextDao(objContextHibernate);
-		daoKey.deleteAll();
+		objContextHibernate.getConfiguration().setProperty("hibernate.hbm2ddl.auto", "update");  //! Jetzt erst wird jede Tabelle über den Anwendungsstart hinaus gespeichert UND auch wiedergeholt.							
+
+		TileDefaulttextDao daoTiletext = new TileDefaulttextDao(objContextHibernate);
+		daoTiletext.deleteAll();
 		
+		//Zähle die Anzahl der Einträge
 		int iFound = -1;
+		iFound = daoTiletext.count();
+		System.out.println("Anzahl gefundener Tiletext - Einträge nach Löschung aller Tiletext - Einträge: " + iFound);
+		
+		DefaulttextDao daoDefaulttext = new DefaulttextDao(objContextHibernate);
+		iFound = daoDefaulttext.count();
+		System.out.println("Anzahl gefundener Defaultttext - Einträge nach Löschung aller Tiltext - Einträge: " + iFound);
+		
+		daoDefaulttext.deleteAll();
+		iFound = daoDefaulttext.count();//FGL 20171108: TODO GOON: Der Count liefert alle Elemente auch der Kindklasse wieder. Also: Neues Entitiy TextDefaulttext, erbend aus Defaulttext.
+		//																							Entsprechend auch TextDefaulttextDao als neue Klasse.
+		System.out.println("Anzahl gefundener Defaultttext - Einträge nach Löschung aller Defaulttext - Einträge: " + iFound);
+		
+		//Erzeuge nun für die Tabellen jeweils einen Eintrag
+		System.out.println("Erzeuge jeweil einen Eintrag in TileDefaulttext / Defaultttext");		
+		objDebug.debugCreateEntry_TileDefaulttext();
+		objDebug.debugCreateEntry_Defaulttext();
 		
 		//Zähle die Anzahl der Einträge
-		iFound = daoKey.count();
-		System.out.println("Anzahl gefundener Einträge nach Löschung aller Einträge: " + iFound);
-		
-		//Erzeuge nun einen Eintrag
-		objDebug.debugCreateEntry();
+		iFound = daoDefaulttext.count();
+		System.out.println("Anzahl gefundener Defaulttext - Einträge nach Erzeugen eines Eintrags " + iFound);
 		
 		//Zähle die Anzahl der Einträge
-		iFound = daoKey.count();
-		System.out.println("Anzahl gefundener Einträge nach Erzeugen eines Eintrags " + iFound);
-		
+		iFound = daoTiletext.count();
+		System.out.println("Anzahl gefundener TileDefaulttext - Einträge nach Erzeugen eines Eintrags " + iFound);
+	
+		//TODO GOON 20171107
+		/* nach dem Füllen, das Löschen wieder zum Laufen bringen, danach das Zählen
+		 * 	
+	
 		//Lösche alle Einträge
 		daoKey.deleteAll();
 		
@@ -68,7 +94,8 @@ public class DebugKeyTable_Version_TileDefaulttextTHM {
 		
 		//Zähle die Anzahl der Einträge
 		iFound = daoKey.count();
-		System.out.println("Anzahl gefundener Einträge nach Erzugung aller Einträge: " + iFound);
+		System.out.println("Anzahl gefundener Einträge nach Erzeugung aller Einträge: " + iFound);
+*/
 
 		//####################
 		//objDebug.debugFindColumnValueMax();
@@ -81,7 +108,43 @@ public class DebugKeyTable_Version_TileDefaulttextTHM {
 		
 	}
 	
-	public boolean getEntrySetDefaultValues(){
+	public boolean getEntrySetDefaulttextValues(){
+		boolean bReturn = false;
+		main:{
+//			try {
+				Defaulttext objValue = new Defaulttext();				
+				Long lngObj = new Long(1);
+				Collection<String> colsName = EnumZZZ.getNames(objValue.getThiskeyEnumClass());
+				for(String s : colsName){
+					System.out.println("Gefundener Enum-Name: " + s);			
+					
+					//Direktes Reinschreiben geht wieder nicht wg. "bound exception"
+					//EnumSetDefaulttextUtilZZZ.getEnumConstant_DescriptionValue(EnumSetDefaulttextTestTypeTHM.class, s);
+					
+					//Also: Klasse holen und danach CASTEN.
+					Class<?> objClass = objValue.getThiskeyEnumClass();
+					String sName = EnumSetDefaulttextUtilZZZ.readEnumConstant_NameValue((Class<IEnumSetDefaulttextTHM>) objClass, s);
+					System.out.println("Gefundener Spielsteintypname: " + sName);
+					
+					String sShorttext = EnumSetDefaulttextUtilZZZ.readEnumConstant_ShorttextValue((Class<IEnumSetDefaulttextTHM>) objClass, s);
+					System.out.println("Gefundener Spielsteintypkurztext: " + sShorttext);
+					
+					String sLongtext = EnumSetDefaulttextUtilZZZ.readEnumConstant_LongtextValue((Class<IEnumSetDefaulttextTHM>) objClass, s);
+					System.out.println("Gefundener Spielsteintyplangtext: " + sLongtext);
+					
+					String sDescription = EnumSetDefaulttextUtilZZZ.readEnumConstant_DescriptionValue((Class<IEnumSetDefaulttextTHM>) objClass, s);
+					System.out.println("Gefundene Description: " + sDescription);			
+
+				}
+//			} catch (ExceptionZZZ e) {
+//				// TODO Auto-generated catch block
+//				e.printStackTrace();
+//			}
+		}//end main:
+		return bReturn;	
+	}
+	
+	public boolean getEntrySetTileDefaulttextValues(){
 		boolean bReturn = false;
 		main:{
 //			try {
@@ -117,10 +180,79 @@ public class DebugKeyTable_Version_TileDefaulttextTHM {
 		return bReturn;	
 	}
 	
-	public boolean debugCreateEntry(){
+	public boolean debugCreateEntry_Defaulttext(){
 		boolean bReturn = false;
 		main:{
-			System.out.println("debugCreateEntry: START ##############");			
+			System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": START ##############");			
+			
+			try {				
+				KernelZZZ objKernel = new KernelZZZ(); //Merke: Die Service Klasse selbst kann wohl nicht das KernelObjekt extenden!
+				HibernateContextProviderSingletonTHM objContextHibernate;
+				
+				objContextHibernate = HibernateContextProviderSingletonTHM.getInstance(objKernel);					
+				objContextHibernate.getConfiguration().setProperty("hibernate.hbm2ddl.auto", "update");  //! Jetzt erst wird jede Tabelle über den Anwendungsstart hinaus gespeichert UND auch wiedergeholt.				
+			
+				//###################
+				//1. Speicher den Defaulttext
+				//####################					
+				//Session session = this.getSession();	//Vesuch eine neue Session zu bekommen. Merke: Die Session wird hier nicht gespeichert! Wg. 1 Transaktion ==> 1 Session
+				Session session = objContextHibernate.getSession();
+				if(session == null) break main;			
+				session.getTransaction().begin();//Ein zu persistierendes Objekt - eine Transaction, auch wenn mehrere in einer Transaction abzuhandeln wären, aber besser um Fehler abfangen zu können.
+				
+				EnumDefaulttext[] objaType = Defaulttext.EnumDefaulttext.values();
+
+				//String s = objaType[0].name(); //Prasenzstudium .... also entsprechend was als Eigenschaft vorgeschlagen wird von TileDefaulttextType.Praesenzstudium
+				//String s = objaType[0].toString(); //dito
+				//String s = objaType[0].description(); //gibt es nicht, das @description wohl nur etwas für Tool ist, welches diese Metasprachlichen Annotiations auswertet.
+				String s = objaType[0].name();
+				System.out.println("debugCreateEntry für ... " + s);
+				
+				Defaulttext objValue = new Defaulttext();
+				String sDescription = objaType[0].getDescription();
+				objValue.setDescription(sDescription);
+				
+				String sShorttext = objaType[0].getShorttext();
+				objValue.setShorttext(sShorttext);
+				
+				String sLongtext = objaType[0].getLongtext();
+				objValue.setLongtext(sLongtext);
+				
+			    Long lngThiskey = objaType[0].getThiskey(); //Das darf nicht NULL sein, sonst Fehler. Über diesen Schlüssel wird der Wert dann gefunden.
+				objValue.setThiskey(lngThiskey);
+			    
+				//Merke: EINE TRANSACTION = EINE SESSION ==>  neue session von der SessionFactory holen
+				session.save(objValue); //Hibernate Interceptor wird aufgerufen																				
+				if (!session.getTransaction().wasCommitted()) {
+					//session.flush(); //Datenbank synchronisation, d.h. Inserts und Updates werden gemacht. ABER es wird noch nix committed.
+					session.getTransaction().commit(); //onPreInsertListener wird ausgeführt   //!!! TODO: WARUM WIRD wg. des FLUSH NIX MEHR AUSGEFÜHRT AN LISTENERN, ETC ???
+					
+					//bGoon = HibernateUtil.wasCommitSuccessful(objContextHibernate,"save",session.getTransaction());//EventType.PRE_INSERT
+					VetoFlag4ListenerZZZ objResult = HibernateUtil.getCommitResult(objContextHibernate,"save",session.getTransaction());
+//					sMessage = objResult.getVetoMessage();
+//					bGoon = !objResult.isVeto();
+				}
+//				if(!bGoon){
+//					//Mache die Ausgabe im UI nicht selbst, sondern stelle lediglich die Daten zur Verfügung. Grund: Hier stehen u.a. die UI Komponenten nicht zur Verfügung
+//					this.getFacadeResult().setMessage(sMessage);
+//					break validEntry;
+//				}
+				
+			} catch (ExceptionZZZ e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": ENDE ##############");			
+			
+			
+		}//end main:
+		return bReturn;	
+	}
+	
+	public boolean debugCreateEntry_TileDefaulttext(){
+		boolean bReturn = false;
+		main:{
+			System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": START ##############");			
 			
 			try {				
 				KernelZZZ objKernel = new KernelZZZ(); //Merke: Die Service Klasse selbst kann wohl nicht das KernelObjekt extenden!
@@ -179,7 +311,7 @@ public class DebugKeyTable_Version_TileDefaulttextTHM {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			System.out.println("debugCreateEntry: ENDE ##############");			
+			System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": ENDE ##############");			
 			
 			
 		}//end main:
@@ -209,7 +341,7 @@ public class DebugKeyTable_Version_TileDefaulttextTHM {
 				Collection<String> colsName = EnumZZZ.getNames(TileDefaulttext.getThiskeyEnumClassStatic());
 				for(String s : colsName){
 					System.out.println("Starte Transaction:.... Gefundener Enum-Name: " + s);
-					TileDefaulttext objValue = new TileDefaulttext();		//Bei jedem Schleifendurchlauf neu machen, sonst wird lediglich nur 1 Datensatz immer wieder verändert.
+					Defaulttext objValue = new Defaulttext();		//Bei jedem Schleifendurchlauf neu machen, sonst wird lediglich nur 1 Datensatz immer wieder verändert.
 					session.getTransaction().begin();//Ein zu persistierendes Objekt - eine Transaction, auch wenn mehrere in einer Transaction abzuhandeln wären, aber besser um Fehler abfangen zu können.
 					
 					//Direktes Reinschreiben geht wieder nicht wg. "bound exception"

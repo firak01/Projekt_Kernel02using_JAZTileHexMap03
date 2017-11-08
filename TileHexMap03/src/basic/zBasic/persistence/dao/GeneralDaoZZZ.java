@@ -43,6 +43,10 @@ public abstract class GeneralDaoZZZ<T> extends GeneralDAO<T> implements IObjectZ
 	private Session session = null;
 	
 	//##### KONSTRUKTOREN
+	/*Merke: Für die hieraus erbenden(!!!) Klassen gilt:
+	 * WICHTIG: Der in angegebenen Name der Entity-Klasse wird von den GeneralDAO - Klassen verwendet.
+	 *                Daher unbedingt beim Einsatz von Vererbung korrekt anpassen.
+	 *                Z.B. Will man mit dem Dao eigentlicht TileDefaulttexte behandel und gibt hier Defaulttext an, werden sowohl die TileDefaulttexte als auch die Defaulttexte mit .findLazyAll() gefunden. */
 	public GeneralDaoZZZ() throws ExceptionZZZ{		
 		this(null, "init");
 	}

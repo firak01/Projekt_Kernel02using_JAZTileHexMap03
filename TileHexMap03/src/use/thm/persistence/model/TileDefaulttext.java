@@ -43,10 +43,12 @@ import basic.zBasic.util.genericEnum.ObjectTestMappedValue.EnumSetInnerMappedTes
 //@Inheritance(strategy =  InheritanceType.JOINED )//ZIEL: Nur bestimmte Entiteis in einer eigenen Klasse //
 // InheritanceType.SINGLE_TABLE) //Hiermit werden alle Datensätze der Vererbungshierarchieklassen in einer Tabelle zusammengafasst und nur anhan ddes Discriminator Wertes unterschieden
 //@DiscriminatorValue("xxx")  //Wird es wg. der Vererbung(!) von HEXCell zu AreaType immer geben. Ohne Annotation ist das DTYPE und der wert ist gleich dem Klassennamen.
-@Inheritance(strategy =  InheritanceType.TABLE_PER_CLASS) //Ziel: Jedes Entity der Vererbungshierarchie in einer eigenen Tabelle 
-@Access(AccessType.PROPERTY) //20171019: damit soll dann enum eingebunden werden, automatisch...
-@Table(name="k_defaulttext_tile") //Eine eigene Tabelle notwendig, das Thiskey eindeutig sein soll.
-public class TileDefaulttext<IEnumDefaulttext>  extends Defaulttext  implements IOptimisticLocking{
+
+//Das braucht in der erbenden Klassenicht angegeben zu werden.
+//@Inheritance(strategy =  InheritanceType.TABLE_PER_CLASS) //Ziel: Jedes Entity der Vererbungshierarchie in einer eigenen Tabelle 
+@Access(AccessType.PROPERTY) 
+@Table(name="k_defaulttext_tile") //Eine eigene Tabelle notwendig, da Thiskey eindeutig sein soll.
+public class TileDefaulttext<IEnumTileDefaulttext> extends Defaulttext  implements IOptimisticLocking{
 		
 	public TileDefaulttext(){
 		super();

@@ -18,7 +18,6 @@ import javax.persistence.Table;
 import javax.persistence.TableGenerator;
 import javax.persistence.Transient;
 
-
 import use.thm.persistence.interfaces.enums.IEnumSetDefaulttextTHM;
 import basic.persistence.model.IFieldDescription;
 import basic.persistence.model.IKeyEnum;
@@ -42,12 +41,16 @@ import basic.zBasic.util.genericEnum.ObjectTestMappedValue.EnumSetInnerMappedTes
 
 @Entity
 @Access(AccessType.PROPERTY) 
+
+//Das muss in der Elternklasse angegeben werden
 @Inheritance(strategy =  InheritanceType.TABLE_PER_CLASS) //Ziel: Jedes Entity der Vererbungshierarchie in einer eigenen Tabelle  Es ist eine eigene Tabelle notwendig, da Thiskey eindeutig sein soll.
+
 // InheritanceType.SINGLE_TABLE) //Hiermit werden alle Datensätze der Vererbungshierarchieklassen in einer Tabelle zusammengafasst und nur anhan des Discriminator Wertes unterschieden
 //@Inheritance(strategy =  InheritanceType.JOINED )//ZIEL: Nur bestimmte Entiteis in einer eigenen Klasse //
 //@DiscriminatorColumn(name="KEYTYPE", discriminatorType = DiscriminatorType.STRING) //Bei InheritanceType.SINGLE_TABLE) gilt: Voraussetzung für DiscriminatorValue in der AreaCell-Klasse. //Wird es wg. der Vererbung von HEXCell zu AreaType immer geben. Ohne Annotation ist das DTYPE und der wert ist gleich dem Klassennamen. ////Bei InheritanceType.TABLE_PER_CLASS gilt, es darf keinen Discriminator geben ...
+
 @Table(name="k_defaulttext")
-public class Defaulttext  extends Key implements IOptimisticLocking{
+public class Defaulttext<IEnumDefaulttext>  extends Key implements IOptimisticLocking{
 	private static final long serialVersionUID = -8400471235691822606L; //auch wenn serialized nicht implementiert wird (sondern in der elternklasse), muss der staische Schlüssel hier eingetragen werden. 
 	
 	//Entsprechend der internen Enumeration. 
@@ -156,6 +159,7 @@ public class Defaulttext  extends Key implements IOptimisticLocking{
     public Class getThiskeyEnumClass() {
 	      return Defaulttext.getThiskeyEnumClassStatic();
 	   }
+	 
 	
     //### Statische Methode (um einfacher darauf zugreifen zu können)
     public static Class getThiskeyEnumClassStatic(){
@@ -169,11 +173,11 @@ public class Defaulttext  extends Key implements IOptimisticLocking{
 	//#######################################################
 	public enum EnumDefaulttext implements IEnumSetDefaulttextTHM,  IThiskeyProviderZZZ<Long>{//Folgendes geht nicht, da alle Enums schon von einer Java BasisKlasse erben... extends EnumSetMappedBaseZZZ{
 		
-   	 @IFieldDescription(description = "TXT01 TEXTVALUES") 
-   	T01(1,"TXT01","TEXT 01","A test text 01."),
+   	 @IFieldDescription(description = "DTXT01 TEXTVALUES") 
+   	T01(1,"DTXT01","DTEXT 01","A test dtext 01."),
    	
-   	 @IFieldDescription(description = "TXT02 TEXTVALUES") 
-   	T02(2,"TXT02","TEXT 02", "A test text 02.");
+   	 @IFieldDescription(description = "DTXT02 TEXTVALUES") 
+   	T02(2,"DTXT02","DTEXT 02", "A test dtext 02.");
    	   	
    private Long lKey;
    private String sLongtext, sShorttext, sDescription;

@@ -9,9 +9,11 @@ import org.hibernate.Query;
 import org.hibernate.Session;
 
 import use.thm.persistence.hibernate.HibernateContextProviderSingletonTHM;
+import use.thm.persistence.interfaces.enums.IEnumSetDefaulttextTHM;
 import use.thm.persistence.model.AreaCell;
 import use.thm.persistence.model.Key;
 import use.thm.persistence.model.Defaulttext;
+import use.thm.persistence.model.TextDefaulttext;
 import use.thm.persistence.model.TileDefaulttext;
 import use.thm.persistence.model.Troop;
 import use.thm.persistence.model.TroopArmy;
@@ -101,32 +103,34 @@ public class DefaulttextDao<T> extends KeyDao<T> {
 	
 	
 	//####### EIGENE METHODEN ###########
-	//....
+	//....	Ohje dies generisch machen...
 	public boolean deleteAll(){
-		boolean bReturn = false;
-		main:{
-			//Nun alle holen
-			ArrayList<Defaulttext> listaTileDefaulttext = (ArrayList<Defaulttext>) this.findLazyAll();
-			
-			for(Defaulttext text : listaTileDefaulttext){
-				System.out.println("Lösche: TileDefaulttext.toString(): " + text.toString());
-				String sDescriptionStored = text.getDescription();
-				System.out.println("Description (gespeichert): " + sDescriptionStored);	
+	boolean bReturn = false;
+	main:{
+		//Nun alle holen
+		ArrayList<Defaulttext> listaText = (ArrayList<Defaulttext>) this.findLazyAll();
+		
+		for(Defaulttext objText : listaText){
+			System.out.println("Lösche: Texttext.toString(): " + objText.toString());
+			String sDescriptionStored = objText.getDescription();
+			System.out.println("Description (gespeichert): " + sDescriptionStored);	
 
-				this.delete(text);
-			}//End for
-			bReturn = true;
-			
-		}//End main
-		return bReturn;				
-	}
-	
-	public void delete(Defaulttext text) {
-		main:{
-			if(text==null)break main;
-			super.delete((T) text);
-		}//end main
-	}
+			this.delete(objText);
+		}//End for
+		bReturn = true;
+		
+	}//End main
+	return bReturn;				
+}
+
+public boolean delete(Defaulttext text) {
+	boolean bReturn = false;
+	main:{
+		if(text==null)break main;
+		bReturn = super.delete((T) text);
+	}//end main
+	return bReturn;
+}
 	
 	//####### EIGENE METHODEN ###########
 	//....

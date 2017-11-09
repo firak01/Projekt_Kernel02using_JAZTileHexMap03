@@ -25,6 +25,7 @@ import use.thm.persistence.model.AreaCell;
 import use.thm.persistence.model.AreaCellLand;
 import use.thm.persistence.model.AreaCellOcean;
 import use.thm.persistence.model.HexCell;
+import use.thm.persistence.model.TextDefaulttext;
 import use.thm.persistence.model.Tile;
 import use.thm.persistence.model.Defaulttext;
 import use.thm.persistence.model.TileDefaulttext;
@@ -95,8 +96,11 @@ public class HibernateContextProviderSingletonTHM extends HibernateContextProvid
 		bReturn = addConfigurationAnnotatedClass(cfg, TroopFleet.class);
 		
 		bReturn = addConfigurationAnnotatedClass(cfg, TileDefaulttextValue.class);//wird aber nicht genutz. Nur Demonstrator
+		
+		bReturn = addConfigurationAnnotatedClass(cfg, Defaulttext.class); //Darf kein Entitiy sein, oder? 
+		bReturn = addConfigurationAnnotatedClass(cfg, TextDefaulttext.class);
 		bReturn = addConfigurationAnnotatedClass(cfg, TileDefaulttext.class);
-		bReturn = addConfigurationAnnotatedClass(cfg, Defaulttext.class);
+		
 		
 		bReturn = addConfigurationAnnotatedClass(cfg, TroopArmyVariant.class);
 		

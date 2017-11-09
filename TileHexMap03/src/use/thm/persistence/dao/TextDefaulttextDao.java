@@ -12,6 +12,7 @@ import use.thm.persistence.hibernate.HibernateContextProviderSingletonTHM;
 import use.thm.persistence.model.AreaCell;
 import use.thm.persistence.model.Key;
 import use.thm.persistence.model.Defaulttext;
+import use.thm.persistence.model.TextDefaulttext;
 import use.thm.persistence.model.TileDefaulttext;
 import use.thm.persistence.model.Troop;
 import use.thm.persistence.model.TroopArmy;
@@ -20,28 +21,28 @@ import basic.zBasic.persistence.dao.GeneralDaoZZZ;
 import basic.zBasic.util.datatype.enums.EnumSetDefaulttextUtilZZZ;
 import basic.zBasic.util.datatype.enums.EnumSetInnerUtilZZZ;
 import basic.zBasic.util.datatype.enums.EnumSetInnerUtilZZZ.ThiskeyEnumMappingExceptionZZZ;
-public class TileDefaulttextDao<T> extends DefaulttextDao<T> {
+public class TextDefaulttextDao<T> extends DefaulttextDao<T> {
 	private static final long serialVersionUID = 1L;
 
 	/* Constructor
 	 * WICHTIG: Der hier angegebenen Name der Entity-Klasse wird von den GeneralDAO - Klassen verwendet.
 	 *                Daher unbedingt beim Einsatz von Vererbung korrekt anpassen.
 	 *                Z.B. Will man mit dem Dao eigentlicht TileDefaulttexte behandel und gibt hier Defaulttext an, werden sowohl die TileDefaulttexte als auch die Defaulttexte mit .findLazyAll() gefunden. */
-	public TileDefaulttextDao() throws ExceptionZZZ{
+	public TextDefaulttextDao() throws ExceptionZZZ{
 		super();
-		this.installLoger(TileDefaulttext.class);//Durch das Installieren des Loggers mit der korrekten Klasse wird GeneralDao.getT() erst korrekt ermöglicht.
+		this.installLoger(TextDefaulttext.class);//Durch das Installieren des Loggers mit der korrekten Klasse wird GeneralDao.getT() erst korrekt ermöglicht.
 	}
-	public TileDefaulttextDao(HibernateContextProviderSingletonTHM objContextHibernate) throws ExceptionZZZ{
+	public TextDefaulttextDao(HibernateContextProviderSingletonTHM objContextHibernate) throws ExceptionZZZ{
 		super(objContextHibernate);		
-		this.installLoger(TileDefaulttext.class);//Durch das Installieren des Loggers mit der korrekten Klasse wird GeneralDao.getT() erst korrekt ermöglicht.
+		this.installLoger(TextDefaulttext.class);//Durch das Installieren des Loggers mit der korrekten Klasse wird GeneralDao.getT() erst korrekt ermöglicht.
 	}
-	public TileDefaulttextDao(HibernateContextProviderSingletonTHM objContextHibernate, String sFlagControl) throws ExceptionZZZ{
+	public TextDefaulttextDao(HibernateContextProviderSingletonTHM objContextHibernate, String sFlagControl) throws ExceptionZZZ{
 		super(objContextHibernate, sFlagControl);
-		this.installLoger(TileDefaulttext.class);//Durch das Installieren des Loggers mit der korrekten Klasse wird GeneralDao.getT() erst korrekt ermöglicht.
+		this.installLoger(TextDefaulttext.class);//Durch das Installieren des Loggers mit der korrekten Klasse wird GeneralDao.getT() erst korrekt ermöglicht.
 	}
-	public TileDefaulttextDao(HibernateContextProviderSingletonTHM objContextHibernate, String[] saFlagControl) throws ExceptionZZZ{
+	public TextDefaulttextDao(HibernateContextProviderSingletonTHM objContextHibernate, String[] saFlagControl) throws ExceptionZZZ{
 		super(objContextHibernate, saFlagControl);
-		this.installLoger(TileDefaulttext.class);//Durch das Installieren des Loggers mit der korrekten Klasse wird GeneralDao.getT() erst korrekt ermöglicht.
+		this.installLoger(TextDefaulttext.class);//Durch das Installieren des Loggers mit der korrekten Klasse wird GeneralDao.getT() erst korrekt ermöglicht.
 	}
 	
 	//Den Namen des Aktuellen Objekts kann ich nun auslesen.
@@ -103,9 +104,9 @@ public class TileDefaulttextDao<T> extends DefaulttextDao<T> {
 	boolean bReturn = false;
 	main:{
 		//Nun alle holen
-		ArrayList<TileDefaulttext> listaText = (ArrayList<TileDefaulttext>) this.findLazyAll();
+		ArrayList<TextDefaulttext> listaText = (ArrayList<TextDefaulttext>) this.findLazyAll();
 		
-		for(Defaulttext objText : listaText){
+		for(TextDefaulttext objText : listaText){
 			System.out.println("Lösche: Texttext.toString(): " + objText.toString());
 			String sDescriptionStored = objText.getDescription();
 			System.out.println("Description (gespeichert): " + sDescriptionStored);	
@@ -118,7 +119,7 @@ public class TileDefaulttextDao<T> extends DefaulttextDao<T> {
 	return bReturn;				
 }
 
-public boolean delete(TileDefaulttext text) {
+public boolean delete(TextDefaulttext text) {
 	boolean bReturn = false;
 	main:{
 		if(text==null)break main;

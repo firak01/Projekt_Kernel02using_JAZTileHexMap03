@@ -42,7 +42,9 @@
 		
 		<!-- FGL: 20171019 - Mapping für die Schlüsselwerttabellen -->
 		<mapping class="use.thm.persistence.model.TileDefaulttextValue"></mapping><!-- wird aber nicht genutzt, nur demonstrator -->
+		<mapping class="use.thm.persistence.model.Defaulttext"></mapping>
 		<mapping class="use.thm.persistence.model.TileDefaulttext"></mapping>
+		<mapping class="use.thm.persistence.model.TextDefaulttext"></mapping>
 
 		<!-- FGL: So werden die Klassen für das Mapping herangezogen, aber: Dabei 
 			werden Annotations verwendet. -->

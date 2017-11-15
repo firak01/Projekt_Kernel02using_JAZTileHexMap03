@@ -41,6 +41,10 @@ public class HibernateUtilByAnnotation implements Serializable{
 			
 			jndiContext = (Context) new InitialContext();
 			
+			//FGL TODO GOON 20171115: Erstelle für die WebService Applikation eine Session Factory per JNDI
+			//<!-- FGL 20171115. Merke: Laut Doku muss für eine Web Applikation das sqlite-jdbc-(version).jar in das Verzeichnis (TOMCAT_HOME)/lib gelegt werden (, um JNDI -also 'java naming und directory" - nutzen zu können). 
+			//                          Da bei 'JNI' -also 'java native ...'- keine Applikation mehr als 1x vorhanden sein darf bekommt man in der Maven 2 Konfiguration (pom.xml) ohne die "provided" Angabe angeblich die Fehlermeldung 'no SQLite library found'. -->
+			
 			sessionFactory = (SessionFactory) jndiContext.lookup("hibernate.session-factory.ServicePortal");
 			
 //			sessionFactory = (SessionFactory) jndiContext.lookup("hibernate.session-factory.serviceportal_usage");

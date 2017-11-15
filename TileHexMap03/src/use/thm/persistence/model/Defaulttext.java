@@ -60,7 +60,7 @@ public class Defaulttext<IEnumDefaulttext>  extends Key implements IOptimisticLo
 	
 	public Defaulttext(){
 		super();
-		this.setKeyType("DEFAULTTEXT"); //TODO: HIER EINE ENUMERATION MACHEN ÜBER DIE VERSCHIEDENEN SCHLÜSSELWERTE?
+		this.setKeyType("DEFAULTTEXT"); //TODO: HIER EINE ENUMERATION MACHEN ÜBER DIE VERSCHIEDENEN TypeText - SCHLÜSSELWERTE?
 	}
 	public Defaulttext(String sKeyType){
 		super();

@@ -134,65 +134,55 @@ public boolean delete(Defaulttext text) {
 	
 	//####### EIGENE METHODEN ###########
 	//....
-		public Key searchKey(String sKeyType, Long lngThiskey){
-			Key objReturn = null;
-			
-//			select mate
-//			from Cat as cat
-//			    inner join cat.mate as mate
-			    
-			//1. Beispiel: wenn man aber die WHERE Parameter so als String reinprogrammiert, ist das anfällig für SQL injection.
-			//String sHql = "SELECT id from Tile as tableTile";								
-			//listReturn = this.findByHQL(sHql, 0, 0);//start ist indexwert also 0 = erster Wert, Danach folgt maximale Anzahl von Objekten.
-			
-			//2. Beispiel: Etwas sicherer ist es die Parameter mit Platzhaltern zu füllen
-			Session session = this.getSession();
-			//liefert die ID Spalte als Integer zurück, also nicht das TileId Objekt...  Query query = session.createQuery("SELECT id from Tile as tableTile");
-			//                                                       wird nicht gefunden Query query = session.createQuery("SELECT TileIdObject from Tile as tableTile");
-			
-			//Also über die HEXCELL gehen...
-			//JA, das liefert die HEXCELL-Objekte zurück
-			//Query query = session.createQuery("SELECT objHexCell from Tile as tableTile");
-							
-			//JA, das liefert die CellId-Objekte der Hexcell zurück
-			//Query query = session.createQuery("SELECT objHexCell.id from Tile as tableTile");
-			
-			//JA, das liefert die Alias Map-Werte zurück
-			//Query query = session.createQuery("SELECT objHexCell.id.mapAlias from Tile as tableTile");
-			
-			//DARAUS VERSUCHEN DIE ABFRAGE ZU BAUEN....
-			//Query query = session.createQuery("SELECT objHexCell from Tile as tableTile where tableTile.objHexCell.Id.MapAlias IN (:mapAlias)");
-			
-			
-			/* Weiteres Beispiel aus TroopDao...	
-			//Query query = session.createQuery("from TroopArmy as tableTile where tableTile.objHexCell.id.mapAlias = :mapAlias AND tableTile.objHexCell.id.mapX = :mapX AND tableTile.objHexCell.id.mapY = :mapY");
-			Query query = session.createQuery("from TroopArmy as tableTile where tableTile.objHexCell.id.mapAlias = :mapAlias AND tableTile.objHexCell.id.mapX = :mapX AND tableTile.objHexCell.id.mapY = :mapY");
-			
-			query.setString("mapAlias", sMapAlias);
-			query.setString("mapX", sX);
-			query.setString("mapY", sY);
-			 */
-				
-			//JA, das funktioniert, andere Beispiele
-			//Query query = session.createQuery("from Tile as tableTile where tableTile.objHexCell.id.mapAlias = :mapAlias");
-			//Query query = session.createQuery("from Tile as tableTile where tableTile.objHexCell.id.mapAlias = :mapAlias AND tableTile.objHexCell.id.mapX = :mapX AND tableTile.objHexCell.id.mapY = :mapY");
-			//Query query = session.createQuery("from TroopArmy as tableTile where tableTile.objHexCell.id.mapAlias = :mapAlias AND tableTile.objHexCell.id.mapX = :mapX AND tableTile.objHexCell.id.mapY = :mapY");
-			
-			//Query query = session.createQuery("from Tile as tableTile where tableTile.tileIdObject.uniquename = :uniqueName");//Merke: In TroopArmy ist der uniquename transient. Also kommt man über das Objekt daran.
-			//Query query = session.createQuery("from Key as tableKey where tableKey.keyType = :keyType and tableKey.thiskey = :thiskey");
-			
-			//Query query = session.createQuery("from TileDefaulttext as tableKey where tableKey.thiskey = :thiskey");		
-			String sTableNameHql = this.getDaoTableName();
-			Query query = session.createQuery("from " + sTableNameHql + " as tableKey where tableKey.thiskey = :thiskey and tableKey.keyType = :keyType ");
-			query.setString("keyType", sKeyType);
-			query.setLong("thiskey", lngThiskey);
-
-			
-			Object objResult = query.uniqueResult();//für einen einzelwert, darum ist es wichtig, das der uniquename beim Einfügen eines Spielsteins auch wirklich unique ist... Bei 2 gefundenen Werten kammt es hier zum begründeten Fehler. 		
-			//listReturn = query.list(); //Für meherer Werte
-			
-			objReturn = (Key) objResult;
-			return objReturn;
-		}
+//		public Key searchKey(String sKeyType, Long lngThiskey){
+//			Key objReturn = null;
+//			main:{
+//			Session session = this.getSession();	//Versuch eine neue Session zu bekommen. Merke: Die Session wird hier nicht gespeichert! Wg. 1 Transaktion ==> 1 Session			
+//			if(session == null) break main;			
+//				
+//			session.getTransaction().begin();//Ein zu persistierendes Objekt - eine Transaction, auch wenn mehrere in einer Transaction abzuhandeln wären, aber besser um Fehler abfangen zu können.
+//
+////			select mate
+////			from Cat as cat
+////			    inner join cat.mate as mate
+//			    
+//			//1. Beispiel: wenn man aber die WHERE Parameter so als String reinprogrammiert, ist das anfällig für SQL injection.
+//			//String sHql = "SELECT id from Tile as tableTile";								
+//			//listReturn = this.findByHQL(sHql, 0, 0);//start ist indexwert also 0 = erster Wert, Danach folgt maximale Anzahl von Objekten.
+//			
+//			//2. Beispiel: Etwas sicherer ist es die Parameter mit Platzhaltern zu füllen
+//			//Session session = this.getSession();
+//			//liefert die ID Spalte als Integer zurück, also nicht das TileId Objekt...  Query query = session.createQuery("SELECT id from Tile as tableTile");
+//			//                                                       wird nicht gefunden Query query = session.createQuery("SELECT TileIdObject from Tile as tableTile");
+//						
+//			//Beispiele:
+//			//Das liefert die HEXCELL-Objekte zurück
+//			//Query query = session.createQuery("SELECT objHexCell from Tile as tableTile");
+//							
+//			//Liefert die CellId-Objekte der Hexcell zurück
+//			//Query query = session.createQuery("SELECT objHexCell.id from Tile as tableTile");
+//			
+//			//Liefert die Alias Map-Werte zurück
+//			//Query query = session.createQuery("SELECT objHexCell.id.mapAlias from Tile as tableTile");
+//			
+//			//Abfrage mit Parametern
+//			//Query query = session.createQuery("SELECT objHexCell from Tile as tableTile where tableTile.objHexCell.Id.MapAlias IN (:mapAlias)");	
+//			//Query query = session.createQuery("from TroopArmy as tableTile where tableTile.objHexCell.id.mapAlias = :mapAlias AND tableTile.objHexCell.id.mapX = :mapX AND tableTile.objHexCell.id.mapY = :mapY");
+////			query.setString("mapAlias", sMapAlias);
+////			query.setString("mapX", sX);
+////			query.setString("mapY", sY);
+//			 						
+//			String sTableNameHql = this.getDaoTableName();
+//			Query query = session.createQuery("from " + sTableNameHql + " as tableKey where tableKey.thiskey = :thiskey and tableKey.keyType = :keyType ");
+//			query.setString("keyType", sKeyType);
+//			query.setLong("thiskey", lngThiskey);
+//			
+//			Object objResult = query.uniqueResult();//für einen einzelwert, darum ist es wichtig, das der uniquename beim Einfügen eines Spielsteins auch wirklich unique ist... Bei 2 gefundenen Werten kammt es hier zum begründeten Fehler. 		
+//			//listReturn = query.list(); //Für meherer Werte
+//			
+//			objReturn = (Key) objResult;
+//			}//end main:
+//			return objReturn;
+//		}
 			
 }//end class

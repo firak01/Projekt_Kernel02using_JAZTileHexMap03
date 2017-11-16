@@ -45,6 +45,8 @@ public class TryoutGeneralDaoZZZ {
 				
 				//2. Versuch: In der Hibernate Configuration Erstellung per Java definiert
 				objContextHibernate.getConfiguration().setProperty("hibernate.session_factory_name", "hibernate.session-factory.ServicePortal");				
+				objContextHibernate.getConfiguration().setProperty("hibernate.connection.datasource",  "java:/comp/env/jdbc/ServicePortal");
+				
 				
 				//Darin wird intern einen neue Configuration verwendet.
 				//SessionFactory sf = HibernateUtilByAnnotation.getHibernateUtil().getSessionFactory();

@@ -7,7 +7,7 @@
 		<!-- Im Code wird die Konfiguration aber durch Java-Befehle erstellt und diese hier uebersteuert -->     
 		<!--  Exkurs 20171103: Versuche über den nachfolgenden Namen eine SessionFactory zu erzeugen -->  
 <!--        <property name="hibernate.session_factory_name">hibernate.session-factory.ServicePortal</property> -->
-		<property name="hibernate.session_factory_name">tryout.zBasic.persistence.hibernate.HibernateSessionFactoryTomcatFactory</property>
+<!-- 		damit funktioniert es, aber auch ohne das Fragezeichen, ja funktioniert auch ohne diese Angabe<property name="hibernate.session_factory_name">tryout.zBasic.persistence.hibernate.HibernateSessionFactoryTomcatFactory</property> -->
        
 		<!-- Echo all SQL to stdout -->
 		<property name="show_sql">true</property>

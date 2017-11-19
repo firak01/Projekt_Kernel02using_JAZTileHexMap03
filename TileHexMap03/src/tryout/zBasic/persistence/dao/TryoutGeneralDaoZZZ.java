@@ -29,9 +29,7 @@ public class TryoutGeneralDaoZZZ {
 				
 				objContextHibernate = HibernateContextProviderSingletonTHM.getInstance(objKernel);					
 				objContextHibernate.getConfiguration().setProperty("hibernate.hbm2ddl.auto", "update");  //! Jetzt erst wird jede Tabelle über den Anwendungsstart hinaus gespeichert UND auch wiedergeholt.				
-								
-				Session session = null;
-
+												
 				//############################
 				//MERKE: DAS IST DER WEG wei bisher die SessionFactory geholt wird
 				 //ServiceRegistry sr = new ServiceRegistryBuilder().applySettings(cfg.getProperties()).buildServiceRegistry();		    
@@ -56,7 +54,7 @@ public class TryoutGeneralDaoZZZ {
 				SessionFactory sf = (SessionFactory) jndiContext.lookup("hibernate.session-factory.ServicePortal");
 								
 				//TODO GOON 20171103: ABER DAS SCHEINT NUR ZU FUNKTIONIERN, WENN DIE ANWENDUNG IN EINEM SERVER (z.B. Tomcat läuft).
-			      
+				Session session = null;
 				if(sf!=null){
 					session = sf.openSession();
 				}else{

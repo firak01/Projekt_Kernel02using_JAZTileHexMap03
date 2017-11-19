@@ -98,6 +98,18 @@ public abstract class HibernateContextProviderZZZ  extends KernelUseObjectZZZ im
 		this.objSessionFactory = objSessionFactory;
 	}
 	
+	/*
+	 * Notwendig, um z.B. bei der Nutzung von JNDI (in Webservices) nicht jedes mal eine neue SessionFactory zu erstellen 
+	 * - per eigens zur Verfügung gestellter SessionFactory (Klasse HibernateSessionFactoryTomcatFactory) 
+	 */
+	public boolean hasSessionFactory(){
+		if(this.objSessionFactory==null){
+			return false;
+		}else{
+			return true;
+		}
+	}
+	
 	@SuppressWarnings("unchecked")
 	public EntityManager getEntityManager(String sSchemaName)throws ExceptionZZZ{
 		EntityManager objReturn = null;

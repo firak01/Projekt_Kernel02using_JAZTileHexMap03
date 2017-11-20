@@ -91,11 +91,35 @@ public abstract class HibernateContextProviderZZZ  extends KernelUseObjectZZZ im
 	 * @param objSessionFactory
 	 */
 	public void setSessionFactory(SessionFactoryImpl objSessionFactory){
-		if(this.objSessionFactory!=null){			
-			this.setSession(null);  //session darf nicht gespeichert werden 1 Transaktion ==> 1 Session 	
-			this.objSessionFactory.close(); //Die alte SessionFactory schliessen.
+		if(this.objSessionFactory!=null){						
+			if(this.objSessionFactory.isClosed()){
+			}else{
+				
+				//Sicherheitshalber alle bestehenden Sessions schliessen
+				Session ss = this.objSessionFactory.getCurrentSession();
+				if(ss!=null){
+					if(ss.isOpen()){
+						ss.clear();
+						ss.close();					
+					}
+				}
+				
+				
+				if(this.objSession!=null){
+					if(this.objSession.isOpen()){						
+						this.objSession.clear();
+						this.objSession.close();
+					}
+				}
+				this.setSession(null);  //session darf nicht gespeichert werden 1 Transaktion ==> 1 Session 
+								
+				this.objSessionFactory.close(); //Die alte SessionFactory schliessen.
+			}
 		}
+		
+		//Die neue SessionFactory setzen.
 		this.objSessionFactory = objSessionFactory;
+		this.objSession = this.objSessionFactory.openSession(); //sonst wird das xyzDaoZZZ gezwungen weiter in den Elternklassen nach einer getSession() Methode zu suchen und dann wird etwas mit HibernateAnotationUtility herangezogen. 
 	}
 	
 	/*
@@ -108,6 +132,24 @@ public abstract class HibernateContextProviderZZZ  extends KernelUseObjectZZZ im
 		}else{
 			return true;
 		}
+	}
+	
+	/*
+	 * Notwendig, um z.B. bei der Nutzung von JNDI (in Webservices) nicht jedes mal eine neue SessionFactory zu erstellen 
+	 * - per eigens zur Verfügung gestellter SessionFactory (Klasse HibernateSessionFactoryTomcatFactory) 
+	 */
+	public boolean hasSessionFactory_open(){
+		boolean bReturn = false;
+		main:{
+			boolean bErg = this.hasSessionFactory();
+			if(!bErg) break main;
+			
+			bErg = this.objSessionFactory.isClosed(); 
+			if(bErg) break main;
+			
+			bReturn = true;
+		}
+		return bReturn;
 	}
 	
 	@SuppressWarnings("unchecked")

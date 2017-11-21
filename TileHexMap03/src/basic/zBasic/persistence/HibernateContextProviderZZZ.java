@@ -85,7 +85,7 @@ public abstract class HibernateContextProviderZZZ  extends KernelUseObjectZZZ im
 		}		
 		return objReturn;
 	}
-	/**Das wird hautpsächlich dafür benutz, um eine neue SessionFactory zu erzwingen, fall sich die Hibernate Configuration geändert hat.
+	/**Das wird auch dafür benutzt, um eine neue SessionFactory zu erzwingen, fall sich die Hibernate Configuration geändert hat.
 	 * Z.B. wenn die Datenbank nicht mehr neu aufgebaut werden soll, sondern für Folgeabfragen weiterverwendet werden soll.
 	 * In diesem Fall setzt man die SessionFactory auf NULL.
 	 * 
@@ -123,7 +123,9 @@ public abstract class HibernateContextProviderZZZ  extends KernelUseObjectZZZ im
 		
 		//Die neue SessionFactory setzen.
 		this.objSessionFactory = objSessionFactory;
-		this.objSession = this.objSessionFactory.openSession(); //sonst wird das xyzDaoZZZ gezwungen weiter in den Elternklassen nach einer getSession() Methode zu suchen und dann wird etwas mit HibernateAnotationUtility herangezogen. 
+		if(this.objSessionFactory!=null){
+			this.objSession = this.objSessionFactory.openSession(); //Explizit eine neue Session anbieten. Sonst wird das xyzDaoZZZ gezwungen weiter in den Elternklassen nach einer getSession() Methode zu suchen und dann wird etwas mit HibernateUtilityByAnnotiation herangezogen. Der darin verwendete JNDI-String ist aber nicht vorhanden.
+		}
 	}
 	
 	/*

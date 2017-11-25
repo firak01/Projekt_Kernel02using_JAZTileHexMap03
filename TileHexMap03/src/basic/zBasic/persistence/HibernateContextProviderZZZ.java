@@ -287,12 +287,12 @@ public abstract class HibernateContextProviderZZZ  extends KernelUseObjectZZZ im
 			//4. Merke, dass scheinbar nicht immer alle Events aufgerufen werden. Ich habe z.B. noch keine PERSIST - Event aufrufen können, wenn ich .save() mache.
 			
 	
-			//###########  INTERCEPTOR im jeweiligen Projekt / den jeweiligen HibernateContextProvider + KernelKeyZZZ zur Verfügung zu stellen. 
+			//###########  A) INTERCEPTOR im jeweiligen Projekt / den jeweiligen HibernateContextProvider + KernelKeyZZZ zur Verfügung zu stellen. 
 			objReturn = this.declareSessionHibernateIntercepted((SessionFactoryImpl) sf);
-			//######################
 
-			//also das ist ohne SessionBuilder ....  
-			if(objReturn==null) 	objReturn = sf.openSession();					        			
+			//###########  B) also wenn kein Session mit Interceptro durch den SessionBuilder gebaut wurde ....  
+			if(objReturn==null) objReturn = sf.openSession();					        			
+			
 			this.objSession = objReturn; //session wird zwar gespeichert, aber nicht dauerhaft. Darf nicht gespeichert werden 1 Transaktion ==> 1 Session. Wird daher immer neu geholt. 
 		return objReturn;
 	}
@@ -301,6 +301,7 @@ public abstract class HibernateContextProviderZZZ  extends KernelUseObjectZZZ im
 	public void setSession(Session objSession){
 		if(this.objSession!=null){
 			if(this.objSession.isOpen()){
+				this.objSession.clear();//Die Reihenfolge ist wichtig: Erst clear(), dann close()
 				this.objSession.close();
 			}
 		}

@@ -250,7 +250,6 @@ public class TileTHM extends JPanel implements IMapPositionableTHM, IBackendPers
 		return this.iTileSideLength;
 	}
 
-	@Override
 	public String getUniquename() {
 		//return this.sUniquename;
 		return (String) this.getDto().get(ITileDtoAttribute.UNIQUENAME);
@@ -260,7 +259,6 @@ public class TileTHM extends JPanel implements IMapPositionableTHM, IBackendPers
 		this.getDto().set(ITileDtoAttribute.UNIQUENAME, sUniquename);
 	}
 
-	@Override
 	public GenericDTO<ITileDtoAttribute> getDto() {
 		if(this.objDto==null){
 			//this.objDto =GenericDTO.getInstance(ITileDtoAttribute.class); //ITileDtoAttribute bestimmt also welche Properties in der DTO-Klasse gespeicehrt sind.
@@ -289,7 +287,6 @@ public class TileTHM extends JPanel implements IMapPositionableTHM, IBackendPers
 //	}
 	
 	@SuppressWarnings({ "unchecked", "rawtypes" })
-	@Override
 	public void setDto(GenericDTO objDto) {
 		this.objDto = objDto;
 	}

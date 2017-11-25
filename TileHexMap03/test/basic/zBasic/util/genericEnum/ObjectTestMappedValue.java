@@ -109,7 +109,6 @@ public class ObjectTestMappedValue extends Key  implements Serializable, IOptimi
         return this.name;
     }
 
-    @Override
     public int getIndex() {
     	return ordinal();
     }
@@ -128,7 +127,6 @@ public class ObjectTestMappedValue extends Key  implements Serializable, IOptimi
         throw new IllegalArgumentException("Not a correct abbreviation: " + s);
     }
 
-    @Override
     public String getDescription(){
     	return this.name;
     }
@@ -171,12 +169,10 @@ public class ObjectTestMappedValue extends Key  implements Serializable, IOptimi
     	  return set;
     	}
 
-    @Override
     public int getPosition() {
     	return getIndex() + 1;
     }
 
-	@Override
 	public Long getThiskey() {
 		return this.key;
 	}

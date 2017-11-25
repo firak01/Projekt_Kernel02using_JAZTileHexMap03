@@ -16,7 +16,6 @@ public class GeneralDaoFacadeZZZ implements IFacadeDtoZZZ{
 		this.objContextHibernate = objContextHibernate;
 	}
 	
-	@Override
 	public FacadeResultDtoZZZ getFacadeResult() {
 		if(this.objFacadeResult==null){
 			this.objFacadeResult = new FacadeResultDtoZZZ();

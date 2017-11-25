@@ -99,8 +99,7 @@ public class TileDefaulttext<IEnumTileDefaulttext> extends Defaulttext  implemen
 
   //##################################################
   //#### Folgende Methoden bring Enumeration von Hause aus mit:
-   
-   @Override
+
    public String getName(){
 	   return super.name();
    }
@@ -110,7 +109,6 @@ public class TileDefaulttext<IEnumTileDefaulttext> extends Defaulttext  implemen
        return this.sShorttext;
    }
 
-   @Override
    public int getIndex() {
    	return ordinal();
    }
@@ -131,13 +129,11 @@ public class TileDefaulttext<IEnumTileDefaulttext> extends Defaulttext  implemen
    }
    
    //#### Methode aus IKeyProviderZZZ
-   @Override
 	public Long getThiskey() {
 		return this.lKey;
 	}
 
    //### Folgende Methoden sind zum komfortablen arbeiten gedacht.
-   @Override
    public int getPosition() {
    	return getIndex() + 1;
    }

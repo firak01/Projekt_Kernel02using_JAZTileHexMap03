@@ -58,15 +58,11 @@ public class TroopArmyListener implements PersistEventListener, PreInsertEventLi
 		System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": Nach dem Einsetzen einer Armee.");
 	}
 
-
-	@Override
 	public boolean onPreUpdate(PreUpdateEvent event) {
 		System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": onPreUpdate");
 		return true;
 	}
 
-
-	@Override
 	public boolean onPreInsert(PreInsertEvent event) {
 		System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": onPreInsert");
 		return true;
@@ -74,7 +70,6 @@ public class TroopArmyListener implements PersistEventListener, PreInsertEventLi
 
 
 	//PreLoad-Klappt
-	@Override
 	public void onPreLoad(PreLoadEvent event) {
 		System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": onPreLoad");
 		

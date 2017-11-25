@@ -48,7 +48,6 @@ public class PreInsertListenerTHM implements PreInsertEventListener,IKernelUserZ
 	
 	private VetoFlag4ListenerZZZ objLastResult=new VetoFlag4ListenerZZZ();
 
-	@Override
 	public boolean onPreInsert(PreInsertEvent event) {
 //		System.out.println(ReflectCodeZZZ.getPositionCurrent() + " onPreInsert   Hibernate-Event 02...");		
 		boolean bReturn = false;

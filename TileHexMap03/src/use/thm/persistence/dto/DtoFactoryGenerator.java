@@ -49,7 +49,6 @@ public class DtoFactoryGenerator  extends KernelUseObjectZZZ implements IDtoFact
 
 	
 	//###########################################################################
-	@Override
 	public IDtoFactoryZZZ getDtoFactory(Class classUsingTheDto) throws ExceptionZZZ{
 		IDtoFactoryZZZ objReturn = null;
 		

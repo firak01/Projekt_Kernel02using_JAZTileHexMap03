@@ -2,7 +2,6 @@
     <wb-module deploy-name="JAZTileHexMap03">
         <wb-resource deploy-path="/WEB-INF/classes" source-path="/src"/>
         <wb-resource deploy-path="/WEB-INF/classes" source-path="/test"/>
-        <wb-resource deploy-path="/" source-path="/WebContent" tag="defaultRootSource"/>
         <property name="context-root" value="JAZTileHexMap03"/>
         <property name="java-output-path" value="/JAZTileHexMap03/target/classes"/>
     </wb-module>

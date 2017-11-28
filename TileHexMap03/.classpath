@@ -13,12 +13,11 @@
 	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/JAZKernelUI"/>
 	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/JAZKernelUIExpression"/>
 	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/JAZLanguageMarkup"/>
-	<classpathentry kind="con" path="org.eclipse.jst.j2ee.internal.web.container"/>
-	<classpathentry kind="con" path="org.eclipse.jst.j2ee.internal.module.container"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/jre7">
 		<attributes>
 			<attribute name="maven.pomderived" value="true"/>
 		</attributes>
 	</classpathentry>
+	<classpathentry kind="con" path="org.eclipse.jst.j2ee.internal.module.container"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>

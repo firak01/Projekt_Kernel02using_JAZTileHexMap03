@@ -88,9 +88,13 @@ public abstract class HibernateContextProviderZZZ  extends KernelUseObjectZZZ im
 	/**Das wird hautpsächlich dafür benutz, um eine neue SessionFactory zu erzwingen, fall sich die Hibernate Configuration geändert hat.
 	 * Z.B. wenn die Datenbank nicht mehr neu aufgebaut werden soll, sondern für Folgeabfragen weiterverwendet werden soll.
 	 * In diesem Fall setzt man die SessionFactory auf NULL.
+	 * 
+	 * Merke: Eine neue Session wird dem HibernateContextProviderZZZ ebenfalls zur Verfügung gestellt.
+	 *        Grund: Sonst wird das xyzDaoZZZ gezwungen weiter in den Elternklassen nach einer getSession() Methode zu suchen und dann wird etwas mit HibernateAnotationUtility herangezogen.
+	 * 
 	 * @param objSessionFactory
 	 */
-	public void setSessionFactory(SessionFactoryImpl objSessionFactory){
+	public void setSessionFactoryWithNewSession(SessionFactoryImpl objSessionFactory){
 		if(this.objSessionFactory!=null){						
 			if(this.objSessionFactory.isClosed()){
 			}else{

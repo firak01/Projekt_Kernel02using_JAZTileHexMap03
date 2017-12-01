@@ -16,7 +16,7 @@ import use.thm.persistence.model.TroopArmy;
 import use.thm.persistence.model.TroopArmyVariant;
 import use.thm.persistence.model.TroopFleet;
 import basic.zBasic.ExceptionZZZ;
-import basic.zBasic.persistence.HibernateContextProviderZZZ;
+import basic.zBasic.persistence.hibernate.HibernateContextProviderZZZ;
 import basic.zKernel.KernelZZZ;
 
 public class HibernateContextProviderSingletonTHM extends HibernateContextProviderZZZ{

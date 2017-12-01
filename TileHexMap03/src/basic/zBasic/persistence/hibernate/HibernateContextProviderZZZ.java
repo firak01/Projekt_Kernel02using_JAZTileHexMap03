@@ -1,4 +1,4 @@
-package basic.zBasic.persistence;
+package basic.zBasic.persistence.hibernate;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;

@@ -2,7 +2,7 @@ package use.thm.persistence.daoFacade;
 
 import use.thm.persistence.interfaces.IBackendPersistenceFacadeTHM;
 import basic.persistence.daoFacade.GeneralDaoFacadeZZZ;
-import basic.zBasic.persistence.HibernateContextProviderZZZ;
+import basic.zBasic.persistence.hibernate.HibernateContextProviderZZZ;
 import basic.zBasic.util.datatype.dateTime.DateTimeZZZ;
 
 public abstract class TileDaoFacade extends GeneralDaoFacadeZZZ implements IBackendPersistenceFacadeTHM{

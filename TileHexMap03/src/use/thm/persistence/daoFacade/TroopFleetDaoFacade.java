@@ -13,7 +13,7 @@ import basic.persistence.daoFacade.GeneralDaoFacadeZZZ;
 import basic.persistence.util.HibernateUtil;
 import basic.zBasic.ExceptionZZZ;
 import basic.zBasic.ReflectCodeZZZ;
-import basic.zBasic.persistence.HibernateContextProviderZZZ;
+import basic.zBasic.persistence.hibernate.HibernateContextProviderZZZ;
 import basic.zBasic.util.abstractList.VectorExtendedZZZ;
 import use.thm.client.component.ArmyTileTHM;
 import use.thm.client.event.EventTileCreatedInCellTHM;

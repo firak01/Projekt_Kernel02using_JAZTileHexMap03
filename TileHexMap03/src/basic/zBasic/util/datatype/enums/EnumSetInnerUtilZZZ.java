@@ -283,7 +283,6 @@ public class EnumSetInnerUtilZZZ {
      */
     public static <E extends Enum<E> & IThiskeyProviderZZZ<K>, K> Predicate<E> hasThiskey(final K hiskey) {
         return new Predicate<E>() {
-            @Override
             public boolean apply(E hiskeyProvider) {
                 return hiskeyProvider.getThiskey().equals(hiskey);
             }
@@ -297,7 +296,6 @@ public class EnumSetInnerUtilZZZ {
      */
     public static Function<IThiskeyProviderZZZ<Long>, Long> toThiskey() {
         return new Function<IThiskeyProviderZZZ<Long>, Long>() {
-            @Override
             public Long apply(IThiskeyProviderZZZ<Long> hiskeyProvider) {
                 return hiskeyProvider.getThiskey();
             }
@@ -310,7 +308,6 @@ public class EnumSetInnerUtilZZZ {
      */
     public static <E> Function<E, Long> toThiskey(final IKeyAccessorZZZ<E, Long> accessor) {
         return new Function<E, Long>() {
-            @Override
             public Long apply(E hiskeyProvidingElement) {
                 return accessor.getThiskey(hiskeyProvidingElement);
             }
@@ -324,7 +321,6 @@ public class EnumSetInnerUtilZZZ {
      */
     public static Function<IThiskeyValueDto, Long> valueDtoToThiskey() {
         return new Function<IThiskeyValueDto, Long>() {
-            @Override
             public Long apply(IThiskeyValueDto input) {
                 return input.getThiskeyId();
             }
@@ -338,7 +334,6 @@ public class EnumSetInnerUtilZZZ {
      */
     public static <E extends Enum<E> & IThiskeyProviderZZZ<Long>> Function<IThiskeyValueZZZ<E>, Long> valueToThiskey() {
         return new Function<IThiskeyValueZZZ<E>, Long>() {
-            @Override
             public Long apply(IThiskeyValueZZZ<E> input) {
                 return input.getThiskey();
             }

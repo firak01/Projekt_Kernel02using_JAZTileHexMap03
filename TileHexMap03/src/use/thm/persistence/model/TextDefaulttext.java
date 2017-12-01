@@ -102,7 +102,6 @@ public class TextDefaulttext<IEnumDefaulttext>  extends Defaulttext  implements 
     //##################################################
     //#### Folgende Methoden bring Enumeration von Hause aus mit:
      
-     @Override
      public String getName(){
   	   return super.name();
      }
@@ -112,7 +111,6 @@ public class TextDefaulttext<IEnumDefaulttext>  extends Defaulttext  implements 
          return this.sShorttext;
      }
 
-     @Override
      public int getIndex() {
      	return ordinal();
      }
@@ -133,13 +131,11 @@ public class TextDefaulttext<IEnumDefaulttext>  extends Defaulttext  implements 
      }
      
      //#### Methode aus IKeyProviderZZZ
-     @Override
   	public Long getThiskey() {
   		return this.lKey;
   	}
 
      //### Folgende Methoden sind zum komfortablen arbeiten gedacht.
-     @Override
      public int getPosition() {
      	return getIndex() + 1;
      }

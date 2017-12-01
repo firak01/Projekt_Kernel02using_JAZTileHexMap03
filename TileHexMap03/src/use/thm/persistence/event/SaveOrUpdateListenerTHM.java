@@ -257,30 +257,27 @@ public class SaveOrUpdateListenerTHM extends DefaultSaveOrUpdateEventListener im
 		public void setLogObject(LogZZZ objLog) {
 			this.objLog = objLog;
 		}
-		@Override
+		
 		public boolean isVeto() {
 			return this.objLastResult.isVeto();
 		}
-		@Override
+		
 		public void veto(boolean bResult) {
 			this.objLastResult.veto(bResult);			
 		}
-		@Override
+		
 		public void veto(boolean bResult, String sResultMessage) {
 			this.objLastResult.veto(bResult, sResultMessage); 
 		}
-		
-		@Override
+				
 		public void resetVeto() {
 			this.objLastResult.resetVeto();
 		}
 
-		@Override
 		public Calendar getVetoDate() {
 			return this.objLastResult.getVetoDate();
 		}
 
-		@Override
 		public VetoFlag4ListenerZZZ getCommitResult(){
 			return this.objLastResult;
 		}

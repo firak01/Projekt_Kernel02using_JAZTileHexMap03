@@ -10,7 +10,6 @@ public class GeneralRuleFacadeZZZ implements IFacadeResultRuleZZZ {
 	public GeneralRuleFacadeZZZ(){		
 	}
 	
-	@Override
 	public FacadeResultRuleZZZ getFacadeRuleResult() {
 		if(this.objFacadeRuleResult==null){
 			this.objFacadeRuleResult = new FacadeResultRuleZZZ();
@@ -18,12 +17,11 @@ public class GeneralRuleFacadeZZZ implements IFacadeResultRuleZZZ {
 		return this.objFacadeRuleResult;
 	}
 
-	@Override
 	public void setFacadeRuleResult(FacadeResultRuleZZZ objFacadeResult) {
 		this.objFacadeRuleResult = objFacadeResult;
 	}
 
-	@Override
+
 	public String getMessagesAsString() {
 		String sReturn = new String("");
 		main:{					

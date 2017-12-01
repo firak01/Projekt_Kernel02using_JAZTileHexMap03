@@ -44,7 +44,6 @@ public class PreUpdateListenerTHM  implements PreUpdateEventListener,IKernelUser
 	
 	private VetoFlag4ListenerZZZ objLastResult=new VetoFlag4ListenerZZZ();
 
-	@Override
 	public boolean onPreUpdate(PreUpdateEvent event) {
 		//20170802: Ich glaube, das wird gar nicht aufgerufen.
 		//                Falls doch, dann auf das RuleFacade-System umstellen.
@@ -266,30 +265,27 @@ public class PreUpdateListenerTHM  implements PreUpdateEventListener,IKernelUser
 		public void setLogObject(LogZZZ objLog) {
 			this.objLog = objLog;
 		}
-		@Override
+
 		public boolean isVeto() {
 			return this.objLastResult.isVeto();
 		}
-		@Override
+		
 		public void veto(boolean bResult) {
 			this.objLastResult.veto(bResult);			
 		}
-		@Override
+		
 		public void veto(boolean bResult, String sResultMessage) {
 			this.objLastResult.veto(bResult, sResultMessage); 
 		}
-		
-		@Override
+				
 		public void resetVeto() {
 			this.objLastResult.resetVeto();
 		}
 
-		@Override
 		public Calendar getVetoDate() {
 			return this.objLastResult.getVetoDate();
 		}
 
-		@Override
 		public VetoFlag4ListenerZZZ getCommitResult(){
 			return this.objLastResult;
 		}

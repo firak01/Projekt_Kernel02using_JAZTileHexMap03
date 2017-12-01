@@ -15,7 +15,6 @@ public class GeneralRuleFacadeTHM extends GeneralRuleHibernateFacadeZZZ implemen
 		super(objContextHibernate);
 	}
 	
-	@Override
 	public int computeStackingLimit(String sCallingFlag) throws ExceptionZZZ {
 		int iReturn = 0;
 		main:{

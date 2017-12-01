@@ -47,7 +47,6 @@ import basic.zBasic.persistence.interfaces.enums.IThiskeyProviderZZZ;
 //##################################################
 //#### Folgende Methoden bring Enumeration von Hause aus mit:
  
- @Override
  public String getName(){
 	   return super.name();
  }
@@ -57,7 +56,6 @@ import basic.zBasic.persistence.interfaces.enums.IThiskeyProviderZZZ;
      return this.sShorttext;
  }
 
- @Override
  public int getIndex() {
  	return ordinal();
  }
@@ -78,13 +76,11 @@ import basic.zBasic.persistence.interfaces.enums.IThiskeyProviderZZZ;
  }
  
  //#### Methode aus IKeyProviderZZZ
- @Override
 	public Long getThiskey() {
 		return this.lKey;
 	}
 
  //### Folgende Methoden sind zum komfortablen arbeiten gedacht.
- @Override
  public int getPosition() {
  	return getIndex() + 1;
  }

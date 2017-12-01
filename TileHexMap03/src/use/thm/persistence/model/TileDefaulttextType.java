@@ -32,13 +32,11 @@ public enum TileDefaulttextType implements IKeyEnum<Long>, IThiskeyProviderZZZ<L
             this.objKeyLong = Long.valueOf(key);
         }
 
-        @Override
         public Long getKey() {
             return this.objKeyLong;
         }
 
         //### Aus IKeyProviderZZZ
-		@Override
 		public Long getThiskey() {
 			return this.objKeyLong;
 		}		

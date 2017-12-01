@@ -99,8 +99,7 @@ public class ObjectTestValue extends AbstractValue<ObjectTestValue> implements S
             this.key = Long.valueOf(key);
         }
 
-       
-        @Override
+
         public Long getThiskey() {
             return key;
         }

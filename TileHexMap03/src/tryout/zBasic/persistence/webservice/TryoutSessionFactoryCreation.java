@@ -26,8 +26,8 @@ import org.hibernate.stat.Statistics;
 
 import tryout.zBasic.persistence.dao.TryoutGeneralDaoZZZ;
 import use.thm.persistence.hibernate.HibernateContextProviderSingletonTHM;
+import use.thm.persistence.hibernate.HibernateContextProviderJndiSingletonTHM;
 import basic.zBasic.ExceptionZZZ;
-import basic.zBasic.persistence.hibernate.HibernateContextProviderJndiSingletonTHM;
 import basic.zKernel.KernelZZZ;
 
 public class TryoutSessionFactoryCreation {
@@ -115,7 +115,8 @@ public class TryoutSessionFactoryCreation {
 				//Merke: DAS FUNKTIONIERT NUR, WENN DIE ANWENDUNG IN EINEM SERVER (z.B. Tomcat läuft).
 				
 				KernelZZZ objKernel = new KernelZZZ(); //Merke: Die Service Klasse selbst kann wohl nicht das KernelObjekt extenden!
-				HibernateContextProviderSingletonTHM objContextHibernate = HibernateContextProviderSingletonTHM.getInstance(objKernel);					
+				String sContextJndi = "jdbc/ServicePortal";
+				HibernateContextProviderJndiSingletonTHM objContextHibernate = HibernateContextProviderJndiSingletonTHM.getInstance(objKernel, sContextJndi);					
 				objContextHibernate.getConfiguration().setProperty("hibernate.hbm2ddl.auto", "update");  //! Jetzt erst wird jede Tabelle über den Anwendungsstart hinaus gespeichert UND auch wiedergeholt.				
 
 				//TODO GOON 20171206: Die SessionFactory per Jndi direkter holen
@@ -142,8 +143,7 @@ public class TryoutSessionFactoryCreation {
 				//2. Versuch: In der Hibernate Configuration Erstellung per Java definiert
 				//Die hier genannte SessionFactory muss tatsächlich als Klasse an der Stelle existieren.
 											
-				//3. Versuch:
-				Context jndiContext = (Context) new InitialContext();
+				//3. Versuch:				
 				//Betzemeier Original:  //SessionFactory sf = HibernateUtilByAnnotation.getHibernateUtil().getSessionFactory();
 				//Betzemeier Original:  Hier wird JNDI für eine fest vorgegebeen Klasse verwendet. //SessionFactory sf = (SessionFactory) jndiContext.lookup("hibernate.session-factory.ServicePortal");
 				
@@ -151,7 +151,13 @@ public class TryoutSessionFactoryCreation {
 				//Merke: Damit diese Resource bekannt ist im Web Service, muss er neu gebaut werden. Nur dann ist die web.xml aktuell genug.
 				//Merke: java:comp/env/ ist der JNDI "Basis" Pfad, der vorangestellt werden muss. Das ist also falsch: //SessionFactory sf = (SessionFactory) jndiContext.lookup("java:jdbc/ServicePortal");
 				//Merke: /jdbc/ServicePortal ist in der context.xml im <RessourceLink>-Tag definiert UND in der web.xml im <resource-env-ref>-Tag
-				SessionFactory sf = (SessionFactory) jndiContext.lookup("java:comp/env/jdbc/ServicePortal");
+				
+				//Wenn man die SessionFactory direkt per JNDI holt...
+				//Context jndiContext = (Context) new InitialContext();
+				//SessionFactory sf = (SessionFactory) jndiContext.lookup("java:comp/env/jdbc/ServicePortal");
+				
+				//Hole die SessionFactory für JNDI aus dem ContextProvider Objekt.
+				SessionFactory sf = (SessionFactory) objContextHibernate.getSessionFactoryByJndi();
 											
 			    //Mache die Session und anschliessend alles wieder zu, inklusive der SessionFactory...
 				//Das schliessen der SessionFactory ist ein wichtiger Test. Kann danach (in einem neuen, zweiten Lauf eines Tests) wieder eine neue SessionFactory erstellt werden.
@@ -168,9 +174,9 @@ public class TryoutSessionFactoryCreation {
 					System.out.println("SessionFactory kann nicht erstellt werden. Tip: Alternativ den EntityManager verwenden oder ... (Need to specify class name in environment or system property, or as an applet parameter, or in an application resource file:  java.naming.factory.initial). ");
 				}
 				
-			} catch (NamingException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+//			} catch (NamingException e) {
+//				// TODO Auto-generated catch block
+//				e.printStackTrace();
 
 			} catch (ExceptionZZZ e) {
 				// TODO Auto-generated catch block

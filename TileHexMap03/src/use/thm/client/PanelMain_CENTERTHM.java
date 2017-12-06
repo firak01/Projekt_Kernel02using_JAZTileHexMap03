@@ -36,7 +36,7 @@ import basic.zBasicUI.glassPane.dragDropTranslucent.IGhostGlassPanePanel;
 public class PanelMain_CENTERTHM extends KernelJPanelCascadedZZZ implements IHexMapUserTHM{
 	private HexMapTHM objHexMap = null;
 	
-	//Default Konstruktor, damit die Klasse per Refelction einfachmit newInstance erzeugt werden kann.
+	//Default Konstruktor, damit die Klasse per Reflection einfach mit newInstance erzeugt werden kann.
 	public PanelMain_CENTERTHM(){		
 	}
 			

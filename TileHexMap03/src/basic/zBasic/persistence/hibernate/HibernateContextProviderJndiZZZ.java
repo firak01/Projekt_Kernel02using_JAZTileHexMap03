@@ -25,6 +25,7 @@ import use.thm.client.FrmMapSingletonTHM;
 import use.thm.persistence.event.MyIntegrator;
 import use.thm.persistence.event.PersistListenerTHM;
 import use.thm.persistence.event.PreInsertListenerTHM;
+import use.thm.persistence.hibernate.HibernateConfigurationProviderTHM;
 import use.thm.persistence.hibernate.HibernateContextProviderSingletonTHM;
 import use.thm.persistence.interceptor.HibernateInterceptorTHM;
 import use.thm.persistence.listener.TroopArmyListener;
@@ -32,6 +33,7 @@ import use.thm.persistence.listener.TroopArmyListener;
 import use.thm.persistence.model.TroopArmy;
 import basic.zBasic.ExceptionZZZ;
 import basic.zBasic.ReflectCodeZZZ;
+import basic.zBasic.persistence.interfaces.IHibernateConfigurationProviderZZZ;
 import basic.zBasic.persistence.interfaces.IHibernateContextProviderJndiZZZ;
 import basic.zBasic.persistence.interfaces.IHibernateContextProviderZZZ;
 import basic.zBasic.util.abstractList.HashMapExtendedZZZ;
@@ -70,31 +72,31 @@ public abstract class HibernateContextProviderJndiZZZ  extends HibernateContextP
 		public HibernateContextProviderJndiZZZ(String sContextJndi) throws ExceptionZZZ{
 			super();
 			this.setContextJndiString(sContextJndi);
-			boolean bErg = this.fillConfiguration();
-			if(!bErg){
-				ExceptionZZZ ez = new ExceptionZZZ("Configuration not successfully filled.", iERROR_RUNTIME, this, ReflectCodeZZZ.getMethodCurrentName());
-				throw ez;
-			}
+//			boolean bErg = this.fillConfiguration();  //wird schon in der Elternklasse gemacht
+//			if(!bErg){
+//				ExceptionZZZ ez = new ExceptionZZZ("Configuration not successfully filled.", iERROR_RUNTIME, this, ReflectCodeZZZ.getMethodCurrentName());
+//				throw ez;
+//			}
 		}
 		
 		
 	private HibernateContextProviderJndiZZZ(KernelZZZ objKernel) throws ExceptionZZZ{
 		super(objKernel);
-		boolean bErg = this.fillConfiguration();
-		if(!bErg){
-			ExceptionZZZ ez = new ExceptionZZZ("Configuration not successfully filled.", iERROR_RUNTIME, this, ReflectCodeZZZ.getMethodCurrentName());
-			throw ez;
-		}
+//		boolean bErg = this.fillConfiguration(); //wird schon in der Elternklasse gemacht
+//		if(!bErg){
+//			ExceptionZZZ ez = new ExceptionZZZ("Configuration not successfully filled.", iERROR_RUNTIME, this, ReflectCodeZZZ.getMethodCurrentName());
+//			throw ez;
+//		}
 	}
 	
 	public HibernateContextProviderJndiZZZ(KernelZZZ objKernel, String sContextJndi) throws ExceptionZZZ{
-		super(objKernel);
-		this.setContextStringJndi(sContextJndi);
-		boolean bErg = this.fillConfiguration();
-		if(!bErg){
-			ExceptionZZZ ez = new ExceptionZZZ("Configuration not successfully filled.", iERROR_RUNTIME, this, ReflectCodeZZZ.getMethodCurrentName());
-			throw ez;
-		}
+		this(objKernel);
+		this.setContextJndiString(sContextJndi);
+//		boolean bErg = this.fillConfiguration(); //wird schon in der Elternklasse gemacht
+//		if(!bErg){
+//			ExceptionZZZ ez = new ExceptionZZZ("Configuration not successfully filled.", iERROR_RUNTIME, this, ReflectCodeZZZ.getMethodCurrentName());
+//			throw ez;
+//		}
 	}
 	
 	public SessionFactoryImpl getSessionFactory(){
@@ -111,7 +113,7 @@ public abstract class HibernateContextProviderJndiZZZ  extends HibernateContextP
 					
 				//HOLE DIE SESSIONFACTORY PER JNDI:
 				//Merke: DAS FUNKTIONIERT NUR, WENN DIE ANWENDUNG IN EINEM SERVER (z.B. Tomcat läuft).
-				String sContextJndiPath=this.getLookupPathJndi();
+				String sContextJndiPath=this.getContextJndiLookupPath();
 				
 				//############################
 				//MERKE: DAS IST DER WEG wei bisher die SessionFactory direkt in einer Standalone J2SE Anwendung geholt wird
@@ -321,7 +323,14 @@ public abstract class HibernateContextProviderJndiZZZ  extends HibernateContextP
 		}//end main:
 		return sReturn;
 	}
+
+	@Override
+	public SessionFactoryImpl getSessionFactoryByJndi(String sContextJndi) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 	
 	//############## Abstracte Methoden, die auf jeden Fall überschrieben werden müssen.
 	//....
+	
 }

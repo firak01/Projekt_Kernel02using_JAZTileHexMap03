@@ -14,7 +14,7 @@ import basic.zBasic.ExceptionZZZ;
  *
  */
 public interface IHibernateContextProviderJndiZZZ extends IHibernateContextProviderZZZ {
-	public String getLookupPathJndi();
+	public String getContextJndiLookupPath();//Das Pendant dazu ist in der context.xml Datei des Tomcat Severs eingetragen. Es ist der Jndi-String um einen für eine JNDI Ressource fest definierten Anfangsstringpfad erweitert.
 	
 	public String getContextJndiString();
 	abstract void setContextJndiString(String sContextJndi); //sollte dann private sein.

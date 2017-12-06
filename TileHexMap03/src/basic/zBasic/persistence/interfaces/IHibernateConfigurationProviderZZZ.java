@@ -16,7 +16,6 @@ public interface IHibernateConfigurationProviderZZZ {
 	
 	public boolean addConfigurationAnnotatedClass(Class cls) throws ExceptionZZZ;
 	public boolean addConfigurationClass(Class cls)throws ExceptionZZZ;
-	
-	
+		
 	public Configuration getConfiguration();
 }

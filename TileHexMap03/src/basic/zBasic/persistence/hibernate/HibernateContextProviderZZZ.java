@@ -28,6 +28,7 @@ import use.thm.persistence.listener.TroopArmyListener;
 import use.thm.persistence.model.TroopArmy;
 import basic.zBasic.ExceptionZZZ;
 import basic.zBasic.ReflectCodeZZZ;
+import basic.zBasic.persistence.interfaces.IHibernateConfigurationProviderZZZ;
 import basic.zBasic.persistence.interfaces.IHibernateContextProviderZZZ;
 import basic.zBasic.util.abstractList.HashMapExtendedZZZ;
 import basic.zBasic.util.datatype.string.StringZZZ;
@@ -38,9 +39,9 @@ import basic.zKernelUI.component.KernelJFrameCascadedZZZ;
  * und die globalen Hibernate Objekte sind hierüber überall verfügbar.
  * 
  */
-public abstract class HibernateContextProviderZZZ  extends KernelUseObjectZZZ implements IHibernateContextProviderZZZ {
-	
-	private Configuration cfgHibernate = new Configuration();
+public abstract class HibernateContextProviderZZZ  extends KernelUseObjectZZZ implements IHibernateContextProviderZZZ {	
+	//alte Version, jetzt ausgelagert private Configuration cfgHibernate = new Configuration();
+	IHibernateConfigurationProviderZZZ objConfigurationProvider = null;
 	
 	//Session NICHT hier speichern. Der Grund ist, dass es pro Transaction nur 1 Session geben darf
 //	http://stackoverflow.com/questions/37602501/hibernate-2nd-transaction-in-same-session-doesnt-save-modified-object
@@ -77,11 +78,12 @@ public abstract class HibernateContextProviderZZZ  extends KernelUseObjectZZZ im
 		SessionFactoryImpl objReturn = this.objSessionFactory;
 		if(objReturn==null){
 			  Configuration cfg = this.getConfiguration();
+			
 		      ServiceRegistry sr = new ServiceRegistryBuilder().applySettings(cfg.getProperties()).buildServiceRegistry();		    
 		      SessionFactory sf = cfg.buildSessionFactory(sr);
 			
 		      this.objSessionFactory = (SessionFactoryImpl) sf;
-			 objReturn = (SessionFactoryImpl) sf;			 
+			 objReturn = (SessionFactoryImpl) sf;			 			
 		}		
 		return objReturn;
 	}
@@ -192,50 +194,7 @@ public abstract class HibernateContextProviderZZZ  extends KernelUseObjectZZZ im
 		}//end main:
 		return objReturn;
 	}
-	
-	/** Wird eine zu persisierende Klasse nicht der Konfiguration übergeben, kommt es z.B. zu folgender Fehlermeldung
-	 *  Exception in thread "main" org.hibernate.MappingException: Unknown entity: use.thm.client.component.AreaCellTHM
-	 * @param cls
-	 * @return
-	 * @throws ExceptionZZZ
-	 */
-	public boolean addConfigurationAnnotatedClass(Configuration cfg, Class cls) throws ExceptionZZZ{
-		if(cls==null){
-			ExceptionZZZ ez = new ExceptionZZZ("Class-Object not passed.", iERROR_PARAMETER_MISSING, this, ReflectCodeZZZ.getMethodCurrentName());
-			throw ez;
-		}
-		cfg.addAnnotatedClass(cls);
-		return true;
-	}
-	public boolean addConfigurationAnnotatedClass(Class cls) throws ExceptionZZZ{
-		if(cls==null){
-			ExceptionZZZ ez = new ExceptionZZZ("Class-Object not passed.", iERROR_PARAMETER_MISSING, this, ReflectCodeZZZ.getMethodCurrentName());
-			throw ez;
-		}
-		return this.addConfigurationAnnotatedClass(	this.getConfiguration(), cls);
-	}
-	
-	/**Für die so hinzugefügte Klasse muss es eine XML Konfigurationsdatei geben.
-	 * Ansonsten Fehler, z.B. für eine User.class : org.hibernate.MappingNotFoundException: resource: tryout/hibernate/User.hbm.xml not found
-	 * 
-	 * Wird eine zu persisierende Klasse nicht der Konfiguration übergeben, kommt es z.B. zu folgender Fehlermeldung
-	 * Exception in thread "main" org.hibernate.MappingException: Unknown entity: use.thm.client.component.AreaCellTHM
-	 * @param cls
-	 * @return
-	 * @throws ExceptionZZZ
-	 */
-	public boolean addConfigurationClass(Class cls)throws ExceptionZZZ{
-		if(cls==null){
-			ExceptionZZZ ez = new ExceptionZZZ("Class-Object not passed.", iERROR_PARAMETER_MISSING, this, ReflectCodeZZZ.getMethodCurrentName());
-			throw ez;
-		}
-		this.getConfiguration().addClass(cls);
-		return true;
-	}
-
-	
-	
-	
+		
 	//################### GETTER / SETTER
 	public EntityManagerFactory getEntityManagerFactory(){
 		return this.objEntityManagerFactory;
@@ -248,7 +207,15 @@ public abstract class HibernateContextProviderZZZ  extends KernelUseObjectZZZ im
 	}
 	
 	public Configuration getConfiguration(){
-		return this.cfgHibernate;
+		//alte Version, jetzt ausgelagert return this.cfgHibernate;
+		Configuration objReturn = null;
+		try {
+			objReturn = this.getConfigurationProviderObject().getConfiguration();
+		} catch (ExceptionZZZ e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return objReturn;
 	}
 	
 	public Session getSession() throws ExceptionZZZ{
@@ -324,18 +291,28 @@ public abstract class HibernateContextProviderZZZ  extends KernelUseObjectZZZ im
 		return this.objSession;
 	}
 	
+	
 	public boolean fillConfiguration() throws ExceptionZZZ{
-		return this.fillConfiguration(this.getConfiguration());
+		//alte Version, jetzt ausgelagert return this.fillConfiguration(this.getConfiguration());
+		return this.getConfigurationProviderObject().fillConfiguration();
 	}
 	
-	public boolean fillConfigurationGlobal() throws ExceptionZZZ{
-		return this.fillConfigurationGlobal(this.getConfiguration());
+	//alte Version, jetzt ausgelagert 
+//	public boolean fillConfigurationGlobal() throws ExceptionZZZ{
+//		return this.fillConfigurationGlobal(this.getConfiguration());
+//	}
+	
+	public IHibernateConfigurationProviderZZZ getConfigurationProviderObject() throws ExceptionZZZ{
+		return this.objConfigurationProvider;
 	}
 
 	//############## Abstracte Methoden, die auf jeden Fall überschrieben werden müssen.
-	public abstract boolean fillConfiguration(Configuration cfg) throws ExceptionZZZ ;
+	public abstract void setConfigurationProviderObject(IHibernateConfigurationProviderZZZ objHibernateConfiguration);
+	
+	
+	//alte Version, jetzt ausgelagert public abstract boolean fillConfiguration(Configuration cfg) throws ExceptionZZZ ;
 
-	public abstract boolean fillConfigurationGlobal(Configuration cfg) throws ExceptionZZZ;
+	//alte Version, jetzt ausgelagert public abstract boolean fillConfigurationGlobal(Configuration cfg) throws ExceptionZZZ;
 
 	//Verwende intern den SessionBuilder um eine Session zurückzuliefern, die einen Interceptor benutzt.
 	public abstract Session declareSessionHibernateIntercepted(SessionFactoryImpl sf);

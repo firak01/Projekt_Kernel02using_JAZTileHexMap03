@@ -6,8 +6,10 @@
     <!--  FGL: Fehler unter Eclipse: 
 The persistence.xml file does not have recognized content.	persistence.xml	/JAZTileHexMap03/target/classes/META-INF	 	JPA Problem
 
-	Wie beheben? Eifach editieren im Verzeichnis: 
+	Wie beheben? Einfach editieren im Verzeichnis: 
 	Projekt_Kernel02using_JAZTileHexMap03\TileHexMap03\src\META-INF\persistence.xml
+	
+	Hinweis: Dabei bekommt man den Hinweis, dass diese Datei "derived" sei.
 -->
     
 	<!-- FGL Für jedes Kapitel / Beispiel ein eigenes Schema genommen. Hier 

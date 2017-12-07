@@ -15,6 +15,7 @@ import org.hibernate.internal.SessionFactoryImpl;
 import org.hibernate.service.ServiceRegistry;
 import org.hibernate.service.ServiceRegistryBuilder;
 
+import use.thm.persistence.hibernate.HibernateContextProviderJndiSingletonTHM;
 import use.thm.persistence.hibernate.HibernateContextProviderSingletonTHM;
 import basic.zBasic.ReflectCodeZZZ;
 
@@ -47,7 +48,12 @@ public class HibernateSessionFactoryTomcatFactory implements ObjectFactory{
 //           SessionFactory sf = cfgNew.buildSessionFactory(sr);
 				
 		  //Lösungsansatz 2: Kann man hier ggfs. aus meiner HibernateContextProviderZZZ - als Singleton - die Konfiguration verwenden?
-			 HibernateContextProviderSingletonTHM objContextHibernate = HibernateContextProviderSingletonTHM.getInstance();				 
+			 //HibernateContextProviderSingletonTHM objContextHibernate = HibernateContextProviderSingletonTHM.getInstance();
+			 //Nach Umstellung auf den ConfigurationProvider gibt es für JNDI ein einges Singleton, das man hier verwenden sollte. Ansonsten wird einfach die Konfiguration erneut gefüllt  und dann auch noch die falsche!
+			 
+			 //TODO GOON 20171207: Den JNDI String irgendwoher holen, damit es dynamisch ist und nicht hart verdrahtet.
+			 HibernateContextProviderJndiSingletonTHM objContextHibernate = HibernateContextProviderJndiSingletonTHM.getInstance("service/portal");
+			 
 			 if(objContextHibernate.hasSessionFactory_open()){
 				 System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": Es gibt eine offene SessionFactory.");
 				 objReturn = (SessionFactoryImpl) objContextHibernate.getSessionFactory();

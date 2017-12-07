@@ -18,7 +18,7 @@
 
 		<!-- Database Connection settings -->
 		<property name="connection.driver_class">org.sqlite.JDBC</property>
-		<property name="connection.url">jdbc:sqlite:c:\\server\\SQLite\\TileHexMap03.sqlite</property>
+<!-- 		20171207: Es soll auf die reine Konfiguration verlassen werden, auch auf context.xml für JNDI ZUgriff <property name="connection.url">jdbc:sqlite:c:\\server\\SQLite\\TileHexMap03.sqlite</property> -->
 		<property name="connection.username"></property>
 		<property name="connection.password"></property>
 

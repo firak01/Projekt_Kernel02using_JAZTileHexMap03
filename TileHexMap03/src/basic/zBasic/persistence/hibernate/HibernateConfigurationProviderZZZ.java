@@ -7,11 +7,12 @@ import basic.zBasic.IConstantZZZ;
 import basic.zBasic.ReflectCodeZZZ;
 import basic.zBasic.persistence.interfaces.IHibernateConfigurationProviderZZZ;
 
-public abstract class HibernateConfigurationProviderZZZ implements IHibernateConfigurationProviderZZZ, IConstantZZZ{
+public abstract class HibernateConfigurationProviderZZZ implements IHibernateConfigurationProviderZZZ, IConstantZZZ{					
 	private Configuration objConfiguration = new Configuration();
-	
+		
 	public HibernateConfigurationProviderZZZ() throws ExceptionZZZ{
-		fillConfiguration();
+		//NEIN: Sonst wird die Konfiguration 2x gefüllt. fillConfiguration();
+		//      Grund: HibernateContextPRoviderZZZ.fillConfiguration() ruft explizit fillConfiguration() auf.
 	}
 	
 	public abstract boolean fillConfiguration() throws ExceptionZZZ;

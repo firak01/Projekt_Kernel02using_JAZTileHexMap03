@@ -14,6 +14,7 @@ import use.thm.persistence.model.Troop;
 import use.thm.persistence.model.TroopArmy;
 import basic.zBasic.ExceptionZZZ;
 import basic.zBasic.persistence.dao.GeneralDaoZZZ;
+import basic.zBasic.persistence.interfaces.IHibernateContextProviderZZZ;
 public class TroopDao<T> extends TileDao<T> {
 	private static final long serialVersionUID = 1L;
 
@@ -25,7 +26,8 @@ public class TroopDao<T> extends TileDao<T> {
 		super();
 		this.installLoger(Troop.class);//Durch das Installieren des Loggers mit der korrekten Klasse wird GeneralDao.getT() erst korrekt ermöglicht.
 	}
-	public TroopDao(HibernateContextProviderSingletonTHM objContextHibernate) throws ExceptionZZZ{
+	//public TroopDao(HibernateContextProviderSingletonTHM objContextHibernate) throws ExceptionZZZ{
+	public TroopDao(IHibernateContextProviderZZZ objContextHibernate) throws ExceptionZZZ{	
 		super(objContextHibernate);		
 		this.installLoger(Troop.class);//Durch das Installieren des Loggers mit der korrekten Klasse wird GeneralDao.getT() erst korrekt ermöglicht.
 	}

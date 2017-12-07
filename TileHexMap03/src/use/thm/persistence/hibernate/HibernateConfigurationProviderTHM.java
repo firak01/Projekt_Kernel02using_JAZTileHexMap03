@@ -36,7 +36,7 @@ public class HibernateConfigurationProviderTHM extends HibernateConfigurationPro
 		//TODO: Die hier verwendeten Werte aus der Kernel-Konfiguration auslesen.
 		//Programmatisch das erstellen, das in der hibernate.cfg.xml Datei beschrieben steht.
 		//Merke: Irgendwie funktioniert es nicht die Werte in der hibernate.cfg.xml Datei zu überschreiben.
- 		//			Darum muss z.B. hibernate.hbm2ddl.auto in der Konfigurationdatei auskommentiert werden, sonst ziehen hier die Änderungen nicht.
+ 		//		 Darum muss z.B. hibernate.hbm2ddl.auto in der Konfigurationdatei auskommentiert werden, sonst ziehen hier die Änderungen nicht.
 		this.getConfiguration().setProperty("hiberate.show_sql", "true");
 		this.getConfiguration().setProperty("hiberate.format_sql", "true");
 		this.getConfiguration().setProperty("hibernate.dialect","basic.persistence.hibernate.SQLiteDialect" );		
@@ -50,8 +50,11 @@ update: update the schema.
 create: creates the schema, destroying previous data.
 create-drop: drop the schema when the SessionFactory is closed explicitly, typically when the application is stopped.
 		 */
+		
+		//Merke: Damit also die Werte in den Tabellen bleiben, muss man nach der Initialisierung des HibernateContextProviderObjekts explizit die "Speicherung" aktivieren.
+		//       Und zwar so: objContextHibernate.getConfiguration().setProperty("hibernate.hbm2ddl.auto", "update");  //! Jetzt erst wird jede Tabelle über den Anwendungsstart hinaus gespeichert UND auch wiedergeholt.						
 		this.getConfiguration().setProperty("hibernate.hbm2ddl.auto", "create"); //! Damit wird die Datenbank und sogar die Tabellen darin automatisch erstellt, aber: Sie wird am Anwendungsende geleert.
-		//cfg.setProperty("hibernate.hbm2ddl.auto", "update");  //! Jetzt erst wird jede Tabelle über den Anwendungsstart hinaus gepseichert.
+		//this.getConfiguration().setProperty("hibernate.hbm2ddl.auto", "update");  //! Jetzt erst wird jede Tabelle über den Anwendungsstart hinaus gepseichert.
 		this.getConfiguration().setProperty("cache.provider_class", "org.hiberniate.cache.NoCacheProvider");
 		this.getConfiguration().setProperty("current_session_context_class", "thread");				
 		return true;

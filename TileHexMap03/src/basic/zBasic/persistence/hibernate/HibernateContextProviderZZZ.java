@@ -83,8 +83,21 @@ public abstract class HibernateContextProviderZZZ  extends KernelUseObjectZZZ im
 		      SessionFactory sf = cfg.buildSessionFactory(sr);
 			
 		      this.objSessionFactory = (SessionFactoryImpl) sf;
-			 objReturn = (SessionFactoryImpl) sf;			 			
-		}		
+			 objReturn = (SessionFactoryImpl) sf;	
+			 //Merke: bei einer nagelneuen SessionFactory hier nicht die Session setzen.
+			 
+		}else{
+			if(objReturn.isClosed()){
+				 Configuration cfg = this.getConfiguration();
+					
+			      ServiceRegistry sr = new ServiceRegistryBuilder().applySettings(cfg.getProperties()).buildServiceRegistry();		    
+			      SessionFactory sf = cfg.buildSessionFactory(sr);
+							     
+				 objReturn = (SessionFactoryImpl) sf;	
+				 this.objSessionFactory =objReturn; 
+				// this.setSessionFactoryWithNewSession(objReturn); //Merke: Das hier machen. Dann ist diese Anweisung in der Singelton Klasse nicht mehr notwendig.
+			}
+		}			
 		return objReturn;
 	}
 	/**Das wird auch dafür benutzt, um eine neue SessionFactory zu erzwingen, fall sich die Hibernate Configuration geändert hat.

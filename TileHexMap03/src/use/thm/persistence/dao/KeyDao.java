@@ -21,6 +21,7 @@ import basic.persistence.util.HibernateUtil;
 import basic.zBasic.ExceptionZZZ;
 import basic.zBasic.ReflectCodeZZZ;
 import basic.zBasic.persistence.dao.GeneralDaoZZZ;
+import basic.zBasic.persistence.interfaces.IHibernateContextProviderZZZ;
 import basic.zBasic.util.datatype.string.StringZZZ;
 
 /** DAS WÄRE DIE VARIANTE, WENN ES EINE TABELLE "KEY" GÄBE.
@@ -42,7 +43,7 @@ public class KeyDao<T> extends GeneralDaoZZZ<T> {
 		super();
 		this.installLoger(Key.class);//Durch das Installieren des Loggers mit der korrekten Klasse wird GeneralDao.getT() erst korrekt ermöglicht.
 	}
-	public KeyDao(HibernateContextProviderSingletonTHM objContextHibernate) throws ExceptionZZZ{
+	public KeyDao(IHibernateContextProviderZZZ objContextHibernate) throws ExceptionZZZ{
 		super(objContextHibernate);		
 		this.installLoger(Key.class);//Durch das Installieren des Loggers mit der korrekten Klasse wird GeneralDao.getT() erst korrekt ermöglicht.
 	}

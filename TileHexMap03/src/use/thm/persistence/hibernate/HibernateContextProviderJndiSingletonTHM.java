@@ -54,7 +54,7 @@ public class HibernateContextProviderJndiSingletonTHM extends HibernateContextPr
 		}else{
 			//HashMapIndexedZZZ<String, HibernateContextProviderJndiZZZ> hmContextProvider = hmContextProvider;
 			if(hmContextProvider.containsKey(sContextJndi)){
-				objContextHibernate = (HibernateContextProviderJndiSingletonTHM) hmContextProvider.get(sContextJndi);			
+				objContextHibernate = (HibernateContextProviderJndiSingletonTHM) hmContextProvider.get(sContextJndi);				
 			}
 			if(objContextHibernate==null){
 				objContextHibernate = new HibernateContextProviderJndiSingletonTHM(objKernel, sContextJndi);
@@ -154,7 +154,9 @@ public class HibernateContextProviderJndiSingletonTHM extends HibernateContextPr
 	@Override
 	public void setConfigurationProviderObject(IHibernateConfigurationProviderZZZ objHibernateConfiguration) {
 		this.objConfigurationProvider = objHibernateConfiguration;
-	}	
+	}
+
+	
 
 	
 }

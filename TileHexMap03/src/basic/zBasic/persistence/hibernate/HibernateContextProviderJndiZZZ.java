@@ -104,15 +104,15 @@ public abstract class HibernateContextProviderJndiZZZ  extends HibernateContextP
 	}
 	
 	//TODO GOON 20171206: Hier die SessionFactory anders holen als für lokale Datenbanken, nämlich wie in den WebServices....
+	/**HOLE DIE SESSIONFACTORY PER JNDI:
+		Merke: DAS FUNKTIONIERT NUR, WENN DIE ANWENDUNG IN EINEM SERVER (z.B. Tomcat läuft). */
 	public SessionFactoryImpl getSessionFactoryByJndi(){
 		SessionFactoryImpl objReturn = null;
 		main:{
 			try {
 				objReturn = this.objSessionFactory;
 				if(objReturn==null){
-					
-				//HOLE DIE SESSIONFACTORY PER JNDI:
-				//Merke: DAS FUNKTIONIERT NUR, WENN DIE ANWENDUNG IN EINEM SERVER (z.B. Tomcat läuft).
+								
 				String sContextJndiPath=this.getContextJndiLookupPath();
 				
 				//############################
@@ -145,8 +145,23 @@ public abstract class HibernateContextProviderJndiZZZ  extends HibernateContextP
 				//Merke: /jdbc/ServicePortal ist in der context.xml im <RessourceLink>-Tag definiert UND in der web.xml im <resource-env-ref>-Tag
 				SessionFactory sf = (SessionFactory) jndiContext.lookup(sContextJndiPath);
 				objReturn = (SessionFactoryImpl) sf;
+				
+				//Merke: Bei einer nagelneuen SessionFactory keine Session setzen.
+				
 				}else{
 					objReturn = this.objSessionFactory;
+
+					//Wenn diese SessionFactory geschlossen ist, neu aufmachen.
+					if(objReturn.isClosed()){
+						String sContextJndiPath=this.getContextJndiLookupPath();
+						
+						Context jndiContext = (Context) new InitialContext();
+						SessionFactory sf = (SessionFactory) jndiContext.lookup(sContextJndiPath);
+						
+						objReturn = (SessionFactoryImpl) sf;
+						this.objSessionFactory = objReturn;
+						//this.setSessionFactoryWithNewSession(objReturn); //Merke: Das hier machen. Dann ist diese Anweisung in der Singelton Klasse nicht mehr notwendig.
+					}				
 				}//end if objReturn=null
 				
 			} catch (NamingException e) {
@@ -174,6 +189,8 @@ public abstract class HibernateContextProviderJndiZZZ  extends HibernateContextP
 				Session ss = this.objSessionFactory.getCurrentSession();
 				if(ss!=null){
 					if(ss.isOpen()){
+						
+						//TODO GOON 20171208: Fehlermeldung, dass ss.clear() nur mit offenen Transactions durchgeführt werden darf...
 						ss.clear();
 						ss.close();					
 					}
@@ -324,13 +341,11 @@ public abstract class HibernateContextProviderJndiZZZ  extends HibernateContextP
 		return sReturn;
 	}
 
-	@Override
-	public SessionFactoryImpl getSessionFactoryByJndi(String sContextJndi) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-	
 	//############## Abstracte Methoden, die auf jeden Fall überschrieben werden müssen.
 	//....
-	
+	@Override
+	public SessionFactoryImpl getSessionFactoryByJndi(String sContextJndi) {
+		this.setContextJndiString(sContextJndi);
+		return this.getSessionFactoryByJndi();
+	}	
 }

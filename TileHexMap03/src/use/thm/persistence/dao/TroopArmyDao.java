@@ -31,11 +31,11 @@ public class TroopArmyDao<T> extends TroopDao<T> {
 		super(objContextHibernate);		
 		this.installLoger(TroopArmy.class);//Durch das Installieren des Loggers mit der korrekten Klasse wird GeneralDao.getT() erst korrekt ermöglicht.
 	}
-	public TroopArmyDao(HibernateContextProviderSingletonTHM objContextHibernate, String sFlagControl) throws ExceptionZZZ{
+	public TroopArmyDao(IHibernateContextProviderZZZ objContextHibernate, String sFlagControl) throws ExceptionZZZ{
 		super(objContextHibernate, sFlagControl);
 		this.installLoger(TroopArmy.class);//Durch das Installieren des Loggers mit der korrekten Klasse wird GeneralDao.getT() erst korrekt ermöglicht.
 	}
-	public TroopArmyDao(HibernateContextProviderSingletonTHM objContextHibernate, String[] saFlagControl) throws ExceptionZZZ{
+	public TroopArmyDao(IHibernateContextProviderZZZ objContextHibernate, String[] saFlagControl) throws ExceptionZZZ{
 		super(objContextHibernate, saFlagControl);
 		this.installLoger(TroopArmy.class);//Durch das Installieren des Loggers mit der korrekten Klasse wird GeneralDao.getT() erst korrekt ermöglicht.
 	}

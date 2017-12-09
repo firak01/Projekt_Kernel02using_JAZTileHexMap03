@@ -18,6 +18,7 @@ import use.thm.persistence.model.Troop;
 import use.thm.persistence.model.TroopArmy;
 import basic.zBasic.ExceptionZZZ;
 import basic.zBasic.persistence.dao.GeneralDaoZZZ;
+import basic.zBasic.persistence.interfaces.IHibernateContextProviderZZZ;
 import basic.zBasic.util.datatype.enums.EnumSetDefaulttextUtilZZZ;
 import basic.zBasic.util.datatype.enums.EnumSetInnerUtilZZZ;
 import basic.zBasic.util.datatype.enums.EnumSetInnerUtilZZZ.ThiskeyEnumMappingExceptionZZZ;
@@ -32,15 +33,15 @@ public class TextDefaulttextDao<T> extends DefaulttextDao<T> {
 		super();
 		this.installLoger(TextDefaulttext.class);//Durch das Installieren des Loggers mit der korrekten Klasse wird GeneralDao.getT() erst korrekt ermöglicht.
 	}
-	public TextDefaulttextDao(HibernateContextProviderSingletonTHM objContextHibernate) throws ExceptionZZZ{
+	public TextDefaulttextDao(IHibernateContextProviderZZZ objContextHibernate) throws ExceptionZZZ{
 		super(objContextHibernate);		
 		this.installLoger(TextDefaulttext.class);//Durch das Installieren des Loggers mit der korrekten Klasse wird GeneralDao.getT() erst korrekt ermöglicht.
 	}
-	public TextDefaulttextDao(HibernateContextProviderSingletonTHM objContextHibernate, String sFlagControl) throws ExceptionZZZ{
+	public TextDefaulttextDao(IHibernateContextProviderZZZ objContextHibernate, String sFlagControl) throws ExceptionZZZ{
 		super(objContextHibernate, sFlagControl);
 		this.installLoger(TextDefaulttext.class);//Durch das Installieren des Loggers mit der korrekten Klasse wird GeneralDao.getT() erst korrekt ermöglicht.
 	}
-	public TextDefaulttextDao(HibernateContextProviderSingletonTHM objContextHibernate, String[] saFlagControl) throws ExceptionZZZ{
+	public TextDefaulttextDao(IHibernateContextProviderZZZ objContextHibernate, String[] saFlagControl) throws ExceptionZZZ{
 		super(objContextHibernate, saFlagControl);
 		this.installLoger(TextDefaulttext.class);//Durch das Installieren des Loggers mit der korrekten Klasse wird GeneralDao.getT() erst korrekt ermöglicht.
 	}

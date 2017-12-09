@@ -15,6 +15,7 @@ import use.thm.persistence.model.TroopArmy;
 import use.thm.persistence.model.TroopFleet;
 import basic.zBasic.ExceptionZZZ;
 import basic.zBasic.persistence.dao.GeneralDaoZZZ;
+import basic.zBasic.persistence.interfaces.IHibernateContextProviderZZZ;
 public class TroopFleetDao<T> extends TroopDao<T> {
 	private static final long serialVersionUID = 1L;
 
@@ -26,15 +27,15 @@ public class TroopFleetDao<T> extends TroopDao<T> {
 		super();
 		this.installLoger(TroopFleet.class);//Durch das Installieren des Loggers mit der korrekten Klasse wird GeneralDao.getT() erst korrekt ermöglicht.
 	}
-	public TroopFleetDao(HibernateContextProviderSingletonTHM objContextHibernate) throws ExceptionZZZ{
+	public TroopFleetDao(IHibernateContextProviderZZZ objContextHibernate) throws ExceptionZZZ{
 		super(objContextHibernate);		
 		this.installLoger(TroopFleet.class);//Durch das Installieren des Loggers mit der korrekten Klasse wird GeneralDao.getT() erst korrekt ermöglicht.
 	}
-	public TroopFleetDao(HibernateContextProviderSingletonTHM objContextHibernate, String sFlagControl) throws ExceptionZZZ{
+	public TroopFleetDao(IHibernateContextProviderZZZ objContextHibernate, String sFlagControl) throws ExceptionZZZ{
 		super(objContextHibernate, sFlagControl);
 		this.installLoger(TroopFleet.class);//Durch das Installieren des Loggers mit der korrekten Klasse wird GeneralDao.getT() erst korrekt ermöglicht.
 	}
-	public TroopFleetDao(HibernateContextProviderSingletonTHM objContextHibernate, String[] saFlagControl) throws ExceptionZZZ{
+	public TroopFleetDao(IHibernateContextProviderZZZ objContextHibernate, String[] saFlagControl) throws ExceptionZZZ{
 		super(objContextHibernate, saFlagControl);
 		this.installLoger(TroopFleet.class);//Durch das Installieren des Loggers mit der korrekten Klasse wird GeneralDao.getT() erst korrekt ermöglicht.
 	}

@@ -11,6 +11,7 @@ import use.thm.persistence.model.AreaCell;
 import basic.zBasic.ExceptionZZZ;
 import basic.zBasic.ReflectCodeZZZ;
 import basic.zBasic.persistence.dao.GeneralDaoZZZ;
+import basic.zBasic.persistence.interfaces.IHibernateContextProviderZZZ;
 public class AreaCellDao extends GeneralDaoZZZ<AreaCell> {
 	private static final long serialVersionUID = 1L;
 
@@ -22,15 +23,15 @@ public class AreaCellDao extends GeneralDaoZZZ<AreaCell> {
 		super();
 		this.installLoger(AreaCell.class);//Durch das Installieren des Loggers mit der korrekten Klasse wird GeneralDao.getT() erst korrekt ermöglicht.
 	}
-	public AreaCellDao(HibernateContextProviderSingletonTHM objContextHibernate) throws ExceptionZZZ{
+	public AreaCellDao(IHibernateContextProviderZZZ objContextHibernate) throws ExceptionZZZ{
 		super(objContextHibernate);		
 		this.installLoger(AreaCell.class);//Durch das Installieren des Loggers mit der korrekten Klasse wird GeneralDao.getT() erst korrekt ermöglicht.
 	}
-	public AreaCellDao(HibernateContextProviderSingletonTHM objContextHibernate, String sFlagControl) throws ExceptionZZZ{
+	public AreaCellDao(IHibernateContextProviderZZZ objContextHibernate, String sFlagControl) throws ExceptionZZZ{
 		super(objContextHibernate, sFlagControl);
 		this.installLoger(AreaCell.class);//Durch das Installieren des Loggers mit der korrekten Klasse wird GeneralDao.getT() erst korrekt ermöglicht.
 	}
-	public AreaCellDao(HibernateContextProviderSingletonTHM objContextHibernate, String[] saFlagControl) throws ExceptionZZZ{
+	public AreaCellDao(IHibernateContextProviderZZZ objContextHibernate, String[] saFlagControl) throws ExceptionZZZ{
 		super(objContextHibernate, saFlagControl);
 		this.installLoger(AreaCell.class);//Durch das Installieren des Loggers mit der korrekten Klasse wird GeneralDao.getT() erst korrekt ermöglicht.
 	}

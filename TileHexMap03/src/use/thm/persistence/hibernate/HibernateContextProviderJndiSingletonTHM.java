@@ -28,7 +28,7 @@ import basic.zKernel.KernelZZZ;
 
 public class HibernateContextProviderJndiSingletonTHM extends HibernateContextProviderJndiZZZ{
 	private static HibernateContextProviderJndiSingletonTHM objContextHibernate; //muss als Singleton static sein
-	private IHibernateConfigurationProviderZZZ objConfigurationProvider;
+	//in eine Elternklasse verschoben ... private IHibernateConfigurationProviderZZZ objConfigurationProvider;
 	
 	//Verschiedene Contexte hier verwalten
 	private static HashMapIndexedZZZ<String, HibernateContextProviderJndiSingletonTHM> hmContextProvider = new HashMapIndexedZZZ<String, HibernateContextProviderJndiSingletonTHM>();
@@ -141,22 +141,11 @@ public class HibernateContextProviderJndiSingletonTHM extends HibernateContextPr
     //### AUS Interfaces ##############################
 	@Override
 	public IHibernateConfigurationProviderZZZ getConfigurationProviderObject() throws ExceptionZZZ {
-		IHibernateConfigurationProviderZZZ objReturn = null;
-		if(this.objConfigurationProvider==null){
+		IHibernateConfigurationProviderZZZ objReturn = super.getConfigurationProviderObject(); //nutze hier die "Speicherung in der Elternklasse".
+		if(objReturn==null){
 			objReturn = new HibernateConfigurationProviderJndiTHM();
-			this.objConfigurationProvider = objReturn;
-		}else{
-			objReturn = this.objConfigurationProvider;
+			this.setConfigurationProviderObject(objReturn);
 		}
 		return objReturn;
 	}
-	
-	@Override
-	public void setConfigurationProviderObject(IHibernateConfigurationProviderZZZ objHibernateConfiguration) {
-		this.objConfigurationProvider = objHibernateConfiguration;
-	}
-
-	
-
-	
 }

@@ -22,7 +22,7 @@ import basic.zKernel.KernelZZZ;
 
 public class HibernateContextProviderSingletonTHM extends HibernateContextProviderZZZ{
 	private static HibernateContextProviderSingletonTHM objContextHibernate; //muss als Singleton static sein
-	private IHibernateConfigurationProviderZZZ objConfigurationProvider; 
+	//das in die Elternklasse verschoben ... private IHibernateConfigurationProviderZZZ objConfigurationProvider; 
 
 	public static HibernateContextProviderSingletonTHM getInstance() throws ExceptionZZZ{
 		if(objContextHibernate==null){
@@ -47,22 +47,7 @@ public class HibernateContextProviderSingletonTHM extends HibernateContextProvid
 	private HibernateContextProviderSingletonTHM(KernelZZZ objKernel) throws ExceptionZZZ{
 		super(objKernel);
 	}
-	
-	/**Fülle die Configuration
-	 * a) mit globalen Werten, z.B. Datenbankname, Dialekt
-	 * b) mit den zu betrachtenden Klassen, entweder annotiert oder per eigener XML Datei.
-	 * 
-	 * @return
-	 * @throws ExceptionZZZ 
-	 */
-	public boolean fillConfiguration(Configuration cfg) throws ExceptionZZZ{
-		boolean bReturn = false;
 		
-	
-		
-		return bReturn;
-	}
-	
 	/** Fülle globale Werte in das Configuration Objekt, z.B. der Datenbankname, Dialekt, etc.
 	 * 
 	 */
@@ -128,21 +113,19 @@ public class HibernateContextProviderSingletonTHM extends HibernateContextProvid
 
 	
 	@Override
+	//Hier wird dann das spezielle Konfigurationsobjekt, für die Spezielle Konfiguration verwendet.
+	//Merke: Wenn eine spezielle JNDI - Konfiguration verwendet werden soll, dann von dieser aktuellen Klasse erben (Klasse B),
+	//        eine andere Konfigurationsklasse erstellen. Und dann in Klasse B untenstehende Methode überschreiben.
 	public IHibernateConfigurationProviderZZZ getConfigurationProviderObject() throws ExceptionZZZ {
-		IHibernateConfigurationProviderZZZ objReturn = null;
-		if(this.objConfigurationProvider==null){
+		IHibernateConfigurationProviderZZZ objReturn = super.getConfigurationProviderObject(); //nutze hier die "Speicherung in der Elternklasse"		
+		if(objReturn==null){
 			objReturn = new HibernateConfigurationProviderTHM();
-			this.objConfigurationProvider=objReturn;
-		}else{
-			objReturn = this.objConfigurationProvider;
+			this.setConfigurationProviderObject(objReturn);
 		}
 		return objReturn;
 	}
 
-	@Override
-	public void setConfigurationProviderObject(IHibernateConfigurationProviderZZZ objHibernateConfiguration) {
-		this.objConfigurationProvider = objHibernateConfiguration;
-	}	
+	
 	
 	
 }

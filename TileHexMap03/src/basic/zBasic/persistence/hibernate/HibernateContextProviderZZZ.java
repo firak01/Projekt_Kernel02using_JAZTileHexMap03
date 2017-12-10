@@ -28,6 +28,7 @@ import use.thm.persistence.listener.TroopArmyListener;
 import use.thm.persistence.model.TroopArmy;
 import basic.zBasic.ExceptionZZZ;
 import basic.zBasic.ReflectCodeZZZ;
+import basic.zBasic.persistence.interfaces.IHibernateConfigurationProviderUserZZZ;
 import basic.zBasic.persistence.interfaces.IHibernateConfigurationProviderZZZ;
 import basic.zBasic.persistence.interfaces.IHibernateContextProviderZZZ;
 import basic.zBasic.util.abstractList.HashMapExtendedZZZ;
@@ -39,7 +40,7 @@ import basic.zKernelUI.component.KernelJFrameCascadedZZZ;
  * und die globalen Hibernate Objekte sind hierüber überall verfügbar.
  * 
  */
-public abstract class HibernateContextProviderZZZ  extends KernelUseObjectZZZ implements IHibernateContextProviderZZZ {	
+public abstract class HibernateContextProviderZZZ  extends KernelUseObjectZZZ implements IHibernateContextProviderZZZ, IHibernateConfigurationProviderUserZZZ {	
 	//alte Version, jetzt ausgelagert private Configuration cfgHibernate = new Configuration();
 	IHibernateConfigurationProviderZZZ objConfigurationProvider = null;
 	
@@ -315,14 +316,20 @@ public abstract class HibernateContextProviderZZZ  extends KernelUseObjectZZZ im
 //		return this.fillConfigurationGlobal(this.getConfiguration());
 //	}
 	
+	@Override
 	public IHibernateConfigurationProviderZZZ getConfigurationProviderObject() throws ExceptionZZZ{
 		return this.objConfigurationProvider;
 	}
+	
+	@Override
+	//Hier wird dann das spezielle Konfigurationsobjekt, für die Spezielle Konfiguration verwendet.
+	//Merke: Wenn z.B. eine spezielle JNDI - Konfiguration verwendet werden soll, dann von dieser aktuellen Klasse erben (Klasse B),
+	//        eine andere Konfigurationsklasse erstellen. Und dann in Klasse B untenstehende Methode überschreiben.
+	public void setConfigurationProviderObject(IHibernateConfigurationProviderZZZ objHibernateConfiguration) {
+		this.objConfigurationProvider = objHibernateConfiguration;
+	}	
 
 	//############## Abstracte Methoden, die auf jeden Fall überschrieben werden müssen.
-	public abstract void setConfigurationProviderObject(IHibernateConfigurationProviderZZZ objHibernateConfiguration);
-	
-	
 	//alte Version, jetzt ausgelagert public abstract boolean fillConfiguration(Configuration cfg) throws ExceptionZZZ ;
 
 	//alte Version, jetzt ausgelagert public abstract boolean fillConfigurationGlobal(Configuration cfg) throws ExceptionZZZ;

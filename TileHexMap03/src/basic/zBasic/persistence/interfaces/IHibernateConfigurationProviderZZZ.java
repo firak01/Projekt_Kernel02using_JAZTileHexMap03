@@ -13,7 +13,7 @@ public interface IHibernateConfigurationProviderZZZ {
 	abstract boolean fillConfigurationGlobal() throws ExceptionZZZ;
 	abstract boolean fillConfigurationLocalDb() throws ExceptionZZZ; //nicht bei Jndi
 	abstract boolean fillConfigurationMapping() throws ExceptionZZZ;
-	
+		
 	public boolean addConfigurationAnnotatedClass(Class cls) throws ExceptionZZZ;
 	public boolean addConfigurationClass(Class cls)throws ExceptionZZZ;
 		

@@ -26,18 +26,18 @@
 	</persistence-unit>
 	
 	
-	<persistence-unit name="SequenceAssociation002"
-		transaction-type="RESOURCE_LOCAL">
-		<provider>org.hibernate.ejb.HibernatePersistence</provider>
+<!-- 	<persistence-unit name="SequenceAssociation002" -->
+<!-- 		transaction-type="RESOURCE_LOCAL"> -->
+<!-- 		<provider>org.hibernate.ejb.HibernatePersistence</provider> -->
 
-		<!-- FGL: Hier nur die Klassen verwenden, die auch im Projekt vorhanden 
-			sind -->
-		<!-- <class>de.jpainfo.model.Kunde</class> -->
+	<!-- FGL: Hier nur die Klassen verwenden, die auch im Projekt vorhanden 
+ 			sind --> 
+	<!-- <class>de.jpainfo.model.Kunde</class> --> 
 
-		<properties>
-			<!-- Verweis auf die hibernate konfiguration -->
-			<property name="hibernate.ejb.cfgfile" value="hibernate.cfg.xml" />
-		</properties>
-	</persistence-unit>
+<!-- 		<properties> -->
+				<!-- Verweis auf die hibernate konfiguration --> 
+<!-- 			<property name="hibernate.ejb.cfgfile" value="hibernate.cfg.xml" /> -->
+<!-- 		</properties> -->
+<!-- 	</persistence-unit> -->
 	
 </persistence>

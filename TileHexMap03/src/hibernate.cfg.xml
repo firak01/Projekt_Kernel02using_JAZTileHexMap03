@@ -18,7 +18,13 @@
 
 		<!-- Database Connection settings -->
 		<property name="connection.driver_class">org.sqlite.JDBC</property>
-<!-- 		20171207: Es soll auf die reine Konfiguration verlassen werden, auch auf context.xml für JNDI ZUgriff <property name="connection.url">jdbc:sqlite:c:\\server\\SQLite\\TileHexMap03.sqlite</property> -->
+<!-- 		20171207: Es soll auf die reine Konfiguration verlassen werden, auch auf context.xml für JNDI ZUgriff
+        <property name="connection.url">jdbc:sqlite:c:\\server\\SQLite\\TileHexMap03.sqlite</property> -->
+        <!-- 20171209: EntiyManagerFactory scheint aber dies zu benötigten: 
+                       Z.B. in DebugJpaSequenceTestMain002.... EntityManagerFactory emf = Persistence.createEntityManagerFactory(sSchemaName);
+                       Darum in dem Tryout-Projekt Tryout.Hibernate.Kernel02usingZZZ eine eigenen hibernate.cfg.xml hinterlegt, in der folgende Zeile einkommentiert ist. -->
+<!--         <property name="connection.url">jdbc:sqlite:c:\\server\\SQLite\\TileHexMap03.sqlite</property> -->
+
 		<property name="connection.username"></property>
 		<property name="connection.password"></property>
 
@@ -34,6 +40,7 @@
 			"übersteuert" mit dem Parameter UPDATE 
 			FGL 20170215: Das übersteuern klappt nicht, darum hier auskommentiert-->
 <!-- 		<property name="hibernate.hbm2ddl.auto">create</property> -->
+
 
 
 		<mapping class="use.thm.persistence.model.AreaCellOcean"></mapping>

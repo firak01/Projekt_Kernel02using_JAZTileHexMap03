@@ -2,12 +2,16 @@ package use.thm.persistence.hibernate;
 
 import org.hibernate.cfg.Configuration;
 
+import use.thm.persistence.model.AreaCell;
 import use.thm.persistence.model.AreaCellLand;
 import use.thm.persistence.model.AreaCellOcean;
 import use.thm.persistence.model.Defaulttext;
+import use.thm.persistence.model.HexCell;
 import use.thm.persistence.model.TextDefaulttext;
+import use.thm.persistence.model.Tile;
 import use.thm.persistence.model.TileDefaulttext;
 import use.thm.persistence.model.TileDefaulttextValue;
+import use.thm.persistence.model.Troop;
 import use.thm.persistence.model.TroopArmy;
 import use.thm.persistence.model.TroopArmyVariant;
 import use.thm.persistence.model.TroopFleet;
@@ -72,20 +76,25 @@ create-drop: drop the schema when the SessionFactory is closed explicitly, typic
 		boolean bReturn = false;
 	
 		//+++ Die für Hiberante konfigurierten Klassen hinzufügen
-		//Merke: Wird eine Klasse ohne @Entity hinzugefügt, gibt es folgende Fehlermeldung: Exception in thread "main" org.hibernate.AnnotationException: No identifier specified for entity: use.thm.client.component.AreaCellTHM
-		//bReturn = addConfigurationAnnotatedClass(HexCell.class);
-		//bReturn = addConfigurationAnnotatedClass(AreaCell.class);
-		bReturn = this.addConfigurationAnnotatedClass(AreaCellOcean.class);
+		//Merke1: Wird eine Klasse ohne @Entity hinzugefügt, gibt es folgende Fehlermeldung: Exception in thread "main" org.hibernate.AnnotationException: No identifier specified for entity: use.thm.client.component.AreaCellTHM
+		//Merke2: Auch die vererbenden Klassen/Entities wie z.B. HexCell hier aufnehmen. Ggfs. wird diese in einer HQL Abfrage verwendet.
+		
+		//Merke3: Wg. untenstehender Fehlermeldungen auch die hibernate.cfg.xml Datei weiter pflegen mit allen gemappten Entities. 
+		//Exception in thread "main" java.lang.IllegalArgumentException: org.hibernate.hql.internal.ast.QuerySyntaxException: HexCell is not mapped [SELECT MAX(c.id.sMapX) FROM HexCell c]
+		//Caused by: org.hibernate.AnnotationException: Use of @OneToMany or @ManyToMany targeting an unmapped class: use.thm.persistence.model.HexCell.objbagTile[use.thm.persistence.model.Tile]
+		bReturn = addConfigurationAnnotatedClass(HexCell.class);
+		bReturn = addConfigurationAnnotatedClass(AreaCell.class);		
+		bReturn = addConfigurationAnnotatedClass(AreaCellOcean.class);
 		bReturn = addConfigurationAnnotatedClass(AreaCellLand.class);
 		
-		//bReturn = addConfigurationAnnotatedClass(Tile.class);
-		//bReturn = addConfigurationAnnotatedClass(Troop.class);
+		bReturn = addConfigurationAnnotatedClass(Tile.class);
+		bReturn = addConfigurationAnnotatedClass(Troop.class);
 		bReturn = addConfigurationAnnotatedClass(TroopArmy.class);
 		bReturn = addConfigurationAnnotatedClass(TroopFleet.class);
 		
 		bReturn = addConfigurationAnnotatedClass(TileDefaulttextValue.class);//wird aber nicht genutz. Nur Demonstrator
 		
-		bReturn = addConfigurationAnnotatedClass(Defaulttext.class); //Darf kein Entitiy sein, oder? 
+		bReturn = addConfigurationAnnotatedClass(Defaulttext.class); //Darf kein Entity sein, oder? 
 		bReturn = addConfigurationAnnotatedClass(TextDefaulttext.class);
 		bReturn = addConfigurationAnnotatedClass(TileDefaulttext.class);
 		

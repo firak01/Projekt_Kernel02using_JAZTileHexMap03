@@ -22,7 +22,6 @@ import basic.zKernel.KernelZZZ;
 
 public class HibernateContextProviderSingletonTHM extends HibernateContextProviderZZZ{
 	private static HibernateContextProviderSingletonTHM objContextHibernate; //muss als Singleton static sein
-	//das in die Elternklasse verschoben ... private IHibernateConfigurationProviderZZZ objConfigurationProvider; 
 
 	public static HibernateContextProviderSingletonTHM getInstance() throws ExceptionZZZ{
 		if(objContextHibernate==null){
@@ -47,37 +46,7 @@ public class HibernateContextProviderSingletonTHM extends HibernateContextProvid
 	private HibernateContextProviderSingletonTHM(KernelZZZ objKernel) throws ExceptionZZZ{
 		super(objKernel);
 	}
-		
-	/** Fülle globale Werte in das Configuration Objekt, z.B. der Datenbankname, Dialekt, etc.
-	 * 
-	 */
-//	public boolean fillConfigurationGlobal(Configuration cfg){
-//				//TODO: Die hier verwendeten Werte aus der Kernel-Konfiguration auslesen.
-//				//Programmatisch das erstellen, das in der hibernate.cfg.xml Datei beschrieben steht.
-//				//Merke: Irgendwie funktioniert es nicht die Werte in der hibernate.cfg.xml Datei zu überschreiben.
-//		 		//			Darum muss z.B. hibernate.hbm2ddl.auto in der Konfigurationdatei auskommentiert werden, sonst ziehen hier die Änderungen nicht.
-//				cfg.setProperty("hiberate.show_sql", "true");
-//				cfg.setProperty("hiberate.format_sql", "true");
-//				cfg.setProperty("hibernate.dialect","basic.persistence.hibernate.SQLiteDialect" );
-//				cfg.setProperty("hibernate.connection.driver_class", "org.sqlite.JDBC");
-//				cfg.setProperty("hibernate.connection.url", "jdbc:sqlite:c:\\server\\SQLite\\TileHexMap03.sqlite");
-//				cfg.setProperty("hibernate.connection.username", "");
-//				cfg.setProperty("hibernate.connection.password", "");
-//
-//				/*
-//				 * So the list of possible options are,
-//    validate: validate the schema, makes no changes to the database.
-//    update: update the schema.
-//    create: creates the schema, destroying previous data.
-//    create-drop: drop the schema when the SessionFactory is closed explicitly, typically when the application is stopped.
-//				 */
-//				cfg.setProperty("hibernate.hbm2ddl.auto", "create"); //! Damit wird die Datenbank und sogar die Tabellen darin automatisch erstellt, aber: Sie wird am Anwendungsende geleert.
-//				//cfg.setProperty("hibernate.hbm2ddl.auto", "update");  //! Jetzt erst wird jede Tabelle über den Anwendungsstart hinaus gepseichert.
-//				cfg.setProperty("cache.provider_class", "org.hiberniate.cache.NoCacheProvider");
-//				cfg.setProperty("current_session_context_class", "thread");				
-//				return true;
-//	}
-	
+			
 	/* Wenn man einen Interceptor verwendet, dann ist das für alle Entities des Projektes / der Session mit diesem HibernateContextProvider + KernelKeyZZZ aktiv. */ 
 	@Override
 	public Session declareSessionHibernateIntercepted(SessionFactoryImpl sf) {

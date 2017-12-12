@@ -41,7 +41,6 @@ import basic.zKernelUI.component.KernelJFrameCascadedZZZ;
  * 
  */
 public abstract class HibernateContextProviderZZZ  extends KernelUseObjectZZZ implements IHibernateContextProviderZZZ, IHibernateConfigurationProviderUserZZZ {	
-	//alte Version, jetzt ausgelagert private Configuration cfgHibernate = new Configuration();
 	IHibernateConfigurationProviderZZZ objConfigurationProvider = null;
 	
 	//Session NICHT hier speichern. Der Grund ist, dass es pro Transaction nur 1 Session geben darf
@@ -193,9 +192,13 @@ public abstract class HibernateContextProviderZZZ  extends KernelUseObjectZZZ im
 				
 				//TODO GOON: Dies in eine spezielle HibernateJpa...-Klasse auslagern.
 				//TODO GOON: Properties für .createEntityManagerFactory(..., properties) übergeben!!!
+				
+				//TODO GOON: 20171212 fülle  die Werte aus dem Hibernate - Configuration - Objekt hier rein.
+				//Ohne das müssen für die Verwendung des EntityManagers alle Konfigurationen in der Datei hibernate.cfg.xml hinterlegt werden.
+				//https://stackoverflow.com/questions/30124826/creating-entitymanagerfactory-from-hibernate-configuration				
 				EntityManagerFactory emf = Persistence.createEntityManagerFactory(sSchemaName);
 				this.setEntityManagerFactory(emf);//TODO: IM Destruktor: if(this.getEntityManager()!=null) this.getEntityManager().close();
-				
+												
 				objReturn = emf.createEntityManager();
 				this.getEntityManagerMap().put(sSchemaName, objReturn);
 			}
@@ -307,14 +310,8 @@ public abstract class HibernateContextProviderZZZ  extends KernelUseObjectZZZ im
 	
 	
 	public boolean fillConfiguration() throws ExceptionZZZ{
-		//alte Version, jetzt ausgelagert return this.fillConfiguration(this.getConfiguration());
 		return this.getConfigurationProviderObject().fillConfiguration();
 	}
-	
-	//alte Version, jetzt ausgelagert 
-//	public boolean fillConfigurationGlobal() throws ExceptionZZZ{
-//		return this.fillConfigurationGlobal(this.getConfiguration());
-//	}
 	
 	@Override
 	public IHibernateConfigurationProviderZZZ getConfigurationProviderObject() throws ExceptionZZZ{

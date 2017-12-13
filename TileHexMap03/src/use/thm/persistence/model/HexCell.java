@@ -148,7 +148,9 @@ public class HexCell implements Serializable, IOptimisticLocking{
 	 }
 	 
 		//Versuch mit MAX(X) darauf zuzugreifen aus der Methode fillMap(..)
-		//ABER: Da das String ist, wird "9" als maximaler Wert zurückgeliefert und kein Integerwert.	
+		//ABER: Da das String in CellId ist, würde "9" als maximaler Wert zurückgeliefert und kein Integerwert.
+	    //      Daher hier direkt (ohne "Umweg über CellId) auf einen Integer Wert zugreifen.
+	    //      HQL: Aus DebugJpaQueryHexCellMain  "SELECT MAX(c.mapX) FROM HexCell c" statt "SELECT MAX(c.id.mapX) FROM HexCell c"
 		@Access(AccessType.PROPERTY)
 		@Column(name="XX", nullable=false, columnDefinition="integer default 0")
 	    public int getMapX(){

@@ -4,7 +4,10 @@
 <hibernate-configuration>
 
 	<session-factory>
-		<!-- Im Code wird die Konfiguration aber durch Java-Befehle erstellt und diese hier uebersteuert -->     
+		<!-- Im Code wird die Konfiguration aber durch Java-Befehle programmatisch erstellt und diese hier uebersteuert --> 
+		<!-- 20171212: Diese Properties werden an die EntityManagerFactory (in HibernateContextProviderZZZ) übergeben. 
+		               Nur das Klassenmapping kann nicht übergeben werden -->
+		    
 		<!--  Exkurs 20171103: Versuche über den nachfolgenden Namen eine SessionFactory zu erzeugen -->  
 <!--        <property name="hibernate.session_factory_name">hibernate.session-factory.ServicePortal</property> -->
 <!-- 		damit funktioniert es, aber auch ohne das Fragezeichen, ja funktioniert auch ohne diese Angabe<property name="hibernate.session_factory_name">tryout.zBasic.persistence.hibernate.HibernateSessionFactoryTomcatFactory</property> -->
@@ -14,35 +17,27 @@
 		<property name="format_sql">true</property>
 
 		<!-- <property name="dialect">org.hibernate.dialect.SQLiteDialect</property> -->
-		<property name="dialect">basic.persistence.hibernate.SQLiteDialect</property>
+		<property name="dialect">basic.persistence.hibernate.SQLiteDialect</property><!-- Eine einfache Version aus dem Netz -->
 
 		<!-- Database Connection settings -->
 		<property name="connection.driver_class">org.sqlite.JDBC</property>
-<!-- 		20171207: Es soll auf die reine Konfiguration verlassen werden, auch auf context.xml für JNDI ZUgriff
-        <property name="connection.url">jdbc:sqlite:c:\\server\\SQLite\\TileHexMap03.sqlite</property> -->
-        <!-- 20171209: EntiyManagerFactory scheint aber dies zu benötigten: 
-                       Z.B. in DebugJpaSequenceTestMain002.... EntityManagerFactory emf = Persistence.createEntityManagerFactory(sSchemaName);
-                       Darum in dem Tryout-Projekt Tryout.Hibernate.Kernel02usingZZZ eine eigenen hibernate.cfg.xml hinterlegt, in der folgende Zeile einkommentiert ist. -->
-<!--         <property name="connection.url">jdbc:sqlite:c:\\server\\SQLite\\TileHexMap03.sqlite</property> -->
+<!-- 		20171207: Es soll auf die reine Konfiguration verlassen werden, auch auf context.xml für JNDI ZUgriff -->        
+<!--    <property name="connection.url">jdbc:sqlite:c:\\server\\SQLite\\TileHexMap03.sqlite</property> --><!-- wird in der Konfiguration programatisch gesetzt, je nachdem, ob Datenbank vorhanden oder nicht. -->
 
 		<property name="connection.username"></property>
-		<property name="connection.password"></property>
-
-		<!-- Enable Hibernates automatic session context management -->
-		<property name="current_session_context_class">thread</property>
-
-		<!-- disable the second-level cache -->
-		<property name="cache.provider_class">org.hibernate.cache.NoCacheProvider</property>
+		<property name="connection.password"></property>		
+		<property name="current_session_context_class">thread</property><!-- Enable Hibernates automatic session context management -->
+		<property name="cache.provider_class">org.hibernate.cache.NoCacheProvider</property><!-- disable the second-level cache -->
 
 		<!-- drop and recreate database schema on startup -->
 		<!-- FGL 20131124: Umgeändert auf create, erstellt damit automatisch die 
 			Datenbank, ABER: keine Updates. Daher im Code (...main... -Klasse) die Konfiguration 
-			"übersteuert" mit dem Parameter UPDATE 
-			FGL 20170215: Das übersteuern klappt nicht, darum hier auskommentiert-->
-<!-- 		<property name="hibernate.hbm2ddl.auto">create</property> -->
+			"übersteuert" mit dem Parameter UPDATE 	-->
+<!-- 		<property name="hibernate.hbm2ddl.auto">create</property> --><!-- wird in der Konfiguration programatisch gesetzt, je nachdem, ob Datenbank vorhanden oder nicht. -->
 
 
-
+		<!-- FGL 20171213 - Diese Konfiguration wird für Hibernate auch programmatisch gesetzt -->
+		<!--                Es klappt nicht sie dann irgendwie an die EntityManagerFactory zu übergeben -->
 		<mapping class="use.thm.persistence.model.AreaCellOcean"></mapping>
 		<mapping class="use.thm.persistence.model.AreaCellLand"></mapping>
 		<mapping class="use.thm.persistence.model.TroopArmy"></mapping>

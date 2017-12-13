@@ -1,5 +1,11 @@
 package basic.zBasic.persistence.hibernate;
 
+import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Properties;
+
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
@@ -11,10 +17,12 @@ import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 import org.hibernate.cfg.AnnotationConfiguration;
 import org.hibernate.cfg.Configuration;
+import org.hibernate.cfg.Mappings;
 import org.hibernate.event.service.spi.EventListenerRegistry;
 import org.hibernate.event.spi.EventType;
 import org.hibernate.integrator.spi.Integrator;
 import org.hibernate.internal.SessionFactoryImpl;
+import org.hibernate.mapping.PersistentClass;
 import org.hibernate.service.ServiceRegistry;
 import org.hibernate.service.ServiceRegistryBuilder;
 
@@ -188,16 +196,60 @@ public abstract class HibernateContextProviderZZZ  extends KernelUseObjectZZZ im
 				//Fall: Wiederverwenden
 				objReturn = (EntityManager) hmEntityManager.get(sSchemaName);
 			}else{
-				//Fall: Neu erstellen
-				
+				//Fall: Neu erstellen				
 				//TODO GOON: Dies in eine spezielle HibernateJpa...-Klasse auslagern.
+								
 				//TODO GOON: Properties für .createEntityManagerFactory(..., properties) übergeben!!!
+				IHibernateConfigurationProviderZZZ objHibernateCfgProvider = this.getConfigurationProviderObject();
+				Configuration objCfg = objHibernateCfgProvider.getConfiguration();
+				
+				//20171213 VERSUCH mache hier die Mappings fertig.... dann sind vielleicht die Klassen auch in den Properties?				
+//				Mappings m = objCfg.createMappings();
+//				objCfg.buildMappings(); klappt letztendlich nicht
+				
+				
+				Properties objProps = objCfg.getProperties();
+				
+				//Konvertiere die Properties der Configuation in eine Map, die dann der EntityManagerFactory übergeben werden kann.
+				Map<String, String> hmCfgProps = new HashMap<String, String>();
+				Enumeration<?> eCfgProps = objProps.propertyNames();
+				while(eCfgProps.hasMoreElements()){
+					String s = (String) eCfgProps.nextElement();
+					hmCfgProps.put(s, objProps.getProperty(s));
+				}
+				
+				
+				
+				/* Das ist vielleicht ein Lösungsansatz zur Übergabe der gemappten Klassen an die EntityManagerFactory?
+				 * 
+I have a similar problem and solved it with Hibernate's Integrator SPI:
+
+@Override
+public void integrate(Configuration configuration,
+    SessionFactoryImplementor sessionFactory,
+    SessionFactoryServiceRegistry serviceRegistry) {
+
+    configuration.addAnnotatedClass(MyEntity.class);
+    configuration.buildMappings();
+}
+				 */
+				//objCfg.buildMappings();
+				//Iterator<PersistentClass>  it = objCfg.getClassMappings();
+				
+				
+				/*ODER ALTERNATIVE ?
+				 *  Ejb3Configuration config = new Ejb3Configuration();
+        return (HibernateEntityManagerFactory) config.addProperties(hibernateProperties()).
+                addAnnotatedClass(User.class).
+                buildEntityManagerFactory();
+				 */
 				
 				//TODO GOON: 20171212 fülle  die Werte aus dem Hibernate - Configuration - Objekt hier rein.
 				//Ohne das müssen für die Verwendung des EntityManagers alle Konfigurationen in der Datei hibernate.cfg.xml hinterlegt werden.
 				//https://stackoverflow.com/questions/30124826/creating-entitymanagerfactory-from-hibernate-configuration				
-				EntityManagerFactory emf = Persistence.createEntityManagerFactory(sSchemaName);
-				this.setEntityManagerFactory(emf);//TODO: IM Destruktor: if(this.getEntityManager()!=null) this.getEntityManager().close();
+				//EntityManagerFactory emf = Persistence.createEntityManagerFactory(sSchemaName);
+				EntityManagerFactory emf = Persistence.createEntityManagerFactory(sSchemaName, hmCfgProps);				
+				this.setEntityManagerFactory(emf);//TODO Goon: IM Destruktor: if(this.getEntityManager()!=null) this.getEntityManager().close();
 												
 				objReturn = emf.createEntityManager();
 				this.getEntityManagerMap().put(sSchemaName, objReturn);

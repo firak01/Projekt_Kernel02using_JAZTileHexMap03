@@ -262,8 +262,7 @@ public class HexMapTHM extends KernelUseObjectZZZ implements ITileEventUserTHM {
 	private boolean fillMap_readCreated(HibernateContextProviderSingletonTHM objContextHibernate, KernelJPanelCascadedZZZ panelMap) throws ExceptionZZZ{
 		boolean bReturn = false;
 		main:{
-				
-			
+							
 			//ACHTUNG NICHT LOESCHEN: Diese DAO Methoden funktionieren. und es war kompliziert genug hinzubekommen.
 			//20170316: Steuere das über die DAO-Klassen
 			//WENN MAN über die Liste der AreaCells geht (wg. Performance) dann braucht man dies nicht.

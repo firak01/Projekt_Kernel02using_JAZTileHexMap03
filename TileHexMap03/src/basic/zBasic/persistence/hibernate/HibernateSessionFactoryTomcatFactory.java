@@ -40,8 +40,8 @@ public class HibernateSessionFactoryTomcatFactory implements ObjectFactory{
 		SessionFactory objReturn = null;  
 		 try{
 			  
-			  //Fehlermedlung: org.hibernate.HibernateException: Connection cannot be null when 'hibernate.dialect' not set
-			  //Lösungsanasatz 1: SETZE TESTWEISE ALLES MÖGLICHE, das funktioniert.			 
+			  //Fehlermeldung: org.hibernate.HibernateException: Connection cannot be null when 'hibernate.dialect' not set
+			  //Lösungsansatz 1: SETZE TESTWEISE ALLES MÖGLICHE, das funktioniert.			 
 //			  Configuration cfgNew = new Configuration();
 //			  cfgNew.configure("hibernate.cfg.xml"); //Ohne das HibernateContextprovider-Objekt funktionierrtt das auch ohne Endlosschleife.
 //			  ServiceRegistry sr = new ServiceRegistryBuilder().applySettings(cfgNew.getProperties()).buildServiceRegistry();

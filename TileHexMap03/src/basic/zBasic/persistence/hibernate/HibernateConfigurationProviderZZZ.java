@@ -38,7 +38,7 @@ public abstract class HibernateConfigurationProviderZZZ implements IHibernateCon
 		return true;
 	}
 	
-	@Override
+
 	public boolean addConfigurationAnnotatedClass(Class cls) throws ExceptionZZZ{
 		if(cls==null){
 			ExceptionZZZ ez = new ExceptionZZZ("Class-Object not passed.", iERROR_PARAMETER_MISSING, this, ReflectCodeZZZ.getMethodCurrentName());
@@ -65,7 +65,6 @@ public abstract class HibernateConfigurationProviderZZZ implements IHibernateCon
 		return true;
 	}
 	
-	@Override
 	public Configuration getConfiguration() {
 		return this.objConfiguration;
 	}

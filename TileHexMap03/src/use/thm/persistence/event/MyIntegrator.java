@@ -5,14 +5,12 @@ import org.hibernate.engine.spi.SessionFactoryImplementor;
 import org.hibernate.event.service.spi.EventListenerRegistry;
 import org.hibernate.event.spi.EventType;
 import org.hibernate.integrator.spi.Integrator;
-import org.hibernate.metamodel.Metadata;
 import org.hibernate.metamodel.source.MetadataImplementor;
 import org.hibernate.service.spi.SessionFactoryServiceRegistry;
 
 import custom.zKernel.LogZZZ;
 import basic.zKernel.IKernelUserZZZ;
 import basic.zKernel.KernelZZZ;
-import use.thm.persistence.listener.TroopArmyListener;
 
 /**Es muss in META-INF\services die Datei org.hibernate.integrator.spi.Integrator vorhanden sein.
  * Darin den Pfad zu dieser Klasse aufnehmen.
@@ -31,6 +29,13 @@ public class MyIntegrator implements Integrator, IKernelUserZZZ {
 
             final EventListenerRegistry eventListenerRegistry = serviceRegistry.getService( EventListenerRegistry.class );
 
+            //Wird nicht ausgeführt, weder bei session.save noch bei session.update
+            System.out.println("XXX In MyIntegrator.java");     
+            
+            
+            //TODO GOON 20171218: Man kann diesen Integrator nicht durch Änderung des Classpath ausblenden. 
+            //                    D.h. auch Projekte, die dieses Projekt nutzen, werden den Integartor aufrufen und damit die Listener registrieren.
+            //                    Idee deshalb: Hole ein Array der Listener aus der KernelHibernateKonfigurations-Klasse
             //Wird nicht ausgeführt, weder bei session.save noch bei session.update
             PersistListenerTHM listenerPersist = new PersistListenerTHM(); //Funktioniert wahrscheinlich nur unter JPA. Mit Hibernate session.save(xxx) wird das nicht ausgeführt.
             eventListenerRegistry.setListeners(EventType.PERSIST, listenerPersist);
@@ -58,7 +63,8 @@ public class MyIntegrator implements Integrator, IKernelUserZZZ {
         public void disintegrate(SessionFactoryImplementor arg0, SessionFactoryServiceRegistry arg1) {        
         }
 
-        public void integrate(MetadataImplementor arg0,SessionFactoryImplementor arg1, SessionFactoryServiceRegistry arg2) {        
+        public void integrate(MetadataImplementor arg0,SessionFactoryImplementor arg1, SessionFactoryServiceRegistry arg2) {
+        	System.out.println("YYY In MyIntegrator.java");
         }
 
 				

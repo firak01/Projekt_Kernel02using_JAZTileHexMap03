@@ -1,41 +1,24 @@
 package use.thm.persistence.event;
 
-import java.io.Serializable;
 import java.util.Calendar;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Set;
 
 import org.hibernate.HibernateException;
-import org.hibernate.engine.spi.EntityEntry;
 import org.hibernate.event.internal.DefaultSaveOrUpdateEventListener;
-import org.hibernate.event.spi.PreInsertEvent;
-import org.hibernate.event.spi.PreInsertEventListener;
-import org.hibernate.event.spi.PreUpdateEvent;
-import org.hibernate.event.spi.PreUpdateEventListener;
 import org.hibernate.event.spi.SaveOrUpdateEvent;
-import org.hibernate.event.spi.SaveOrUpdateEventListener;
 
-import custom.zKernel.LogZZZ;
-import use.thm.persistence.dao.AreaCellDao;
 import use.thm.persistence.hibernate.HibernateContextProviderSingletonTHM;
 import use.thm.persistence.model.AreaCell;
-import use.thm.persistence.model.CellId;
 import use.thm.persistence.model.HexCell;
-import use.thm.persistence.model.Tile;
 import use.thm.persistence.model.TroopArmy;
 import use.thm.persistence.model.TroopFleet;
 import use.thm.rule.facade.AreaCellRuleFacade;
 import use.thm.rule.facade.TroopArmyRuleFacade;
 import use.thm.rule.facade.TroopFleetRuleFacade;
-import use.thm.rule.model.TroopArmyRuleType;
 import basic.zBasic.ExceptionZZZ;
-import basic.zBasic.KernelSingletonTHM;
 import basic.zBasic.ReflectCodeZZZ;
-import basic.zBasic.util.abstractList.ExtendedVectorZZZ;
-import basic.zBasic.util.abstractList.VectorExtendedZZZ;
 import basic.zKernel.IKernelUserZZZ;
 import basic.zKernel.KernelZZZ;
+import custom.zKernel.LogZZZ;
 
 /**
  * Wird beim commit ausgeführt.
@@ -43,6 +26,7 @@ import basic.zKernel.KernelZZZ;
  *
  */
 public class SaveOrUpdateListenerTHM extends DefaultSaveOrUpdateEventListener implements IKernelUserZZZ, IVetoFlagZZZ{ //das klappt nicht  implements SaveOrUpdateEventListener,IKernelUserZZZ {
+//public class SaveOrUpdateListenerTHM implements SaveOrUpdateEventListener, IKernelUserZZZ, IVetoFlagZZZ{ //das klappt nicht  implements SaveOrUpdateEventListener,IKernelUserZZZ {
 	  
 	private static final long serialVersionUID = 1L;
 	private KernelZZZ objKernel;

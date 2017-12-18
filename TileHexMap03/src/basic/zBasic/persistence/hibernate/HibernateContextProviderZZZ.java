@@ -48,8 +48,9 @@ import basic.zKernelUI.component.KernelJFrameCascadedZZZ;
  * und die globalen Hibernate Objekte sind hierüber überall verfügbar.
  * 
  */
-public abstract class HibernateContextProviderZZZ  extends KernelUseObjectZZZ implements IHibernateContextProviderZZZ, IHibernateConfigurationProviderUserZZZ {	
+public abstract class HibernateContextProviderZZZ  extends KernelUseObjectZZZ implements IHibernateContextProviderZZZ, IHibernateConfigurationProviderUserZZZ { //, IHibernateListenerProviderUserZZZ {	
 	IHibernateConfigurationProviderZZZ objConfigurationProvider = null;
+	//IHibernateListenerProviderZZZ objListenerProvider = null;
 	
 	//Session NICHT hier speichern. Der Grund ist, dass es pro Transaction nur 1 Session geben darf
 //	http://stackoverflow.com/questions/37602501/hibernate-2nd-transaction-in-same-session-doesnt-save-modified-object
@@ -71,6 +72,12 @@ public abstract class HibernateContextProviderZZZ  extends KernelUseObjectZZZ im
 				ExceptionZZZ ez = new ExceptionZZZ("Configuration not successfully filled.", iERROR_RUNTIME, this, ReflectCodeZZZ.getMethodCurrentName());
 				throw ez;
 			}
+//			
+//			bErg = this.fillListener();
+//			if(!bErg){
+//				ExceptionZZZ ez = new ExceptionZZZ("Listener not successfully filled.", iERROR_RUNTIME, this, ReflectCodeZZZ.getMethodCurrentName());
+//				throw ez;
+//			}
 		}
 		
 	public HibernateContextProviderZZZ(KernelZZZ objKernel) throws ExceptionZZZ{
@@ -80,6 +87,12 @@ public abstract class HibernateContextProviderZZZ  extends KernelUseObjectZZZ im
 			ExceptionZZZ ez = new ExceptionZZZ("Configuration not successfully filled.", iERROR_RUNTIME, this, ReflectCodeZZZ.getMethodCurrentName());
 			throw ez;
 		}
+//		
+//		bErg = this.fillListener();
+//		if(!bErg){
+//			ExceptionZZZ ez = new ExceptionZZZ("Listener not successfully filled.", iERROR_RUNTIME, this, ReflectCodeZZZ.getMethodCurrentName());
+//			throw ez;
+//		}
 	}
 	
 	public SessionFactoryImpl getSessionFactory(){
@@ -360,29 +373,48 @@ public void integrate(Configuration configuration,
 		return this.objSession;
 	}
 	
-	
+	//+++++ Configuration ++++++++
 	public boolean fillConfiguration() throws ExceptionZZZ{
-		return this.getConfigurationProviderObject().fillConfiguration();
+		if(this.getConfigurationProviderObject()!=null){
+			return this.getConfigurationProviderObject().fillConfiguration();
+		}else{
+			return false;
+		}
 	}
-	
-	@Override
+		
 	public IHibernateConfigurationProviderZZZ getConfigurationProviderObject() throws ExceptionZZZ{
 		return this.objConfigurationProvider;
 	}
 	
-	@Override
 	//Hier wird dann das spezielle Konfigurationsobjekt, für die Spezielle Konfiguration verwendet.
 	//Merke: Wenn z.B. eine spezielle JNDI - Konfiguration verwendet werden soll, dann von dieser aktuellen Klasse erben (Klasse B),
 	//        eine andere Konfigurationsklasse erstellen. Und dann in Klasse B untenstehende Methode überschreiben.
 	public void setConfigurationProviderObject(IHibernateConfigurationProviderZZZ objHibernateConfiguration) {
 		this.objConfigurationProvider = objHibernateConfiguration;
-	}	
+	}
+	
+	
+//	//++++ Listener +++++++++
+//	public boolean fillListener() throws ExceptionZZZ{
+//		if(this.getListenerProviderObject()!=null){
+//			return this.getListenerProviderObject().fillListener();
+//		}else{
+//			return false;
+//		}
+//	}
+//	
+//	public IHibernateListenerProviderZZZ getListenerProviderObject() throws ExceptionZZZ{
+//		return this.objListenerProvider;
+//	}
+//	
+//	//Hier wird dann das spezielle Konfigurationsobjekt, für die Spezielle Konfiguration verwendet.
+//	//Merke: Wenn z.B. eine spezielle JNDI - Konfiguration verwendet werden soll, dann von dieser aktuellen Klasse erben (Klasse B),
+//	//        eine andere Konfigurationsklasse erstellen. Und dann in Klasse B untenstehende Methode überschreiben.
+//	public void setListenerProviderObject(IHibernateListenerProviderZZZ objHibernateListener) {
+//		this.objListenerProvider = objHibernateListener;
+//	}
 
 	//############## Abstracte Methoden, die auf jeden Fall überschrieben werden müssen.
-	//alte Version, jetzt ausgelagert public abstract boolean fillConfiguration(Configuration cfg) throws ExceptionZZZ ;
-
-	//alte Version, jetzt ausgelagert public abstract boolean fillConfigurationGlobal(Configuration cfg) throws ExceptionZZZ;
-
 	//Verwende intern den SessionBuilder um eine Session zurückzuliefern, die einen Interceptor benutzt.
 	public abstract Session declareSessionHibernateIntercepted(SessionFactoryImpl sf);
 

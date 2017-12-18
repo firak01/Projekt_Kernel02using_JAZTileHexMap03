@@ -11,13 +11,13 @@ import basic.zBasic.ExceptionZZZ;
 public interface IHibernateContextProviderZZZ {		
 	public IHibernateConfigurationProviderZZZ getConfigurationProviderObject()  throws ExceptionZZZ;
 	public void setConfigurationProviderObject(IHibernateConfigurationProviderZZZ objHibernateConfigurationProvider);
-	public boolean fillConfiguration() throws ExceptionZZZ;	
-	//alte Version, jetzt ausgelagert public boolean fillConfigurationGlobal() throws ExceptionZZZ;
-			
+	public boolean fillConfiguration() throws ExceptionZZZ;			
 	public Configuration getConfiguration();
-	//alte Version, jetzt ausgelagert public boolean addConfigurationAnnotatedClass(Class cls) throws ExceptionZZZ;
-	//alte Version, jetzt ausgelagert public boolean addConfigurationClass(Class cls)throws ExceptionZZZ;
-			
+	
+//	public IHibernateListenerProviderZZZ getListenerProviderObject() throws ExceptionZZZ;
+//	public void setListenerProviderObject(IHibernateListenerProviderZZZ objHibernateListenerProvider);
+//	public boolean fillListener() throws ExceptionZZZ;
+	
 	public SessionFactoryImpl getSessionFactory();
 	
 	public Session getSession() throws ExceptionZZZ;    //Liefere immer eine neue Session

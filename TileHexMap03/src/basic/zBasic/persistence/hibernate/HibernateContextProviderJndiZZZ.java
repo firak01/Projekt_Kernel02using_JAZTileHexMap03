@@ -343,7 +343,6 @@ public abstract class HibernateContextProviderJndiZZZ  extends HibernateContextP
 
 	//############## Abstracte Methoden, die auf jeden Fall überschrieben werden müssen.
 	//....
-	@Override
 	public SessionFactoryImpl getSessionFactoryByJndi(String sContextJndi) {
 		this.setContextJndiString(sContextJndi);
 		return this.getSessionFactoryByJndi();

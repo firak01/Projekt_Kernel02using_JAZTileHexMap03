@@ -18,6 +18,7 @@ import use.thm.persistence.model.TroopFleet;
 import basic.zBasic.ExceptionZZZ;
 import basic.zBasic.persistence.hibernate.HibernateContextProviderZZZ;
 import basic.zBasic.persistence.interfaces.IHibernateConfigurationProviderZZZ;
+import basic.zBasic.persistence.interfaces.IHibernateListenerProviderZZZ;
 import basic.zKernel.KernelZZZ;
 
 public class HibernateContextProviderSingletonTHM extends HibernateContextProviderZZZ{
@@ -93,8 +94,15 @@ public class HibernateContextProviderSingletonTHM extends HibernateContextProvid
 		}
 		return objReturn;
 	}
-
 	
-	
-	
+//	@Override
+//	//Hier wird dann das spezielle Konfigurationsobjekt, für die Spezielle Konfiguration verwendet.
+//	public IHibernateListenerProviderZZZ getListenerProviderObject() throws ExceptionZZZ {
+//		IHibernateListenerProviderZZZ objReturn = super.getListenerProviderObject(); //nutze hier die "Speicherung in der Elternklasse"		
+//		if(objReturn==null){
+//			objReturn = new HibernateListenerProviderTHM();
+//			this.setListenerProviderObject(objReturn);
+//		}
+//		return objReturn;
+//	}
 }

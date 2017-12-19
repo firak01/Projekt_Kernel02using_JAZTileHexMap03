@@ -24,6 +24,6 @@ public interface IHibernateListenerProviderZZZ {
 	public PreInsertEventListener getPreInsertEventListener();
 	public void setPreInsertEventListener(PreInsertEventListener objPreInsertEventListener);
 	
-//	public SaveOrUpdateEventListener getSaveOrUpdateEventListener();
-//	public void setSaveOrUpdateEventListener(SaveOrUpdateEventListener objSaveOrUpdateEventListener);
+	public SaveOrUpdateEventListener getSaveOrUpdateEventListener();
+	public void setSaveOrUpdateEventListener(SaveOrUpdateEventListener objSaveOrUpdateEventListener);
 }

@@ -26,8 +26,8 @@ public class HibernateListenerProviderTHM extends HibernateListenerProviderZZZ {
 			this.setPreInsertEventListener(listenerPreInsert);
 			
 			//PROBLEME.... 20171219... vielleicht das Registrieren am Service hier auch schon reinnehmen 
-			//SaveOrUpdateEventListener listenerSaveUpdate = new SaveOrUpdateListenerTHM();
-			//this.setSaveOrUpdateEventListener(listenerSaveUpdate);
+			SaveOrUpdateEventListener listenerSaveUpdate = new SaveOrUpdateListenerTHM();
+			this.setSaveOrUpdateEventListener(listenerSaveUpdate);
 			
 			bReturn = true;
 		}

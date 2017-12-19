@@ -95,14 +95,14 @@ public class HibernateContextProviderSingletonTHM extends HibernateContextProvid
 		return objReturn;
 	}
 	
-//	@Override
-//	//Hier wird dann das spezielle Konfigurationsobjekt, für die Spezielle Konfiguration verwendet.
-//	public IHibernateListenerProviderZZZ getListenerProviderObject() throws ExceptionZZZ {
-//		IHibernateListenerProviderZZZ objReturn = super.getListenerProviderObject(); //nutze hier die "Speicherung in der Elternklasse"		
-//		if(objReturn==null){
-//			objReturn = new HibernateListenerProviderTHM();
-//			this.setListenerProviderObject(objReturn);
-//		}
-//		return objReturn;
-//	}
+	@Override
+	//Hier wird dann das spezielle Konfigurationsobjekt, für die Spezielle Konfiguration verwendet.
+	public IHibernateListenerProviderZZZ getListenerProviderObject() throws ExceptionZZZ {
+		IHibernateListenerProviderZZZ objReturn = super.getListenerProviderObject(); //nutze hier die "Speicherung in der Elternklasse"		
+		if(objReturn==null){
+			objReturn = new HibernateListenerProviderTHM();
+			this.setListenerProviderObject(objReturn);
+		}
+		return objReturn;
+	}
 }

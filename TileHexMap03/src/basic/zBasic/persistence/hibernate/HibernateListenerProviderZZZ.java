@@ -17,7 +17,7 @@ import basic.zBasic.persistence.interfaces.IHibernateListenerProviderZZZ;
 public abstract class HibernateListenerProviderZZZ implements IHibernateListenerProviderZZZ, IConstantZZZ{					
 	private PersistEventListener objPersistEventListener = null;
 	private PreInsertEventListener objPreInsertEventListener = null;	
-	//private SaveOrUpdateEventListener objSaveOrUpdateEventListener = null;
+	private SaveOrUpdateEventListener objSaveOrUpdateEventListener = null;
 		
 	public HibernateListenerProviderZZZ() throws ExceptionZZZ{
 		//NEIN: Sonst wird die Konfiguration 2x gefüllt. fillConfiguration();
@@ -41,10 +41,10 @@ public abstract class HibernateListenerProviderZZZ implements IHibernateListener
 		this.objPreInsertEventListener = objPreInsertEventListener;
 	}
 	
-//	public SaveOrUpdateEventListener getSaveOrUpdateEventListener(){
-//		return this.objSaveOrUpdateEventListener;
-//	}
-//	public void setSaveOrUpdateEventListener(SaveOrUpdateEventListener objSaveOrUpdateEventListener){
-//		this.objSaveOrUpdateEventListener = objSaveOrUpdateEventListener;
-//	}
+	public SaveOrUpdateEventListener getSaveOrUpdateEventListener(){
+		return this.objSaveOrUpdateEventListener;
+	}
+	public void setSaveOrUpdateEventListener(SaveOrUpdateEventListener objSaveOrUpdateEventListener){
+		this.objSaveOrUpdateEventListener = objSaveOrUpdateEventListener;
+	}
 }

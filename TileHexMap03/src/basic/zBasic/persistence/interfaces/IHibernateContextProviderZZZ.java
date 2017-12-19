@@ -14,9 +14,9 @@ public interface IHibernateContextProviderZZZ {
 	public boolean fillConfiguration() throws ExceptionZZZ;			
 	public Configuration getConfiguration();
 	
-//	public IHibernateListenerProviderZZZ getListenerProviderObject() throws ExceptionZZZ;
-//	public void setListenerProviderObject(IHibernateListenerProviderZZZ objHibernateListenerProvider);
-//	public boolean fillListener() throws ExceptionZZZ;
+	public IHibernateListenerProviderZZZ getListenerProviderObject() throws ExceptionZZZ;
+	public void setListenerProviderObject(IHibernateListenerProviderZZZ objHibernateListenerProvider);
+	public boolean fillListener() throws ExceptionZZZ;
 	
 	public SessionFactoryImpl getSessionFactory();
 	

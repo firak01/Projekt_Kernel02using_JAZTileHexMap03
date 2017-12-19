@@ -26,8 +26,6 @@ import custom.zKernel.LogZZZ;
  *
  */
 public class SaveOrUpdateListenerTHM extends DefaultSaveOrUpdateEventListener implements IKernelUserZZZ, IVetoFlagZZZ{ //das klappt nicht  implements SaveOrUpdateEventListener,IKernelUserZZZ {
-//public class SaveOrUpdateListenerTHM implements SaveOrUpdateEventListener, IKernelUserZZZ, IVetoFlagZZZ{ //das klappt nicht  implements SaveOrUpdateEventListener,IKernelUserZZZ {
-	  
 	private static final long serialVersionUID = 1L;
 	private KernelZZZ objKernel;
 	private LogZZZ objLog; 

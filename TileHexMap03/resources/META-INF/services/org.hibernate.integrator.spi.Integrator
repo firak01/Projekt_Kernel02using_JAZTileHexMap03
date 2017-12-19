@@ -6,4 +6,4 @@
 #Gibt es folgende Fehlermeldung:
 #basic.persistence.util.HibernateUtil.getCommitResult - Line: 172: Listener der Klasse 'org.hibernate.event.internal.DefaultSaveOrUpdateEventListener'
 #Exception in thread "AWT-EventQueue-0" java.lang.ClassCastException: org.hibernate.event.internal.DefaultSaveOrUpdateEventListener cannot be cast to use.thm.persistence.event.SaveOrUpdateListenerTHM
-use.thm.persistence.event.MyIntegrator
+use.thm.persistence.event.MyIntegratorTHM

@@ -22,7 +22,7 @@ import org.hibernate.service.ServiceRegistry;
 import org.hibernate.service.ServiceRegistryBuilder;
 
 import use.thm.client.FrmMapSingletonTHM;
-import use.thm.persistence.event.MyIntegrator;
+import use.thm.persistence.event.MyIntegratorTHM;
 import use.thm.persistence.event.PersistListenerTHM;
 import use.thm.persistence.event.PreInsertListenerTHM;
 import use.thm.persistence.hibernate.HibernateConfigurationProviderTHM;
@@ -62,11 +62,11 @@ public abstract class HibernateContextProviderJndiZZZ  extends HibernateContextP
 	
 		private HibernateContextProviderJndiZZZ() throws ExceptionZZZ{
 			super();
-			boolean bErg = this.fillConfiguration();
-			if(!bErg){
-				ExceptionZZZ ez = new ExceptionZZZ("Configuration not successfully filled.", iERROR_RUNTIME, this, ReflectCodeZZZ.getMethodCurrentName());
-				throw ez;
-			}
+//			boolean bErg = this.fillConfiguration();  //wird schon in der Elternklasse gemacht
+//			if(!bErg){
+//				ExceptionZZZ ez = new ExceptionZZZ("Configuration not successfully filled.", iERROR_RUNTIME, this, ReflectCodeZZZ.getMethodCurrentName());
+//				throw ez;
+//			}
 		}
 		
 		public HibernateContextProviderJndiZZZ(String sContextJndi) throws ExceptionZZZ{

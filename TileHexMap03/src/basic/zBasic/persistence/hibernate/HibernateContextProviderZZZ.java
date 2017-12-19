@@ -27,7 +27,7 @@ import org.hibernate.service.ServiceRegistry;
 import org.hibernate.service.ServiceRegistryBuilder;
 
 import use.thm.client.FrmMapSingletonTHM;
-import use.thm.persistence.event.MyIntegrator;
+import use.thm.persistence.event.MyIntegratorTHM;
 import use.thm.persistence.event.PersistListenerTHM;
 import use.thm.persistence.event.PreInsertListenerTHM;
 import use.thm.persistence.interceptor.HibernateInterceptorTHM;

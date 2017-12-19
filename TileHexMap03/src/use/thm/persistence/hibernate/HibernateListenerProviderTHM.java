@@ -18,14 +18,13 @@ public class HibernateListenerProviderTHM extends HibernateListenerProviderZZZ {
 		boolean bReturn = false;
 		main:{
 			
-			//Ausgelagert aus MyIntegrator.java
+			//Ausgelagert aus MyIntegratorTHM.java
 			PersistListenerTHM listenerPersist = new PersistListenerTHM(); //Funktioniert wahrscheinlich nur unter JPA. Mit Hibernate session.save(xxx) wird das nicht ausgeführt.
 			this.setPersistEventListener(listenerPersist);
 			
 			PreInsertListenerTHM listenerPreInsert = new PreInsertListenerTHM();
 			this.setPreInsertEventListener(listenerPreInsert);
-			
-			//PROBLEME.... 20171219... vielleicht das Registrieren am Service hier auch schon reinnehmen 
+						
 			SaveOrUpdateEventListener listenerSaveUpdate = new SaveOrUpdateListenerTHM();
 			this.setSaveOrUpdateEventListener(listenerSaveUpdate);
 			

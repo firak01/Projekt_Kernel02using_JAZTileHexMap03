@@ -39,6 +39,7 @@ import basic.zBasic.ReflectCodeZZZ;
 import basic.zBasic.persistence.interfaces.IHibernateConfigurationProviderUserZZZ;
 import basic.zBasic.persistence.interfaces.IHibernateConfigurationProviderZZZ;
 import basic.zBasic.persistence.interfaces.IHibernateContextProviderZZZ;
+import basic.zBasic.persistence.interfaces.IHibernateListenerProviderUserZZZ;
 import basic.zBasic.persistence.interfaces.IHibernateListenerProviderZZZ;
 import basic.zBasic.util.abstractList.HashMapExtendedZZZ;
 import basic.zBasic.util.datatype.string.StringZZZ;
@@ -49,7 +50,7 @@ import basic.zKernelUI.component.KernelJFrameCascadedZZZ;
  * und die globalen Hibernate Objekte sind hierüber überall verfügbar.
  * 
  */
-public abstract class HibernateContextProviderZZZ  extends KernelUseObjectZZZ implements IHibernateContextProviderZZZ, IHibernateConfigurationProviderUserZZZ { //, IHibernateListenerProviderUserZZZ {	
+public abstract class HibernateContextProviderZZZ  extends KernelUseObjectZZZ implements IHibernateContextProviderZZZ, IHibernateConfigurationProviderUserZZZ, IHibernateListenerProviderUserZZZ {	
 	IHibernateConfigurationProviderZZZ objConfigurationProvider = null;
 	IHibernateListenerProviderZZZ objListenerProvider = null;
 	

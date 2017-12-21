@@ -18,6 +18,7 @@ import use.thm.persistence.model.TroopArmy;
 import use.thm.persistence.model.TroopArmyVariant;
 import use.thm.persistence.model.TroopFleet;
 import basic.zBasic.ExceptionZZZ;
+import basic.zBasic.ReflectCodeZZZ;
 import basic.zBasic.persistence.hibernate.HibernateContextProviderJndiZZZ;
 import basic.zBasic.persistence.hibernate.HibernateContextProviderZZZ;
 import basic.zBasic.persistence.interfaces.IHibernateConfigurationProviderZZZ;
@@ -28,40 +29,72 @@ import basic.zBasic.util.abstractList.HashMapIndexedZZZ;
 import basic.zKernel.KernelZZZ;
 
 public class HibernateContextProviderJndiSingletonTHM extends HibernateContextProviderJndiZZZ{
-	private static HibernateContextProviderJndiSingletonTHM objContextHibernate; //muss als Singleton static sein
+	private static HibernateContextProviderJndiSingletonTHM objContextHibernateFirst; //muss als Singleton static sein
 	//in eine Elternklasse verschoben ... private IHibernateConfigurationProviderZZZ objConfigurationProvider;
 	
 	//Verschiedene Contexte hier verwalten
 	private static HashMapIndexedZZZ<String, HibernateContextProviderJndiSingletonTHM> hmContextProvider = new HashMapIndexedZZZ<String, HibernateContextProviderJndiSingletonTHM>();
 
+	public static HibernateContextProviderJndiSingletonTHM getInstance() throws ExceptionZZZ{
+		//TODO: Irgendwie (aus dem Kernel?) an diesen Jndi-String kommen.
+		return HibernateContextProviderJndiSingletonTHM.getInstance("jdbc/ServicePortal");
+	}
 	public static  HibernateContextProviderJndiSingletonTHM getInstance(String sContextJndi) throws ExceptionZZZ{
-		if(objContextHibernate==null){			
-			objContextHibernate = new HibernateContextProviderJndiSingletonTHM(sContextJndi);
-		}else{
-			//HashMapIndexedZZZ<String, HibernateContextProviderJndiZZZ> hmContextProvider = hmContextProvider;
+		HibernateContextProviderJndiSingletonTHM objContextHibernateReturn = null;
+		main:{
+		if(objContextHibernateFirst==null){			
+			objContextHibernateFirst = new HibernateContextProviderJndiSingletonTHM(sContextJndi);
+			HashMapIndexedZZZ<String, HibernateContextProviderJndiSingletonTHM> hmContextProvider = objContextHibernateFirst.getContextProviderMap();
+			hmContextProvider.put(sContextJndi, objContextHibernateFirst);
+			
+			objContextHibernateReturn = objContextHibernateFirst;
+		}else{	
+			HashMapIndexedZZZ<String, HibernateContextProviderJndiSingletonTHM> hmContextProvider = objContextHibernateFirst.getContextProviderMap();
+				
+			HibernateContextProviderJndiSingletonTHM objContextHibernateNew=null; //muss als Singleton static sein
 			if(hmContextProvider.containsKey(sContextJndi)){
-				objContextHibernate = (HibernateContextProviderJndiSingletonTHM) hmContextProvider.get(sContextJndi);			
+				System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": Wiederverwendung von erzeugtem HibernateContextProviderJndiSingleton Objekt (Key: " + sContextJndi + ")");
+				objContextHibernateNew = (HibernateContextProviderJndiSingletonTHM) hmContextProvider.get(sContextJndi);			
 			}
-			if(objContextHibernate==null){
-				objContextHibernate = new HibernateContextProviderJndiSingletonTHM(sContextJndi);
+			if(objContextHibernateNew==null){
+				System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": Neuerstellung eines HibernateContextProviderJndiSingleton Objekt (Key: " + sContextJndi + ")");
+				objContextHibernateNew = new HibernateContextProviderJndiSingletonTHM(sContextJndi);
+				hmContextProvider.put(sContextJndi, objContextHibernateNew);
 			}
+			
+			objContextHibernateReturn = objContextHibernateNew;
 		}
-		return objContextHibernate;	
+		}//end main
+		return objContextHibernateReturn;	
 	}
 	
 	public static  HibernateContextProviderJndiSingletonTHM getInstance(KernelZZZ objKernel, String sContextJndi) throws ExceptionZZZ{
-		if(objContextHibernate==null){			
-			objContextHibernate = new HibernateContextProviderJndiSingletonTHM(objKernel, sContextJndi);
-		}else{
-			//HashMapIndexedZZZ<String, HibernateContextProviderJndiZZZ> hmContextProvider = hmContextProvider;
+		HibernateContextProviderJndiSingletonTHM objContextHibernateReturn = null;
+		main:{
+		if(objContextHibernateFirst==null){			
+			objContextHibernateFirst = new HibernateContextProviderJndiSingletonTHM(objKernel, sContextJndi);
+			HashMapIndexedZZZ<String, HibernateContextProviderJndiSingletonTHM> hmContextProvider = objContextHibernateFirst.getContextProviderMap();
+			hmContextProvider.put(sContextJndi, objContextHibernateFirst);
+			
+			objContextHibernateReturn = objContextHibernateFirst;
+		}else{	
+			HashMapIndexedZZZ<String, HibernateContextProviderJndiSingletonTHM> hmContextProvider = objContextHibernateFirst.getContextProviderMap();
+				
+			HibernateContextProviderJndiSingletonTHM objContextHibernateNew=null; //muss als Singleton static sein
 			if(hmContextProvider.containsKey(sContextJndi)){
-				objContextHibernate = (HibernateContextProviderJndiSingletonTHM) hmContextProvider.get(sContextJndi);				
+				System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": Wiederverwendung von erzeugtem HibernateContextProviderJndiSingleton Objekt (Key: " + sContextJndi + ")");
+				objContextHibernateNew = (HibernateContextProviderJndiSingletonTHM) hmContextProvider.get(sContextJndi);			
 			}
-			if(objContextHibernate==null){
-				objContextHibernate = new HibernateContextProviderJndiSingletonTHM(objKernel, sContextJndi);
+			if(objContextHibernateNew==null){
+				System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": Neuerstellung eines HibernateContextProviderJndiSingleton Objekt (Key: " + sContextJndi + ")");
+				objContextHibernateNew = new HibernateContextProviderJndiSingletonTHM(objKernel, sContextJndi);
+				hmContextProvider.put(sContextJndi, objContextHibernateNew);
 			}
+			
+			objContextHibernateReturn = objContextHibernateNew;
 		}
-		return objContextHibernate;	
+		}//end main
+		return objContextHibernateReturn;					
 	}
 	
 	//########################################################
@@ -91,8 +124,9 @@ public class HibernateContextProviderJndiSingletonTHM extends HibernateContextPr
 		main:{
 			
 			//+++ Packe dieses neue Objekt in die HashMap, mit dem sContextJndi als Schlüssel
-			HashMapIndexedZZZ<String, HibernateContextProviderJndiSingletonTHM> hm = this.getContextProviderMap();
-			hm.put(sContextJndi, this);
+//wird nun in den static Kontruktoren der gemacht
+//			HashMapIndexedZZZ<String, HibernateContextProviderJndiSingletonTHM> hm = this.getContextProviderMap();
+//			hm.put(sContextJndi, this);
 			
 		}//end main
 		return bReturn;

@@ -109,13 +109,21 @@ public class TryoutSessionFactoryCreation {
 	
 	public boolean tryoutGetSessionFactoryByJndiContextProvider(){
 		boolean bReturn = false;
+		main:{			
+				String sContextJndi = "jdbc/ServicePortal";
+				bReturn = this.tryoutGetSessionFactoryByJndiContextProvider(sContextJndi);
+			}//end main:
+		return bReturn;		
+	}
+	
+	public boolean tryoutGetSessionFactoryByJndiContextProvider(String sContextJndi){
+		boolean bReturn = false;
 		main:{
 			try {
 				//HOLE DIE SESSIONFACTORY PER JNDI:
 				//Merke: DAS FUNKTIONIERT NUR, WENN DIE ANWENDUNG IN EINEM SERVER (z.B. Tomcat läuft).
 				
-				KernelZZZ objKernel = new KernelZZZ(); //Merke: Die Service Klasse selbst kann wohl nicht das KernelObjekt extenden!
-				String sContextJndi = "jdbc/ServicePortal";
+				KernelZZZ objKernel = new KernelZZZ(); //Merke: Die Service Klasse selbst kann wohl nicht das KernelObjekt extenden!				
 				HibernateContextProviderJndiSingletonTHM objContextHibernate = HibernateContextProviderJndiSingletonTHM.getInstance(objKernel, sContextJndi);					
 				objContextHibernate.getConfiguration().setProperty("hibernate.hbm2ddl.auto", "update");  //! Jetzt erst wird jede Tabelle über den Anwendungsstart hinaus gespeichert UND auch wiedergeholt.				
 				

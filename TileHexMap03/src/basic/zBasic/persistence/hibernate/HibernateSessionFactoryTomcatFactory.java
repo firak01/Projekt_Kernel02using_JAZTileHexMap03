@@ -52,7 +52,8 @@ public class HibernateSessionFactoryTomcatFactory implements ObjectFactory{
 			 //Nach Umstellung auf den ConfigurationProvider gibt es für JNDI ein einges Singleton, das man hier verwenden sollte. Ansonsten wird einfach die Konfiguration erneut gefüllt  und dann auch noch die falsche!
 			 
 			 //TODO GOON 20171207: Den JNDI String irgendwoher holen, damit es dynamisch ist und nicht hart verdrahtet.
-			 HibernateContextProviderJndiSingletonTHM objContextHibernate = HibernateContextProviderJndiSingletonTHM.getInstance("service/portal");
+			 //HibernateContextProviderJndiSingletonTHM objContextHibernate = HibernateContextProviderJndiSingletonTHM.getInstance("service/portal");
+			 HibernateContextProviderJndiSingletonTHM objContextHibernate = HibernateContextProviderJndiSingletonTHM.getInstance(); //Hole die "Erste Instanz"
 			 
 			 if(objContextHibernate.hasSessionFactory_open()){
 				 System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": Es gibt eine offene SessionFactory.");
@@ -112,13 +113,14 @@ public class HibernateSessionFactoryTomcatFactory implements ObjectFactory{
 							 System.out.println(ReflectCodeZZZ.getPositionCurrent()+ ": Verwende als Url aus Argumenten übergeben '" + sValue + "'");
 						 }
 						 if(sKey.equalsIgnoreCase("hibernate.connection.url")){
-							 System.out.println(ReflectCodeZZZ.getPositionCurrent()+ ": Verwende als  hibernate.connection.url '" + cfgNew.getProperty(" hibernate.connection.url") + "'");
+							 System.out.println(ReflectCodeZZZ.getPositionCurrent()+ ": Verwende als  hibernate.connection.url '" + cfgNew.getProperty("hibernate.connection.url") + "'");
 						 }						 
 					 }
 			 				 								 
 					 System.out.println(ReflectCodeZZZ.getPositionCurrent()+ ": Verwende als Url: '" + cfgNew.getProperty("url") + "'");
-					 System.out.println(ReflectCodeZZZ.getPositionCurrent()+ ": Verwende als hibernate.connection.url noch: '" + cfgNew.getProperty(" hibernate.connection.url") + "'");
-					 
+					 System.out.println(ReflectCodeZZZ.getPositionCurrent()+ ": Verwende als hibernate.hbm2ddl.auto (noch): '" + cfgNew.getProperty("hibernate.hbm2ddl.auto") + "'");
+					 System.out.println(ReflectCodeZZZ.getPositionCurrent()+ ": Verwende als hibernate.connection.url noch (wird sofort geändert): '" + cfgNew.getProperty("hibernate.connection.url") + "'");
+					 					 
 					 //Durch die Eingeschaften aus der Context.xml Datei, wird hibernate.connection.url nicht definiert. Sondern nur URL.
 					 //Man muss daher an dieser Stelle die konfigurierte URL nehmen und damit die für eine Standalone Konfigurierte Datei überschreiben.
 					 cfgNew.setProperty("hibernate.connection.url",  cfgNew.getProperty("url"));

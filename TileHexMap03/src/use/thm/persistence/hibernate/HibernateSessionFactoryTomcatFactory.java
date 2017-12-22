@@ -17,7 +17,21 @@ import org.hibernate.service.ServiceRegistryBuilder;
 
 import basic.zBasic.ReflectCodeZZZ;
 
-/**
+/** TODO GOON 20171222
+ *  Diese SessionFactory Klasse wird NICHT im context.xml verwendet.
+ *  Also nicht für JNDI?
+ *  Entweder wird sie nirgendwo verwendet, dann raus.
+ *  Oder sie wird verwendet, dann Interface IContextProviderUser einbinden.
+ *  und von einer zentralen Factory-Klasse erben.
+ *  Merke: es gibt noch eine weitere SessionFactory Klasse im Projekt,
+ *  von der sie sich nur über den ContextProvider unterscheidet
+ *  
+ *  
+ *  
+ *  
+ *  
+ *  
+ *  
  * Die SessionFactory Klasse, die über JNDI angebunden worden ist.
  * Siehe context.xml des Servers und web.xml Dokument des jeweiligen WebService.
  * Hier wird dann eine neue SessionFactory gebaut.

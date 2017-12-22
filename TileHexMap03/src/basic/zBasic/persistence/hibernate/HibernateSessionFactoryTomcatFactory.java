@@ -19,7 +19,18 @@ import use.thm.persistence.hibernate.HibernateContextProviderJndiSingletonTHM;
 import use.thm.persistence.hibernate.HibernateContextProviderSingletonTHM;
 import basic.zBasic.ReflectCodeZZZ;
 
-/**
+/** Diese SessionFactory Klasse WIRD im context.xml des TomcatServers verwendet.
+ *  Also für JNDI.
+ *  
+ *  TODO Elternklasse erstellen (als zentrale Factory Klasse)
+ *  TODO Hier von der Elternklasse erben und Interface IContextProviderUser einbinden.
+ *
+ *  Merke: es gibt noch eine weitere SessionFactory Klasse im Projekt,
+ *  von der sie sich nur über den ContextProvider unterscheidet
+ *  
+ *  
+ *  
+ *  
  * Die SessionFactory Klasse, die über JNDI angebunden worden ist.
  * Siehe context.xml des Servers und web.xml Dokument des jeweiligen WebService.
  * Hier wird dann eine neue SessionFactory gebaut.

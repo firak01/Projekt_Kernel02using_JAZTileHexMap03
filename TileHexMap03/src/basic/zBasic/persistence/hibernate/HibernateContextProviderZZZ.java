@@ -384,6 +384,7 @@ public void integrate(Configuration configuration,
 		}
 	}
 		
+
 	public IHibernateConfigurationProviderZZZ getConfigurationProviderObject() throws ExceptionZZZ{
 		return this.objConfigurationProvider;
 	}
@@ -394,6 +395,7 @@ public void integrate(Configuration configuration,
 	public void setConfigurationProviderObject(IHibernateConfigurationProviderZZZ objHibernateConfiguration) {
 		this.objConfigurationProvider = objHibernateConfiguration;
 	}
+	
 	
 	
 	//++++ Listener +++++++++

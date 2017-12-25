@@ -1,4 +1,4 @@
-package use.thm.persistence.hibernate;
+package basic.zBasic.persistence.hibernate;
 import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.Properties;
@@ -15,19 +15,22 @@ import org.hibernate.internal.SessionFactoryImpl;
 import org.hibernate.service.ServiceRegistry;
 import org.hibernate.service.ServiceRegistryBuilder;
 
+import use.thm.persistence.hibernate.HibernateContextProviderJndiSingletonTHM;
+import use.thm.persistence.hibernate.HibernateContextProviderSingletonTHM;
+import basic.zBasic.ExceptionZZZ;
 import basic.zBasic.ReflectCodeZZZ;
+import basic.zBasic.persistence.interfaces.IHibernateContextProviderSingletonUserZZZ;
+import basic.zBasic.persistence.interfaces.IHibernateContextProviderUserZZZ;
+import basic.zBasic.persistence.interfaces.IHibernateContextProviderZZZ;
 
-/** TODO GOON 20171222
- *  Diese SessionFactory Klasse wird NICHT im context.xml verwendet.
- *  Also nicht für JNDI?
- *  Entweder wird sie nirgendwo verwendet, dann raus.
- *  Oder sie wird verwendet, dann Interface IContextProviderUser einbinden.
- *  und von einer zentralen Factory-Klasse erben.
+/** Diese SessionFactory Klasse WIRD im context.xml des TomcatServers verwendet.
+ *  Also für JNDI.
+ *  
+ *  TODO Elternklasse erstellen (als zentrale Factory Klasse)
+ *  TODO Hier von der Elternklasse erben und Interface IContextProviderUser einbinden.
+ *
  *  Merke: es gibt noch eine weitere SessionFactory Klasse im Projekt,
  *  von der sie sich nur über den ContextProvider unterscheidet
- *  
- *  
- *  
  *  
  *  
  *  
@@ -40,7 +43,7 @@ import basic.zBasic.ReflectCodeZZZ;
  * @author lindhaueradmin
  *
  */
-public class HibernateSessionFactoryTomcatFactory implements ObjectFactory{
+public abstract class HibernateSessionFactoryTomcatFactoryZZZ implements ObjectFactory, IHibernateContextProviderSingletonUserZZZ{
 //FGL: 20171112: Das funktioniert. Die Methoden des Interface DataSource braucht es aber scheinbar nicht, weil ich die Ressource als <ResourceLink> in der Context.xml eingebunden habe:
                  // public class HibernateSessionFactoryTomcatFactory implements DataSource, ObjectFactory{
 //Merke: Das ist keine Lösung: Die Tomcat Klasse wird hier nicht gefunden:
@@ -52,15 +55,22 @@ public class HibernateSessionFactoryTomcatFactory implements ObjectFactory{
 		SessionFactory objReturn = null;  
 		 try{
 			  
-			  //Fehlermedlung: org.hibernate.HibernateException: Connection cannot be null when 'hibernate.dialect' not set
-			  //Lösungsanasatz 1: SETZE TESTWEISE ALLES MÖGLICHE, das funktioniert.			 
+			  //Fehlermeldung: org.hibernate.HibernateException: Connection cannot be null when 'hibernate.dialect' not set
+			  //Lösungsansatz 1: SETZE TESTWEISE ALLES MÖGLICHE, das funktioniert.			 
 //			  Configuration cfgNew = new Configuration();
 //			  cfgNew.configure("hibernate.cfg.xml"); //Ohne das HibernateContextprovider-Objekt funktionierrtt das auch ohne Endlosschleife.
 //			  ServiceRegistry sr = new ServiceRegistryBuilder().applySettings(cfgNew.getProperties()).buildServiceRegistry();
 //           SessionFactory sf = cfgNew.buildSessionFactory(sr);
 				
 		  //Lösungsansatz 2: Kann man hier ggfs. aus meiner HibernateContextProviderZZZ - als Singleton - die Konfiguration verwenden?
-			 HibernateContextProviderSingletonTHM objContextHibernate = HibernateContextProviderSingletonTHM.getInstance();				 
+			 //HibernateContextProviderSingletonTHM objContextHibernate = HibernateContextProviderSingletonTHM.getInstance();
+			 //Nach Umstellung auf den ConfigurationProvider gibt es für JNDI ein einges Singleton, das man hier verwenden sollte. Ansonsten wird einfach die Konfiguration erneut gefüllt  und dann auch noch die falsche!
+			 
+			 //TODO GOON 20171207: Den JNDI String irgendwoher holen, damit es dynamisch ist und nicht hart verdrahtet.
+			 //HibernateContextProviderJndiSingletonTHM objContextHibernate = HibernateContextProviderJndiSingletonTHM.getInstance("service/portal");
+			 //HibernateContextProviderJndiSingletonTHM 
+			 IHibernateContextProviderZZZ objContextHibernate = this.getHibernateContextProvider();//HibernateContextProviderJndiSingletonTHM.getInstance(); //Hole die "Erste Instanz"
+			 
 			 if(objContextHibernate.hasSessionFactory_open()){
 				 System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": Es gibt eine offene SessionFactory.");
 				 objReturn = (SessionFactoryImpl) objContextHibernate.getSessionFactory();
@@ -119,13 +129,14 @@ public class HibernateSessionFactoryTomcatFactory implements ObjectFactory{
 							 System.out.println(ReflectCodeZZZ.getPositionCurrent()+ ": Verwende als Url aus Argumenten übergeben '" + sValue + "'");
 						 }
 						 if(sKey.equalsIgnoreCase("hibernate.connection.url")){
-							 System.out.println(ReflectCodeZZZ.getPositionCurrent()+ ": Verwende als  hibernate.connection.url '" + cfgNew.getProperty(" hibernate.connection.url") + "'");
+							 System.out.println(ReflectCodeZZZ.getPositionCurrent()+ ": Verwende als  hibernate.connection.url '" + cfgNew.getProperty("hibernate.connection.url") + "'");
 						 }						 
 					 }
 			 				 								 
 					 System.out.println(ReflectCodeZZZ.getPositionCurrent()+ ": Verwende als Url: '" + cfgNew.getProperty("url") + "'");
-					 System.out.println(ReflectCodeZZZ.getPositionCurrent()+ ": Verwende als hibernate.connection.url noch: '" + cfgNew.getProperty(" hibernate.connection.url") + "'");
-					 
+					 System.out.println(ReflectCodeZZZ.getPositionCurrent()+ ": Verwende als hibernate.hbm2ddl.auto (noch): '" + cfgNew.getProperty("hibernate.hbm2ddl.auto") + "'");
+					 System.out.println(ReflectCodeZZZ.getPositionCurrent()+ ": Verwende als hibernate.connection.url noch (wird sofort geändert): '" + cfgNew.getProperty("hibernate.connection.url") + "'");
+					 					 
 					 //Durch die Eingeschaften aus der Context.xml Datei, wird hibernate.connection.url nicht definiert. Sondern nur URL.
 					 //Man muss daher an dieser Stelle die konfigurierte URL nehmen und damit die für eine Standalone Konfigurierte Datei überschreiben.
 					 cfgNew.setProperty("hibernate.connection.url",  cfgNew.getProperty("url"));
@@ -169,5 +180,7 @@ public class HibernateSessionFactoryTomcatFactory implements ObjectFactory{
 	      }  
 	      return sessionFactory; 
 	  	*/
-	}  
+	}
+
+	public abstract IHibernateContextProviderZZZ getHibernateContextProvider() throws ExceptionZZZ;
 	}  

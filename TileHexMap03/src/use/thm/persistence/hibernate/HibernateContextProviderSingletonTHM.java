@@ -105,4 +105,8 @@ public class HibernateContextProviderSingletonTHM extends HibernateContextProvid
 		}
 		return objReturn;
 	}
+
+	public boolean hasSessionFactory_Open() {
+		return super.hasSessionFactory_open();
+	}
 }

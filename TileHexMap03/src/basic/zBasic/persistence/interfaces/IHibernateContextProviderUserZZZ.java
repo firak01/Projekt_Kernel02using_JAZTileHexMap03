@@ -1,6 +1,7 @@
 package basic.zBasic.persistence.interfaces;
 
-public interface IHibernateContextProviderUserZZZ {
+import basic.zBasic.ExceptionZZZ;
+
+public interface IHibernateContextProviderUserZZZ extends IHibernateContextProviderSingletonUserZZZ{
 	public void setHibernateContextProvider(IHibernateContextProviderZZZ objContextHibernate);
-	public IHibernateContextProviderZZZ getHibernateContextProvider();
 }

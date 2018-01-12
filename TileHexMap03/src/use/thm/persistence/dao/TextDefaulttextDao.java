@@ -1,6 +1,7 @@
 package use.thm.persistence.dao;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -8,6 +9,7 @@ import java.util.Map;
 import org.hibernate.Query;
 import org.hibernate.Session;
 
+import use.thm.persistence.event.VetoFlag4ListenerZZZ;
 import use.thm.persistence.hibernate.HibernateContextProviderSingletonTHM;
 import use.thm.persistence.model.AreaCell;
 import use.thm.persistence.model.Key;
@@ -16,12 +18,16 @@ import use.thm.persistence.model.TextDefaulttext;
 import use.thm.persistence.model.TileDefaulttext;
 import use.thm.persistence.model.Troop;
 import use.thm.persistence.model.TroopArmy;
+import basic.persistence.util.HibernateUtil;
 import basic.zBasic.ExceptionZZZ;
+import basic.zBasic.ReflectCodeZZZ;
 import basic.zBasic.persistence.dao.GeneralDaoZZZ;
 import basic.zBasic.persistence.interfaces.IHibernateContextProviderZZZ;
 import basic.zBasic.util.datatype.enums.EnumSetDefaulttextUtilZZZ;
 import basic.zBasic.util.datatype.enums.EnumSetInnerUtilZZZ;
+import basic.zBasic.util.datatype.enums.EnumZZZ;
 import basic.zBasic.util.datatype.enums.EnumSetInnerUtilZZZ.ThiskeyEnumMappingExceptionZZZ;
+import basic.zKernel.KernelZZZ;
 public class TextDefaulttextDao<T> extends DefaulttextDao<T> {
 	private static final long serialVersionUID = 1L;
 
@@ -44,6 +50,66 @@ public class TextDefaulttextDao<T> extends DefaulttextDao<T> {
 	public TextDefaulttextDao(IHibernateContextProviderZZZ objContextHibernate, String[] saFlagControl) throws ExceptionZZZ{
 		super(objContextHibernate, saFlagControl);
 		this.installLoger(TextDefaulttext.class);//Durch das Installieren des Loggers mit der korrekten Klasse wird GeneralDao.getT() erst korrekt ermöglicht.
+	}
+	
+	public int createEntriesAll(){
+		int iReturn = 0;
+		main:{
+			System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": START ##############");			
+			
+			try {				
+				KernelZZZ objKernel = new KernelZZZ(); //Merke: Die Service Klasse selbst kann wohl nicht das KernelObjekt extenden!
+				HibernateContextProviderSingletonTHM objContextHibernate;
+				
+				objContextHibernate = HibernateContextProviderSingletonTHM.getInstance(objKernel);					
+				//Darüber hat diese Methode nicht zu befinden... objContextHibernate.getConfiguration().setProperty("hibernate.hbm2ddl.auto", "update");  //! Jetzt erst wird jede Tabelle über den Anwendungsstart hinaus gespeichert UND auch wiedergeholt.				
+			
+				//###################
+				//1. Speichere den Defaulttext
+				//####################					
+				//Session session = this.getSession();	//Vesuch eine neue Session zu bekommen. Merke: Die Session wird hier nicht gespeichert! Wg. 1 Transaktion ==> 1 Session
+				Session session = objContextHibernate.getSession();
+				if(session == null) break main;			
+								
+				//Alle Enumerations hier einlesen.
+				//TODO 20171114 ...ohje das irgendwie generisch machen ... vgl. meine _fillValue(...) Lösung..
+				Collection<String> colsEnumAlias = EnumZZZ.getNames(TextDefaulttext.getThiskeyEnumClassStatic());
+				for(String sEnumAlias : colsEnumAlias){
+					System.out.println("Starte Transaction:.... Gefundener Enum-Name: " + sEnumAlias);
+					TextDefaulttext objValueText = new TextDefaulttext();		//Bei jedem Schleifendurchlauf neu machen, sonst wird lediglich nur 1 Datensatz immer wieder verändert.
+					session.getTransaction().begin();//Ein zu persistierendes Objekt - eine Transaction, auch wenn mehrere in einer Transaction abzuhandeln wären, aber besser um Fehler abfangen zu können.
+				
+					this._fillValue(objValueText, sEnumAlias);//FGL 20171114: Mein generischer Lösungsversuch.
+
+				//Merke: EINE TRANSACTION = EINE SESSION ==>  neue session von der SessionFactory holen
+				session.save(objValueText); //Hibernate Interceptor wird aufgerufen																				
+				if (!session.getTransaction().wasCommitted()) {
+					//session.flush(); //Datenbank synchronisation, d.h. Inserts und Updates werden gemacht. ABER es wird noch nix committed.
+					session.getTransaction().commit(); //onPreInsertListener wird ausgeführt   //!!! TODO: WARUM WIRD wg. des FLUSH NIX MEHR AUSGEFÜHRT AN LISTENERN, ETC ???
+					
+					//bGoon = HibernateUtil.wasCommitSuccessful(objContextHibernate,"save",session.getTransaction());//EventType.PRE_INSERT
+					VetoFlag4ListenerZZZ objResult = HibernateUtil.getCommitResult(objContextHibernate,"save",session.getTransaction());
+//					sMessage = objResult.getVetoMessage();
+//					bGoon = !objResult.isVeto();
+				}
+//				if(!bGoon){
+//					//Mache die Ausgabe im UI nicht selbst, sondern stelle lediglich die Daten zur Verfügung. Grund: Hier stehen u.a. die UI Komponenten nicht zur Verfügung
+//					this.getFacadeResult().setMessage(sMessage);
+//					break validEntry;
+//				}else{
+					iReturn++;
+//				}
+				}//end for
+												
+			} catch (ExceptionZZZ e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": ENDE ##############");			
+			
+			
+		}//end main:
+		return iReturn;		
 	}
 	
 	//Den Namen des Aktuellen Objekts kann ich nun auslesen.

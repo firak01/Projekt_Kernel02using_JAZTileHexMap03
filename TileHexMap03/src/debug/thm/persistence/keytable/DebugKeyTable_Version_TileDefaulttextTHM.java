@@ -509,95 +509,19 @@ public class DebugKeyTable_Version_TileDefaulttextTHM {
 				objContextHibernate.getConfiguration().setProperty("hibernate.hbm2ddl.auto", "update");  //! Jetzt erst wird jede Tabelle über den Anwendungsstart hinaus gespeichert UND auch wiedergeholt.				
 			
 				//###################
-				//1. Speichere den Defaulttext
-				//####################					
-				//Session session = this.getSession();	//Vesuch eine neue Session zu bekommen. Merke: Die Session wird hier nicht gespeichert! Wg. 1 Transaktion ==> 1 Session
-				Session session = objContextHibernate.getSession();
-				if(session == null) break main;			
-								
-				//Alle Enumerations hier einlesen.
-				//TODO 20171114 ...ohje das irgendwie generisch machen ... vgl. meine _fillValue(...) Lösung..
-				Collection<String> colsEnumAlias = EnumZZZ.getNames(TileDefaulttext.getThiskeyEnumClassStatic());
-				for(String sEnumAlias : colsEnumAlias){
-					System.out.println("Starte Transaction:.... Gefundener Enum-Name: " + sEnumAlias);
-					TileDefaulttext objValueTile = new TileDefaulttext();		//Bei jedem Schleifendurchlauf neu machen, sonst wird lediglich nur 1 Datensatz immer wieder verändert.
-					session.getTransaction().begin();//Ein zu persistierendes Objekt - eine Transaction, auch wenn mehrere in einer Transaction abzuhandeln wären, aber besser um Fehler abfangen zu können.
+				//1. Hole das jeweilige Dao - Objekt
+				//####################				
+				TileDefaulttextDao daoTileText = new TileDefaulttextDao(objContextHibernate);
+				int iTileTextCreated = daoTileText.createEntriesAll();
+				System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": Erstellte TileTexte: " + iTileTextCreated);
 				
-					this._fillValue(objValueTile, sEnumAlias);
-
-				//Merke: EINE TRANSACTION = EINE SESSION ==>  neue session von der SessionFactory holen
-				session.save(objValueTile); //Hibernate Interceptor wird aufgerufen																				
-				if (!session.getTransaction().wasCommitted()) {
-					//session.flush(); //Datenbank synchronisation, d.h. Inserts und Updates werden gemacht. ABER es wird noch nix committed.
-					session.getTransaction().commit(); //onPreInsertListener wird ausgeführt   //!!! TODO: WARUM WIRD wg. des FLUSH NIX MEHR AUSGEFÜHRT AN LISTENERN, ETC ???
-					
-					//bGoon = HibernateUtil.wasCommitSuccessful(objContextHibernate,"save",session.getTransaction());//EventType.PRE_INSERT
-					VetoFlag4ListenerZZZ objResult = HibernateUtil.getCommitResult(objContextHibernate,"save",session.getTransaction());
-//					sMessage = objResult.getVetoMessage();
-//					bGoon = !objResult.isVeto();
-				}
-//				if(!bGoon){
-//					//Mache die Ausgabe im UI nicht selbst, sondern stelle lediglich die Daten zur Verfügung. Grund: Hier stehen u.a. die UI Komponenten nicht zur Verfügung
-//					this.getFacadeResult().setMessage(sMessage);
-//					break validEntry;
-//				}
-				}//end for
+				TextDefaulttextDao daoTextText = new TextDefaulttextDao(objContextHibernate);
+				int iTextTextCreated = daoTextText.createEntriesAll();
+				System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": Erstellte TextTexte: " + iTextTextCreated);
 				
-				//######################################################################################
-				
-				colsEnumAlias = EnumZZZ.getNames(TextDefaulttext.getThiskeyEnumClassStatic());
-				for(String sEnumAlias : colsEnumAlias){
-					System.out.println("Starte Transaction:.... Gefundener Enum-Name: " + sEnumAlias);
-					TextDefaulttext objValueText = new TextDefaulttext();		//Bei jedem Schleifendurchlauf neu machen, sonst wird lediglich nur 1 Datensatz immer wieder verändert.
-					session.getTransaction().begin();//Ein zu persistierendes Objekt - eine Transaction, auch wenn mehrere in einer Transaction abzuhandeln wären, aber besser um Fehler abfangen zu können.
-				
-					this._fillValue(objValueText, sEnumAlias);//FGL 20171114: Mein generischer Lösungsversuch.
-
-				//Merke: EINE TRANSACTION = EINE SESSION ==>  neue session von der SessionFactory holen
-				session.save(objValueText); //Hibernate Interceptor wird aufgerufen																				
-				if (!session.getTransaction().wasCommitted()) {
-					//session.flush(); //Datenbank synchronisation, d.h. Inserts und Updates werden gemacht. ABER es wird noch nix committed.
-					session.getTransaction().commit(); //onPreInsertListener wird ausgeführt   //!!! TODO: WARUM WIRD wg. des FLUSH NIX MEHR AUSGEFÜHRT AN LISTENERN, ETC ???
-					
-					//bGoon = HibernateUtil.wasCommitSuccessful(objContextHibernate,"save",session.getTransaction());//EventType.PRE_INSERT
-					VetoFlag4ListenerZZZ objResult = HibernateUtil.getCommitResult(objContextHibernate,"save",session.getTransaction());
-//					sMessage = objResult.getVetoMessage();
-//					bGoon = !objResult.isVeto();
-				}
-//				if(!bGoon){
-//					//Mache die Ausgabe im UI nicht selbst, sondern stelle lediglich die Daten zur Verfügung. Grund: Hier stehen u.a. die UI Komponenten nicht zur Verfügung
-//					this.getFacadeResult().setMessage(sMessage);
-//					break validEntry;
-//				}
-				}//end for
-				
-				//##########################################################################################
-				
-				colsEnumAlias = EnumZZZ.getNames(Defaulttext.getThiskeyEnumClassStatic());
-				for(String sEnumAlias : colsEnumAlias){
-					System.out.println("Starte Transaction:.... Gefundener Enum-Name: " + sEnumAlias);
-					Defaulttext objValue = new Defaulttext();		//Bei jedem Schleifendurchlauf neu machen, sonst wird lediglich nur 1 Datensatz immer wieder verändert.
-					session.getTransaction().begin();//Ein zu persistierendes Objekt - eine Transaction, auch wenn mehrere in einer Transaction abzuhandeln wären, aber besser um Fehler abfangen zu können.
-				
-					this._fillValue(objValue, sEnumAlias);//FGL 20171114: Mein generischer Lösungsversuch.
-
-				//Merke: EINE TRANSACTION = EINE SESSION ==>  neue session von der SessionFactory holen
-				session.save(objValue); //Hibernate Interceptor wird aufgerufen																				
-				if (!session.getTransaction().wasCommitted()) {
-					//session.flush(); //Datenbank synchronisation, d.h. Inserts und Updates werden gemacht. ABER es wird noch nix committed.
-					session.getTransaction().commit(); //onPreInsertListener wird ausgeführt   //!!! TODO: WARUM WIRD wg. des FLUSH NIX MEHR AUSGEFÜHRT AN LISTENERN, ETC ???
-					
-					//bGoon = HibernateUtil.wasCommitSuccessful(objContextHibernate,"save",session.getTransaction());//EventType.PRE_INSERT
-					VetoFlag4ListenerZZZ objResult = HibernateUtil.getCommitResult(objContextHibernate,"save",session.getTransaction());
-//					sMessage = objResult.getVetoMessage();
-//					bGoon = !objResult.isVeto();
-				}
-//				if(!bGoon){
-//					//Mache die Ausgabe im UI nicht selbst, sondern stelle lediglich die Daten zur Verfügung. Grund: Hier stehen u.a. die UI Komponenten nicht zur Verfügung
-//					this.getFacadeResult().setMessage(sMessage);
-//					break validEntry;
-//				}
-				}//end for
+				DefaulttextDao daoText = new DefaulttextDao(objContextHibernate);
+				int iTextCreated = daoText.createEntriesAll();
+				System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": Erstellte Texte: " + iTextCreated);
 				
 			} catch (ExceptionZZZ e) {
 				// TODO Auto-generated catch block
@@ -610,33 +534,7 @@ public class DebugKeyTable_Version_TileDefaulttextTHM {
 		return bReturn;	
 	}
 	
-	private <T> void _fillValue(Defaulttext<T> objValue, String sEnumAlias){
-		
-		//Merke: Direktes Reinschreiben geht wieder nicht wg. "bound exception"
-		//EnumSetDefaulttextUtilZZZ.getEnumConstant_DescriptionValue(EnumSetDefaulttextTestTypeTHM.class, sEnumAlias);
-				
-		//Also: Klasse holen und danach CASTEN.
-		Class<?> objClass = ((Key) objValue).getThiskeyEnumClass();
-		String sName = EnumSetDefaulttextUtilZZZ.readEnumConstant_NameValue((Class<IEnumSetDefaulttextTHM>) objClass, sEnumAlias);
-		System.out.println("Gefundener Spielsteintypname: " + sName);
-		
-		String sShorttext = EnumSetDefaulttextUtilZZZ.readEnumConstant_ShorttextValue((Class<IEnumSetDefaulttextTHM>) objClass, sEnumAlias);
-		System.out.println("Gefundener Spielsteintypkurztext: " + sShorttext);
-		((Defaulttext) objValue).setShorttext(sShorttext);
-		
-		String sLongtext = EnumSetDefaulttextUtilZZZ.readEnumConstant_LongtextValue((Class<IEnumSetDefaulttextTHM>) objClass, sEnumAlias);
-		System.out.println("Gefundener Spielsteintyplangtext: " + sLongtext);
-		((Defaulttext) objValue).setLongtext(sLongtext);
-				
-		String sDescription = EnumSetDefaulttextUtilZZZ.readEnumConstant_DescriptionValue((Class<IEnumSetDefaulttextTHM>) objClass, sEnumAlias);
-		System.out.println("Gefundene Description: " + sDescription);			
-		((Defaulttext) objValue).setDescription(sDescription);
-		
-	    Long lngThiskey = EnumSetDefaulttextUtilZZZ.readEnumConstant_ThiskeyValue((Class<IEnumSetDefaulttextTHM>) objClass, sEnumAlias);//Das darf nicht NULL sein, sonst Fehler. Über diesen Schlüssel wird der Wert dann gefunden.
-	    System.out.println("Gefundener Thiskey: " + lngThiskey.toString());	
-		((Key) objValue).setThiskey(lngThiskey);
-		
-	}
+
 	
 	/** 
 	 * 

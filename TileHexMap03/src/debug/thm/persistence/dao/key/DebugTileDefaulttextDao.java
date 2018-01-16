@@ -8,7 +8,7 @@ import use.thm.persistence.dao.TileDao;
 import use.thm.persistence.dao.TileDefaulttextDao;
 import use.thm.persistence.dao.TroopArmyDao;
 import use.thm.persistence.hibernate.HibernateContextProviderSingletonTHM;
-import use.thm.persistence.interfaces.enums.IEnumSetDefaulttextTHM;
+import use.thm.persistence.interfaces.enums.IEnumSetTextTHM;
 import use.thm.persistence.model.Key;
 import use.thm.persistence.model.Tile;
 import use.thm.persistence.model.Defaulttext;

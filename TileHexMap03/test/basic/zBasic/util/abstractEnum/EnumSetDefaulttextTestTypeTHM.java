@@ -2,7 +2,7 @@ package basic.zBasic.util.abstractEnum;
 
 import java.util.EnumSet;
 
-import use.thm.persistence.interfaces.enums.IEnumSetDefaulttextTHM;
+import use.thm.persistence.interfaces.enums.IEnumSetTextTHM;
 import use.thm.persistence.model.TileDefaulttext.EnumTileDefaulttext;
 import basic.persistence.model.IFieldDescription;
 import basic.zBasic.persistence.interfaces.enums.IThiskeyProviderZZZ;
@@ -16,7 +16,7 @@ import basic.zBasic.persistence.interfaces.enums.IThiskeyProviderZZZ;
 	//### Eingebettete Enum-Klasse mit den Defaultwerten, diese Werte werden auch per Konstruktor übergeben.
 	//### int Key, String shorttext, String longtext, String description
 	//#######################################################
-	public enum EnumSetDefaulttextTestTypeTHM implements IEnumSetDefaulttextTHM,  IThiskeyProviderZZZ<Long>{//Folgendes geht nicht, da alle Enums schon von einer Java BasisKlasse erben... extends EnumSetMappedBaseZZZ{
+	public enum EnumSetDefaulttextTestTypeTHM implements IEnumSetTextTHM,  IThiskeyProviderZZZ<Long>{//Folgendes geht nicht, da alle Enums schon von einer Java BasisKlasse erben... extends EnumSetMappedBaseZZZ{
 		
  	 @IFieldDescription(description = "The TEXTVALUE01") 
  	TESTVALUE01(1,"Test01","Test01 long","A Test01 value description"),

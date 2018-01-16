@@ -3,7 +3,7 @@ package basic.zBasic.util.datatype.enums;
 import java.util.EnumSet;
 import java.util.Set;
 
-import use.thm.persistence.interfaces.enums.IEnumSetDefaulttextTHM;
+import use.thm.persistence.interfaces.enums.IEnumSetTextTHM;
 import junit.framework.TestCase;
 import basic.zBasic.ExceptionZZZ;
 import basic.zBasic.util.abstractEnum.EnumSetDefaulttextTestTypeTHM;
@@ -137,21 +137,21 @@ public class EnumSetDefaulttextUtilZZZTest<E>  extends TestCase{
 	    	
 	    	//#### Dann hören hier ggfs. die Gemeinsamkeiten mit der mapped... Struktur auf, hieir haben wir Defaulttexte.				    	
 	     	@SuppressWarnings("unchecked")
-			String sDescription = EnumSetDefaulttextUtilZZZ.readEnumConstant_DescriptionValue((Class<IEnumSetDefaulttextTHM>) objClass, "TESTVALUE01");
+			String sDescription = EnumSetDefaulttextUtilZZZ.readEnumConstant_DescriptionValue((Class<IEnumSetTextTHM>) objClass, "TESTVALUE01");
 	     	//String sDescription = EnumSetDefaulttextUtilZZZ.getEnumConstant_DescriptionValue((Class<E>)objClass, "TESTVALUE01");
 	    	assertTrue("Prüfstring solllte als Ergebnis 'A Test01 value description' sein", "A Test01 value description".equals(sDescription));
 	    	
 	    	@SuppressWarnings("unchecked")
-			String sAbbreviation = EnumSetDefaulttextUtilZZZ.readEnumConstant_ShorttextValue((Class<IEnumSetDefaulttextTHM>) objClass, "TESTVALUE01");
+			String sAbbreviation = EnumSetDefaulttextUtilZZZ.readEnumConstant_ShorttextValue((Class<IEnumSetTextTHM>) objClass, "TESTVALUE01");
 	    	assertTrue("Prüfstring solllte als Ergebnis 'Test01' sein", "Test01".equals(sAbbreviation));
 	    	
 	    	@SuppressWarnings("unchecked")
-			Integer intPosition = EnumSetDefaulttextUtilZZZ.readEnumConstant_PositionValue((Class<IEnumSetDefaulttextTHM>) objClass, "TESTVALUE01");
+			Integer intPosition = EnumSetDefaulttextUtilZZZ.readEnumConstant_PositionValue((Class<IEnumSetTextTHM>) objClass, "TESTVALUE01");
 	    	assertEquals("Prüfinteger solllte als Ergebnis 1 sein", intPosition.intValue(),1);
 
 	    	
 	    	@SuppressWarnings("unchecked")
-			Integer intIndex = EnumSetDefaulttextUtilZZZ.readEnumConstant_IndexValue((Class<IEnumSetDefaulttextTHM>) objClass, "TESTVALUE01");
+			Integer intIndex = EnumSetDefaulttextUtilZZZ.readEnumConstant_IndexValue((Class<IEnumSetTextTHM>) objClass, "TESTVALUE01");
 	    	assertEquals("Prüfinteger solllte als Ergebnis 0 sein", intIndex.intValue(),0);
 	    	assertEquals("Prüfinteger solllte als Ergebnis dem ordinal - Wert entsprechen", intIndex.intValue(), intOrdinal.intValue());
 	    	assertEquals("Prüfinteger solllte als Ergebnis um 1 höher als der Index sein", intPosition.intValue(),intIndex.intValue()+1);	    	

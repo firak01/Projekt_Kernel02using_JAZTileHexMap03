@@ -5,7 +5,7 @@ import java.util.EnumSet;
 import basic.zBasic.persistence.interfaces.enums.IThiskeyProviderZZZ;
 import basic.zBasic.persistence.interfaces.enums.IThiskeyValueZZZ;
 
-public interface IEnumSetDefaulttextTHM extends IThiskeyProviderZZZ<Long>{
+public interface IEnumSetTextTHM extends IThiskeyProviderZZZ<Long>{
 	
 	//Das bring ENUM von sich auch mit
 	public String getName();  //Das ist name() von Enum

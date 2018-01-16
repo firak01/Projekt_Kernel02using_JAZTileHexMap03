@@ -11,7 +11,7 @@ import org.hibernate.Session;
 
 import use.thm.persistence.event.VetoFlag4ListenerZZZ;
 import use.thm.persistence.hibernate.HibernateContextProviderSingletonTHM;
-import use.thm.persistence.interfaces.enums.IEnumSetDefaulttextTHM;
+import use.thm.persistence.interfaces.enums.IEnumSetTextTHM;
 import use.thm.persistence.model.AreaCell;
 import use.thm.persistence.model.Key;
 import use.thm.persistence.model.Defaulttext;

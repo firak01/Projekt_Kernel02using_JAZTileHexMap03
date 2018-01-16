@@ -142,7 +142,7 @@ public abstract class AbstractValue<V extends AbstractValue<V>> { //!!! noch ein
     /**
      * {@inheritDoc}
      */
-    //@java.lang.Override //Merke: Klasse ist in der Veraerbung die höchste Stufe
+    //@java.lang.Override //Merke: Klasse ist in der Vererbung die höchste Stufe
     public java.util.List<String> getAllAttributeNames() {
         return getAllAttributeNamesIntern();
     }
@@ -150,14 +150,14 @@ public abstract class AbstractValue<V extends AbstractValue<V>> { //!!! noch ein
     /**
      * {@inheritDoc}
      */
-    //@java.lang.Override //Merke: Klasse ist in der Veraerbung die höchste Stufe
+    //@java.lang.Override //Merke: Klasse ist in der Vererbung die höchste Stufe
     protected java.util.List<String> getAllAttributeNamesIntern() {
     	//Falls diese Klasse noch von einer anderen Klasse erbt, von dieser die interne Liste "mintehmen".
     	//java.util.List<String> tmp = super.getAllAttributeNamesIntern(); //Merke: ggfs. wird diese Klasse im Original noch zusätzlich ein zweites Mal erweitert mit extends I18nValueImpl 
         //tmp.addAll(allAttributeNames);
     	//return tmp;
     	
-    	//Da diese Klass in der Vererbung die höchste Klasse ist, die ArrayList direkter zurückgeben.
+    	//Da diese Klasse in der Vererbung die höchste Klasse ist, die ArrayList direkter zurückgeben.
         return new ArrayList<String>(allAttributeNames);        
     }
     

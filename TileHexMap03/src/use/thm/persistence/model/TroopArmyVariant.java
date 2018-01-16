@@ -19,7 +19,7 @@ import javax.persistence.Table;
 import javax.persistence.TableGenerator;
 import javax.persistence.Transient;
 
-import use.thm.persistence.interfaces.enums.IEnumSetDefaulttextTHM;
+import use.thm.persistence.interfaces.enums.IEnumSetTextTHM;
 import basic.persistence.model.IOptimisticLocking;
 import basic.zBasic.util.datatype.string.StringZZZ;
 

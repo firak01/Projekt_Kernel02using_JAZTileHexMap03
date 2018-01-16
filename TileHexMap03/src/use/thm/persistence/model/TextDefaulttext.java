@@ -18,7 +18,7 @@ import javax.persistence.Table;
 import javax.persistence.TableGenerator;
 import javax.persistence.Transient;
 
-import use.thm.persistence.interfaces.enums.IEnumSetDefaulttextTHM;
+import use.thm.persistence.interfaces.enums.IEnumSetTextTHM;
 import use.thm.persistence.model.Defaulttext.EnumDefaulttext;
 import basic.persistence.model.IFieldDescription;
 import basic.persistence.model.IKeyEnum;
@@ -74,7 +74,7 @@ public class TextDefaulttext<IEnumDefaulttext>  extends Defaulttext  implements 
   	//### Eingebettete Enum-Klasse mit den Defaultwerten, diese Werte werden auch per Konstruktor übergeben.
   	//### int Key, String shorttext, String longtext, String description
   	//#######################################################
-  	public enum EnumTextDefaulttext implements IEnumSetDefaulttextTHM,  IThiskeyProviderZZZ<Long>{//Folgendes geht nicht, da alle Enums schon von einer Java BasisKlasse erben... extends EnumSetMappedBaseZZZ{
+  	public enum EnumTextDefaulttext implements IEnumSetTextTHM,  IThiskeyProviderZZZ<Long>{//Folgendes geht nicht, da alle Enums schon von einer Java BasisKlasse erben... extends EnumSetMappedBaseZZZ{
   		
      	 @IFieldDescription(description = "TXT01 TEXTVALUES") 
      	T01(1,"TXT01","TEXT 01","A test text 01."),

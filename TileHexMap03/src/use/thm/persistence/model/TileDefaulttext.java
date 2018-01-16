@@ -18,7 +18,7 @@ import javax.persistence.Table;
 import javax.persistence.TableGenerator;
 import javax.persistence.Transient;
 
-import use.thm.persistence.interfaces.enums.IEnumSetDefaulttextTHM;
+import use.thm.persistence.interfaces.enums.IEnumSetTextTHM;
 import basic.persistence.model.IFieldDescription;
 import basic.persistence.model.IKeyEnum;
 import basic.persistence.model.IOptimisticLocking;
@@ -72,7 +72,7 @@ public class TileDefaulttext<IEnumTileDefaulttext> extends Defaulttext  implemen
 	//### Eingebettete Enum-Klasse mit den Defaultwerten, diese Werte werden auch per Konstruktor übergeben.
 	//### int Key, String shorttext, String longtext, String description
 	//#######################################################
-	public enum EnumTileDefaulttext implements IEnumSetDefaulttextTHM,  IThiskeyProviderZZZ<Long>{//Folgendes geht nicht, da alle Enums schon von einer Java BasisKlasse erben... extends EnumSetMappedBaseZZZ{
+	public enum EnumTileDefaulttext implements IEnumSetTextTHM,  IThiskeyProviderZZZ<Long>{//Folgendes geht nicht, da alle Enums schon von einer Java BasisKlasse erben... extends EnumSetMappedBaseZZZ{
 		
    	 @IFieldDescription(description = "ARMY TEXTVALUES") 
    	ARMY(1,"Army","Land army","A tile which cannot enter ocean fields."),

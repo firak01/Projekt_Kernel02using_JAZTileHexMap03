@@ -11,7 +11,7 @@ import org.hibernate.Session;
 
 import use.thm.persistence.event.VetoFlag4ListenerZZZ;
 import use.thm.persistence.hibernate.HibernateContextProviderSingletonTHM;
-import use.thm.persistence.interfaces.enums.IEnumSetDefaulttextTHM;
+import use.thm.persistence.interfaces.enums.IEnumSetTextTHM;
 import use.thm.persistence.model.AreaCell;
 import use.thm.persistence.model.Key;
 import use.thm.persistence.model.Defaulttext;
@@ -118,6 +118,9 @@ public class DefaulttextDao<T> extends KeyDao<T> {
 		return iReturn;		
 	}
 	
+	/* Das ist die Variante für Entities, die nicht mit der Annotation "Immutable" versehen sind.
+	 * Die Entities mit der Annotation "Immutable" haben nämlich 
+	 */
 	protected <T> void _fillValue(Defaulttext<T> objValue, String sEnumAlias){
 		
 		//Merke: Direktes Reinschreiben geht wieder nicht wg. "bound exception"
@@ -125,22 +128,22 @@ public class DefaulttextDao<T> extends KeyDao<T> {
 				
 		//Also: Klasse holen und danach CASTEN.
 		Class<?> objClass = ((Key) objValue).getThiskeyEnumClass();
-		String sName = EnumSetDefaulttextUtilZZZ.readEnumConstant_NameValue((Class<IEnumSetDefaulttextTHM>) objClass, sEnumAlias);
+		String sName = EnumSetDefaulttextUtilZZZ.readEnumConstant_NameValue((Class<IEnumSetTextTHM>) objClass, sEnumAlias);
 		System.out.println("Gefundener Typname: " + sName);
 		
-		String sShorttext = EnumSetDefaulttextUtilZZZ.readEnumConstant_ShorttextValue((Class<IEnumSetDefaulttextTHM>) objClass, sEnumAlias);
+		String sShorttext = EnumSetDefaulttextUtilZZZ.readEnumConstant_ShorttextValue((Class<IEnumSetTextTHM>) objClass, sEnumAlias);
 		System.out.println("Gefundener Typkurztext: " + sShorttext);
 		((Defaulttext) objValue).setShorttext(sShorttext);
 		
-		String sLongtext = EnumSetDefaulttextUtilZZZ.readEnumConstant_LongtextValue((Class<IEnumSetDefaulttextTHM>) objClass, sEnumAlias);
+		String sLongtext = EnumSetDefaulttextUtilZZZ.readEnumConstant_LongtextValue((Class<IEnumSetTextTHM>) objClass, sEnumAlias);
 		System.out.println("Gefundener Typlangtext: " + sLongtext);
 		((Defaulttext) objValue).setLongtext(sLongtext);
 				
-		String sDescription = EnumSetDefaulttextUtilZZZ.readEnumConstant_DescriptionValue((Class<IEnumSetDefaulttextTHM>) objClass, sEnumAlias);
+		String sDescription = EnumSetDefaulttextUtilZZZ.readEnumConstant_DescriptionValue((Class<IEnumSetTextTHM>) objClass, sEnumAlias);
 		System.out.println("Gefundene Description: " + sDescription);			
 		((Defaulttext) objValue).setDescription(sDescription);
 		
-	    Long lngThiskey = EnumSetDefaulttextUtilZZZ.readEnumConstant_ThiskeyValue((Class<IEnumSetDefaulttextTHM>) objClass, sEnumAlias);//Das darf nicht NULL sein, sonst Fehler. Über diesen Schlüssel wird der Wert dann gefunden.
+	    Long lngThiskey = EnumSetDefaulttextUtilZZZ.readEnumConstant_ThiskeyValue((Class<IEnumSetTextTHM>) objClass, sEnumAlias);//Das darf nicht NULL sein, sonst Fehler. Über diesen Schlüssel wird der Wert dann gefunden.
 	    System.out.println("Gefundener Thiskey: " + lngThiskey.toString());	
 		((Key) objValue).setThiskey(lngThiskey);
 		

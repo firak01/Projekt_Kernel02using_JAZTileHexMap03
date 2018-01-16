@@ -26,17 +26,6 @@ import basic.zBasic.persistence.interfaces.enums.AbstractValue;
 import basic.zBasic.persistence.interfaces.enums.IThiskeyValueZZZ;
 import basic.zBasic.util.datatype.string.StringZZZ;
 
-/**Klasse für einen Spielstein - persistierbar per JPA. Wird nach Troop vererbt. 
-* Die Klasse TileTHM hat im Vergleich zu dieser Klassen noch weitere Aufgaben einer Swing - Komponente.
-* Wegen nicht zu persistierender Eigenschaften wurde dann diese Klasse Tile speziell nur mit zu persistierenden Eigenschaften erstellt.
-* @author lindhaueradmin
-*
-*/
-
-//Merke: Neue Entities immer auch in HibernateContextProviderSingletonTHM hinzufügen. In hibernate.cfg.xml reicht nicht.
-
-//Vgl. Buch "Java Persistence API 2", Seite 34ff. für @Table, @UniqueConstraint
-
 //Ich will kein eigenes Entity für Key haben
 //@Entity  //Wenn man "Hibernate"-Vererbung nutzt, dann gibt es immer eine Tabelle der Entity Klasse 
 //@Access(AccessType.PROPERTY)

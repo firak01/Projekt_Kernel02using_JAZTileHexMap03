@@ -48,6 +48,14 @@
 		<mapping class="use.thm.persistence.model.Defaulttext"></mapping>
 		<mapping class="use.thm.persistence.model.TileDefaulttext"></mapping>
 		<mapping class="use.thm.persistence.model.TextDefaulttext"></mapping>
+		
+		<!-- FGL: 20180116 - Mapping für die Schlüsselwerttabellen, die 'unveraenderbare' Werte haben sollen -->		
+		<mapping class="use.thm.persistence.model.Immutabletext"></mapping>
+		
+		<!-- FGL 20180116 TODO GOON -->
+<!-- 		<mapping class="use.thm.persistence.model.TileImmutabletext"></mapping> -->
+<!-- 		<mapping class="use.thm.persistence.model.TextImmutabletext"></mapping> -->
+		
 
 		<!-- FGL: So werden die Klassen für das Mapping herangezogen, aber: Dabei 
 			werden Annotations verwendet. -->

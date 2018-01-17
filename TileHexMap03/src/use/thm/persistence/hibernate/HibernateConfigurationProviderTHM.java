@@ -7,6 +7,7 @@ import use.thm.persistence.model.AreaCellLand;
 import use.thm.persistence.model.AreaCellOcean;
 import use.thm.persistence.model.Defaulttext;
 import use.thm.persistence.model.HexCell;
+import use.thm.persistence.model.Immutabletext;
 import use.thm.persistence.model.TextDefaulttext;
 import use.thm.persistence.model.Tile;
 import use.thm.persistence.model.TileDefaulttext;
@@ -94,10 +95,11 @@ create-drop: drop the schema when the SessionFactory is closed explicitly, typic
 		
 		bReturn = addConfigurationAnnotatedClass(TileDefaulttextValue.class);//wird aber nicht genutz. Nur Demonstrator
 		
-		bReturn = addConfigurationAnnotatedClass(Defaulttext.class); //Darf kein Entity sein, oder? 
+		bReturn = addConfigurationAnnotatedClass(Defaulttext.class);
 		bReturn = addConfigurationAnnotatedClass(TextDefaulttext.class);
 		bReturn = addConfigurationAnnotatedClass(TileDefaulttext.class);
 		
+		bReturn = addConfigurationAnnotatedClass(Immutabletext.class);
 		
 		bReturn = addConfigurationAnnotatedClass(TroopArmyVariant.class);
 		

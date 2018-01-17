@@ -17,6 +17,8 @@ import basic.zKernel.KernelZZZ;
 
 /** Nicht genutzte Variante. 
  * Statt dessen habe ich mich für eine Variante entschieden, in der die Enumeration als innere Klasse der Entity Klasse gehalten wird.
+ * Die hier angelegten Texte sind veränderbar, d.h. die Entities haben auch Setter-Methoden.
+ * Vergleiche immutable - Texte. Dort haben die Entities keine Setter-Methoden.
  *  
  *  In dieser Variante werden die Enums aus der Klasse: EnumSetInnerMappedTestTypeZZZ Verwendet.
  * @author Fritz Lindhauer

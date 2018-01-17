@@ -40,7 +40,8 @@ import basic.zBasic.util.genericEnum.ObjectTestMappedValue.EnumSetInnerMappedTes
 //Merke: Neue Entities immer auch in HibernateContextProviderSingletonTHM hinzufügen (in HibernateConfigurationProviderTHM.fillConfigurationMapping() ). In hibernate.cfg.xml reicht nicht.
 
 @Entity
-@Access(AccessType.PROPERTY) 
+@Access(AccessType.PROPERTY)
+@org.hibernate.annotations.Immutable //Ziel: Performancesteigerung. Siehe Buch "Java Persistance with Hibernate", S. 107. Dafür dürfen die POJOs aber keine public Setter-Methoden haben.
 
 //Das muss in der Elternklasse angegeben werden
 @Inheritance(strategy =  InheritanceType.TABLE_PER_CLASS) //Ziel: Jedes Entity der Vererbungshierarchie in einer eigenen Tabelle  Es ist eine eigene Tabelle notwendig, da Thiskey eindeutig sein soll.
@@ -49,22 +50,26 @@ import basic.zBasic.util.genericEnum.ObjectTestMappedValue.EnumSetInnerMappedTes
 //@Inheritance(strategy =  InheritanceType.JOINED )//ZIEL: Nur bestimmte Entiteis in einer eigenen Klasse //
 //@DiscriminatorColumn(name="KEYTYPE", discriminatorType = DiscriminatorType.STRING) //Bei InheritanceType.SINGLE_TABLE) gilt: Voraussetzung für DiscriminatorValue in der AreaCell-Klasse. //Wird es wg. der Vererbung von HEXCell zu AreaType immer geben. Ohne Annotation ist das DTYPE und der wert ist gleich dem Klassennamen. ////Bei InheritanceType.TABLE_PER_CLASS gilt, es darf keinen Discriminator geben ...
 
-@Table(name="k_defaulttext")
-public class Defaulttext<IEnumDefaulttext>  extends Key implements IOptimisticLocking{
+@Table(name="k_immutabletext")
+public class Immutabletext<IEnumImmutabletext>  extends KeyImmutable implements IOptimisticLocking{
 	private static final long serialVersionUID = -8400471235691822606L; //auch wenn serialized nicht implementiert wird (sondern in der elternklasse), muss der staische Schlüssel hier eingetragen werden. 
 	
 	//Entsprechend der internen Enumeration. 
 	//Merke: Die Enumeration dient der Festlegung der Defaultwerte. In den Feldern des Entities werden die gespeicherten Werte gehalten.
 	private String sLongtext, sShorttext, sDescription;
-	
-	
-	public Defaulttext(){
+		
+	public Immutabletext(){
 		super();
-		this.setKeyType("DEFAULTTEXT"); //TODO: HIER EINE ENUMERATION MACHEN ÜBER DIE VERSCHIEDENEN TypeText - SCHLÜSSELWERTE?
+		this.setKeyType("IMMUTABLETEXT");
 	}
-	public Defaulttext(String sKeyType){
+
+	public Immutabletext(long lngThiskey, String sShorttext, String sLongtext, String sDescription){
 		super();
-		this.setKeyType(sKeyType);
+		this.setKeyType("IMMUTABLETEXT");
+		this.setThiskey(lngThiskey);
+		this.setShorttext(sShorttext);
+		this.setLongtext(sLongtext);
+		this.setDescription(sDescription);
 	}
 	
 	
@@ -81,7 +86,7 @@ public class Defaulttext<IEnumDefaulttext>  extends Key implements IOptimisticLo
 	 public int getId(){
 		 return super.getId();
 	 }
-	 public void setId(int iLid){
+	 protected void setId(int iLid){
 		 super.setId(iLid);
 	 }
 	 
@@ -93,7 +98,7 @@ public class Defaulttext<IEnumDefaulttext>  extends Key implements IOptimisticLo
 	public Long getThiskey() {
 		 return super.getThiskey();
 	}
-	public void setThiskey(Long thiskeyId) {
+	protected void setThiskey(Long thiskeyId) {
 		super.setThiskey(thiskeyId);
 	}
 	
@@ -102,7 +107,7 @@ public class Defaulttext<IEnumDefaulttext>  extends Key implements IOptimisticLo
 	public String getKeyType(){
 		return super.getKeyType();
 	}	
-	public void setKeyType(String sKeyType){
+	protected void setKeyType(String sKeyType){
 		super.setKeyType(sKeyType);
 	}
 	   
@@ -110,7 +115,7 @@ public class Defaulttext<IEnumDefaulttext>  extends Key implements IOptimisticLo
 	public String getShorttext(){
 		return this.sShorttext;
 	}
-	public void setShorttext(String s){
+	protected void setShorttext(String s){
 		this.sShorttext = s;
 	}
 	
@@ -118,7 +123,7 @@ public class Defaulttext<IEnumDefaulttext>  extends Key implements IOptimisticLo
 	public String getLongtext(){
 		return this.sLongtext;
 	}
-	public void setLongtext(String s){
+	protected void setLongtext(String s){
 		this.sLongtext = s;
 	}
 	
@@ -126,7 +131,7 @@ public class Defaulttext<IEnumDefaulttext>  extends Key implements IOptimisticLo
 	public String getDescription(){
 		return this.sDescription;
 	}
-	public void setDescription(String s){
+	protected void setDescription(String s){
 		this.sDescription = s;
 	}
 	
@@ -157,34 +162,34 @@ public class Defaulttext<IEnumDefaulttext>  extends Key implements IOptimisticLo
     
 	 @Transient
     public Class getThiskeyEnumClass() {
-	      return Defaulttext.getThiskeyEnumClassStatic();
+	      return Immutabletext.getThiskeyEnumClassStatic();
 	   }
 	 
 	
     //### Statische Methode (um einfacher darauf zugreifen zu können)
     public static Class getThiskeyEnumClassStatic(){
     	System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": Diese Methode muss in den daraus erbenden Klassen überschrieben werden.");
-    	return EnumDefaulttext.class;    	
+    	return EnumImmutabletext.class;    	
     }
 
 	//#######################################################
 	//### Eingebettete Enum-Klasse mit den Defaultwerten, diese Werte werden auch per Konstruktor übergeben.
 	//### int Key, String shorttext, String longtext, String description
 	//#######################################################
-	public enum EnumDefaulttext implements IEnumSetTextTHM,  IThiskeyProviderZZZ<Long>{//Folgendes geht nicht, da alle Enums schon von einer Java BasisKlasse erben... extends EnumSetMappedBaseZZZ{
+	public enum EnumImmutabletext implements IEnumSetTextTHM,  IThiskeyProviderZZZ<Long>{//Folgendes geht nicht, da alle Enums schon von einer Java BasisKlasse erben... extends EnumSetMappedBaseZZZ{
 		
-   	 @IFieldDescription(description = "DTXT01 TEXTVALUES") 
-   	T01(1,"DTXT01","DTEXT 01","A test dtext 01."),
+   	 @IFieldDescription(description = "DTXT01 TEXTIMMUTABLES") 
+   	T01(1,"DTXT01","DTEXT 01","A test dtext 01 immutable."),
    	
-   	 @IFieldDescription(description = "DTXT02 TEXTVALUES") 
-   	T02(2,"DTXT02","DTEXT 02", "A test dtext 02.");
+   	 @IFieldDescription(description = "DTXT02 TEXTIMMUTABLES") 
+   	T02(2,"DTXT02","DTEXT 02", "A test dtext 02 immutable.");
    	   	
    private Long lKey;
    private String sLongtext, sShorttext, sDescription;
    
 
    //Merke: Enums haben keinen public Konstruktor, können also nicht intiantiiert werden, z.B. durch Java-Reflektion.
-   EnumDefaulttext(int iKey, String sShorttext, String sLongtext, String sDescription){
+   EnumImmutabletext(int iKey, String sShorttext, String sLongtext, String sDescription){
        this.lKey = Long.valueOf(iKey);
        this.sShorttext = sShorttext;
        this.sLongtext = sLongtext;
@@ -193,7 +198,7 @@ public class Defaulttext<IEnumDefaulttext>  extends Key implements IOptimisticLo
    
    //Merke: Enums haben keinen public Konstruktor, können also nicht intiantiiert werden, z.B. durch Java-Reflektion.
    //           In der Util-Klasse habe ich aber einen Workaround gefunden ( basic/zBasic/util/abstractEnum/EnumSetMappedUtilZZZ.java ).
-   EnumDefaulttext(){	
+   EnumImmutabletext(){	
    }
 
   //##################################################
@@ -240,8 +245,8 @@ public class Defaulttext<IEnumDefaulttext>  extends Key implements IOptimisticLo
 	
 	
    // the valueOfMethod <--- Translating from DB
-   public static EnumDefaulttext fromShorttext(String s) {
-       for (EnumDefaulttext state : values()) {
+   public static EnumImmutabletext fromShorttext(String s) {
+       for (EnumImmutabletext state : values()) {
            if (s.equals(state.getShorttext()))
                return state;
        }
@@ -249,7 +254,7 @@ public class Defaulttext<IEnumDefaulttext>  extends Key implements IOptimisticLo
    }
 
    public EnumSet<?>getEnumSetUsed(){
-   	return EnumDefaulttext.getEnumSet();
+   	return EnumImmutabletext.getEnumSet();
    }
 
    @SuppressWarnings("rawtypes")
@@ -261,12 +266,12 @@ public class Defaulttext<IEnumDefaulttext>  extends Key implements IOptimisticLo
    	//ArrayList<Class<?>> listEmbedded = ReflectClassZZZ.getEmbeddedClasses(this.getClass(), sFilterName);
    	
    	//Erstelle nun ein EnumSet, speziell für diese Klasse, basierend auf  allen Enumrations  dieser Klasse.
-   	Class<EnumDefaulttext> enumClass = EnumDefaulttext.class;
-   	EnumSet<EnumDefaulttext> set = EnumSet.noneOf(enumClass);//Erstelle ein leeres EnumSet
+   	Class<EnumImmutabletext> enumClass = EnumImmutabletext.class;
+   	EnumSet<EnumImmutabletext> set = EnumSet.noneOf(enumClass);//Erstelle ein leeres EnumSet
    	
-   	for(Object obj : EnumDefaulttext.class.getEnumConstants()){
+   	for(Object obj : EnumImmutabletext.class.getEnumConstants()){
    		//System.out.println(obj + "; "+obj.getClass().getName());
-   		set.add((EnumDefaulttext) obj);
+   		set.add((EnumImmutabletext) obj);
    	}
    	return set;
    	

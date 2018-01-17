@@ -11,7 +11,7 @@ import javax.persistence.Transient;
 
 import basic.persistence.model.IOptimisticLocking;
 import basic.zBasic.util.datatype.string.StringZZZ;
-
+//Merke: Neue Entities immer auch in HibernateContextProviderSingletonTHM hinzufügen (in HibernateConfigurationProviderTHM.fillConfigurationMapping() ). In hibernate.cfg.xml reicht nicht.
 @Entity
 @DiscriminatorValue("land") //Wird es wg. der Vererbung(!) von HEXCell zu AreaType immer geben. Ohne Annotation ist das DTYPE und der wert ist gleich dem Klassennamen.
                                       //Das muss in dem Root Entity, also in HEXCELL defniert werden. @DiscriminatorColumn(name="Disc", discriminatorType = DiscriminatorType.STRING)

@@ -32,7 +32,7 @@ import basic.zBasic.util.datatype.string.StringZZZ;
  * @author lindhaueradmin
  *
  */
-
+//Merke: Neue Entities immer auch in HibernateContextProviderSingletonTHM hinzufügen (in HibernateConfigurationProviderTHM.fillConfigurationMapping() ). In hibernate.cfg.xml reicht nicht.
 //Vgl. Buch "Java Persistence API 2", Seite 34ff. für @Table, @UniqueConstraint
 @Entity
 @Access(AccessType.PROPERTY)

@@ -6,6 +6,7 @@ import java.util.Set;
 import org.hibernate.Session;
 
 import use.thm.persistence.dao.DefaulttextDao;
+import use.thm.persistence.dao.ImmutabletextDao;
 import use.thm.persistence.dao.TextDefaulttextDao;
 import use.thm.persistence.dao.TileDao;
 import use.thm.persistence.dao.TileDefaulttextDao;
@@ -15,6 +16,7 @@ import use.thm.persistence.interfaces.enums.IEnumSetTextTHM;
 import use.thm.persistence.model.Defaulttext;
 import use.thm.persistence.model.Defaulttext.EnumDefaulttext;
 import use.thm.persistence.model.Immutabletext;
+import use.thm.persistence.model.Immutabletext.EnumImmutabletext;
 import use.thm.persistence.model.Key;
 import use.thm.persistence.model.TextDefaulttext;
 import use.thm.persistence.model.TextDefaulttext.EnumTextDefaulttext;
@@ -38,17 +40,17 @@ import basic.zKernel.KernelZZZ;
  * @author Fritz Lindhauer
  *
  */
-public class DebugKeyTable_Version_TileDefaulttextTHM {
+public class DebugKeyTable_Version_TileImmutabletextTHM {
 
 	public static void main(String[] args) {
 		try {
 									
-		DebugKeyTable_Version_TileDefaulttextTHM objDebug = new DebugKeyTable_Version_TileDefaulttextTHM();
+		DebugKeyTable_Version_TileImmutabletextTHM objDebug = new DebugKeyTable_Version_TileImmutabletextTHM();
 		
 		//Hole alle Einträge des Enums
-		objDebug.getEntrySetDefaulttextValues();
-		objDebug.getEntrySetTileDefaulttextValues();
-		objDebug.getEntrySetTextDefaulttextValues();
+		objDebug.getEntrySetImmutabletextValues();
+//		objDebug.getEntrySetTileDefaulttextValues();
+//		objDebug.getEntrySetTextDefaulttextValues();
 
 		KernelZZZ objKernel = new KernelZZZ();			
 		HibernateContextProviderSingletonTHM objContextHibernate;		
@@ -57,110 +59,113 @@ public class DebugKeyTable_Version_TileDefaulttextTHM {
 
 		int iFound = -1;
 									
-		TileDefaulttextDao daoTiletext = new TileDefaulttextDao(objContextHibernate);	
-		TextDefaulttextDao daoTexttext = new TextDefaulttextDao(objContextHibernate);		
-		DefaulttextDao daoDefaulttext = new DefaulttextDao(objContextHibernate);
+		//TileImmutabletextDao daoTiletext = new TileImmutabeltextDao(objContextHibernate);	
+		//TextDefaulttextDao daoTexttext = new TextDefaulttextDao(objContextHibernate);		
+		ImmutabletextDao daoImmutabletext = new ImmutabletextDao(objContextHibernate);
 		
 		//LÖSCHE ALLE EINTRÄGE
 		//Lösche alle erzeugten Einträge vor dem Test. D.h. es muss eine DAO-Klasse für die DefaultValues geben
 		System.out.println("\n##########################\nLÖSCHE ALLE EINTRÄGE VORAB");
-		daoDefaulttext.deleteAll();//Das reicht, wg. der "Hibernate-Vererbung" der Model Klasse ... Diese Vererbungsstruktur spiegelt sich dann auch in den Dao-Klassen wieder.
+		daoImmutabletext.deleteAll();//Das reicht, wg. der "Hibernate-Vererbung" der Model Klasse ... Diese Vererbungsstruktur spiegelt sich dann auch in den Dao-Klassen wieder.
 				
 		//Zähle die Anzahl der Einträge
-		iFound = daoDefaulttext.count();//FGL 20171108: TODO GOON: Der Count liefert alle Elemente auch der Kindklasse wieder. Also: Neues Entitiy TextDefaulttext, erbend aus Defaulttext.
+		iFound = daoImmutabletext.count();//FGL 20171108: TODO GOON: Der Count liefert alle Elemente auch der Kindklasse wieder. Also: Neues Entitiy TextDefaulttext, erbend aus Defaulttext.
 		//																							Entsprechend auch TextDefaulttextDao als neue Klasse.
-		System.out.println("Anzahl gefundener Defaultttext - Einträge nach Löschung aller Defaulttext - Einträge: " + iFound);
+		System.out.println("Anzahl gefundener Immutabletext - Einträge nach Löschung aller Immutabletext - Einträge: " + iFound);
 		
-		iFound = daoTiletext.count();
-		System.out.println("Anzahl gefundener TileDefaulttext - Einträge nach Löschung aller Defaulttext - Einträge: " + iFound);
-
-		iFound = daoTexttext.count();
-		System.out.println("Anzahl gefundener TextDefaulttext - Einträge nach Löschung aller Defaulttext - Einträge: " + iFound);
-		
+//		iFound = daoTiletext.count();
+//		System.out.println("Anzahl gefundener TileDefaulttext - Einträge nach Löschung aller Defaulttext - Einträge: " + iFound);
+//
+//		iFound = daoTexttext.count();
+//		System.out.println("Anzahl gefundener TextDefaulttext - Einträge nach Löschung aller Defaulttext - Einträge: " + iFound);
+//		
 		//Erzeuge nun für die Tabellen jeweils einen Eintrag
-		System.out.println("\n---------------------------------------\nErzeuge einen Eintrag in  Defaultttext");		
-		objDebug.debugCreateEntry_TileDefaulttext(0);
+		System.out.println("\n---------------------------------------\nErzeuge einen Eintrag in  Immutabletext");		
+		objDebug.debugCreateEntry_Immutabletext(0);
+		
+//		System.out.println("\n---------------------------------------\nErzeuge einen Eintrag in  Defaultttext");		
+//		objDebug.debugCreateEntry_TileDefaulttext(0);
 				
 		//Zähle die Anzahl der Einträge
 		System.out.println("\n---------------------------------------\nZähle alle Einträge");		
-		iFound = daoDefaulttext.count();
+		iFound = daoImmutabletext.count();
 		System.out.println("Anzahl gefundener Defaulttext - Einträge (UND DER DARAUS ERBENDEN ENTITIES) nach Erzeugen eines Eintrags " + iFound);
 		
-		iFound = daoTiletext.count();
-		System.out.println("Anzahl gefundener TileDefaulttext - Einträge nach Erzeugen eines Eintrags " + iFound);
-
-		iFound = daoTexttext.count();
-		System.out.println("Anzahl gefundener TextDefaulttext - Einträge nach Erzeugen eines Eintrags " + iFound);
-	
-		System.out.println("\n--------------------------------------------\nErzeuge jeweil weitere Einträge in TileDefaulttext / Defaultttext / Texttext");		
-		objDebug.debugCreateEntry_TileDefaulttext(1);
-		
-		objDebug.debugCreateEntry_TextDefaulttext(0);
-		objDebug.debugCreateEntry_Defaulttext(0);
-		objDebug.debugCreateEntry_TextDefaulttext(1);
-		objDebug.debugCreateEntry_Defaulttext(1);
-		
-		//Zähle die Anzahl der Einträge
-		System.out.println("\n---------------------------------------\nZähle alle Einträge");	
-		iFound = daoDefaulttext.count();
-		System.out.println("Anzahl gefundener Defaulttext - Einträge (UND DER DARAUS ERBENDEN ENTITIES) nach Erzeugen eines Eintrags " + iFound);
-
-		iFound = daoTiletext.count();
-		System.out.println("Anzahl gefundener Tiletext - Einträge nach Erzeugen eines Eintrags " + iFound);
-
-		iFound = daoTexttext.count();
-		System.out.println("Anzahl gefundener Texttext - Einträge nach Erzeugen eines Eintrags " + iFound);
-
-		//LÖSCHE ALLE EINTRÄGE: TILETEXT 
-		System.out.println("\n##########################\nLÖSCHE ALLE TILE(!)TEXT EINTRÄGE");
-		daoTiletext.deleteAll();
-		
-		//Zähle die Anzahl der Einträge
-		iFound = daoTiletext.count();
-		System.out.println("Anzahl gefundener Tiletext - Einträge nach Löschung aller Tiletext - Einträge: " + iFound);
-				
-		iFound = daoTexttext.count();
-		System.out.println("Anzahl gefundener Texttext - Einträge nach Löschung aller Tiletext - Einträge: " + iFound);
-		
-		iFound = daoDefaulttext.count();
-		System.out.println("Anzahl gefundener Defaulttext - Einträge nach Löschung aller Tiletext - Einträge: " + iFound);
-		
-		 
-		//LÖSCHE ALLE EINTRÄGE ALS VORBEREITUNG ÜR DEN NÄCHSTEN SCHRITT... alle generieren
-		System.out.println("\n##########################\nLÖSCHE ALLE EINTRÄGE ALS VORBEREITUNG ZUM NEUEN GENERIEREN ALLER EINTRÄGE");
-		daoDefaulttext.deleteAll();
-		
-		//Zähle die Anzahl der Einträge
-		iFound = daoDefaulttext.count();
-		System.out.println("Anzahl gefundener Defaulttext - Einträge (UND DER DARAUS ERBENDEN ENTITIES) nach Löschung aller Einträge " + iFound);
-
-		iFound = daoTiletext.count();
-		System.out.println("Anzahl gefundener TileDefaulttext - Einträge nach Löschung aller Einträge " + iFound);
-
-		iFound = daoTexttext.count();
-		System.out.println("Anzahl gefundener TextDefaulttext - Einträge nach Löschung aller Einträge " + iFound);
-			
-		System.out.println("\n---------------------------------------\nErzeuge alle Einträge");
-		objDebug.debugCreateEntriesAll();
-		
-		//Zähle die Anzahl der Einträge
-		iFound = daoTiletext.count();
-		System.out.println("Anzahl gefundener Tiletext - Einträge nach Erzeugung aller Einträge: " + iFound);
-				
-		iFound = daoTexttext.count();
-		System.out.println("Anzahl gefundener Texttext - Einträge nach Erzeugung aller Einträge: " + iFound);
-		
-		iFound = daoDefaulttext.count();
-		System.out.println("Anzahl gefundener Defaulttext - Einträge nach Erzeugung aller Einträge: " + iFound);
-		
-		//##############################################################################################################################
-		System.out.println("\n##########################\nSUCHE EINTRAG NACH THISKEY");
-		int iThiskey = 1;
-		objDebug.debugTileDefaulttextDao_searchDefaulttextByThiskey(iThiskey);
-		
-		iThiskey = 2;
-		objDebug.debugTileDefaulttextDao_searchDefaulttextByThiskey(iThiskey);
-		
+//		iFound = daoTiletext.count();
+//		System.out.println("Anzahl gefundener TileDefaulttext - Einträge nach Erzeugen eines Eintrags " + iFound);
+//
+//		iFound = daoTexttext.count();
+//		System.out.println("Anzahl gefundener TextDefaulttext - Einträge nach Erzeugen eines Eintrags " + iFound);
+//	
+//		System.out.println("\n--------------------------------------------\nErzeuge jeweil weitere Einträge in TileDefaulttext / Defaultttext / Texttext");		
+//		objDebug.debugCreateEntry_TileDefaulttext(1);
+//		
+//		objDebug.debugCreateEntry_TextDefaulttext(0);
+//		objDebug.debugCreateEntry_Defaulttext(0);
+//		objDebug.debugCreateEntry_TextDefaulttext(1);
+//		objDebug.debugCreateEntry_Defaulttext(1);
+//		
+//		//Zähle die Anzahl der Einträge
+//		System.out.println("\n---------------------------------------\nZähle alle Einträge");	
+//		iFound = daoDefaulttext.count();
+//		System.out.println("Anzahl gefundener Defaulttext - Einträge (UND DER DARAUS ERBENDEN ENTITIES) nach Erzeugen eines Eintrags " + iFound);
+//
+//		iFound = daoTiletext.count();
+//		System.out.println("Anzahl gefundener Tiletext - Einträge nach Erzeugen eines Eintrags " + iFound);
+//
+//		iFound = daoTexttext.count();
+//		System.out.println("Anzahl gefundener Texttext - Einträge nach Erzeugen eines Eintrags " + iFound);
+//
+//		//LÖSCHE ALLE EINTRÄGE: TILETEXT 
+//		System.out.println("\n##########################\nLÖSCHE ALLE TILE(!)TEXT EINTRÄGE");
+//		daoTiletext.deleteAll();
+//		
+//		//Zähle die Anzahl der Einträge
+//		iFound = daoTiletext.count();
+//		System.out.println("Anzahl gefundener Tiletext - Einträge nach Löschung aller Tiletext - Einträge: " + iFound);
+//				
+//		iFound = daoTexttext.count();
+//		System.out.println("Anzahl gefundener Texttext - Einträge nach Löschung aller Tiletext - Einträge: " + iFound);
+//		
+//		iFound = daoDefaulttext.count();
+//		System.out.println("Anzahl gefundener Defaulttext - Einträge nach Löschung aller Tiletext - Einträge: " + iFound);
+//		
+//		 
+//		//LÖSCHE ALLE EINTRÄGE ALS VORBEREITUNG ÜR DEN NÄCHSTEN SCHRITT... alle generieren
+//		System.out.println("\n##########################\nLÖSCHE ALLE EINTRÄGE ALS VORBEREITUNG ZUM NEUEN GENERIEREN ALLER EINTRÄGE");
+//		daoDefaulttext.deleteAll();
+//		
+//		//Zähle die Anzahl der Einträge
+//		iFound = daoDefaulttext.count();
+//		System.out.println("Anzahl gefundener Defaulttext - Einträge (UND DER DARAUS ERBENDEN ENTITIES) nach Löschung aller Einträge " + iFound);
+//
+//		iFound = daoTiletext.count();
+//		System.out.println("Anzahl gefundener TileDefaulttext - Einträge nach Löschung aller Einträge " + iFound);
+//
+//		iFound = daoTexttext.count();
+//		System.out.println("Anzahl gefundener TextDefaulttext - Einträge nach Löschung aller Einträge " + iFound);
+//			
+//		System.out.println("\n---------------------------------------\nErzeuge alle Einträge");
+//		objDebug.debugCreateEntriesAll();
+//		
+//		//Zähle die Anzahl der Einträge
+//		iFound = daoTiletext.count();
+//		System.out.println("Anzahl gefundener Tiletext - Einträge nach Erzeugung aller Einträge: " + iFound);
+//				
+//		iFound = daoTexttext.count();
+//		System.out.println("Anzahl gefundener Texttext - Einträge nach Erzeugung aller Einträge: " + iFound);
+//		
+//		iFound = daoDefaulttext.count();
+//		System.out.println("Anzahl gefundener Defaulttext - Einträge nach Erzeugung aller Einträge: " + iFound);
+//		
+//		//##############################################################################################################################
+//		System.out.println("\n##########################\nSUCHE EINTRAG NACH THISKEY");
+//		int iThiskey = 1;
+//		objDebug.debugTileDefaulttextDao_searchDefaulttextByThiskey(iThiskey);
+//		
+//		iThiskey = 2;
+//		objDebug.debugTileDefaulttextDao_searchDefaulttextByThiskey(iThiskey);
+//		
 		//TODO GOON 20171109
 		//objDebug.debugFindColumnValueMax();
 		//objDebug.debugFindColumnMinValue();
@@ -172,11 +177,11 @@ public class DebugKeyTable_Version_TileDefaulttextTHM {
 		
 	}
 	
-	public boolean getEntrySetDefaulttextValues(){
+	public boolean getEntrySetImmutabletextValues(){
 		boolean bReturn = false;
 		main:{
 //			try {
-				Defaulttext objValue = new Defaulttext();				
+				Immutabletext objValue = new Immutabletext();				
 				Long lngObj = new Long(1);
 				Collection<String> colsName = EnumZZZ.getNames(objValue.getThiskeyEnumClass());
 				for(String s : colsName){
@@ -280,7 +285,7 @@ public class DebugKeyTable_Version_TileDefaulttextTHM {
 		return bReturn;	
 	}
 	
-	public boolean debugCreateEntry_Defaulttext(int iIndex){
+	public boolean debugCreateEntry_Immutabletext(int iIndex){
 		boolean bReturn = false;
 		main:{
 			System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": START ##############");			
@@ -293,14 +298,14 @@ public class DebugKeyTable_Version_TileDefaulttextTHM {
 				objContextHibernate.getConfiguration().setProperty("hibernate.hbm2ddl.auto", "update");  //! Jetzt erst wird jede Tabelle über den Anwendungsstart hinaus gespeichert UND auch wiedergeholt.				
 			
 				//###################
-				//1. Speicher den Defaulttext
+				//1. Speicher den Immtabletext
 				//####################					
 				//Session session = this.getSession();	//Vesuch eine neue Session zu bekommen. Merke: Die Session wird hier nicht gespeichert! Wg. 1 Transaktion ==> 1 Session
 				Session session = objContextHibernate.getSession();
 				if(session == null) break main;			
 				session.getTransaction().begin();//Ein zu persistierendes Objekt - eine Transaction, auch wenn mehrere in einer Transaction abzuhandeln wären, aber besser um Fehler abfangen zu können.
 				
-				EnumDefaulttext[] objaType = Defaulttext.EnumDefaulttext.values();
+				EnumImmutabletext[] objaType = Immutabletext.EnumImmutabletext.values();
 
 				//String s = objaType[0].name(); //Prasenzstudium .... also entsprechend was als Eigenschaft vorgeschlagen wird von TileDefaulttextType.Praesenzstudium
 				//String s = objaType[0].toString(); //dito
@@ -308,19 +313,17 @@ public class DebugKeyTable_Version_TileDefaulttextTHM {
 				String s = objaType[0].name();
 				System.out.println("debugCreateEntry für ... " + s);
 				
-				Defaulttext objValue = new Defaulttext();
+				
+				//####################################################################################################
+				//Achtung: Hier unterscheidet sich der Immutabletext. 
+				//Er hat keine Setter-Methoden und muss daher komplett im Konsturktor erzeugt werden.
 				String sDescription = objaType[iIndex].getDescription();
-				objValue.setDescription(sDescription);
-				
-				String sShorttext = objaType[iIndex].getShorttext();
-				objValue.setShorttext(sShorttext);
-				
 				String sLongtext = objaType[iIndex].getLongtext();
-				objValue.setLongtext(sLongtext);
+				String sShorttext = objaType[iIndex].getShorttext();
+				Long lngThiskey = objaType[iIndex].getThiskey(); //Das darf nicht NULL sein, sonst Fehler. Über diesen Schlüssel wird der Wert dann gefunden.
 				
-			    Long lngThiskey = objaType[iIndex].getThiskey(); //Das darf nicht NULL sein, sonst Fehler. Über diesen Schlüssel wird der Wert dann gefunden.
-				objValue.setThiskey(lngThiskey);
-			    
+				Immutabletext objValue = new Immutabletext(lngThiskey, sShorttext, sLongtext, sDescription);
+
 				//Merke: EINE TRANSACTION = EINE SESSION ==>  neue session von der SessionFactory holen
 				session.save(objValue); //Hibernate Interceptor wird aufgerufen																				
 				if (!session.getTransaction().wasCommitted()) {

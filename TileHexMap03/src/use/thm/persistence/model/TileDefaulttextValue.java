@@ -32,7 +32,7 @@ import basic.zBasic.persistence.interfaces.enums.IThiskeyValueZZZ;
 *
 */
 
-//Merke: Neue Entities immer in HibernateContextProviderSingletonTHM hinzufügen. In hibernate.cfg.xml reicht nicht.
+//Merke: Neue Entities immer auch in HibernateContextProviderSingletonTHM hinzufügen (in HibernateConfigurationProviderTHM.fillConfigurationMapping() ). In hibernate.cfg.xml reicht nicht.
 
 
 @Entity

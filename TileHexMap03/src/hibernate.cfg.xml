@@ -51,6 +51,7 @@
 		
 		<!-- FGL: 20180116 - Mapping für die Schlüsselwerttabellen, die 'unveraenderbare' Werte haben sollen -->		
 		<mapping class="use.thm.persistence.model.Immutabletext"></mapping>
+		<mapping class="use.thm.persistence.model.TileImmutabletext"></mapping>
 		
 		<!-- FGL 20180116 TODO GOON -->
 <!-- 		<mapping class="use.thm.persistence.model.TileImmutabletext"></mapping> -->

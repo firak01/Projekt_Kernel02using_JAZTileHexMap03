@@ -16,6 +16,7 @@ import use.thm.persistence.model.AreaCell;
 import use.thm.persistence.model.Immutabletext;
 import use.thm.persistence.model.Key;
 import use.thm.persistence.model.Defaulttext;
+import use.thm.persistence.model.KeyImmutable;
 import use.thm.persistence.model.TextDefaulttext;
 import use.thm.persistence.model.TileDefaulttext;
 import use.thm.persistence.model.Troop;
@@ -29,6 +30,7 @@ import basic.zBasic.util.datatype.enums.EnumSetDefaulttextUtilZZZ;
 import basic.zBasic.util.datatype.enums.EnumSetInnerUtilZZZ;
 import basic.zBasic.util.datatype.enums.EnumZZZ;
 import basic.zBasic.util.datatype.enums.EnumSetInnerUtilZZZ.ThiskeyEnumMappingExceptionZZZ;
+import basic.zBasic.util.dataype.calling.ReferenceZZZ;
 import basic.zKernel.KernelZZZ;
 public class ImmutabletextDao<T> extends KeyDao<T> {
 	private static final long serialVersionUID = 1L;
@@ -78,15 +80,31 @@ public class ImmutabletextDao<T> extends KeyDao<T> {
 				if(session == null) break main;			
 								
 				//Alle Enumerations hier einlesen.
-				//TODO 20171114 ...ohje das irgendwie generisch machen ... vgl. meine _fillValue(...) Lösung..
+				//Anders als bei der _fillValue(...) Lösung können hier nur die Variablen gefüllt werden. Die Zuweisung muss im Konstruktor des immutable Entity-Objekts passieren, das dies keine Setter-Methodne hat.
 				Collection<String> colsEnumAlias = EnumZZZ.getNames(Defaulttext.getThiskeyEnumClassStatic());
 				for(String sEnumAlias : colsEnumAlias){
 					System.out.println("Starte Transaction:.... Gefundener Enum-Name: " + sEnumAlias);
-					Defaulttext objValue = new Defaulttext();		//Bei jedem Schleifendurchlauf neu machen, sonst wird lediglich nur 1 Datensatz immer wieder verändert.
-					session.getTransaction().begin();//Ein zu persistierendes Objekt - eine Transaction, auch wenn mehrere in einer Transaction abzuhandeln wären, aber besser um Fehler abfangen zu können.
-				
-					this._fillValue(objValue, sEnumAlias);//FGL 20171114: Mein generischer Lösungsversuch.
+					Immutabletext objValueTemp = new Immutabletext();		//Bei jedem Schleifendurchlauf neu machen, sonst wird lediglich nur 1 Datensatz immer wieder verändert.
+					
+					//DAS GEHT NICHT, DA JAVA IMMER EIN PASS_BY_VALUE MACHT.
+					//Long lngThisValue = new Long(0);
+					//String sName = new String("");
+					//String sShorttext = new String("");
+					//String sLongtext = new String("");
+					//String sDescription = new String("");
+					//this._fillValueImmutable(objValueTemp, sEnumAlias, lngThisValue, sName, sShorttext, sLongtext, sDescription); 
 
+					//Hier der Workaround mit Refenz-Objekten, aus denen dann der Wert geholt werden kann. Also PASS_BY_REFERENCE durch auslesen der Properties der Objekte.  
+					ReferenceZZZ<Long> lngThisValue = new ReferenceZZZ(4);
+					ReferenceZZZ<String> sName = new ReferenceZZZ("");
+					ReferenceZZZ<String> sShorttext = new ReferenceZZZ("");
+					ReferenceZZZ<String> sLongtext = new ReferenceZZZ("");
+					ReferenceZZZ<String> sDescription = new ReferenceZZZ("");
+					this._fillValueImmutable(objValueTemp, sEnumAlias, lngThisValue, sName, sShorttext, sLongtext, sDescription);
+					
+					session.getTransaction().begin();//Ein zu persistierendes Objekt - eine Transaction, auch wenn mehrere in einer Transaction abzuhandeln wären, aber besser um Fehler abfangen zu können.					
+					Immutabletext objValue = new Immutabletext(lngThisValue.get(), sShorttext.get(), sLongtext.get(), sDescription.get());		//Bei jedem Schleifendurchlauf neu machen, sonst wird lediglich nur 1 Datensatz immer wieder verändert.
+					
 				//Merke: EINE TRANSACTION = EINE SESSION ==>  neue session von der SessionFactory holen
 				session.save(objValue); //Hibernate Interceptor wird aufgerufen																				
 				if (!session.getTransaction().wasCommitted()) {
@@ -122,32 +140,34 @@ public class ImmutabletextDao<T> extends KeyDao<T> {
 	/* Das ist die Variante für Entities, die nicht mit der Annotation "Immutable" versehen sind.
 	 * Die Entities mit der Annotation "Immutable" haben nämlich 
 	 */
-	protected <T> void _fillValue(Defaulttext<T> objValue, String sEnumAlias){
+	//protected <T> void _fillValueImmutable(Immutabletext objValue,String sEnumAlias, Long lngThiskey, String sName, String sShorttext, String sLongtext, String sDescription){
+	//Da Java nur ein CALL_BY_VALUE machen kann, weden hier für die eingefüllten Werte Referenz-Objekte verwendet. 
+	protected <T> void _fillValueImmutable(Immutabletext objValue,String sEnumAlias, ReferenceZZZ<Long> objlngThiskey, ReferenceZZZ<String> objsName, ReferenceZZZ<String> objsShorttext, ReferenceZZZ<String> objsLongtext, ReferenceZZZ<String> objsDescription){
 		
 		//Merke: Direktes Reinschreiben geht wieder nicht wg. "bound exception"
 		//EnumSetDefaulttextUtilZZZ.getEnumConstant_DescriptionValue(EnumSetDefaulttextTestTypeTHM.class, sEnumAlias);
 				
 		//Also: Klasse holen und danach CASTEN.
-		Class<?> objClass = ((Key) objValue).getThiskeyEnumClass();
+		Class<?> objClass = ((KeyImmutable) objValue).getThiskeyEnumClass();
 		String sName = EnumSetDefaulttextUtilZZZ.readEnumConstant_NameValue((Class<IEnumSetTextTHM>) objClass, sEnumAlias);
 		System.out.println("Gefundener Typname: " + sName);
+		objsName.set(sName); //Damit wird CALL_BY_VALUE quasi gemacht....
 		
 		String sShorttext = EnumSetDefaulttextUtilZZZ.readEnumConstant_ShorttextValue((Class<IEnumSetTextTHM>) objClass, sEnumAlias);
 		System.out.println("Gefundener Typkurztext: " + sShorttext);
-		((Defaulttext) objValue).setShorttext(sShorttext);
+		objsShorttext.set(sShorttext); //Damit wird CALL_BY_VALUE quasi gemacht....
 		
 		String sLongtext = EnumSetDefaulttextUtilZZZ.readEnumConstant_LongtextValue((Class<IEnumSetTextTHM>) objClass, sEnumAlias);
 		System.out.println("Gefundener Typlangtext: " + sLongtext);
-		((Defaulttext) objValue).setLongtext(sLongtext);
-				
+		objsShorttext.set(sLongtext); //Damit wird CALL_BY_VALUE quasi gemacht....
+		
 		String sDescription = EnumSetDefaulttextUtilZZZ.readEnumConstant_DescriptionValue((Class<IEnumSetTextTHM>) objClass, sEnumAlias);
 		System.out.println("Gefundene Description: " + sDescription);			
-		((Defaulttext) objValue).setDescription(sDescription);
+		objsDescription.set(sDescription); //Damit wird CALL_BY_VALUE quasi gemacht....
 		
 	    Long lngThiskey = EnumSetDefaulttextUtilZZZ.readEnumConstant_ThiskeyValue((Class<IEnumSetTextTHM>) objClass, sEnumAlias);//Das darf nicht NULL sein, sonst Fehler. Über diesen Schlüssel wird der Wert dann gefunden.
-	    System.out.println("Gefundener Thiskey: " + lngThiskey.toString());	
-		((Key) objValue).setThiskey(lngThiskey);
-		
+	    System.out.println("Gefundener Thiskey: " + lngThiskey.toString());
+	    objlngThiskey.set(lngThiskey); //Damit wird CALL_BY_VALUE quasi gemacht....
 	}
 	
 	//Den Namen des Aktuellen Objekts kann ich nun auslesen.

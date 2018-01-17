@@ -9,6 +9,7 @@ import use.thm.persistence.model.Defaulttext;
 import use.thm.persistence.model.HexCell;
 import use.thm.persistence.model.Immutabletext;
 import use.thm.persistence.model.TextDefaulttext;
+import use.thm.persistence.model.TextImmutabletext;
 import use.thm.persistence.model.Tile;
 import use.thm.persistence.model.TileDefaulttext;
 import use.thm.persistence.model.TileDefaulttextValue;
@@ -102,6 +103,7 @@ create-drop: drop the schema when the SessionFactory is closed explicitly, typic
 		
 		bReturn = addConfigurationAnnotatedClass(Immutabletext.class);
 		bReturn = addConfigurationAnnotatedClass(TileImmutabletext.class);
+		bReturn = addConfigurationAnnotatedClass(TextImmutabletext.class);
 		
 		bReturn = addConfigurationAnnotatedClass(TroopArmyVariant.class);
 		

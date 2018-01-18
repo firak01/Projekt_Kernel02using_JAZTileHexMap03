@@ -32,7 +32,7 @@ import basic.zBasic.util.datatype.enums.EnumZZZ;
 import basic.zBasic.util.datatype.enums.EnumSetInnerUtilZZZ.ThiskeyEnumMappingExceptionZZZ;
 import basic.zBasic.util.dataype.calling.ReferenceZZZ;
 import basic.zKernel.KernelZZZ;
-public class ImmutabletextDao<T> extends KeyDao<T> {
+public class ImmutabletextDao<T> extends KeyImmutableDao<T> {
 	private static final long serialVersionUID = 1L;
 
 	/* Constructor
@@ -159,7 +159,7 @@ public class ImmutabletextDao<T> extends KeyDao<T> {
 		
 		String sLongtext = EnumSetDefaulttextUtilZZZ.readEnumConstant_LongtextValue((Class<IEnumSetTextTHM>) objClass, sEnumAlias);
 		System.out.println("Gefundener Typlangtext: " + sLongtext);
-		objsShorttext.set(sLongtext); //Damit wird CALL_BY_VALUE quasi gemacht....
+		objsLongtext.set(sLongtext); //Damit wird CALL_BY_VALUE quasi gemacht....
 		
 		String sDescription = EnumSetDefaulttextUtilZZZ.readEnumConstant_DescriptionValue((Class<IEnumSetTextTHM>) objClass, sEnumAlias);
 		System.out.println("Gefundene Description: " + sDescription);			

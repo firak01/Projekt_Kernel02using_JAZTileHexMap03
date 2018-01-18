@@ -20,6 +20,7 @@ import use.thm.persistence.model.Defaulttext.EnumDefaulttext;
 import use.thm.persistence.model.Immutabletext;
 import use.thm.persistence.model.Immutabletext.EnumImmutabletext;
 import use.thm.persistence.model.Key;
+import use.thm.persistence.model.KeyImmutable;
 import use.thm.persistence.model.TextDefaulttext;
 import use.thm.persistence.model.TextDefaulttext.EnumTextDefaulttext;
 import use.thm.persistence.model.TextImmutabletext;
@@ -163,14 +164,14 @@ public class DebugKeyTable_Version_TileImmutabletextTHM {
 		iFound = daoImmutabletext.count();
 		System.out.println("Anzahl gefundener Immutabletext - Einträge nach Erzeugung aller Einträge: " + iFound);
 		
-//		//##############################################################################################################################
-//		System.out.println("\n##########################\nSUCHE EINTRAG NACH THISKEY");
-//		int iThiskey = 1;
-//		objDebug.debugTileDefaulttextDao_searchDefaulttextByThiskey(iThiskey);
-//		
-//		iThiskey = 2;
-//		objDebug.debugTileDefaulttextDao_searchDefaulttextByThiskey(iThiskey);
-//		
+		//##############################################################################################################################
+		System.out.println("\n##########################\nSUCHE EINTRAG NACH THISKEY");
+		int iThiskey = 1;
+		objDebug.debugTileImmutabletextDao_searchImmutabletextByThiskey(iThiskey);
+		
+		iThiskey = 2;
+		objDebug.debugTileImmutabletextDao_searchImmutabletextByThiskey(iThiskey);
+		
 		//TODO GOON 20171109
 		//objDebug.debugFindColumnValueMax();
 		//objDebug.debugFindColumnMinValue();
@@ -545,7 +546,7 @@ public class DebugKeyTable_Version_TileImmutabletextTHM {
 	 * @param iIndex
 	 * @return
 	 */
-	public boolean debugTileDefaulttextDao_searchDefaulttextByThiskey(int iThiskey){
+	public boolean debugTileImmutabletextDao_searchImmutabletextByThiskey(int iThiskey){
 		boolean bReturn = false;
 		main:{
 			System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": START ##############");			
@@ -560,17 +561,17 @@ public class DebugKeyTable_Version_TileImmutabletextTHM {
 				//###################
 				//1. Hole den Text
 				//####################				
-				TileDefaulttextDao daoText = new TileDefaulttextDao(objContextHibernate);
+				TileImmutabletextDao daoText = new TileImmutabletextDao(objContextHibernate);
 				
 				Long lngThiskey = new Long(iThiskey);
 				//IThiskeyValueZZZ objText = daoText.searchThiskey(lngThiskey);
 				//Defaulttext objText = (Defaulttext) daoText.searchThiskey(lngThiskey);				
 				//TileDefaulttext objValue = (TileDefaulttext) objText;
-				Key objKey = daoText.searchThiskey(lngThiskey);
+				KeyImmutable objKey = daoText.searchThiskey(lngThiskey);
 				if(objKey==null){
 					System.out.println("Thiskey='"+iThiskey+"' NICHT gefunden.");
 				}else{
-					TileDefaulttext objValue = (TileDefaulttext) objKey;
+					TileImmutabletext objValue = (TileImmutabletext) objKey;
 					
 					String sDescription = objValue.getDescription();
 					String sShorttext = objValue.getShorttext();				

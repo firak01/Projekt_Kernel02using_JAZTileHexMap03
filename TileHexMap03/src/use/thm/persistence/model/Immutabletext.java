@@ -167,8 +167,7 @@ public class Immutabletext<IEnumImmutabletext>  extends KeyImmutable implements 
 	 
 	
     //### Statische Methode (um einfacher darauf zugreifen zu können)
-    public static Class getThiskeyEnumClassStatic(){
-    	System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": Diese Methode muss in den daraus erbenden Klassen überschrieben werden.");
+    public static Class getThiskeyEnumClassStatic(){    	
     	return EnumImmutabletext.class;    	
     }
 

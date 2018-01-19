@@ -22,6 +22,7 @@ import javax.persistence.Transient;
 import use.thm.persistence.hibernate.HibernateContextProviderSingletonTHM;
 import basic.persistence.model.IOptimisticLocking;
 import basic.zBasic.ExceptionZZZ;
+import basic.zBasic.ReflectCodeZZZ;
 import basic.zBasic.persistence.interfaces.enums.AbstractImmutable;
 import basic.zBasic.persistence.interfaces.enums.AbstractValue;
 import basic.zBasic.persistence.interfaces.enums.IThiskeyImmutableZZZ;
@@ -120,7 +121,7 @@ public class KeyImmutable extends AbstractImmutable<KeyImmutable> implements ITh
 //	    @Transient
 //		@Override
 		public Class getThiskeyEnumClass() {
-			// TODO Auto-generated method stub
+			System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": Diese Methode muss in den daraus erbenden Klassen überschrieben werden.");
 			return null;
 		}
 	    

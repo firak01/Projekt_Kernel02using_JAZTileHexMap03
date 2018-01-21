@@ -78,11 +78,11 @@ public class Immutabletext<IEnumImmutabletext>  extends KeyImmutable implements 
 	//ABER: BEIM ERBEN VON KEY wira automatisch eine Tabelle Key erstellt.... das will ich nicht
 	
 	 @Id	//hier notwendig für AccessType.PROPERTY			
-	 @TableGenerator(name="lidGeneratorDefaulttext001", table="COMMON_FUER_IDGENERATOR_DEFAULTTEXT",pkColumnName="nutzende_Klasse_als_String", pkColumnValue="SequenceTester",valueColumnName="naechster_id_wert",  initialValue=1, allocationSize=1)//@TableGenerator Name muss einzigartig im ganzen Projekt sein.
+	 @TableGenerator(name="lidGeneratorImmutabletext001", table="COMMON_FUER_IDGENERATOR_IMMUTABLETEXT",pkColumnName="nutzende_Klasse_als_String", pkColumnValue="SequenceTester",valueColumnName="naechster_id_wert",  initialValue=1, allocationSize=1)//@TableGenerator Name muss einzigartig im ganzen Projekt sein.
 	 @GeneratedValue(strategy = GenerationType.TABLE, generator="lidGeneratorDefaulttext001")		 //Das Klappt mit Hibernate Session, aber nicht mit dem JPA EntityManager...
 	 //Bei dieser Column Definition ist die Spalte nicht für @OneToMany mit @JoinTable zu gebrauchen @Column(name="TILE_ID_INCREMENTED", nullable=false, unique=true, columnDefinition="INTEGER NOT NULL UNIQUE  DEFAULT 1")
 	 //Entferne also das unique...
-	 @Column(name="DEFAULTTEXT_ID_INCREMENTED", nullable=false)
+	 @Column(name="IMMUTABLETEXT_ID_INCREMENTED", nullable=false)
 	 public int getId(){
 		 return super.getId();
 	 }

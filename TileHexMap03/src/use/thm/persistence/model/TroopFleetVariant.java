@@ -21,7 +21,6 @@ import javax.persistence.TableGenerator;
 import javax.persistence.Transient;
 
 import use.thm.persistence.interfaces.enums.IEnumSetTextTHM;
-import use.thm.persistence.interfaces.enums.IEnumSetTroopArmyVariantTHM;
 import use.thm.persistence.interfaces.enums.IEnumSetTroopFleetVariantTHM;
 import use.thm.persistence.model.Immutabletext.EnumImmutabletext;
 import basic.persistence.model.IFieldDescription;
@@ -48,7 +47,7 @@ import basic.zBasic.util.datatype.string.StringZZZ;
 //@Inheritance(strategy =  InheritanceType.JOINED )//ZIEL: Nur bestimmte Entiteis in einer eigenen Klasse //InheritanceType.TABEL_PER_CLASS) //Ziel: Jedes Entity der Vererbungshierarchie in einer eigenen Tabelle // InheritanceType.SINGLE_TABLE) //Hiermit werden alle Datensätze der Vererbungshierarchieklassen in einer Tabelle zusammengafasst und nur anhan ddes Discriminator Wertes unterschieden 
 //                                                                                                                   //Bei InheritanceType.TABLE_PER_CLASS gilt, es darf keinen Discriminator geben ... @DiscriminatorColumn(name="Disc", discriminatorType = DiscriminatorType.STRING) //Bei InheritanceType.SINGLE_TABLE) gilt: Voraussetzung für DiscriminatorValue in der AreaCell-Klasse. //Wird es wg. der Vererbung von HEXCell zu AreaType immer geben. Ohne Annotation ist das DTYPE und der wert ist gleich dem Klassennamen.
 @Table(name="ARMYVARIANT")
-public class TroopArmyVariant  extends KeyImmutable implements Serializable, IOptimisticLocking{
+public class TroopFleetVariant  extends KeyImmutable implements Serializable, IOptimisticLocking{
 	private static final long serialVersionUID = 1113434456411176970L;
 	
 	//Variante 2: Realisierung eines Schlüssel über eine eindeutige ID, die per Generator erzeugt wird
@@ -86,11 +85,11 @@ public class TroopArmyVariant  extends KeyImmutable implements Serializable, IOp
 	//... und weitere Eigenschaften.
 	
 	//Der Default Contruktor wird für JPA - Abfragen wohl benötigt
-	 public TroopArmyVariant(){		
+	 public TroopFleetVariant(){		
 	 }
 	 	 
 	 //TODO 200180119: Konstruktor, an den alles übergeben wird. Wg. "Immutable".
-	 public TroopArmyVariant(Integer intMapMoveRange, Defaulttext objDefaulttext, Immutabletext objImmutabletext){
+	 public TroopFleetVariant(Integer intMapMoveRange, Defaulttext objDefaulttext, Immutabletext objImmutabletext){
 		 this.setMapMoveRange(intMapMoveRange);
 		 this.setDefaulttextObject(objDefaulttext);
 		 this.setImmutabletextObject(objImmutabletext);
@@ -179,20 +178,19 @@ public class TroopArmyVariant  extends KeyImmutable implements Serializable, IOp
 		
 	//### Statische Methode (um einfacher darauf zugreifen zu können). Muss überschrieben werden aus der Key(Immutable)... Klasse.
 	public static Class getThiskeyEnumClassStatic(){	    
-	    return EnumTroopArmyVariant.class;    	
+	    return EnumTroopFleetVariant.class;    	
 	}
 
-	//TODO GOON 20180121: ARMY VARIANT 
 		//#######################################################
 		//### Eingebettete Enum-Klasse mit den Defaultwerten, diese Werte werden auch per Konstruktor übergeben.
 		//### int Key, String shorttext, String longtext, String description
 		//#######################################################
-		public enum EnumTroopArmyVariant implements IEnumSetTroopArmyVariantTHM,  IThiskeyProviderZZZ<Long>{//Folgendes geht nicht, da alle Enums schon von einer Java BasisKlasse erben... extends EnumSetMappedBaseZZZ{
+		public enum EnumTroopFleetVariant implements IEnumSetTroopFleetVariantTHM,  IThiskeyProviderZZZ<Long>{//Folgendes geht nicht, da alle Enums schon von einer Java BasisKlasse erben... extends EnumSetMappedBaseZZZ{
 			
-	   	 @IFieldDescription(description = "DTXT01 TEXTIMMUTABLES") 
+	   	 @IFieldDescription(description = "DFLEETVARIANT01") 
 	   	T01(1,"DTXT01","DTEXT 01","A test dtext 01 immutable."),
 	   	
-	   	 @IFieldDescription(description = "DTXT02 TEXTIMMUTABLES") 
+	   	 @IFieldDescription(description = "DFLEETVARIANT02") 
 	   	T02(2,"DTXT02","DTEXT 02", "A test dtext 02 immutable.");
 	   	   	
 	   private Long lKey;
@@ -200,7 +198,7 @@ public class TroopArmyVariant  extends KeyImmutable implements Serializable, IOp
 	   
 
 	   //Merke: Enums haben keinen public Konstruktor, können also nicht intiantiiert werden, z.B. durch Java-Reflektion.
-	   EnumTroopArmyVariant(int iKey, String sShorttext, String sLongtext, String sDescription){
+	   EnumTroopFleetVariant(int iKey, String sShorttext, String sLongtext, String sDescription){
 	       this.lKey = Long.valueOf(iKey);
 	       this.sShorttext = sShorttext;
 	       this.sLongtext = sLongtext;
@@ -209,7 +207,7 @@ public class TroopArmyVariant  extends KeyImmutable implements Serializable, IOp
 	   
 	   //Merke: Enums haben keinen public Konstruktor, können also nicht intiantiiert werden, z.B. durch Java-Reflektion.
 	   //           In der Util-Klasse habe ich aber einen Workaround gefunden ( basic/zBasic/util/abstractEnum/EnumSetMappedUtilZZZ.java ).
-	   EnumTroopArmyVariant(){	
+	   EnumTroopFleetVariant(){	
 	   }
 
 	  //##################################################
@@ -230,19 +228,26 @@ public class TroopArmyVariant  extends KeyImmutable implements Serializable, IOp
 
 	   //##################################################
 	   //#### Folgende Methoden holen die definierten Werte.
-	   // the identifierMethod ---> Going in DB
-	   public String getShorttext() {
-	       return this.sShorttext;
-	   }
-	   
-	   public String getLongtext(){
-		   return this.sLongtext;
-	   }
-	   
-	   public String getDescription(){
-		   return this.sDescription;
-	   }
-	   
+	   public int getMapMoveRange() {
+			// TODO Auto-generated method stub
+			return 0;
+		}
+
+		public String getImageUrl() {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		public int getDefaulttextThisid() {
+			// TODO Auto-generated method stub
+			return 0;
+		}
+
+		public int getImmutabletextThisid() {
+			// TODO Auto-generated method stub
+			return 0;
+		}
+	      
 	   //#### Methode aus IKeyProviderZZZ
 		public Long getThiskey() {
 			return this.lKey;
@@ -252,12 +257,10 @@ public class TroopArmyVariant  extends KeyImmutable implements Serializable, IOp
 	   public int getPosition() {
 	   	return getIndex() + 1;
 	   }
-
-		
-		
+				
 	   // the valueOfMethod <--- Translating from DB
-	   public static EnumTroopArmyVariant fromShorttext(String s) {
-	       for (EnumTroopArmyVariant state : values()) {
+	   public static EnumTroopFleetVariant fromShorttext(String s) {
+	       for (EnumTroopFleetVariant state : values()) {
 	           if (s.equals(state.getShorttext()))
 	               return state;
 	       }
@@ -265,7 +268,7 @@ public class TroopArmyVariant  extends KeyImmutable implements Serializable, IOp
 	   }
 
 	   public EnumSet<?>getEnumSetUsed(){
-	   	return EnumTroopArmyVariant.getEnumSet();
+	   	return EnumTroopFleetVariant.getEnumSet();
 	   }
 
 	   @SuppressWarnings("rawtypes")
@@ -277,12 +280,12 @@ public class TroopArmyVariant  extends KeyImmutable implements Serializable, IOp
 	   	//ArrayList<Class<?>> listEmbedded = ReflectClassZZZ.getEmbeddedClasses(this.getClass(), sFilterName);
 	   	
 	   	//Erstelle nun ein EnumSet, speziell für diese Klasse, basierend auf  allen Enumrations  dieser Klasse.
-	   	Class<EnumTroopArmyVariant> enumClass = EnumTroopArmyVariant.class;
-	   	EnumSet<EnumTroopArmyVariant> set = EnumSet.noneOf(enumClass);//Erstelle ein leeres EnumSet
+	   	Class<EnumTroopFleetVariant> enumClass = EnumTroopFleetVariant.class;
+	   	EnumSet<EnumTroopFleetVariant> set = EnumSet.noneOf(enumClass);//Erstelle ein leeres EnumSet
 	   	
-	   	for(Object obj : EnumTroopArmyVariant.class.getEnumConstants()){
+	   	for(Object obj : EnumTroopFleetVariant.class.getEnumConstants()){
 	   		//System.out.println(obj + "; "+obj.getClass().getName());
-	   		set.add((EnumTroopArmyVariant) obj);
+	   		set.add((EnumTroopFleetVariant) obj);
 	   	}
 	   	return set;
 	   	
@@ -301,8 +304,5 @@ public class TroopArmyVariant  extends KeyImmutable implements Serializable, IOp
 	   	  }
 	   	  return set;
 	   	}
-
-	 
-
 	   }//End inner class
 }

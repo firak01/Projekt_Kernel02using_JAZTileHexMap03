@@ -5,7 +5,7 @@ import java.util.EnumSet;
 import basic.zBasic.persistence.interfaces.enums.IThiskeyProviderZZZ;
 import basic.zBasic.persistence.interfaces.enums.IThiskeyValueZZZ;
 
-public interface IEnumSetTroopFleetVariantTHM extends IThiskeyProviderZZZ<Long>{
+public interface IEnumSetTroopArmyVariantTHM extends IThiskeyProviderZZZ<Long>{
 	
 	//Das bring ENUM von sich auch mit
 	public String getName();  //Das ist name() von Enum
@@ -20,5 +20,5 @@ public interface IEnumSetTroopFleetVariantTHM extends IThiskeyProviderZZZ<Long>{
 	public int getMapMoveRange();
 	public String getImageUrl();
 	public int getDefaulttextThisid();
-	public int getImmutabletextThisid(); 
+	public int getImmutabletextThisid(); 	
 }

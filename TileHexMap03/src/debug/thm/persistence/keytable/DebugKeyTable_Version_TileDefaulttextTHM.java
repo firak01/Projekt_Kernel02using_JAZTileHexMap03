@@ -515,14 +515,17 @@ public class DebugKeyTable_Version_TileDefaulttextTHM {
 				//1. Hole das jeweilige Dao - Objekt
 				//####################				
 				TileDefaulttextDao daoTileText = new TileDefaulttextDao(objContextHibernate);
+				daoTileText.deleteAll();//Bevor man alles neu erstellt, erst einmal alles löschen, sonst bekommtm man Constraint Verletzungen, wg. doppelter Schlüssel.						
 				int iTileTextCreated = daoTileText.createEntriesAll();
 				System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": Erstellte TileTexte: " + iTileTextCreated);
 				
 				TextDefaulttextDao daoTextText = new TextDefaulttextDao(objContextHibernate);
+				daoTextText.deleteAll();//Bevor man alles neu erstellt, erst einmal alles löschen, sonst bekommtm man Constraint Verletzungen, wg. doppelter Schlüssel.
 				int iTextTextCreated = daoTextText.createEntriesAll();
 				System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": Erstellte TextTexte: " + iTextTextCreated);
 				
 				DefaulttextDao daoText = new DefaulttextDao(objContextHibernate);
+				daoText.deleteAll();//Bevor man alles neu erstellt, erst einmal alles löschen, sonst bekommtm man Constraint Verletzungen, wg. doppelter Schlüssel.
 				int iTextCreated = daoText.createEntriesAll();
 				System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": Erstellte Texte: " + iTextCreated);
 				

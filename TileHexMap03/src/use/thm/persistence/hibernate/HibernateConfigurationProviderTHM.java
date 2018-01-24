@@ -18,6 +18,7 @@ import use.thm.persistence.model.Troop;
 import use.thm.persistence.model.TroopArmy;
 import use.thm.persistence.model.TroopArmyVariant;
 import use.thm.persistence.model.TroopFleet;
+import use.thm.persistence.model.TroopFleetVariant;
 import basic.zBasic.ExceptionZZZ;
 import basic.zBasic.persistence.hibernate.HibernateConfigurationProviderZZZ;
 import basic.zBasic.persistence.interfaces.IHibernateConfigurationProviderZZZ;
@@ -106,6 +107,7 @@ create-drop: drop the schema when the SessionFactory is closed explicitly, typic
 		bReturn = addConfigurationAnnotatedClass(TextImmutabletext.class);
 		
 		bReturn = addConfigurationAnnotatedClass(TroopArmyVariant.class);
+		bReturn = addConfigurationAnnotatedClass(TroopFleetVariant.class);
 		
 		//FGL 20170409: Versuch Callbacks in Hibernate
 		//this.getConfiguration().setListener("persist",new TroopArmyListener());

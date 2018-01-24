@@ -46,7 +46,7 @@ import basic.zBasic.util.datatype.string.StringZZZ;
 
 //@Inheritance(strategy =  InheritanceType.JOINED )//ZIEL: Nur bestimmte Entiteis in einer eigenen Klasse //InheritanceType.TABEL_PER_CLASS) //Ziel: Jedes Entity der Vererbungshierarchie in einer eigenen Tabelle // InheritanceType.SINGLE_TABLE) //Hiermit werden alle Datensätze der Vererbungshierarchieklassen in einer Tabelle zusammengafasst und nur anhan ddes Discriminator Wertes unterschieden 
 //                                                                                                                   //Bei InheritanceType.TABLE_PER_CLASS gilt, es darf keinen Discriminator geben ... @DiscriminatorColumn(name="Disc", discriminatorType = DiscriminatorType.STRING) //Bei InheritanceType.SINGLE_TABLE) gilt: Voraussetzung für DiscriminatorValue in der AreaCell-Klasse. //Wird es wg. der Vererbung von HEXCell zu AreaType immer geben. Ohne Annotation ist das DTYPE und der wert ist gleich dem Klassennamen.
-@Table(name="ARMYVARIANT")
+@Table(name="FLEETVARIANT")
 public class TroopFleetVariant  extends KeyImmutable implements Serializable, IOptimisticLocking{
 	private static final long serialVersionUID = 1113434456411176970L;
 	
@@ -78,9 +78,12 @@ public class TroopFleetVariant  extends KeyImmutable implements Serializable, IO
 	private Long lKey;
 	
 	//Jetzt die verschiedenene Eigenschaften eines Armeetypens hier festlegen.
-	private Defaulttext objDefaulttext;
-	private Immutabletext objImmutabletext;
+	private TileDefaulttext objDefaulttext;
+	private TileImmutabletext objImmutabletext;
+	private String sUniquetext;
+	private String sCategorytext;
 	private Integer intMapMoveRange;
+	private String sImageUrl;
 	
 	//... und weitere Eigenschaften.
 	
@@ -89,11 +92,14 @@ public class TroopFleetVariant  extends KeyImmutable implements Serializable, IO
 	 }
 	 	 
 	 //TODO 200180119: Konstruktor, an den alles übergeben wird. Wg. "Immutable".
-	 public TroopFleetVariant(Integer intMapMoveRange, Defaulttext objDefaulttext, Immutabletext objImmutabletext){
-		 this.setMapMoveRange(intMapMoveRange);
+	 public TroopFleetVariant(int iKey, String sUniquetext, String sCategorytext, int intMapMoveRange, String sImageUrl, TileDefaulttext objDefaulttext, TileImmutabletext objImmutabletext){
+		 this.setThiskey(Long.valueOf(iKey));
+		 this.setUniquetext(sUniquetext);
+		 this.setCategorytext(sCategorytext);
+		 this.setMapMoveRange(Integer.valueOf(intMapMoveRange));
 		 this.setDefaulttextObject(objDefaulttext);
 		 this.setImmutabletextObject(objImmutabletext);
-		 
+		 this.setImageUrlString(sImageUrl);
 	 }
 	 
 	//### Variante 2: Verwende auf dieser Ebene einen Generator, zum Erstellen einer ID
@@ -115,6 +121,23 @@ public class TroopFleetVariant  extends KeyImmutable implements Serializable, IO
 		 }
 	 
 	 //### getter / setter
+		 //TODO: Dies in eine Oberklasse für alle "Varianten" verschieben. 
+		 @Column(name="TILE_UNIQUETEXT", nullable=false)
+		 public String getUniquetext(){
+			 return this.sUniquetext;
+		 }
+		 protected void setUniquetext(String sUniquetext){
+			 this.sUniquetext = sUniquetext;
+		 }
+		 
+		 @Column(name="TILE_CATEGORYTEXT", nullable=false)
+		 public String getCategorytext(){
+			 return this.sCategorytext;
+		 }
+		 protected void setCategorytext(String sCategorytext){
+			 this.sCategorytext= sCategorytext;
+		 }
+		 
 	//TODO GOON: Diese Properties dann in einen Oberklasse für alle Spielsteine bringen TileVariant
 	//1:1 Beziehung aufbauen
 		//Siehe Buch "Java Persistence API 2", Seite 90ff.	
@@ -127,7 +150,7 @@ public class TroopFleetVariant  extends KeyImmutable implements Serializable, IO
 	 }
 	 
 		//Ist protected wg. immutable
-	 protected void setDefaulttextObject(Defaulttext objDefaulttext){
+	 protected void setDefaulttextObject(TileDefaulttext objDefaulttext){
 		 this.objDefaulttext = objDefaulttext;
 	 }
 	 
@@ -139,12 +162,12 @@ public class TroopFleetVariant  extends KeyImmutable implements Serializable, IO
 		//@Transient //Ich will kein BLOB speichern
 		@OneToOne(fetch = FetchType.LAZY)
 		@JoinColumn(name="immutabletext_thiskey_id", nullable = true)
-	 public Immutabletext getImmutabletextObject(){
+	 public TileImmutabletext getImmutabletextObject(){
 		return this.objImmutabletext;
 	 }
 	 
 	 //Ist protected wg. immutable
-	 protected void setImmutabletextObject(Immutabletext objImmutabletext){
+	 protected void setImmutabletextObject(TileImmutabletext objImmutabletext){
 		 this.objImmutabletext = objImmutabletext;
 	 }
 	 
@@ -155,6 +178,16 @@ public class TroopFleetVariant  extends KeyImmutable implements Serializable, IO
 	 }
 	 protected void setMapMoveRange(Integer intMapMoveRange){
 		 this.intMapMoveRange = intMapMoveRange;				 
+	 }
+	 
+	 //TODO GOON: Diese Bildressource dann in eine Oberklasse für alle Spielsteine bringen
+	 //Merke: Das sollte NULL sein dürfen.
+	 @Column(name="TILE_IMAGEURL", nullable=true)
+	 public String getImageUrlString(){
+		 return this.sImageUrl;
+	 }
+	 protected void setImageUrlString(String sImageUrl){
+		 this.sImageUrl = sImageUrl;			 
 	 }
 	 
 	 //#### abstracte Methoden
@@ -188,21 +221,29 @@ public class TroopFleetVariant  extends KeyImmutable implements Serializable, IO
 		public enum EnumTroopFleetVariant implements IEnumSetTroopFleetVariantTHM,  IThiskeyProviderZZZ<Long>{//Folgendes geht nicht, da alle Enums schon von einer Java BasisKlasse erben... extends EnumSetMappedBaseZZZ{
 			
 	   	 @IFieldDescription(description = "DFLEETVARIANT01") 
-	   	T01(1,"DTXT01","DTEXT 01","A test dtext 01 immutable."),
+	   	T01(1,"DFLEET01","Destroyer",5,"url01",1,1),
 	   	
 	   	 @IFieldDescription(description = "DFLEETVARIANT02") 
-	   	T02(2,"DTXT02","DTEXT 02", "A test dtext 02 immutable.");
+	   	T02(2,"DFLEET02","Destroyer",3,"url02",2,2);
 	   	   	
 	   private Long lKey;
-	   private String sLongtext, sShorttext, sDescription;
+	   private String sUniquetext, sCategorytext;
+	   private int iThiskeyDefaulttext, iThiskeyImmutabletext;
+	   
+	   private String sImageUrl;
+	   private int iMoveRange;
+	   
 	   
 
 	   //Merke: Enums haben keinen public Konstruktor, können also nicht intiantiiert werden, z.B. durch Java-Reflektion.
-	   EnumTroopFleetVariant(int iKey, String sShorttext, String sLongtext, String sDescription){
+	   EnumTroopFleetVariant(int iKey, String sUniquetext,String sCategorytext, int iMoveRage, String ImageUrl, int iThisKeyDefaulttext, int iThiskeyImmutabletext){
 	       this.lKey = Long.valueOf(iKey);
-	       this.sShorttext = sShorttext;
-	       this.sLongtext = sLongtext;
-	       this.sDescription = sDescription;
+	       this.sUniquetext = sUniquetext;
+	       this.sCategorytext = sCategorytext;
+	       this.iMoveRange = iMoveRange;
+	       this.sImageUrl = sImageUrl;
+	       this.iThiskeyDefaulttext = iThisKeyDefaulttext;
+	       this.iThiskeyImmutabletext = iThiskeyImmutabletext;	       
 	   }
 	   
 	   //Merke: Enums haben keinen public Konstruktor, können also nicht intiantiiert werden, z.B. durch Java-Reflektion.
@@ -219,7 +260,7 @@ public class TroopFleetVariant  extends KeyImmutable implements Serializable, IO
 	   
 	   @Override
 	   public String toString() {
-	       return this.sShorttext;
+	       return this.sUniquetext;
 	   }
 
 	   public int getIndex() {
@@ -228,24 +269,28 @@ public class TroopFleetVariant  extends KeyImmutable implements Serializable, IO
 
 	   //##################################################
 	   //#### Folgende Methoden holen die definierten Werte.
-	   public int getMapMoveRange() {
-			// TODO Auto-generated method stub
-			return 0;
+		public String getUniquetext() {			
+			return this.sUniquetext;
 		}
 
-		public String getImageUrl() {
-			// TODO Auto-generated method stub
-			return null;
+		public String getCategorytext() {			
+			return this.sCategorytext;
+		}
+		
+	   public int getMapMoveRange() {
+			return this.iMoveRange;
+		}
+
+		public String getImageUrlString() {
+			return this.sImageUrl;
 		}
 
 		public int getDefaulttextThisid() {
-			// TODO Auto-generated method stub
-			return 0;
+			return this.iThiskeyDefaulttext;
 		}
 
 		public int getImmutabletextThisid() {
-			// TODO Auto-generated method stub
-			return 0;
+			return this.iThiskeyImmutabletext;
 		}
 	      
 	   //#### Methode aus IKeyProviderZZZ
@@ -259,9 +304,9 @@ public class TroopFleetVariant  extends KeyImmutable implements Serializable, IO
 	   }
 				
 	   // the valueOfMethod <--- Translating from DB
-	   public static EnumTroopFleetVariant fromShorttext(String s) {
+	   public static EnumTroopFleetVariant fromUniquetext(String s) {
 	       for (EnumTroopFleetVariant state : values()) {
-	           if (s.equals(state.getShorttext()))
+	           if (s.equals(state.getUniquetext()))
 	               return state;
 	       }
 	       throw new IllegalArgumentException("Not a correct shorttext: " + s);

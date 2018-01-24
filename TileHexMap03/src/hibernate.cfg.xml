@@ -54,6 +54,11 @@
 		<mapping class="use.thm.persistence.model.TileImmutabletext"></mapping>
 		<mapping class="use.thm.persistence.model.TextImmutabletext"></mapping>
 		
+		<!-- FGL: 20180124 - Mapping für die "Varianten", welche dann die Defaulttexte beinhalten. -->
+		<mapping class="use.thm.persistence.model.TroopFleetVariant"></mapping>
+		<mapping class="use.thm.persistence.model.TroopArmyVariant"></mapping>
+		
+		
 		<!-- FGL 20180116 TODO GOON -->
 <!-- 		<mapping class="use.thm.persistence.model.TileImmutabletext"></mapping> -->
 <!-- 		<mapping class="use.thm.persistence.model.TextImmutabletext"></mapping> -->

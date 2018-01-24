@@ -79,9 +79,12 @@ public class TroopArmyVariant  extends KeyImmutable implements Serializable, IOp
 	private Long lKey;
 	
 	//Jetzt die verschiedenene Eigenschaften eines Armeetypens hier festlegen.
-	private Defaulttext objDefaulttext;
-	private Immutabletext objImmutabletext;
+	private TileDefaulttext objDefaulttext;
+	private TileImmutabletext objImmutabletext;
+	private String sUniquetext;
+	private String sCategorytext;
 	private Integer intMapMoveRange;
+	private String sImageUrl;
 	
 	//... und weitere Eigenschaften.
 	
@@ -90,11 +93,14 @@ public class TroopArmyVariant  extends KeyImmutable implements Serializable, IOp
 	 }
 	 	 
 	 //TODO 200180119: Konstruktor, an den alles übergeben wird. Wg. "Immutable".
-	 public TroopArmyVariant(Integer intMapMoveRange, Defaulttext objDefaulttext, Immutabletext objImmutabletext){
-		 this.setMapMoveRange(intMapMoveRange);
+	 public TroopArmyVariant(int iKey, int intMapMoveRange, String sImageUrl, TileDefaulttext objDefaulttext, TileImmutabletext objImmutabletext){
+		 this.setThiskey(Long.valueOf(iKey));
+		 this.setUniquetext(sUniquetext);
+		 this.setCategorytext(sCategorytext);
+		 this.setMapMoveRange(Integer.valueOf(intMapMoveRange));
 		 this.setDefaulttextObject(objDefaulttext);
 		 this.setImmutabletextObject(objImmutabletext);
-		 
+		 this.setImageUrlString(sImageUrl);
 	 }
 	 
 	//### Variante 2: Verwende auf dieser Ebene einen Generator, zum Erstellen einer ID
@@ -116,6 +122,23 @@ public class TroopArmyVariant  extends KeyImmutable implements Serializable, IOp
 		 }
 	 
 	 //### getter / setter
+		 //TODO: Dies in eine Oberklasse für alle "Varianten" verschieben. 
+		 @Column(name="TILE_UNIQUETEXT", nullable=false)
+		 public String getUniquetext(){
+			 return this.sUniquetext;
+		 }
+		 protected void setUniquetext(String sUniquetext){
+			 this.sUniquetext = sUniquetext;
+		 }
+		 
+		 @Column(name="TILE_CATEGORYTEXT", nullable=false)
+		 public String getCategorytext(){
+			 return this.sCategorytext;
+		 }
+		 protected void setCategorytext(String sCategorytext){
+			 this.sCategorytext= sCategorytext;
+		 }
+		 
 	//TODO GOON: Diese Properties dann in einen Oberklasse für alle Spielsteine bringen TileVariant
 	//1:1 Beziehung aufbauen
 		//Siehe Buch "Java Persistence API 2", Seite 90ff.	
@@ -128,7 +151,7 @@ public class TroopArmyVariant  extends KeyImmutable implements Serializable, IOp
 	 }
 	 
 		//Ist protected wg. immutable
-	 protected void setDefaulttextObject(Defaulttext objDefaulttext){
+	 protected void setDefaulttextObject(TileDefaulttext objDefaulttext){
 		 this.objDefaulttext = objDefaulttext;
 	 }
 	 
@@ -145,7 +168,7 @@ public class TroopArmyVariant  extends KeyImmutable implements Serializable, IOp
 	 }
 	 
 	 //Ist protected wg. immutable
-	 protected void setImmutabletextObject(Immutabletext objImmutabletext){
+	 protected void setImmutabletextObject(TileImmutabletext objImmutabletext){
 		 this.objImmutabletext = objImmutabletext;
 	 }
 	 
@@ -156,6 +179,15 @@ public class TroopArmyVariant  extends KeyImmutable implements Serializable, IOp
 	 }
 	 protected void setMapMoveRange(Integer intMapMoveRange){
 		 this.intMapMoveRange = intMapMoveRange;				 
+	 }
+	 
+	 //TODO GOON: Diese Bildressource dann in eine Oberklasse für alle Spielsteine bringen
+	 @Column(name="TILE_IMAGEURL", nullable=false)
+	 public String getImageUrlString(){
+		 return this.sImageUrl;
+	 }
+	 protected void setImageUrlString(String sImageUrl){
+		 this.sImageUrl = sImageUrl;			 
 	 }
 	 
 	 //#### abstracte Methoden
@@ -182,29 +214,35 @@ public class TroopArmyVariant  extends KeyImmutable implements Serializable, IOp
 	    return EnumTroopArmyVariant.class;    	
 	}
 
-	//TODO GOON 20180121: ARMY VARIANT 
 		//#######################################################
 		//### Eingebettete Enum-Klasse mit den Defaultwerten, diese Werte werden auch per Konstruktor übergeben.
 		//### int Key, String shorttext, String longtext, String description
 		//#######################################################
-		public enum EnumTroopArmyVariant implements IEnumSetTroopArmyVariantTHM,  IThiskeyProviderZZZ<Long>{//Folgendes geht nicht, da alle Enums schon von einer Java BasisKlasse erben... extends EnumSetMappedBaseZZZ{
+		public enum EnumTroopArmyVariant implements IEnumSetTroopArmyVariantTHM{//Folgendes geht nicht, da alle Enums schon von einer Java BasisKlasse erben... extends EnumSetMappedBaseZZZ{
 			
-	   	 @IFieldDescription(description = "DTXT01 TEXTIMMUTABLES") 
-	   	T01(1,"DTXT01","DTEXT 01","A test dtext 01 immutable."),
+	   	 @IFieldDescription(description = "DARMYVARIANT01") 
+	   	T01(1,"DARMY01",5,"url01",1,1),
 	   	
-	   	 @IFieldDescription(description = "DTXT02 TEXTIMMUTABLES") 
-	   	T02(2,"DTXT02","DTEXT 02", "A test dtext 02 immutable.");
+	   	 @IFieldDescription(description = "DARMYVARIANT02") 
+	   	T02(2,"DARMY02",3, "url02",2,2);
 	   	   	
 	   private Long lKey;
-	   private String sLongtext, sShorttext, sDescription;
+	   private String sShorttext;
+	   private int iThiskeyDefaulttext, iThiskeyImmutabletext;
+	   
+	   private String sImageUrl;
+	   private int iMoveRange;
+	   
 	   
 
 	   //Merke: Enums haben keinen public Konstruktor, können also nicht intiantiiert werden, z.B. durch Java-Reflektion.
-	   EnumTroopArmyVariant(int iKey, String sShorttext, String sLongtext, String sDescription){
+	   EnumTroopArmyVariant(int iKey, String sShorttext, int iMoveRage, String ImageUrl, int iThisKeyDefaulttext, int iThiskeyImmutabletext){
 	       this.lKey = Long.valueOf(iKey);
 	       this.sShorttext = sShorttext;
-	       this.sLongtext = sLongtext;
-	       this.sDescription = sDescription;
+	       this.iMoveRange = iMoveRange;
+	       this.sImageUrl = sImageUrl;
+	       this.iThiskeyDefaulttext = iThisKeyDefaulttext;
+	       this.iThiskeyImmutabletext = iThiskeyImmutabletext;	       
 	   }
 	   
 	   //Merke: Enums haben keinen public Konstruktor, können also nicht intiantiiert werden, z.B. durch Java-Reflektion.
@@ -230,19 +268,26 @@ public class TroopArmyVariant  extends KeyImmutable implements Serializable, IOp
 
 	   //##################################################
 	   //#### Folgende Methoden holen die definierten Werte.
-	   // the identifierMethod ---> Going in DB
-	   public String getShorttext() {
-	       return this.sShorttext;
-	   }
-	   
-	   public String getLongtext(){
-		   return this.sLongtext;
-	   }
-	   
-	   public String getDescription(){
-		   return this.sDescription;
-	   }
-	   
+		public String getShorttext() {			
+			return this.sShorttext;
+		}
+		
+	   public int getMapMoveRange() {
+			return this.iMoveRange;
+		}
+
+		public String getImageUrl() {
+			return this.sImageUrl;
+		}
+
+		public int getDefaulttextThisid() {
+			return this.iThiskeyDefaulttext;
+		}
+
+		public int getImmutabletextThisid() {
+			return this.iThiskeyImmutabletext;
+		}
+	      
 	   //#### Methode aus IKeyProviderZZZ
 		public Long getThiskey() {
 			return this.lKey;
@@ -252,9 +297,7 @@ public class TroopArmyVariant  extends KeyImmutable implements Serializable, IOp
 	   public int getPosition() {
 	   	return getIndex() + 1;
 	   }
-
-		
-		
+				
 	   // the valueOfMethod <--- Translating from DB
 	   public static EnumTroopArmyVariant fromShorttext(String s) {
 	       for (EnumTroopArmyVariant state : values()) {
@@ -301,8 +344,6 @@ public class TroopArmyVariant  extends KeyImmutable implements Serializable, IOp
 	   	  }
 	   	  return set;
 	   	}
-
-	 
 
 	   }//End inner class
 }

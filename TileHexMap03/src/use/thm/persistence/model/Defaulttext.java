@@ -183,7 +183,7 @@ public class Defaulttext<IEnumDefaulttext>  extends Key implements IOptimisticLo
    private String sLongtext, sShorttext, sDescription;
    
 
-   //Merke: Enums haben keinen public Konstruktor, können also nicht intiantiiert werden, z.B. durch Java-Reflektion.
+   //Merke: Enums haben keinen public Konstruktor, können also nicht instantiiert werden, z.B. durch Java-Reflektion.
    EnumDefaulttext(int iKey, String sShorttext, String sLongtext, String sDescription){
        this.lKey = Long.valueOf(iKey);
        this.sShorttext = sShorttext;
@@ -191,7 +191,7 @@ public class Defaulttext<IEnumDefaulttext>  extends Key implements IOptimisticLo
        this.sDescription = sDescription;
    }
    
-   //Merke: Enums haben keinen public Konstruktor, können also nicht intiantiiert werden, z.B. durch Java-Reflektion.
+   //Merke: Enums haben keinen public Konstruktor, können also nicht instantiiert werden, z.B. durch Java-Reflektion.
    //           In der Util-Klasse habe ich aber einen Workaround gefunden ( basic/zBasic/util/abstractEnum/EnumSetMappedUtilZZZ.java ).
    EnumDefaulttext(){	
    }

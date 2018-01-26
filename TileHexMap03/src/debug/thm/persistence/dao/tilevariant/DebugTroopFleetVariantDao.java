@@ -148,6 +148,27 @@ public class DebugTroopFleetVariantDao {
 					System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": Thiskey='"+lngThiskey.toString()+"' NICHT gefunden.");
 					System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": Thiskey='"+lngThiskey.toString()+"' erzeuge benötigten TileDefaulttext.");
 					
+					//TODO GOON 20180126: So schön so gut, aber untenstehendes sollte alles in einer Methode des DAO gekapselt werden
+					//neu: daoTileText.createEntryForThiskey(lngThiskey);
+					//......
+					
+					EnumTileDefaulttext objEnumDefaulttext;
+					try {
+						Enum objEnum = EnumSetInnerUtilZZZ.getThiskeyEnum(TileDefaulttext.getThiskeyEnumClassStatic(),lngThiskey);
+						if(objEnum!=null){
+							objEnumDefaulttext = (EnumTileDefaulttext)objEnum;
+							int iIndexFound = objEnumDefaulttext.getIndex();
+							DebugKeyTable_Version_TileDefaulttextTHM objDefaulttextProvider = new DebugKeyTable_Version_TileDefaulttextTHM();
+							objDefaulttextProvider.debugCreateEntry_TileDefaulttext(iIndexFound);
+						}else{
+							System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": Thiskey='"+lngThiskey.toString()+"' nicht im Enum von  TileDefaulttext gefunden.");
+						}
+					} catch (ThiskeyEnumMappingExceptionZZZ e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+
+					/* obige Zeilen sollen das hier ersetzten
 					EnumTileDefaulttext[] objaTypeDefaulttext = TileDefaulttext.EnumTileDefaulttext.values();
 					int iIndexFound = -1;
 					for(EnumTileDefaulttext objEnum : objaTypeDefaulttext){
@@ -157,7 +178,7 @@ public class DebugTroopFleetVariantDao {
 							objDefaulttextProvider.debugCreateEntry_TileDefaulttext(iIndexFound);							
 							break;
 						}
-					}
+					}*/
 					
 					objKey = daoTileText.searchThiskey(lngThiskey);
 					if(objKey==null){

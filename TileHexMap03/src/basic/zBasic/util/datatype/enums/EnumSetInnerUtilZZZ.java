@@ -173,7 +173,7 @@ public class EnumSetInnerUtilZZZ {
     }
 
     /**
-     * Returns the enum for a specified his key.
+     * Returns the enum for a specified Thiskey.
      *
      * <p>An failed mapping of a value to an enum instance should usually be handled and recoverable.</p>
      *

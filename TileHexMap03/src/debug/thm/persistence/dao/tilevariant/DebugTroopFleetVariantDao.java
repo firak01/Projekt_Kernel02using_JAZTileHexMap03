@@ -150,7 +150,7 @@ public class DebugTroopFleetVariantDao {
 					
 					//TODO GOON 20180126: So schön so gut, aber untenstehendes sollte alles in einer Methode des DAO gekapselt werden
 					//neu: daoTileText.createEntryForThiskey(lngThiskey);
-					//......
+					//......teste ssh keys in Eclipse hinterlegt
 					
 					EnumTileDefaulttext objEnumDefaulttext;
 					try {

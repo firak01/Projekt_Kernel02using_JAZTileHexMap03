@@ -109,8 +109,8 @@ public class TroopArmyVariant  extends KeyImmutable implements Serializable, IOp
 		
 	 
 		 @Id				
-		 @TableGenerator(name="lidGeneratorVariant001", table="COMMON_FUER_IDGENERATOR_VARIANT",pkColumnName="nutzende_Klasse_als_String", pkColumnValue="SequenceTester",valueColumnName="naechster_id_wert",  initialValue=1, allocationSize=1)//@TableGenerator Name muss einzigartig im ganzen Projekt sein.
-		 @GeneratedValue(strategy = GenerationType.TABLE, generator="lidGeneratorVariant001")		 //Das Klappt mit Hibernate Session, aber nicht mit dem JPA EntityManager...
+		 @TableGenerator(name="lidGeneratorTroopVariant001", table="COMMON_FUER_IDGENERATOR_VARIANT",pkColumnName="nutzende_Klasse_als_String", pkColumnValue="SequenceTester",valueColumnName="naechster_id_wert",  initialValue=1, allocationSize=1)//@TableGenerator Name muss einzigartig im ganzen Projekt sein.
+		 @GeneratedValue(strategy = GenerationType.TABLE, generator="lidGeneratorTroopVariant001")		 //Das Klappt mit Hibernate Session, aber nicht mit dem JPA EntityManager...
 		 //Bei dieser Column Definition ist die Spalte nicht für @OneToMany mit @JoinTable zu gebrauchen @Column(name="TILE_ID_INCREMENTED", nullable=false, unique=true, columnDefinition="INTEGER NOT NULL UNIQUE  DEFAULT 1")
 		 //Entferne also das unique...
 		 @Column(name="TILE_ID_INCREMENTED", nullable=false)

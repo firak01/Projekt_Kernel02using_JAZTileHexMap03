@@ -9,16 +9,24 @@ import java.util.Map;
 import org.hibernate.Query;
 import org.hibernate.Session;
 
+import debug.thm.persistence.keytable.DebugKeyTable_Version_TileDefaulttextTHM;
+import debug.thm.persistence.keytable.DebugKeyTable_Version_TileImmutabletextTHM;
 import use.thm.persistence.event.VetoFlag4ListenerZZZ;
 import use.thm.persistence.hibernate.HibernateContextProviderSingletonTHM;
 import use.thm.persistence.interfaces.enums.IEnumSetTextTHM;
 import use.thm.persistence.model.AreaCell;
 import use.thm.persistence.model.Key;
 import use.thm.persistence.model.Defaulttext;
+import use.thm.persistence.model.KeyImmutable;
 import use.thm.persistence.model.TextDefaulttext;
 import use.thm.persistence.model.TileDefaulttext;
+import use.thm.persistence.model.TileImmutabletext;
 import use.thm.persistence.model.Troop;
 import use.thm.persistence.model.TroopArmy;
+import use.thm.persistence.model.TroopFleetVariant;
+import use.thm.persistence.model.TileDefaulttext.EnumTileDefaulttext;
+import use.thm.persistence.model.TileImmutabletext.EnumTileImmutabletext;
+import use.thm.persistence.model.TroopFleetVariant.EnumTroopFleetVariant;
 import basic.persistence.util.HibernateUtil;
 import basic.zBasic.ExceptionZZZ;
 import basic.zBasic.ReflectCodeZZZ;
@@ -53,6 +61,79 @@ public class TileDefaulttextDao<T> extends DefaulttextDao<T> {
 		this.installLoger(TileDefaulttext.class);//Durch das Installieren des Loggers mit der korrekten Klasse wird GeneralDao.getT() erst korrekt ermöglicht.
 	}
 	
+	public boolean createEntryForThiskey(long lThiskey){
+		boolean bReturn = false;
+		main:{
+			System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": START ##############");			
+			
+			try{
+				KernelZZZ objKernel = new KernelZZZ(); //Merke: Die Service Klasse selbst kann wohl nicht das KernelObjekt extenden!
+				HibernateContextProviderSingletonTHM objContextHibernate = HibernateContextProviderSingletonTHM.getInstance(objKernel);					
+				//Darüber hat diese Methode nicht zu befinden... objContextHibernate.getConfiguration().setProperty("hibernate.hbm2ddl.auto", "update");  //! Jetzt erst wird jede Tabelle über den Anwendungsstart hinaus gespeichert UND auch wiedergeholt.				
+			
+								
+				//####################
+				//1.1. Vorbereitung: Hole die anderen Objekte..
+				//####################
+				EnumTileDefaulttext objType = (EnumTileDefaulttext) EnumSetInnerUtilZZZ.getThiskeyEnum(TileDefaulttext.getThiskeyEnumClassStatic(), lThiskey);
+				
+				//String s = objaType[0].name(); //Prasenzstudium .... also entsprechend was als Eigenschaft vorgeschlagen wird von TileDefaulttextType.Praesenzstudium
+				//String s = objaType[0].toString(); //dito
+				//String s = objaType[0].description(); //gibt es nicht, das @description wohl nur etwas für Tool ist, welches diese Metasprachlichen Annotiations auswertet.
+				String s = objType.name();
+				System.out.println("debugCreateEntry für ... " + s);
+				
+				
+				//####################
+				//1.2. Erstellle das gewünschte Objekt
+				//####################
+				Session session = objContextHibernate.getSession();
+				if(session == null) break main;			
+				session.getTransaction().begin();//Ein zu persistierendes Objekt - eine Transaction, auch wenn mehrere in einer Transaction abzuhandeln wären, aber besser um Fehler abfangen zu können.
+								
+				TileDefaulttext objValue = new TileDefaulttext();
+				
+				Long lngThiskey = new Long(lThiskey);								
+				objValue.setThiskey(lngThiskey);
+								
+				String sDescription = objType.getDescription();
+				objValue.setDescription(sDescription);
+				
+				String sShorttext = objType.getShorttext();
+				objValue.setShorttext(sShorttext);
+				
+				String sLongtext = objType.getLongtext();
+				objValue.setLongtext(sLongtext);
+							   							   
+				//Merke: EINE TRANSACTION = EINE SESSION ==>  neue session von der SessionFactory holen
+				session.save(objValue); //Hibernate Interceptor wird aufgerufen																				
+				if (!session.getTransaction().wasCommitted()) {
+					//session.flush(); //Datenbank synchronisation, d.h. Inserts und Updates werden gemacht. ABER es wird noch nix committed.
+					session.getTransaction().commit(); //onPreInsertListener wird ausgeführt   //!!! TODO: WARUM WIRD wg. des FLUSH NIX MEHR AUSGEFÜHRT AN LISTENERN, ETC ???
+					
+					//bGoon = HibernateUtil.wasCommitSuccessful(objContextHibernate,"save",session.getTransaction());//EventType.PRE_INSERT
+					VetoFlag4ListenerZZZ objResult = HibernateUtil.getCommitResult(objContextHibernate,"save",session.getTransaction());
+//					sMessage = objResult.getVetoMessage();
+//					bGoon = !objResult.isVeto();
+				}
+//				if(!bGoon){
+//					//Mache die Ausgabe im UI nicht selbst, sondern stelle lediglich die Daten zur Verfügung. Grund: Hier stehen u.a. die UI Komponenten nicht zur Verfügung
+//					this.getFacadeResult().setMessage(sMessage);
+//					break validEntry;
+//				}
+				
+
+		} catch (ExceptionZZZ e) {
+			e.printStackTrace();
+		} catch (ThiskeyEnumMappingExceptionZZZ e) {	
+			e.printStackTrace();
+		}
+		System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": ENDE ##############");			
+											
+		}//end main:
+		return bReturn;
+	}
+	
 	public int createEntriesAll(){
 		int iReturn = 0;
 		main:{
@@ -60,9 +141,7 @@ public class TileDefaulttextDao<T> extends DefaulttextDao<T> {
 			
 			try {				
 				KernelZZZ objKernel = new KernelZZZ(); //Merke: Die Service Klasse selbst kann wohl nicht das KernelObjekt extenden!
-				HibernateContextProviderSingletonTHM objContextHibernate;
-				
-				objContextHibernate = HibernateContextProviderSingletonTHM.getInstance(objKernel);					
+				HibernateContextProviderSingletonTHM objContextHibernate = HibernateContextProviderSingletonTHM.getInstance(objKernel);					
 				//Darüber hat diese Methode nicht zu befinden... objContextHibernate.getConfiguration().setProperty("hibernate.hbm2ddl.auto", "update");  //! Jetzt erst wird jede Tabelle über den Anwendungsstart hinaus gespeichert UND auch wiedergeholt.				
 			
 				//###################

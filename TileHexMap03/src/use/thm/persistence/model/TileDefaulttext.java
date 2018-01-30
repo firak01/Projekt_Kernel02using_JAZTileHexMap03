@@ -52,7 +52,7 @@ public class TileDefaulttext<IEnumTileDefaulttext> extends Defaulttext  implemen
 		
 	public TileDefaulttext(){
 		super();
-		this.setKeyType("TILE"); //TODO: HIER EINE ENUMERATION MACHEN ÜBER DIE VERSCHIEDENEN SCHLÜSSELWERTE?
+		this.setKeyType("DEFAULTTILETEXT"); //TODO: HIER EINE ENUMERATION MACHEN ÜBER DIE VERSCHIEDENEN SCHLÜSSELWERTE?
 	}
 	
 	//### ABSTRACTE METHODEN

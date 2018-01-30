@@ -14,13 +14,16 @@ import use.thm.persistence.hibernate.HibernateContextProviderSingletonTHM;
 import use.thm.persistence.interfaces.enums.IEnumSetTextTHM;
 import use.thm.persistence.model.AreaCell;
 import use.thm.persistence.model.Immutabletext;
+import use.thm.persistence.model.Immutabletext.EnumImmutabletext;
 import use.thm.persistence.model.Key;
 import use.thm.persistence.model.Defaulttext;
 import use.thm.persistence.model.KeyImmutable;
 import use.thm.persistence.model.TextDefaulttext;
 import use.thm.persistence.model.TileDefaulttext;
+import use.thm.persistence.model.TileImmutabletext;
 import use.thm.persistence.model.Troop;
 import use.thm.persistence.model.TroopArmy;
+import use.thm.persistence.model.TileImmutabletext.EnumTileImmutabletext;
 import basic.persistence.util.HibernateUtil;
 import basic.zBasic.ExceptionZZZ;
 import basic.zBasic.ReflectCodeZZZ;
@@ -58,6 +61,81 @@ public class ImmutabletextDao<T> extends KeyImmutableDao<T> {
 	public ImmutabletextDao(IHibernateContextProviderZZZ objContextHibernate, String[] saFlagControl) throws ExceptionZZZ{
 		super(objContextHibernate, saFlagControl);
 		this.installLoger(Immutabletext.class);//Durch das Installieren des Loggers mit der korrekten Klasse wird GeneralDao.getT() erst korrekt ermöglicht.
+	}
+	
+	public boolean createEntryForThiskey(long lThiskey){
+		boolean bReturn = false;
+		main:{
+			System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": START ##############");			
+			
+			try{
+				KernelZZZ objKernel = new KernelZZZ(); //Merke: Die Service Klasse selbst kann wohl nicht das KernelObjekt extenden!
+				HibernateContextProviderSingletonTHM objContextHibernate = HibernateContextProviderSingletonTHM.getInstance(objKernel);					
+				//Darüber hat diese Methode nicht zu befinden... objContextHibernate.getConfiguration().setProperty("hibernate.hbm2ddl.auto", "update");  //! Jetzt erst wird jede Tabelle über den Anwendungsstart hinaus gespeichert UND auch wiedergeholt.				
+			
+								
+				//####################
+				//1.1. Vorbereitung: Hole die anderen Objekte..
+				//####################
+				EnumImmutabletext objType = (EnumImmutabletext) EnumSetInnerUtilZZZ.getThiskeyEnum(Immutabletext.getThiskeyEnumClassStatic(), lThiskey);
+				
+				//String s = objaType[0].name(); //Prasenzstudium .... also entsprechend was als Eigenschaft vorgeschlagen wird von TileDefaulttextType.Praesenzstudium
+				//String s = objaType[0].toString(); //dito
+				//String s = objaType[0].description(); //gibt es nicht, das @description wohl nur etwas für Tool ist, welches diese Metasprachlichen Annotiations auswertet.
+				String s = objType.name();
+				System.out.println("debugCreateEntry für ... " + s);
+				
+				
+				//####################
+				//1.2. Erstellle das gewünschte Objekt
+				//####################
+				Immutabletext objValueTemp = new Immutabletext();					
+				String sEnumAlias = s; //EnumSetDefaulttextUtilZZZ.readEnumConstant_NameValue((Class<IEnumSetTextTHM>) Defaulttext.getThiskeyEnumClassStatic()); 
+				sEnumAlias = EnumZZZ.getEnumKey(objType);	
+				
+				//Hier der Workaround mit Refenz-Objekten, aus denen dann der Wert geholt werden kann. Also PASS_BY_REFERENCE durch auslesen der Properties der Objekte.  
+				ReferenceZZZ<Long> lngThisValue = new ReferenceZZZ(4);
+				ReferenceZZZ<String> sName = new ReferenceZZZ("");
+				ReferenceZZZ<String> sShorttext = new ReferenceZZZ("");
+				ReferenceZZZ<String> sLongtext = new ReferenceZZZ("");
+				ReferenceZZZ<String> sDescription = new ReferenceZZZ("");
+				this._fillValueImmutable(objValueTemp, sEnumAlias, lngThisValue, sName, sShorttext, sLongtext, sDescription);
+				
+				Session session = objContextHibernate.getSession();
+				if(session == null) break main;			
+				session.getTransaction().begin();//Ein zu persistierendes Objekt - eine Transaction, auch wenn mehrere in einer Transaction abzuhandeln wären, aber besser um Fehler abfangen zu können.
+								
+				session.getTransaction().begin();//Ein zu persistierendes Objekt - eine Transaction, auch wenn mehrere in einer Transaction abzuhandeln wären, aber besser um Fehler abfangen zu können.
+				Immutabletext objValueTile = new Immutabletext(((int)lngThisValue.get().intValue()), sShorttext.get(), sLongtext.get(), sDescription.get());		//Bei jedem Schleifendurchlauf neu machen, sonst wird lediglich nur 1 Datensatz immer wieder verändert.
+				
+							   							   
+				//Merke: EINE TRANSACTION = EINE SESSION ==>  neue session von der SessionFactory holen
+				session.save(objValueTile); //Hibernate Interceptor wird aufgerufen																				
+				if (!session.getTransaction().wasCommitted()) {
+					//session.flush(); //Datenbank synchronisation, d.h. Inserts und Updates werden gemacht. ABER es wird noch nix committed.
+					session.getTransaction().commit(); //onPreInsertListener wird ausgeführt   //!!! TODO: WARUM WIRD wg. des FLUSH NIX MEHR AUSGEFÜHRT AN LISTENERN, ETC ???
+					
+					//bGoon = HibernateUtil.wasCommitSuccessful(objContextHibernate,"save",session.getTransaction());//EventType.PRE_INSERT
+					VetoFlag4ListenerZZZ objResult = HibernateUtil.getCommitResult(objContextHibernate,"save",session.getTransaction());
+//					sMessage = objResult.getVetoMessage();
+//					bGoon = !objResult.isVeto();
+				}
+//				if(!bGoon){
+//					//Mache die Ausgabe im UI nicht selbst, sondern stelle lediglich die Daten zur Verfügung. Grund: Hier stehen u.a. die UI Komponenten nicht zur Verfügung
+//					this.getFacadeResult().setMessage(sMessage);
+//					break validEntry;
+//				}
+				
+
+		} catch (ExceptionZZZ e) {
+			e.printStackTrace();
+		} catch (ThiskeyEnumMappingExceptionZZZ e) {	
+			e.printStackTrace();
+		}
+		System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": ENDE ##############");			
+											
+		}//end main:
+		return bReturn;
 	}
 	
 	public int createEntriesAll(){
@@ -138,7 +216,7 @@ public class ImmutabletextDao<T> extends KeyImmutableDao<T> {
 	}
 	
 	/* Das ist die Variante für Entities, die nicht mit der Annotation "Immutable" versehen sind.
-	 * Die Entities mit der Annotation "Immutable" haben nämlich 
+	 * Die Entities mit der Annotation "Immutable" haben nämlich keine setter-Methoden.
 	 */
 	//protected <T> void _fillValueImmutable(Immutabletext objValue,String sEnumAlias, Long lngThiskey, String sName, String sShorttext, String sLongtext, String sDescription){
 	//Da Java nur ein CALL_BY_VALUE machen kann, weden hier für die eingefüllten Werte Referenz-Objekte verwendet. 

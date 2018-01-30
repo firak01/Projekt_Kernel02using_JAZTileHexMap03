@@ -499,7 +499,7 @@ public class EnumSetDefaulttextUtilZZZ extends ObjectZZZ{
 			}//end main:
 			return bReturn;
 		}
-		
+				
 		@SuppressWarnings({ "unchecked", "rawtypes" })
 		public static String readEnumConstant_NameValue(Class<?> clazz, String name) {
 		    if (clazz==null || name==null || name.isEmpty()) {

@@ -368,10 +368,8 @@ public class DebugKeyTable_Version_TileImmutabletextTHM {
 			
 			try {				
 				KernelZZZ objKernel = new KernelZZZ(); //Merke: Die Service Klasse selbst kann wohl nicht das KernelObjekt extenden!
-				HibernateContextProviderSingletonTHM objContextHibernate;
-				
-				objContextHibernate = HibernateContextProviderSingletonTHM.getInstance(objKernel);					
-				objContextHibernate.getConfiguration().setProperty("hibernate.hbm2ddl.auto", "update");  //! Jetzt erst wird jede Tabelle über den Anwendungsstart hinaus gespeichert UND auch wiedergeholt.				
+				HibernateContextProviderSingletonTHM objContextHibernate = HibernateContextProviderSingletonTHM.getInstance(objKernel);					
+				//Diese MEthode hat darüber nciht zu entscheiden. objContextHibernate.getConfiguration().setProperty("hibernate.hbm2ddl.auto", "update");  //! Jetzt erst wird jede Tabelle über den Anwendungsstart hinaus gespeichert UND auch wiedergeholt.				
 			
 				//###################
 				//1. Speicher den Immutablettext
@@ -439,10 +437,8 @@ public class DebugKeyTable_Version_TileImmutabletextTHM {
 			
 			try {				
 				KernelZZZ objKernel = new KernelZZZ(); //Merke: Die Service Klasse selbst kann wohl nicht das KernelObjekt extenden!
-				HibernateContextProviderSingletonTHM objContextHibernate;
-				
-				objContextHibernate = HibernateContextProviderSingletonTHM.getInstance(objKernel);					
-				objContextHibernate.getConfiguration().setProperty("hibernate.hbm2ddl.auto", "update");  //! Jetzt erst wird jede Tabelle über den Anwendungsstart hinaus gespeichert UND auch wiedergeholt.				
+				HibernateContextProviderSingletonTHM objContextHibernate = HibernateContextProviderSingletonTHM.getInstance(objKernel);					
+				//Diese MEthode hat darüber nciht zu entscheiden. objContextHibernate.getConfiguration().setProperty("hibernate.hbm2ddl.auto", "update");  //! Jetzt erst wird jede Tabelle über den Anwendungsstart hinaus gespeichert UND auch wiedergeholt.				
 			
 				//###################
 				//1. Speicher den Defaulttext
@@ -505,10 +501,8 @@ public class DebugKeyTable_Version_TileImmutabletextTHM {
 			
 			try {				
 				KernelZZZ objKernel = new KernelZZZ(); //Merke: Die Service Klasse selbst kann wohl nicht das KernelObjekt extenden!
-				HibernateContextProviderSingletonTHM objContextHibernate;
-				
-				objContextHibernate = HibernateContextProviderSingletonTHM.getInstance(objKernel);					
-				objContextHibernate.getConfiguration().setProperty("hibernate.hbm2ddl.auto", "update");  //! Jetzt erst wird jede Tabelle über den Anwendungsstart hinaus gespeichert UND auch wiedergeholt.				
+				HibernateContextProviderSingletonTHM objContextHibernate = HibernateContextProviderSingletonTHM.getInstance(objKernel);					
+				//Diese MEthode hat darüber nciht zu entscheiden. objContextHibernate.getConfiguration().setProperty("hibernate.hbm2ddl.auto", "update");  //! Jetzt erst wird jede Tabelle über den Anwendungsstart hinaus gespeichert UND auch wiedergeholt.				
 			
 				//###################
 				//1. Hole das jeweilige Dao - Objekt
@@ -550,10 +544,8 @@ public class DebugKeyTable_Version_TileImmutabletextTHM {
 			
 			try {				
 				KernelZZZ objKernel = new KernelZZZ(); //Merke: Die Service Klasse selbst kann wohl nicht das KernelObjekt extenden!
-				HibernateContextProviderSingletonTHM objContextHibernate;
-				
-				objContextHibernate = HibernateContextProviderSingletonTHM.getInstance(objKernel);					
-				objContextHibernate.getConfiguration().setProperty("hibernate.hbm2ddl.auto", "update");  //! Jetzt erst wird jede Tabelle über den Anwendungsstart hinaus gespeichert UND auch wiedergeholt.				
+				HibernateContextProviderSingletonTHM objContextHibernate = HibernateContextProviderSingletonTHM.getInstance(objKernel);					
+				//Diese Methode hat darüber nciht zu entscheiden. objContextHibernate.getConfiguration().setProperty("hibernate.hbm2ddl.auto", "update");  //! Jetzt erst wird jede Tabelle über den Anwendungsstart hinaus gespeichert UND auch wiedergeholt.				
 			
 				//###################
 				//1. Hole den Text
@@ -596,10 +588,8 @@ public class DebugKeyTable_Version_TileImmutabletextTHM {
 		main:{
 			try {				
 				KernelZZZ objKernel = new KernelZZZ(); //Merke: Die Service Klasse selbst kann wohl nicht das KernelObjekt extenden!
-				HibernateContextProviderSingletonTHM objContextHibernate;
-				
-				objContextHibernate = HibernateContextProviderSingletonTHM.getInstance(objKernel);					
-				objContextHibernate.getConfiguration().setProperty("hibernate.hbm2ddl.auto", "update");  //! Jetzt erst wird jede Tabelle über den Anwendungsstart hinaus gespeichert UND auch wiedergeholt.				
+				HibernateContextProviderSingletonTHM objContextHibernate = HibernateContextProviderSingletonTHM.getInstance(objKernel);					
+				//Diese MEthode hat darüber nciht zu entscheiden. objContextHibernate.getConfiguration().setProperty("hibernate.hbm2ddl.auto", "update");  //! Jetzt erst wird jede Tabelle über den Anwendungsstart hinaus gespeichert UND auch wiedergeholt.				
 								
 				TileDao daoTile = new TileDao(objContextHibernate);
 				
@@ -623,10 +613,8 @@ public class DebugKeyTable_Version_TileImmutabletextTHM {
 		main:{
 			try {				
 				KernelZZZ objKernel = new KernelZZZ(); //Merke: Die Service Klasse selbst kann wohl nicht das KernelObjekt extenden!
-				HibernateContextProviderSingletonTHM objContextHibernate;
-				
-				objContextHibernate = HibernateContextProviderSingletonTHM.getInstance(objKernel);					
-				objContextHibernate.getConfiguration().setProperty("hibernate.hbm2ddl.auto", "update");  //! Jetzt erst wird jede Tabelle über den Anwendungsstart hinaus gespeichert UND auch wiedergeholt.				
+				HibernateContextProviderSingletonTHM objContextHibernate = HibernateContextProviderSingletonTHM.getInstance(objKernel);					
+				//Diese MEthode hat darüber nciht zu entscheiden. objContextHibernate.getConfiguration().setProperty("hibernate.hbm2ddl.auto", "update");  //! Jetzt erst wird jede Tabelle über den Anwendungsstart hinaus gespeichert UND auch wiedergeholt.				
 								
 				TileDao daoTile = new TileDao(objContextHibernate);
 				

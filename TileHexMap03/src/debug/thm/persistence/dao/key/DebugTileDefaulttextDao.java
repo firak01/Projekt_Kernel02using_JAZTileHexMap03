@@ -144,8 +144,8 @@ public class DebugTileDefaulttextDao {
 //					System.out.println("1. Abfrage: UNERWARTETES ERGEBNIS. Key mit dem KeyType '" + sKeytype + "' und dem Thiskey '" + lngThiskey.toString() + "' gefunden.");
 //				}
 				
-				sKeytype = "TILE";
-				Defaulttext objKey02 = (Defaulttext) daoKey.searchKey(sKeytype, lngThiskey );
+				sKeytype = "DEFAULTTILETEXT";//sKeytype = "TILE";
+				TileDefaulttext objKey02 = (TileDefaulttext) daoKey.searchKey(sKeytype, lngThiskey );
 				if(objKey02==null){
 					System.out.println("2. Abfrage: UNERWARTETES ERGEBNIS. Kein Key mit dem KeyType '" + sKeytype + "' und dem Thiskey '" + lngThiskey.toString() + "' gefunden.");
 				}else{
@@ -171,18 +171,18 @@ public class DebugTileDefaulttextDao {
 				//Darüber hat diese Methode nicht zu entscheiden... objContextHibernate.getConfiguration().setProperty("hibernate.hbm2ddl.auto", "update");  //! Jetzt erst wird jede Tabelle über den Anwendungsstart hinaus gespeichert UND auch wiedergeholt.
 				
 				TileDefaulttextDao daoKey = new TileDefaulttextDao(objContextHibernate);
-				String sKeytype = new String("DEFAULTTEXT");		
+				String sKeytype = new String("DEFAULTTILETEXT");		
 				Long lngThiskey = new Long(1);
 
-				Defaulttext objKey02 = (Defaulttext) daoKey.searchKey(sKeytype, lngThiskey );
+				TileDefaulttext objKey02 = (TileDefaulttext) daoKey.searchKey(sKeytype, lngThiskey );
 				if(objKey02==null){
 					System.out.println("2. Abfrage: UNERWARTETES ERGEBNIS. Kein Key mit dem KeyType '" + sKeytype + "' und dem Thiskey '" + lngThiskey.toString() + "' gefunden.");
 				}else{
 					System.out.println("2. Abfrage: Erwartetes Ergebnis. Key mit dem KeyType '" + sKeytype + "' und dem Thiskey '" + lngThiskey.toString() + "' gefunden.");			
 					
 					//Nun alle holen
-					ArrayList<Defaulttext> listaTileDefaulttext = (ArrayList<Defaulttext>) daoKey.findLazyAll();
-					for(Defaulttext text : listaTileDefaulttext){
+					ArrayList<TileDefaulttext> listaTileDefaulttext = (ArrayList<TileDefaulttext>) daoKey.findLazyAll();
+					for(TileDefaulttext text : listaTileDefaulttext){
 						System.out.println("TileDefaulttext.toString(): " + text.toString());
 //						String sTYPE = "ARMY";
 //						String sValue = EnumSetDefaulttextUtilZZZ.readEnumConstant_DescriptionValue(text.getThiskeyEnumClass(), sTYPE);

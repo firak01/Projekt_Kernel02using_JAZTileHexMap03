@@ -52,7 +52,8 @@ public class TileDefaulttext<IEnumTileDefaulttext> extends Defaulttext  implemen
 		
 	public TileDefaulttext(){
 		super();
-		this.setKeyType("DEFAULTTILETEXT"); //TODO: HIER EINE ENUMERATION MACHEN ÜBER DIE VERSCHIEDENEN SCHLÜSSELWERTE?
+		this.setKeyType("DEFAULTTILETEXT"); //TODO: HIER EINE ENUMERATION MACHEN ÜBER DIE VERSCHIEDENEN SCHLÜSSELWERTE? 
+		//20180130: Besser eine Konstante hier. Merke: Diese Konstante wird dann in den Dao Klassen auch verwendet . Z.B. in TileDefaulttextDao.searchKey(...)
 	}
 	
 	//### ABSTRACTE METHODEN
@@ -77,8 +78,9 @@ public class TileDefaulttext<IEnumTileDefaulttext> extends Defaulttext  implemen
    	 @IFieldDescription(description = "ARMY TEXTVALUES") 
    	ARMY(1,"Army","Land army","A tile which cannot enter ocean fields."),
    	
-   	 @IFieldDescription(description = "FLEET TEXTVALUES") 
-   	FLEET(2,"Fleet","Ocean fleet", "A tile which cannot enter landarea fields.");
+   	 @IFieldDescription(description = "FLEET TYPE TEXTVALUES") 
+   	FLEETDESTROYER01(21,"Destroyer01","Fleet Destroyer 01", "A very fast Fleet Destroyer"),
+   	FLEETDESTROYER02(22,"Destroyer02","Fleet Destroyer 02", "A slower Fleet Destroyer");
    	   	
    private Long lKey;
    private String sLongtext, sShorttext, sDescription;

@@ -61,7 +61,11 @@ public class DebugTroopFleetVariantDao {
 			//##################################
 			
 			DebugTroopFleetVariantDao objDebug = new DebugTroopFleetVariantDao();
-			//TODO: VORHER SICHERHEITSHALBER ALLE LÖSCHEN....
+		
+			//### VORHER SICHERHEITSHALBER ALLE LÖSCHEN....
+			objDebug.debugDeleteAll();
+			
+			
 			
 			objDebug.debugCreateEntry(1);//Dabei werden ggfs. benötigte Defaulttexte erzeugt.
 			objDebug.debugCreateEntry(0);//Dabei werden ggfs. benötigte Defaulttexte erzeugt.
@@ -127,7 +131,7 @@ public class DebugTroopFleetVariantDao {
 				//String s = objaType[0].name(); //Prasenzstudium .... also entsprechend was als Eigenschaft vorgeschlagen wird von TileDefaulttextType.Praesenzstudium
 				//String s = objaType[0].toString(); //dito
 				//String s = objaType[0].description(); //gibt es nicht, das @description wohl nur etwas für Tool ist, welches diese Metasprachlichen Annotiations auswertet.
-				String s = objaType[0].name();
+				String s = objaType[iIndex].name();
 				System.out.println("debugCreateEntry für ... " + s);
 				
 				//Es gibt bei Immutable keine Setter. Daher alles nur im Konstruktor übergeben.														
@@ -135,6 +139,13 @@ public class DebugTroopFleetVariantDao {
 			    String sUniquetext = objaType[iIndex].getUniquetext();
 			    String sCategorytext = objaType[iIndex].getCategorytext();
 			    int iMoveRange = objaType[iIndex].getMapMoveRange();
+			    
+			    int iDefaulttextThiskey = objaType[iIndex].getDefaulttextThisid();
+			    Long lngDefaulttextThiskey = new Long(iDefaulttextThiskey);
+			    
+			    int iImmutabletextThiskey = objaType[iIndex].getImmutabletextThisid();			    
+			    Long lngImmutabletextThiskey = new Long(iImmutabletextThiskey);
+			    
 			    String sImageUrl = objaType[iIndex].getImageUrlString();
 				String sDescription = null;
 				String sShorttext = null;				
@@ -143,89 +154,51 @@ public class DebugTroopFleetVariantDao {
 			    
 			    TileDefaulttext objDefaulttext = null;			    			   
 			    TileDefaulttextDao daoTileText = new TileDefaulttextDao(objContextHibernate);
-			    Key objKey = daoTileText.searchThiskey(lngThiskey);
+			    Key objKey = daoTileText.searchThiskey(lngDefaulttextThiskey);
 				if(objKey==null){
-					System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": Thiskey='"+lngThiskey.toString()+"' NICHT gefunden.");
-					System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": Thiskey='"+lngThiskey.toString()+"' erzeuge benötigten TileDefaulttext.");
+					System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": Thiskey='"+lngThiskey.toString()+"' TileDefaulttext ('" + lngDefaulttextThiskey + "') NICHT gefunden.");
+					System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": Thiskey='"+lngThiskey.toString()+"' erzeuge benötigten TileDefaulttext ('" + lngDefaulttextThiskey + "') .");
 					
-					//TODO GOON 20180126: So schön so gut, aber untenstehendes sollte alles in einer Methode des DAO gekapselt werden
-					//neu: daoTileText.createEntryForThiskey(lngThiskey);
-					//......teste ssh keys in Eclipse hinterlegt
-					
-					EnumTileDefaulttext objEnumDefaulttext;
-					try {
-						Enum objEnum = EnumSetInnerUtilZZZ.getThiskeyEnum(TileDefaulttext.getThiskeyEnumClassStatic(),lngThiskey);
-						if(objEnum!=null){
-							objEnumDefaulttext = (EnumTileDefaulttext)objEnum;
-							int iIndexFound = objEnumDefaulttext.getIndex();
-							DebugKeyTable_Version_TileDefaulttextTHM objDefaulttextProvider = new DebugKeyTable_Version_TileDefaulttextTHM();
-							objDefaulttextProvider.debugCreateEntry_TileDefaulttext(iIndexFound);
-						}else{
-							System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": Thiskey='"+lngThiskey.toString()+"' nicht im Enum von  TileDefaulttext gefunden.");
-						}
-					} catch (ThiskeyEnumMappingExceptionZZZ e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-
-					/* obige Zeilen sollen das hier ersetzten
-					EnumTileDefaulttext[] objaTypeDefaulttext = TileDefaulttext.EnumTileDefaulttext.values();
-					int iIndexFound = -1;
-					for(EnumTileDefaulttext objEnum : objaTypeDefaulttext){
-						iIndexFound++;
-						if(objEnum.getThiskey().equals(lngThiskey)){
-							DebugKeyTable_Version_TileDefaulttextTHM objDefaulttextProvider = new DebugKeyTable_Version_TileDefaulttextTHM();
-							objDefaulttextProvider.debugCreateEntry_TileDefaulttext(iIndexFound);							
-							break;
-						}
-					}*/
-					
-					objKey = daoTileText.searchThiskey(lngThiskey);
+					//TODO GOON 20180130: Hier das erstellte Objekt zurückgeben, dann braucht man auch nicht mehr danach zu suchen.
+					daoTileText.createEntryForThiskey(lngDefaulttextThiskey);					
+					objKey = daoTileText.searchThiskey(lngDefaulttextThiskey);
 					if(objKey==null){
-						System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": Thiskey='"+lngThiskey.toString()+"' kann benötigten TileDefaulttext nicht erzeugen.");
+						System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": Thiskey='"+lngThiskey.toString()+"' kann benötigten TileDefaulttext ('" + lngDefaulttextThiskey + "') nicht erzeugen.");
 						return false;						
 					}else{
-						System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": Thiskey='"+lngThiskey.toString()+"' benötigten TileDefaulttext erzeugt.");						
+						System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": Thiskey='"+lngThiskey.toString()+"' benötigten TileDefaulttext ('" + lngDefaulttextThiskey + "')  erzeugt.");						
 					}				
 				}
 				objDefaulttext = (TileDefaulttext) objKey;				
 				sDescription = objDefaulttext.getDescription();
 				sShorttext = objDefaulttext.getShorttext();				
 				sLongtext = objDefaulttext.getLongtext();				
-				System.out.println("Thiskey='"+lngThiskey+"' gefunden. ("+sShorttext+"|"+sLongtext+"|"+sDescription+")");									
+				System.out.println("Thiskey='"+lngThiskey+"' dazugehörender TileDefaulttext gefunden. ("+sShorttext+"|"+sLongtext+"|"+sDescription+")");									
 				
 			    
 				TileImmutabletext objImmutableText = null;
 				TileImmutabletextDao daoTileImmutable = new TileImmutabletextDao(objContextHibernate);
-			    KeyImmutable objKeyImmutable = daoTileImmutable.searchThiskey(lngThiskey);
+			    KeyImmutable objKeyImmutable = daoTileImmutable.searchThiskey(lngImmutabletextThiskey);
 			    if(objKeyImmutable==null){
-					System.out.println("Thiskey='"+lngThiskey.toString()+"' NICHT gefunden.");
-					System.out.println("Thiskey='"+lngThiskey.toString()+"' erzeuge benötigten TileImmutabletext.");
+					System.out.println("Thiskey='"+lngThiskey.toString()+"' TileImmutabletext ('" + lngImmutabletextThiskey + "') NICHT gefunden.");
+					System.out.println("Thiskey='"+lngThiskey.toString()+"' erzeuge benötigten TileImmutabletext ('" + lngImmutabletextThiskey + "') .");
 					
-					EnumTileImmutabletext[] objaTypeImmutabletext = TileImmutabletext.EnumTileImmutabletext.values();
-					int iIndexFound = -1;
-					for(EnumTileImmutabletext objEnum : objaTypeImmutabletext){
-						iIndexFound++;
-						if(objEnum.getThiskey().equals(lngThiskey)){
-							DebugKeyTable_Version_TileImmutabletextTHM objDefaulttextProvider = new DebugKeyTable_Version_TileImmutabletextTHM();
-							objDefaulttextProvider.debugCreateEntry_TileImmutabletext(iIndexFound);							
-							break;
-						}
-					}
+					//TODO GOON 20180130: Hier das erzeugte Objekt direkt zurückgeben lassen, dann bruacht man es nicht zu suchen.
+					daoTileImmutable.createEntryForThiskey(lngImmutabletextThiskey);
 					
-					objKeyImmutable = daoTileImmutable.searchThiskey(lngThiskey);
+					objKeyImmutable = daoTileImmutable.searchThiskey(lngImmutabletextThiskey);
 					if(objKeyImmutable==null){
-						System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": Thiskey='"+lngThiskey.toString()+"' kann benötigten TileImmutabletext nicht erzeugen.");
+						System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": Thiskey='"+lngThiskey.toString()+"' kann benötigten TileImmutabletext ('"+lngImmutabletextThiskey+"') nicht erzeugen.");
 						return false;						
 					}else{
-						System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": Thiskey='"+lngThiskey.toString()+"' benötigten TileImmutabletext erzeugt.");						
+						System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": Thiskey='"+lngThiskey.toString()+"' benötigten TileImmutabletext ('"+lngImmutabletextThiskey+"') erzeugt.");						
 					}
 			    }
 				objImmutableText = (TileImmutabletext) objKeyImmutable;				
 				sDescription = objImmutableText.getDescription();
 				sShorttext = objImmutableText.getShorttext();				
 				sLongtext = objImmutableText.getLongtext();				
-				System.out.println("Thiskey='"+lngThiskey+"' gefunden. ("+sShorttext+"|"+sLongtext+"|"+sDescription+")");									
+				System.out.println("Thiskey='"+lngThiskey+"' dazugehörender TileImmutabletext gefunden. ("+sShorttext+"|"+sLongtext+"|"+sDescription+")");									
 					
 			    
 				//###################
@@ -350,38 +323,9 @@ public class DebugTroopFleetVariantDao {
 				if(objKey==null){
 					System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": Thiskey='"+lngThiskeyDefaulttext.toString()+"' NICHT gefunden.");
 					System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": Thiskey='"+lngThiskeyDefaulttext.toString()+"' erzeuge benötigten TileDefaulttext.");
-					
-					//TODO GOON 20180126: So schön so gut, aber untenstehendes sollte alles in einer Methode des DAO gekapselt werden
-					//neu: daoTileText.createEntryForThiskey(lngThiskey);
-					//......
-					
-					EnumTileDefaulttext objEnumDefaulttext;
-					try {
-						Enum objEnum = EnumSetInnerUtilZZZ.getThiskeyEnum(TileDefaulttext.getThiskeyEnumClassStatic(),lngThiskeyDefaulttext);
-						if(objEnum!=null){
-							objEnumDefaulttext = (EnumTileDefaulttext)objEnum;
-							int iIndexFound = objEnumDefaulttext.getIndex();
-							DebugKeyTable_Version_TileDefaulttextTHM objDefaulttextProvider = new DebugKeyTable_Version_TileDefaulttextTHM();
-							objDefaulttextProvider.debugCreateEntry_TileDefaulttext(iIndexFound);
-						}else{
-							System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": Thiskey='"+lngThiskeyDefaulttext.toString()+"' nicht im Enum von  TileDefaulttext gefunden.");
-						}
-					} catch (ThiskeyEnumMappingExceptionZZZ e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-
-					/* obige Zeilen sollen das hier ersetzten
-					EnumTileDefaulttext[] objaTypeDefaulttext = TileDefaulttext.EnumTileDefaulttext.values();
-					int iIndexFound = -1;
-					for(EnumTileDefaulttext objEnum : objaTypeDefaulttext){
-						iIndexFound++;
-						if(objEnum.getThiskey().equals(lngThiskey)){
-							DebugKeyTable_Version_TileDefaulttextTHM objDefaulttextProvider = new DebugKeyTable_Version_TileDefaulttextTHM();
-							objDefaulttextProvider.debugCreateEntry_TileDefaulttext(iIndexFound);							
-							break;
-						}
-					}*/
+						
+					//TODO GOON 20180130: Rückgabewert, dann braucht man anschliessend auch nicht zu suchen.
+					daoTileText.createEntryForThiskey(lngThiskeyDefaulttext);
 					
 					objKey = daoTileText.searchThiskey(lngThiskeyDefaulttext);
 					if(objKey==null){
@@ -404,17 +348,9 @@ public class DebugTroopFleetVariantDao {
 			    if(objKeyImmutable==null){
 					System.out.println("Thiskey='"+lngThiskeyImmutabletext.toString()+"' NICHT gefunden.");
 					System.out.println("Thiskey='"+lngThiskeyImmutabletext.toString()+"' erzeuge benötigten TileImmutabletext.");
-					
-					EnumTileImmutabletext[] objaTypeImmutabletext = TileImmutabletext.EnumTileImmutabletext.values();
-					int iIndexFound = -1;
-					for(EnumTileImmutabletext objEnum : objaTypeImmutabletext){
-						iIndexFound++;
-						if(objEnum.getThiskey().equals(lngThiskey)){
-							DebugKeyTable_Version_TileImmutabletextTHM objDefaulttextProvider = new DebugKeyTable_Version_TileImmutabletextTHM();
-							objDefaulttextProvider.debugCreateEntry_TileImmutabletext(iIndexFound);							
-							break;
-						}
-					}
+										
+					//TODO GOON 20180130: Rückgabewert, dann braucht man anschliessend auch nicht zu suchen.
+					daoTileImmutable.createEntryForThiskey(lngThiskey);
 					
 					objKeyImmutable = daoTileImmutable.searchThiskey(lngThiskey);
 					if(objKeyImmutable==null){
@@ -484,17 +420,8 @@ public class DebugTroopFleetVariantDao {
 				TileDefaulttextDao daoKey = new TileDefaulttextDao(objContextHibernate);
 				String sKeytype = new String("");
 				
-				
-				//TODO GOON 2017-06-14: Hier CellId-Schlüsselwerte vorbereiten und an die daoTroop.readByCellId(...) übergeben...
-//				sKeytype = "NIXVALUE";
-//				Key objKey = daoKey.searchKey(sKeytype, lngThiskey);
-//				if(objKey==null){
-//					System.out.println("1. Abfrage: Erwartetes Ergebnis. Kein Key mit dem KeyType '" + sKeytype + "' und dem Thiskey '" + lngThiskey.toString() + "' gefunden.");
-//				}else{
-//					System.out.println("1. Abfrage: UNERWARTETES ERGEBNIS. Key mit dem KeyType '" + sKeytype + "' und dem Thiskey '" + lngThiskey.toString() + "' gefunden.");
-//				}
-				
-				sKeytype = "TILE";
+				//TODO GOON: FEHLER HIER WIRD nach der VARIANTE gesucht und nicht nach dem Defaulttext....
+				sKeytype = "DEFAULTTILETEXT";
 				TileDefaulttext objKey02 = (TileDefaulttext) daoKey.searchKey(sKeytype, lngThiskey );
 				if(objKey02==null){
 					System.out.println("2. Abfrage: UNERWARTETES ERGEBNIS. Kein Key mit dem KeyType '" + sKeytype + "' und dem Thiskey '" + lngThiskey.toString() + "' gefunden.");

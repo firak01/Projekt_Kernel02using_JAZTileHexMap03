@@ -220,11 +220,12 @@ public class TroopFleetVariant  extends KeyImmutable implements Serializable, IO
 		//#######################################################
 		public enum EnumTroopFleetVariant implements IEnumSetTroopFleetVariantTHM,  IThiskeyProviderZZZ<Long>{//Folgendes geht nicht, da alle Enums schon von einer Java BasisKlasse erben... extends EnumSetMappedBaseZZZ{
 			
+		//lKey / sUniquetext / sCategorytext / iMoveRange / sImageUrl / iThisKeyDefaulttext / iThiskeyImmutabletext;
 	   	 @IFieldDescription(description = "DFLEETVARIANT01") 
-	   	T01(1,"DFLEET01","Destroyer",5,"url01",1,1),
+	   	T01(1,"DFLEET01","Destroyer",5,"url01",21,2),
 	   	
 	   	 @IFieldDescription(description = "DFLEETVARIANT02") 
-	   	T02(2,"DFLEET02","Destroyer",3,"url02",2,2);
+	   	T02(2,"DFLEET02","Destroyer",3,"url02",22,2);
 	   	   	
 	   private Long lKey;
 	   private String sUniquetext, sCategorytext;

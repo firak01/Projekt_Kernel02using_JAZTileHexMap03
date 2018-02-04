@@ -15,6 +15,7 @@ import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.TableGenerator;
@@ -143,28 +144,44 @@ public class TroopFleetVariant  extends KeyImmutable implements Serializable, IO
 		//Siehe Buch "Java Persistence API 2", Seite 90ff.	
 		//Variante 1) mit einer gemeinsamen Spalte
 		//@Transient //Ich will kein BLOB speichern
-		@OneToOne(fetch = FetchType.LAZY)
-		@JoinColumn(name="defaulttext_thiskey_id", nullable = true)
+		 
+		 //20180204: Nein, das ist eine 1:1 Beziehung
+//		@OneToOne(fetch = FetchType.LAZY)
+//		@JoinColumn(name="defaulttext_thiskey_id", nullable = true)//Hiermit wird die ID Spalte gespeichert
+		
+		 @ManyToOne(fetch = FetchType.LAZY)
+		 //@JoinColumn(name="defaulttext_thiskey_id", referencedColumnName = "thiskey_id") //Erst hierdurch wird die thiskey_id in der Spalte gespeichert. ABER: Fehlermeldung, weil der Wert ggfs. nicht unique sei. Allerdings sind logischerweise mehrere Objekte, die sich auf den gleichen Text beziehen erlaubt.
+		//Erst hierdurch wird die thiskey_id in der Spalte gespeichert. ABER: Fehlermeldung, weil der Wert ggfs. nicht unique sei. Allerdings sind logischerweise mehrere Objekte, die sich auf den gleichen Text beziehen erlaubt.
+		//Ohne die columnDefinition funktioniert das bei der SQLite Datenbank nicht.
+		 @JoinColumn(name="defaulttext_thiskey_id", referencedColumnName = "thiskey_id", nullable = true, unique= false,  columnDefinition="LONG NOT NULL DEFAULT 1") 
 	 public Defaulttext getDefaulttextObject(){
 		return this.objDefaulttext;
 	 }
 	 
-		//Ist protected wg. immutable
+	 //Ist protected wg. immutable. Zwar ist der DefaultText an sich ängerbar (anders als der immutableText) aber die Fleet Variante ist immutable.
 	 protected void setDefaulttextObject(TileDefaulttext objDefaulttext){
 		 this.objDefaulttext = objDefaulttext;
 	 }
 	 
 	 
 	 //### getter / setter
-	//1:1 Beziehung aufbauen
-		//Siehe Buch "Java Persistence API 2", Seite 90ff.	
-		//Variante 1) mit einer gemeinsamen Spalte
-		//@Transient //Ich will kein BLOB speichern
-		@OneToOne(fetch = FetchType.LAZY)
-		@JoinColumn(name="immutabletext_thiskey_id", nullable = true)
-	 public TileImmutabletext getImmutabletextObject(){
-		return this.objImmutabletext;
-	 }
+		//1:1 Beziehung aufbauen
+			//Siehe Buch "Java Persistence API 2", Seite 90ff.	
+			//Variante 1) mit einer gemeinsamen Spalte
+			//@Transient //Ich will kein BLOB speichern
+		 
+		 //20180203: NEIN: Das ist eine n:1 Beziehung
+			//@OneToOne(fetch = FetchType.LAZY)
+			//@JoinColumn(name="immutabletext_thiskey_id", nullable = true) //Hiermit wird die ID in der Spalte gespeichert
+		 
+		 @ManyToOne(fetch = FetchType.LAZY)
+		 //@JoinColumn(name="immutabletext_thiskey_id", referencedColumnName = "thiskey_id") //Erst hierdurch wird die thiskey_id in der Spalte gespeichert. ABER: Fehlermeldung, weil der Wert ggfs. nicht unique sei. Allerdings sind logischerweise mehrere Objekte, die sich auf den gleichen Text beziehen erlaubt.
+		 //Erst hierdurch wird die thiskey_id in der Spalte gespeichert. ABER: Fehlermeldung, weil der Wert ggfs. nicht unique sei. Allerdings sind logischerweise mehrere Objekte, die sich auf den gleichen Text beziehen erlaubt.
+  		 //Ohne die columnDefinition funktioniert das bei der SQLite Datenbank nicht.
+		 @JoinColumn(name="immutabletext_thiskey_id", referencedColumnName = "thiskey_id", nullable = true, unique= false,  columnDefinition="LONG NOT NULL DEFAULT 1") 
+		 public TileImmutabletext getImmutabletextObject(){
+			return this.objImmutabletext;
+		 }
 	 
 	 //Ist protected wg. immutable
 	 protected void setImmutabletextObject(TileImmutabletext objImmutabletext){
@@ -191,8 +208,8 @@ public class TroopFleetVariant  extends KeyImmutable implements Serializable, IO
 	 }
 	 
 	 //#### abstracte Methoden
-	 //20171106 KÄME DAS ETWA DRUCH VERERBUNG AUS DER KLASSE "KEY" ???
-	 //JAAA!!!	 ABER DANN GIBT ES EINE EIGENE TABELLE "KEY" und das will ich nicht.
+	 //20171106 KÄME DAS ETWA DURCH VERERBUNG AUS DER KLASSE "KEY" ???
+	 //JAAA!!!	 ABER DANN GIBT ES EINE EIGENE TABELLE "KEY" und das will ich nicht, darum hier extra definieren.
 	 @Column(name="thiskey_id",  nullable=false, unique=true, columnDefinition="LONG NOT NULL UNIQUE  DEFAULT 1")	
 	 @Override
 	public Long getThiskey() {
@@ -222,10 +239,10 @@ public class TroopFleetVariant  extends KeyImmutable implements Serializable, IO
 			
 		//lKey / sUniquetext / sCategorytext / iMoveRange / sImageUrl / iThisKeyDefaulttext / iThiskeyImmutabletext;
 	   	 @IFieldDescription(description = "DFLEETVARIANT01") 
-	   	T01(1,"DFLEET01","Destroyer",5,"url01",21,2),
+	   	T01(1,"DFLEET01","Destroyer",5,"url01",210,20),
 	   	
 	   	 @IFieldDescription(description = "DFLEETVARIANT02") 
-	   	T02(2,"DFLEET02","Destroyer",3,"url02",22,2);
+	   	T02(2,"DFLEET02","Destroyer",3,"url02",220,20);
 	   	   	
 	   private Long lKey;
 	   private String sUniquetext, sCategorytext;

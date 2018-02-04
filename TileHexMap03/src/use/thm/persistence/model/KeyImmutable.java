@@ -19,6 +19,8 @@ import javax.persistence.Table;
 import javax.persistence.TableGenerator;
 import javax.persistence.Transient;
 
+import org.hibernate.annotations.NaturalId;
+
 import use.thm.persistence.hibernate.HibernateContextProviderSingletonTHM;
 import basic.persistence.model.IOptimisticLocking;
 import basic.zBasic.ExceptionZZZ;
@@ -41,7 +43,7 @@ public class KeyImmutable extends AbstractImmutable<KeyImmutable> implements ITh
 	
 	//Variante 2: Realisierung eines Schlüssel über eine eindeutige ID, die per Generator erzeugt wird
 	private int iMyTestSequence;
-    private Long hiskeyId;
+    private Long thiskeyId;
 	private String sKeyType;
 	
 	
@@ -50,19 +52,53 @@ public class KeyImmutable extends AbstractImmutable<KeyImmutable> implements ITh
 	 public KeyImmutable(){
 	 }
 	 
-	//### Variante 2: Verwende auf dieser Ebene einen Generator, zum Erstellen einer ID
+//	//### Variante 2: Verwende auf dieser Ebene einen Generator, zum Erstellen einer ID
 //		 @Id				
-//		 @TableGenerator(name="lidGeneratorKey001", table="COMMON_FUER_IDGENERATOR_KEY",pkColumnName="nutzende_Klasse_als_String", pkColumnValue="SequenceTester",valueColumnName="naechster_id_wert",  initialValue=1, allocationSize=1)//@TableGenerator Name muss einzigartig im ganzen Projekt sein.
-//		 @GeneratedValue(strategy = GenerationType.TABLE, generator="lidGeneratorKey001")		 //Das Klappt mit Hibernate Session, aber nicht mit dem JPA EntityManager...
+//		 @TableGenerator(name="lidGeneratorKeyImmutable001", table="COMMON_FUER_IDGENERATORIMMUTABLE_KEY",pkColumnName="nutzende_Klasse_als_String", pkColumnValue="SequenceTester",valueColumnName="naechster_id_wert",  initialValue=1, allocationSize=1)//@TableGenerator Name muss einzigartig im ganzen Projekt sein.
+//		 @GeneratedValue(strategy = GenerationType.TABLE, generator="lidGeneratorKeyImmutable001")		 //Das Klappt mit Hibernate Session, aber nicht mit dem JPA EntityManager...
 //		 //Bei dieser Column Definition ist die Spalte nicht für @OneToMany mit @JoinTable zu gebrauchen @Column(name="TILE_ID_INCREMENTED", nullable=false, unique=true, columnDefinition="INTEGER NOT NULL UNIQUE  DEFAULT 1")
 //		 //Entferne also das unique...
-//		 @Column(name="KEY_ID_INCREMENTED", nullable=false)
+//		 @Column(name="KEYIMMUTABLE_ID_INCREMENTED", nullable=false)
 		 public int getId(){
 			 return this.iMyTestSequence;
 		 }
 		 protected void setId(int iLid){
 			 this.iMyTestSequence = iLid;
 		 }
+		 
+		    /**
+		     * @return hiskeyId
+		     */		
+//			//20180203: Für @ManyToOne... Hier soll dann die ThiskeyId in der anderen Tabelle gespeichert werden und nicht die normale, generierte ID.
+//			@NaturalId
+//			
+////		    @Override
+//		   //Merke: Wenn das dann im Entity eingesetzt werden soll, uniquewert festlegen
+//		    //@Column(name="thiskey_id",  nullable=false, unique=true, columnDefinition="LONG NOT NULL UNIQUE  DEFAULT 1")	
+//		    public Long getThiskey() {
+//		        return hiskeyId;
+//		    }
+	//
+	//
+//		    /**
+//		     * @param newValue
+//		     */
+////		   @Override
+//		    protected void setThiskey(Long newValue) {
+//		        this.hiskeyId = newValue;
+//		    }
+		    
+		    
+			 //Merke: Bei Nutzung der "Hibernate"-Verebung käme dies aus der Key Klasse. ABER: Dann hätte ich auch eine Tabelle "KEY" und das will ich nicht.
+			 //           Also: Hier die Methoden seperat anbieten.
+//			@NaturalId //20180203: Für @ManyToOne... Hier soll dann die ThiskeyId in der anderen Tabelle gespeichert werden und nicht die normale, generierte ID.
+//			@Column(name="thiskey_id",  nullable=false, unique=true, columnDefinition="LONG NOT NULL UNIQUE  DEFAULT 1")		 	
+			public Long getThiskey() {
+				 return this.thiskeyId;
+			}
+			protected void setThiskey(Long thiskeyId) {
+				this.thiskeyId = thiskeyId;
+			}
 	 
 	 //### getter / setter		
 //		@Column(name="KEYTYPE")
@@ -74,27 +110,10 @@ public class KeyImmutable extends AbstractImmutable<KeyImmutable> implements ITh
 			this.sKeyType = sKeyType;
 		}
 
-	    /**
-	     * @return hiskeyId
-	     */
-//	    @Override
-	   //Merke: Wenn das dann im Entity eingesetzt werden soll, uniquewert festlegen
-	    //@Column(name="thiskey_id",  nullable=false, unique=true, columnDefinition="LONG NOT NULL UNIQUE  DEFAULT 1")	
-	    public Long getThiskey() {
-	        return hiskeyId;
-	    }
 
 
-	    /**
-	     * @param newValue
-	     */
-//	   @Override
-	    protected void setThiskey(Long newValue) {
-	        this.hiskeyId = newValue;
-	    }
 
-
-	    private static final java.util.List<String> allAttributeNames = java.util.Arrays.asList(new String[]{"hiskeyId"});
+	    private static final java.util.List<String> allAttributeNames = java.util.Arrays.asList(new String[]{"thiskey_id"});
 
 	    /**
 	     * {@inheritDoc}

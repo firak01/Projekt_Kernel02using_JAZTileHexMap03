@@ -71,7 +71,7 @@ public class DebugTroopFleetVariantDao {
 			objDebug.debugCreateEntry(0);//Dabei werden ggfs. benötigte Defaulttexte erzeugt.
 			
 			//Suche mal nach einem der hoffentlich erzeugten Einträge, über den Thiskey.
-			Long lngThiskey = new Long(1);
+			Long lngThiskey = new Long(210);
 			objDebug.debugSearchKey(lngThiskey);	
 		
 	//		//TODO GOON 20180124
@@ -156,7 +156,7 @@ public class DebugTroopFleetVariantDao {
 			    TileDefaulttextDao daoTileText = new TileDefaulttextDao(objContextHibernate);
 			    Key objKey = daoTileText.searchThiskey(lngDefaulttextThiskey);
 				if(objKey==null){
-					System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": Thiskey='"+lngThiskey.toString()+"' TileDefaulttext ('" + lngDefaulttextThiskey + "') NICHT gefunden.");
+					System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": Thiskey='"+lngThiskey.toString()+"' TileDefaulttext ('" + lngDefaulttextThiskey + "') NOCH NICHT gefunden.");
 					System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": Thiskey='"+lngThiskey.toString()+"' erzeuge benötigten TileDefaulttext ('" + lngDefaulttextThiskey + "') .");
 					
 					//TODO GOON 20180130: Hier das erstellte Objekt zurückgeben, dann braucht man auch nicht mehr danach zu suchen.
@@ -174,16 +174,16 @@ public class DebugTroopFleetVariantDao {
 				sShorttext = objDefaulttext.getShorttext();				
 				sLongtext = objDefaulttext.getLongtext();				
 				System.out.println("Thiskey='"+lngThiskey+"' dazugehörender TileDefaulttext gefunden. ("+sShorttext+"|"+sLongtext+"|"+sDescription+")");									
-				
+				System.out.println("++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
 			    
 				TileImmutabletext objImmutableText = null;
 				TileImmutabletextDao daoTileImmutable = new TileImmutabletextDao(objContextHibernate);
 			    KeyImmutable objKeyImmutable = daoTileImmutable.searchThiskey(lngImmutabletextThiskey);
 			    if(objKeyImmutable==null){
-					System.out.println("Thiskey='"+lngThiskey.toString()+"' TileImmutabletext ('" + lngImmutabletextThiskey + "') NICHT gefunden.");
+					System.out.println("Thiskey='"+lngThiskey.toString()+"' TileImmutabletext ('" + lngImmutabletextThiskey + "') NOCH NICHT gefunden.");
 					System.out.println("Thiskey='"+lngThiskey.toString()+"' erzeuge benötigten TileImmutabletext ('" + lngImmutabletextThiskey + "') .");
 					
-					//TODO GOON 20180130: Hier das erzeugte Objekt direkt zurückgeben lassen, dann bruacht man es nicht zu suchen.
+					//TODO GOON 20180130: Hier das erzeugte Objekt direkt zurückgeben lassen, dann braucht man es nicht zu suchen.
 					daoTileImmutable.createEntryForThiskey(lngImmutabletextThiskey);
 					
 					objKeyImmutable = daoTileImmutable.searchThiskey(lngImmutabletextThiskey);
@@ -199,7 +199,7 @@ public class DebugTroopFleetVariantDao {
 				sShorttext = objImmutableText.getShorttext();				
 				sLongtext = objImmutableText.getLongtext();				
 				System.out.println("Thiskey='"+lngThiskey+"' dazugehörender TileImmutabletext gefunden. ("+sShorttext+"|"+sLongtext+"|"+sDescription+")");									
-					
+				System.out.println("+++++++++++++++++++++++++++++++++++++++++++++++++++++");
 			    
 				//###################
 				//1. Speichere die FLEETVARIANT		

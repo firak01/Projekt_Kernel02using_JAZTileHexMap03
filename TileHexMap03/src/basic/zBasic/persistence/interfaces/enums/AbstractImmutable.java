@@ -4,15 +4,6 @@ import java.util.ArrayList;
 
 import use.thm.persistence.model.TileDefaulttext.EnumTileDefaulttext;
 
-/**
- * Oberklasse für internationalisierbare (Schlüssel-)Entities.
- * Hier: Gedacht für immutable - Werte. D.h. keine public Setter.
- *
- * @author lindhauer
- * @version $Id: AbstractValue.java,v 1.28 2016-10-24 10:09:29 d.herrmann#his.de Exp $
- * @param <V> the concrete value class
- */
-//@MappedSuperclass
 public abstract class AbstractImmutable<V extends AbstractImmutable<V>> { //!!! noch ein zweites extends dahinter!!!  extends I18nValueImpl implents KeyValue, UniqueNameValue, SortorderValue, Comparable<V> {
 
 //    /** Value cache region identifier. */

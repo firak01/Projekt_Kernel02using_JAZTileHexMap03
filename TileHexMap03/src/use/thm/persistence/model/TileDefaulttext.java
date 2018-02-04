@@ -79,8 +79,8 @@ public class TileDefaulttext<IEnumTileDefaulttext> extends Defaulttext  implemen
    	ARMY(1,"Army","Land army","A tile which cannot enter ocean fields."),
    	
    	 @IFieldDescription(description = "FLEET TYPE TEXTVALUES") 
-   	FLEETDESTROYER01(21,"Destroyer01","Fleet Destroyer 01", "A very fast Fleet Destroyer"),
-   	FLEETDESTROYER02(22,"Destroyer02","Fleet Destroyer 02", "A slower Fleet Destroyer");
+   	FLEETDESTROYER01(210,"Destroyer01","Fleet Destroyer 01", "A very fast Fleet Destroyer"),
+   	FLEETDESTROYER02(220,"Destroyer02","Fleet Destroyer 02", "A slower Fleet Destroyer");
    	   	
    private Long lKey;
    private String sLongtext, sShorttext, sDescription;

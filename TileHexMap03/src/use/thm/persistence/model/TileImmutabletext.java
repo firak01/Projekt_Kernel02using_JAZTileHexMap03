@@ -18,6 +18,8 @@ import javax.persistence.Table;
 import javax.persistence.TableGenerator;
 import javax.persistence.Transient;
 
+import org.hibernate.annotations.NaturalId;
+
 import use.thm.persistence.interfaces.enums.IEnumSetTextTHM;
 import basic.persistence.model.IFieldDescription;
 import basic.persistence.model.IKeyEnum;
@@ -44,8 +46,8 @@ import basic.zBasic.util.genericEnum.ObjectTestMappedValue.EnumSetInnerMappedTes
 // InheritanceType.SINGLE_TABLE) //Hiermit werden alle Datensätze der Vererbungshierarchieklassen in einer Tabelle zusammengafasst und nur anhan ddes Discriminator Wertes unterschieden
 //@DiscriminatorValue("xxx")  //Wird es wg. der Vererbung(!) von HEXCell zu AreaType immer geben. Ohne Annotation ist das DTYPE und der wert ist gleich dem Klassennamen.
 
-//Das braucht in der erbenden Klassenicht angegeben zu werden.
-//@Inheritance(strategy =  InheritanceType.TABLE_PER_CLASS) //Ziel: Jedes Entity der Vererbungshierarchie in einer eigenen Tabelle 
+//Das braucht in der erbenden Klasse nicht angegeben zu werden.
+@Inheritance(strategy =  InheritanceType.TABLE_PER_CLASS) //Ziel: Jedes Entity der Vererbungshierarchie in einer eigenen Tabelle 
 @Access(AccessType.PROPERTY) 
 @Table(name="k_immutabletext_tile") //Eine eigene Tabelle notwendig, da Thiskey eindeutig sein soll.
 public class TileImmutabletext<IEnumTileDefaulttext> extends Immutabletext  implements IOptimisticLocking{
@@ -62,6 +64,32 @@ public class TileImmutabletext<IEnumTileDefaulttext> extends Immutabletext  impl
 		this.setShorttext(sShorttext);
 		this.setLongtext(sLongtext);
 		this.setDescription(sDescription);
+	}
+	
+	//FGL: RAUSGENOMMEN, WG VERERBUNG
+//	 @Id	//hier notwendig für AccessType.PROPERTY			
+//	 @TableGenerator(name="lidGeneratorTileImmutabletext001", table="COMMON_FUER_IDGENERATOR_TileIMMUTABLETEXT",pkColumnName="nutzende_Klasse_als_String", pkColumnValue="SequenceTester",valueColumnName="naechster_id_wert",  initialValue=1, allocationSize=1)//@TableGenerator Name muss einzigartig im ganzen Projekt sein.
+//	 @GeneratedValue(strategy = GenerationType.TABLE, generator="lidGeneratorImmutabletext001")		 //Das Klappt mit Hibernate Session, aber nicht mit dem JPA EntityManager...
+//	 //Bei dieser Column Definition ist die Spalte nicht für @OneToMany mit @JoinTable zu gebrauchen @Column(name="TILE_ID_INCREMENTED", nullable=false, unique=true, columnDefinition="INTEGER NOT NULL UNIQUE  DEFAULT 1")
+//	 //Entferne also das unique...
+//	 @Column(name="TILEIMMUTABLETEXT_ID_INCREMENTED", nullable=false)
+//	 public int getId(){
+//		 return super.getId();
+//	 }
+//	 protected void setId(int iLid){
+//		 super.setId(iLid);
+//	 }
+//	 
+//		 	 
+	 //Merke: Bei Nutzung der "Hibernate"-Verebung käme dies aus der Key Klasse. ABER: Dann hätte ich auch eine Tabelle "KEY" und das will ich nicht.
+	 //           Also: Hier die Methoden seperat anbieten.
+	//@NaturalId //20180203: Für @ManyToOne... Hier soll dann die ThiskeyId in der anderen Tabelle gespeichert werden und nicht die normale, generierte ID. WICHTIG: @NaturalId nur im Root oder der Superklasse verwenden
+	@Column(name="thiskey_id", insertable=false, updatable=false, nullable=false, unique=true, columnDefinition="LONG NOT NULL UNIQUE  DEFAULT 1")		 	
+	public Long getThiskey() {
+		 return super.getThiskey();
+	}
+	protected void setThiskey(Long thiskeyId) {
+		super.setThiskey(thiskeyId);
 	}
 	
 	//### ABSTRACTE METHODEN
@@ -84,10 +112,10 @@ public class TileImmutabletext<IEnumTileDefaulttext> extends Immutabletext  impl
 	public enum EnumTileImmutabletext implements IEnumSetTextTHM,  IThiskeyProviderZZZ<Long>{//Folgendes geht nicht, da alle Enums schon von einer Java BasisKlasse erben... extends EnumSetMappedBaseZZZ{
 		
    	 @IFieldDescription(description = "ARMY IMMUTABLETEXTVALUES") 
-   	ARMY(1,"Army","Land army","A tile which cannot enter ocean fields. (immutable text)"),
+   	ARMY(10,"Army","Land army","A tile which cannot enter ocean fields. (immutable text)"),
    	
    	 @IFieldDescription(description = "FLEET IMMUTABLETEXTVALUES") 
-   	FLEET(2,"Fleet","Ocean fleet", "A tile which cannot enter landarea fields. (immutable text)");
+   	FLEET(20,"Fleet","Ocean fleet", "A tile which cannot enter landarea fields. (immutable text)");
    	   	
    private Long lKey;
    private String sLongtext, sShorttext, sDescription;

@@ -14,9 +14,12 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
+import javax.persistence.MappedSuperclass;
 import javax.persistence.Table;
 import javax.persistence.TableGenerator;
 import javax.persistence.Transient;
+
+import org.hibernate.annotations.NaturalId;
 
 import use.thm.persistence.interfaces.enums.IEnumSetTextTHM;
 import basic.persistence.model.IFieldDescription;
@@ -39,7 +42,9 @@ import basic.zBasic.util.genericEnum.ObjectTestMappedValue.EnumSetInnerMappedTes
 
 //Merke: Neue Entities immer auch in HibernateContextProviderSingletonTHM hinzufügen (in HibernateConfigurationProviderTHM.fillConfigurationMapping() ). In hibernate.cfg.xml reicht nicht.
 
-@Entity
+@Entity 
+//@OneToOne or @ManyToOne on use.thm.persistence.model.TroopArmyVariant.immutabletextObject references an unknown entity: use.thm.persistence.model.Immutabletext
+//@MappedSuperclass //An entity cannot be annotated with both @Entity and @MappedSuperclass: use.thm.persistence.model.Immutabletext
 @Access(AccessType.PROPERTY)
 @org.hibernate.annotations.Immutable //Ziel: Performancesteigerung. Siehe Buch "Java Persistance with Hibernate", S. 107. Dafür dürfen die POJOs aber keine public Setter-Methoden haben.
 
@@ -73,9 +78,9 @@ public class Immutabletext<IEnumImmutabletext>  extends KeyImmutable implements 
 	}
 	
 	
-	//### Variante 2: Verwende auf dieser Ebene einen Generator, zum Erstellen einer ID
+//	//### Variante 2: Verwende auf dieser Ebene einen Generator, zum Erstellen einer ID
 	//ABER NICHT AUF DIESER EBENEN, DA SIE ERBT VON KEY.java
-	//ABER: BEIM ERBEN VON KEY wira automatisch eine Tabelle Key erstellt.... das will ich nicht
+	//ABER: BEIM ERBEN VON KEY wird automatisch eine Tabelle Key erstellt.... das will ich nicht
 	
 	 @Id	//hier notwendig für AccessType.PROPERTY			
 	 @TableGenerator(name="lidGeneratorImmutabletext001", table="COMMON_FUER_IDGENERATOR_IMMUTABLETEXT",pkColumnName="nutzende_Klasse_als_String", pkColumnValue="SequenceTester",valueColumnName="naechster_id_wert",  initialValue=1, allocationSize=1)//@TableGenerator Name muss einzigartig im ganzen Projekt sein.
@@ -89,12 +94,11 @@ public class Immutabletext<IEnumImmutabletext>  extends KeyImmutable implements 
 	 protected void setId(int iLid){
 		 super.setId(iLid);
 	 }
-	 
-	//### ABSTRACTE METHODEN
-	 
+
 	 //Merke: Bei Nutzung der "Hibernate"-Verebung käme dies aus der Key Klasse. ABER: Dann hätte ich auch eine Tabelle "KEY" und das will ich nicht.
 	 //           Also: Hier die Methoden seperat anbieten.
-	 @Column(name="thiskey_id",  nullable=false, unique=true, columnDefinition="LONG NOT NULL UNIQUE  DEFAULT 1")	
+	@NaturalId //20180203: Für @ManyToOne... Hier soll dann die ThiskeyId in der anderen Tabelle gespeichert werden und nicht die normale, generierte ID.
+	@Column(name="thiskey_id",  nullable=false, unique=true, columnDefinition="LONG NOT NULL UNIQUE  DEFAULT 1")		 	
 	public Long getThiskey() {
 		 return super.getThiskey();
 	}
@@ -102,6 +106,7 @@ public class Immutabletext<IEnumImmutabletext>  extends KeyImmutable implements 
 		super.setThiskey(thiskeyId);
 	}
 	
+	//### ABSTRACTE METHODEN
 	@Column(name="KEYTYPE")
 	@Access(AccessType.PROPERTY)
 	public String getKeyType(){

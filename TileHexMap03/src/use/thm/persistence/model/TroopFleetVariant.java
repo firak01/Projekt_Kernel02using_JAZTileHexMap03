@@ -21,12 +21,14 @@ import javax.persistence.Table;
 import javax.persistence.TableGenerator;
 import javax.persistence.Transient;
 
+import use.thm.persistence.interfaces.ITroopFleetVariantTHM;
 import use.thm.persistence.interfaces.enums.IEnumSetTextTHM;
 import use.thm.persistence.interfaces.enums.IEnumSetTroopFleetVariantTHM;
 import use.thm.persistence.model.Immutabletext.EnumImmutabletext;
 import basic.persistence.model.IFieldDescription;
 import basic.persistence.model.IOptimisticLocking;
 import basic.zBasic.ReflectCodeZZZ;
+import basic.zBasic.persistence.interfaces.enums.ICategoryProviderZZZ;
 import basic.zBasic.persistence.interfaces.enums.IThiskeyProviderZZZ;
 import basic.zBasic.util.datatype.string.StringZZZ;
 
@@ -48,7 +50,7 @@ import basic.zBasic.util.datatype.string.StringZZZ;
 //@Inheritance(strategy =  InheritanceType.JOINED )//ZIEL: Nur bestimmte Entiteis in einer eigenen Klasse //InheritanceType.TABEL_PER_CLASS) //Ziel: Jedes Entity der Vererbungshierarchie in einer eigenen Tabelle // InheritanceType.SINGLE_TABLE) //Hiermit werden alle Datensätze der Vererbungshierarchieklassen in einer Tabelle zusammengafasst und nur anhan ddes Discriminator Wertes unterschieden 
 //                                                                                                                   //Bei InheritanceType.TABLE_PER_CLASS gilt, es darf keinen Discriminator geben ... @DiscriminatorColumn(name="Disc", discriminatorType = DiscriminatorType.STRING) //Bei InheritanceType.SINGLE_TABLE) gilt: Voraussetzung für DiscriminatorValue in der AreaCell-Klasse. //Wird es wg. der Vererbung von HEXCell zu AreaType immer geben. Ohne Annotation ist das DTYPE und der wert ist gleich dem Klassennamen.
 @Table(name="FLEETVARIANT")
-public class TroopFleetVariant  extends KeyImmutable implements Serializable, IOptimisticLocking{
+public class TroopFleetVariant  extends KeyImmutable implements ITroopFleetVariantTHM, ICategoryProviderZZZ, Serializable, IOptimisticLocking{
 	private static final long serialVersionUID = 1113434456411176970L;
 	
 	//Variante 2: Realisierung eines Schlüssel über eine eindeutige ID, die per Generator erzeugt wird
@@ -122,7 +124,8 @@ public class TroopFleetVariant  extends KeyImmutable implements Serializable, IO
 		 }
 	 
 	 //### getter / setter
-		 //TODO: Dies in eine Oberklasse für alle "Varianten" verschieben. 
+		 //TODO: Dies in eine Oberklasse für alle "Varianten" verschieben.
+		 //### Aus ICategoryProviderZZZ
 		 @Column(name="TILE_UNIQUETEXT", nullable=false)
 		 public String getUniquetext(){
 			 return this.sUniquetext;
@@ -138,6 +141,8 @@ public class TroopFleetVariant  extends KeyImmutable implements Serializable, IO
 		 protected void setCategorytext(String sCategorytext){
 			 this.sCategorytext= sCategorytext;
 		 }
+		 
+		 //### Aus ITroopFleetVariant
 		 
 	//TODO GOON: Diese Properties dann in einen Oberklasse für alle Spielsteine bringen TileVariant
 	//1:1 Beziehung aufbauen
@@ -235,7 +240,7 @@ public class TroopFleetVariant  extends KeyImmutable implements Serializable, IO
 		//### Eingebettete Enum-Klasse mit den Defaultwerten, diese Werte werden auch per Konstruktor übergeben.
 		//### int Key, String shorttext, String longtext, String description
 		//#######################################################
-		public enum EnumTroopFleetVariant implements IEnumSetTroopFleetVariantTHM,  IThiskeyProviderZZZ<Long>{//Folgendes geht nicht, da alle Enums schon von einer Java BasisKlasse erben... extends EnumSetMappedBaseZZZ{
+		public enum EnumTroopFleetVariant implements IEnumSetTroopFleetVariantTHM,  ICategoryProviderZZZ, IThiskeyProviderZZZ<Long>{//Folgendes geht nicht, da alle Enums schon von einer Java BasisKlasse erben... extends EnumSetMappedBaseZZZ{
 			
 		//lKey / sUniquetext / sCategorytext / iMoveRange / sImageUrl / iThisKeyDefaulttext / iThiskeyImmutabletext;
 	   	 @IFieldDescription(description = "DFLEETVARIANT01") 
@@ -290,11 +295,7 @@ public class TroopFleetVariant  extends KeyImmutable implements Serializable, IO
 		public String getUniquetext() {			
 			return this.sUniquetext;
 		}
-
-		public String getCategorytext() {			
-			return this.sCategorytext;
-		}
-		
+			
 	   public int getMapMoveRange() {
 			return this.iMoveRange;
 		}
@@ -309,6 +310,11 @@ public class TroopFleetVariant  extends KeyImmutable implements Serializable, IO
 
 		public int getImmutabletextThisid() {
 			return this.iThiskeyImmutabletext;
+		}
+		
+		//#### Methode aus ICategoryProviderZZZ
+		public String getCategorytext() {			
+			return this.sCategorytext;
 		}
 	      
 	   //#### Methode aus IKeyProviderZZZ
@@ -327,7 +333,7 @@ public class TroopFleetVariant  extends KeyImmutable implements Serializable, IO
 	           if (s.equals(state.getUniquetext()))
 	               return state;
 	       }
-	       throw new IllegalArgumentException("Not a correct shorttext: " + s);
+	       throw new IllegalArgumentException("Not a correct uniquetext: " + s);
 	   }
 
 	   public EnumSet<?>getEnumSetUsed(){

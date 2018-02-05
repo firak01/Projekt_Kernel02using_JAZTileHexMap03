@@ -20,6 +20,7 @@ import javax.persistence.Table;
 import javax.persistence.TableGenerator;
 import javax.persistence.Transient;
 
+import use.thm.persistence.interfaces.ITroopArmyVariantTHM;
 import use.thm.persistence.interfaces.enums.IEnumSetTextTHM;
 import use.thm.persistence.interfaces.enums.IEnumSetTroopArmyVariantTHM;
 import use.thm.persistence.interfaces.enums.IEnumSetTroopFleetVariantTHM;
@@ -27,6 +28,7 @@ import use.thm.persistence.model.Immutabletext.EnumImmutabletext;
 import basic.persistence.model.IFieldDescription;
 import basic.persistence.model.IOptimisticLocking;
 import basic.zBasic.ReflectCodeZZZ;
+import basic.zBasic.persistence.interfaces.enums.ICategoryProviderZZZ;
 import basic.zBasic.persistence.interfaces.enums.IThiskeyProviderZZZ;
 import basic.zBasic.util.datatype.string.StringZZZ;
 
@@ -48,7 +50,7 @@ import basic.zBasic.util.datatype.string.StringZZZ;
 //@Inheritance(strategy =  InheritanceType.JOINED )//ZIEL: Nur bestimmte Entiteis in einer eigenen Klasse //InheritanceType.TABEL_PER_CLASS) //Ziel: Jedes Entity der Vererbungshierarchie in einer eigenen Tabelle // InheritanceType.SINGLE_TABLE) //Hiermit werden alle Datensätze der Vererbungshierarchieklassen in einer Tabelle zusammengafasst und nur anhan ddes Discriminator Wertes unterschieden 
 //                                                                                                                   //Bei InheritanceType.TABLE_PER_CLASS gilt, es darf keinen Discriminator geben ... @DiscriminatorColumn(name="Disc", discriminatorType = DiscriminatorType.STRING) //Bei InheritanceType.SINGLE_TABLE) gilt: Voraussetzung für DiscriminatorValue in der AreaCell-Klasse. //Wird es wg. der Vererbung von HEXCell zu AreaType immer geben. Ohne Annotation ist das DTYPE und der wert ist gleich dem Klassennamen.
 @Table(name="ARMYVARIANT")
-public class TroopArmyVariant  extends KeyImmutable implements Serializable, IOptimisticLocking{
+public class TroopArmyVariant  extends KeyImmutable implements ITroopArmyVariantTHM, ICategoryProviderZZZ, Serializable, IOptimisticLocking{
 	private static final long serialVersionUID = 1113434456411176970L;
 	
 	//Variante 2: Realisierung eines Schlüssel über eine eindeutige ID, die per Generator erzeugt wird
@@ -93,7 +95,7 @@ public class TroopArmyVariant  extends KeyImmutable implements Serializable, IOp
 	 }
 	 	 
 	 //TODO 200180119: Konstruktor, an den alles übergeben wird. Wg. "Immutable".
-	 public TroopArmyVariant(int iKey, int intMapMoveRange, String sImageUrl, TileDefaulttext objDefaulttext, TileImmutabletext objImmutabletext){
+	 public TroopArmyVariant(int iKey, String sUniquetext, String sCategorytext, int intMapMoveRange, String sImageUrl, TileDefaulttext objDefaulttext, TileImmutabletext objImmutabletext){
 		 this.setThiskey(Long.valueOf(iKey));
 		 this.setUniquetext(sUniquetext);
 		 this.setCategorytext(sCategorytext);
@@ -109,8 +111,8 @@ public class TroopArmyVariant  extends KeyImmutable implements Serializable, IOp
 		
 	 
 		 @Id				
-		 @TableGenerator(name="lidGeneratorTroopVariant001", table="COMMON_FUER_IDGENERATOR_VARIANT",pkColumnName="nutzende_Klasse_als_String", pkColumnValue="SequenceTester",valueColumnName="naechster_id_wert",  initialValue=1, allocationSize=1)//@TableGenerator Name muss einzigartig im ganzen Projekt sein.
-		 @GeneratedValue(strategy = GenerationType.TABLE, generator="lidGeneratorTroopVariant001")		 //Das Klappt mit Hibernate Session, aber nicht mit dem JPA EntityManager...
+		 @TableGenerator(name="lidGeneratorTroopArmyVariant001", table="COMMON_FUER_IDGENERATOR_VARIANT",pkColumnName="nutzende_Klasse_als_String", pkColumnValue="SequenceTester",valueColumnName="naechster_id_wert",  initialValue=1, allocationSize=1)//@TableGenerator Name muss einzigartig im ganzen Projekt sein.
+		 @GeneratedValue(strategy = GenerationType.TABLE, generator="lidGeneratorTroopArmyVariant001")		 //Das Klappt mit Hibernate Session, aber nicht mit dem JPA EntityManager...
 		 //Bei dieser Column Definition ist die Spalte nicht für @OneToMany mit @JoinTable zu gebrauchen @Column(name="TILE_ID_INCREMENTED", nullable=false, unique=true, columnDefinition="INTEGER NOT NULL UNIQUE  DEFAULT 1")
 		 //Entferne also das unique...
 		 @Column(name="TILE_ID_INCREMENTED", nullable=false)
@@ -122,7 +124,8 @@ public class TroopArmyVariant  extends KeyImmutable implements Serializable, IOp
 		 }
 	 
 	 //### getter / setter
-		 //TODO: Dies in eine Oberklasse für alle "Varianten" verschieben. 
+		 //TODO: Dies in eine Oberklasse für alle "Varianten" verschieben.
+		 //### Aus ICategoryProviderZZZ
 		 @Column(name="TILE_UNIQUETEXT", nullable=false)
 		 public String getUniquetext(){
 			 return this.sUniquetext;
@@ -139,6 +142,7 @@ public class TroopArmyVariant  extends KeyImmutable implements Serializable, IOp
 			 this.sCategorytext= sCategorytext;
 		 }
 		 
+		 //### Aus ITroopArmyVariant
 	//TODO GOON: Diese Properties dann in einen Oberklasse für alle Spielsteine bringen TileVariant
 	//1:1 Beziehung aufbauen
 		//Siehe Buch "Java Persistence API 2", Seite 90ff.	
@@ -157,6 +161,7 @@ public class TroopArmyVariant  extends KeyImmutable implements Serializable, IOp
 	 
 	 
 	 //### getter / setter
+	 	//### Aus ITroopArmyVariant
 	//1:1 Beziehung aufbauen
 		//Siehe Buch "Java Persistence API 2", Seite 90ff.	
 		//Variante 1) mit einer gemeinsamen Spalte
@@ -218,16 +223,17 @@ public class TroopArmyVariant  extends KeyImmutable implements Serializable, IOp
 		//### Eingebettete Enum-Klasse mit den Defaultwerten, diese Werte werden auch per Konstruktor übergeben.
 		//### int Key, String shorttext, String longtext, String description
 		//#######################################################
-		public enum EnumTroopArmyVariant implements IEnumSetTroopArmyVariantTHM{//Folgendes geht nicht, da alle Enums schon von einer Java BasisKlasse erben... extends EnumSetMappedBaseZZZ{
+		public enum EnumTroopArmyVariant implements IEnumSetTroopArmyVariantTHM,  ICategoryProviderZZZ, IThiskeyProviderZZZ<Long>{//Folgendes geht nicht, da alle Enums schon von einer Java BasisKlasse erben... extends EnumSetMappedBaseZZZ{
 			
+			//lKey / sUniquetext / sCategorytext / iMoveRange / sImageUrl / iThisKeyDefaulttext / iThiskeyImmutabletext;
 	   	 @IFieldDescription(description = "DARMYVARIANT01") 
-	   	T01(1,"DARMY01",5,"url01",1,1),
+	   	T01(1,"DARMY01","Infantery",2,"url01",110,10),
 	   	
 	   	 @IFieldDescription(description = "DARMYVARIANT02") 
-	   	T02(2,"DARMY02",3, "url02",2,2);
+	   	T02(2,"DTANKARMY02","Tank",3,"url02",120,11);
 	   	   	
 	   private Long lKey;
-	   private String sShorttext;
+	   private String sUniquetext, sCategorytext;
 	   private int iThiskeyDefaulttext, iThiskeyImmutabletext;
 	   
 	   private String sImageUrl;
@@ -236,9 +242,10 @@ public class TroopArmyVariant  extends KeyImmutable implements Serializable, IOp
 	   
 
 	   //Merke: Enums haben keinen public Konstruktor, können also nicht intiantiiert werden, z.B. durch Java-Reflektion.
-	   EnumTroopArmyVariant(int iKey, String sShorttext, int iMoveRage, String ImageUrl, int iThisKeyDefaulttext, int iThiskeyImmutabletext){
+	   EnumTroopArmyVariant(int iKey, String sUniquetext, String sCategorytext, int iMoveRage, String ImageUrl, int iThisKeyDefaulttext, int iThiskeyImmutabletext){
 	       this.lKey = Long.valueOf(iKey);
-	       this.sShorttext = sShorttext;
+	       this.sUniquetext = sUniquetext;
+	       this.sCategorytext = sCategorytext;
 	       this.iMoveRange = iMoveRange;
 	       this.sImageUrl = sImageUrl;
 	       this.iThiskeyDefaulttext = iThisKeyDefaulttext;
@@ -259,7 +266,7 @@ public class TroopArmyVariant  extends KeyImmutable implements Serializable, IOp
 	   
 	   @Override
 	   public String toString() {
-	       return this.sShorttext;
+	       return this.sUniquetext;
 	   }
 
 	   public int getIndex() {
@@ -268,15 +275,15 @@ public class TroopArmyVariant  extends KeyImmutable implements Serializable, IOp
 
 	   //##################################################
 	   //#### Folgende Methoden holen die definierten Werte.
-		public String getShorttext() {			
-			return this.sShorttext;
+		public String getUniquetext() {			
+			return this.sUniquetext;
 		}
-		
+				
 	   public int getMapMoveRange() {
 			return this.iMoveRange;
 		}
 
-		public String getImageUrl() {
+		public String getImageUrlString() {
 			return this.sImageUrl;
 		}
 
@@ -287,7 +294,12 @@ public class TroopArmyVariant  extends KeyImmutable implements Serializable, IOp
 		public int getImmutabletextThisid() {
 			return this.iThiskeyImmutabletext;
 		}
-	      
+		
+		//#### Methode aus ICategoryProviderZZZ
+		public String getCategorytext() {			
+			return this.sCategorytext;
+		}  
+		
 	   //#### Methode aus IKeyProviderZZZ
 		public Long getThiskey() {
 			return this.lKey;
@@ -299,12 +311,12 @@ public class TroopArmyVariant  extends KeyImmutable implements Serializable, IOp
 	   }
 				
 	   // the valueOfMethod <--- Translating from DB
-	   public static EnumTroopArmyVariant fromShorttext(String s) {
+	   public static EnumTroopArmyVariant fromUniquetext(String s) {
 	       for (EnumTroopArmyVariant state : values()) {
-	           if (s.equals(state.getShorttext()))
+	           if (s.equals(state.getUniquetext()))
 	               return state;
 	       }
-	       throw new IllegalArgumentException("Not a correct shorttext: " + s);
+	       throw new IllegalArgumentException("Not a correct uniquetext: " + s);
 	   }
 
 	   public EnumSet<?>getEnumSetUsed(){
@@ -343,7 +355,6 @@ public class TroopArmyVariant  extends KeyImmutable implements Serializable, IOp
 	   	    mask<<=1;
 	   	  }
 	   	  return set;
-	   	}
-
+	   	}	
 	   }//End inner class
 }

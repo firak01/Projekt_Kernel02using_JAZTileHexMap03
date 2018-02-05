@@ -21,6 +21,7 @@ import use.thm.persistence.model.TileDefaulttext;
 import use.thm.persistence.model.TileImmutabletext;
 import use.thm.persistence.model.Troop;
 import use.thm.persistence.model.TroopArmy;
+import use.thm.persistence.model.TroopArmyVariant;
 import use.thm.persistence.model.TroopFleetVariant;
 import basic.persistence.util.HibernateUtil;
 import basic.zBasic.ExceptionZZZ;
@@ -33,28 +34,28 @@ import basic.zBasic.util.datatype.enums.EnumZZZ;
 import basic.zBasic.util.datatype.enums.EnumSetInnerUtilZZZ.ThiskeyEnumMappingExceptionZZZ;
 import basic.zBasic.util.dataype.calling.ReferenceZZZ;
 import basic.zKernel.KernelZZZ;
-public class TroopFleetVariantDao<T> extends GeneralDaoZZZ<T> {
+public class TroopArmyVariantDao<T> extends GeneralDaoZZZ<T> {
 	private static final long serialVersionUID = 1L;
 
 	/* Constructor
 	 * WICHTIG: Der hier angegebenen Name der Entity-Klasse wird von den GeneralDAO - Klassen verwendet.
 	 *                Daher unbedingt beim Einsatz von Vererbung korrekt anpassen.
 	 *                Z.B. Will man mit dem Dao eigentlicht TileDefaulttexte behandel und gibt hier Defaulttext an, werden sowohl die TileDefaulttexte als auch die Defaulttexte mit .findLazyAll() gefunden. */
-	public TroopFleetVariantDao() throws ExceptionZZZ{
+	public TroopArmyVariantDao() throws ExceptionZZZ{
 		super();
-		this.installLoger(TroopFleetVariant.class);//Durch das Installieren des Loggers mit der korrekten Klasse wird GeneralDao.getT() erst korrekt ermöglicht.
+		this.installLoger(TroopArmyVariant.class);//Durch das Installieren des Loggers mit der korrekten Klasse wird GeneralDao.getT() erst korrekt ermöglicht.
 	}
-	public TroopFleetVariantDao(IHibernateContextProviderZZZ objContextHibernate) throws ExceptionZZZ{
+	public TroopArmyVariantDao(IHibernateContextProviderZZZ objContextHibernate) throws ExceptionZZZ{
 		super(objContextHibernate);		
-		this.installLoger(TroopFleetVariant.class);//Durch das Installieren des Loggers mit der korrekten Klasse wird GeneralDao.getT() erst korrekt ermöglicht.
+		this.installLoger(TroopArmyVariant.class);//Durch das Installieren des Loggers mit der korrekten Klasse wird GeneralDao.getT() erst korrekt ermöglicht.
 	}
-	public TroopFleetVariantDao(HibernateContextProviderSingletonTHM objContextHibernate, String sFlagControl) throws ExceptionZZZ{
+	public TroopArmyVariantDao(HibernateContextProviderSingletonTHM objContextHibernate, String sFlagControl) throws ExceptionZZZ{
 		super(objContextHibernate, sFlagControl);
-		this.installLoger(TroopFleetVariant.class);//Durch das Installieren des Loggers mit der korrekten Klasse wird GeneralDao.getT() erst korrekt ermöglicht.
+		this.installLoger(TroopArmyVariant.class);//Durch das Installieren des Loggers mit der korrekten Klasse wird GeneralDao.getT() erst korrekt ermöglicht.
 	}
-	public TroopFleetVariantDao(HibernateContextProviderSingletonTHM objContextHibernate, String[] saFlagControl) throws ExceptionZZZ{
+	public TroopArmyVariantDao(HibernateContextProviderSingletonTHM objContextHibernate, String[] saFlagControl) throws ExceptionZZZ{
 		super(objContextHibernate, saFlagControl);
-		this.installLoger(TroopFleetVariant.class);//Durch das Installieren des Loggers mit der korrekten Klasse wird GeneralDao.getT() erst korrekt ermöglicht.
+		this.installLoger(TroopArmyVariant.class);//Durch das Installieren des Loggers mit der korrekten Klasse wird GeneralDao.getT() erst korrekt ermöglicht.
 	}
 	
 	public int createEntriesAll(){
@@ -67,7 +68,7 @@ public class TroopFleetVariantDao<T> extends GeneralDaoZZZ<T> {
 				HibernateContextProviderSingletonTHM objContextHibernate = HibernateContextProviderSingletonTHM.getInstance(objKernel);					
 				
 				//###################
-				//1. Speichere die TroopFleetVarianten
+				//1. Speichere die TroopArmyVarianten
 				//####################					
 				//Session session = this.getSession();	//Vesuch eine neue Session zu bekommen. Merke: Die Session wird hier nicht gespeichert! Wg. 1 Transaktion ==> 1 Session
 				Session session = objContextHibernate.getSession();
@@ -75,10 +76,10 @@ public class TroopFleetVariantDao<T> extends GeneralDaoZZZ<T> {
 								
 				//Alle Enumerations hier einlesen.
 				//Anders als bei der _fillValue(...) Lösung können hier nur die Variablen gefüllt werden. Die Zuweisung muss im Konstruktor des immutable Entity-Objekts passieren, das dies keine Setter-Methodne hat.				
-				Collection<String> colsEnumAlias = EnumZZZ.getNames(TroopFleetVariant.getThiskeyEnumClassStatic());
+				Collection<String> colsEnumAlias = EnumZZZ.getNames(TroopArmyVariant.getThiskeyEnumClassStatic());
 				for(String sEnumAlias : colsEnumAlias){
 					System.out.println("Starte Transaction:.... Gefundener Enum-Name: " + sEnumAlias);
-					TroopFleetVariant objValueTemp = new TroopFleetVariant();
+					TroopArmyVariant objValueTemp = new TroopArmyVariant();
 
 					//DAS GEHT NICHT, DA JAVA IMMER EIN PASS_BY_VALUE MACHT.
 					//Long lngThisValue = new Long(0);
@@ -99,7 +100,7 @@ public class TroopFleetVariantDao<T> extends GeneralDaoZZZ<T> {
 					//TODO .... nicht vergessen nun basierend auf den Thiskey-Einträgen für den Defaulttext und Immutabletext das jeweilige Objekt zu suchen.
 					//          Falls das Objekt nicht gefunden wird, muss es per TileDefaulttextDAO oder TileImmutabletextDAO erzeugt werden.
 
-					//TODO .... Mit den TEXTOBJEKTEN kann man dann über den Konstrukotr das Objekt füllen. Merke: Auch die TroopFleetVarianten sind IMMUTABLE.
+					//TODO .... Mit den TEXTOBJEKTEN kann man dann über den Konstruktor das Objekt füllen. Merke: Auch die TroopFleetVarianten sind IMMUTABLE.
 					
 					
 					session.getTransaction().begin();//Ein zu persistierendes Objekt - eine Transaction, auch wenn mehrere in einer Transaction abzuhandeln wären, aber besser um Fehler abfangen zu können.

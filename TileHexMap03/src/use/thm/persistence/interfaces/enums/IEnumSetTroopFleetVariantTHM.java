@@ -8,16 +8,6 @@ import basic.zBasic.persistence.interfaces.enums.IThiskeyProviderZZZ;
 import basic.zBasic.persistence.interfaces.enums.IThiskeyUserZZZ;
 import basic.zBasic.persistence.interfaces.enums.IThiskeyValueZZZ;
 
-public interface IEnumSetTroopFleetVariantTHM extends IThiskeyUserZZZ,IThiskeyProviderZZZ<Long>,ICategoryProviderZZZ{
-	
-	//Das bring ENUM von sich auch mit
-	public String getName();  //Das ist name() von Enum
-	public int getIndex();      //Das ist ordinal() von Enum
-	public String toString();
+public interface IEnumSetTroopFleetVariantTHM extends IEnumSetTroopVariantTHM {
 		
-	//Dies sind die "technisch/fachlichen" Angaben zur "Variante".
-	public int getMapMoveRange();
-	public String getImageUrlString();
-	public int getDefaulttextThisid();
-	public int getImmutabletextThisid(); 
 }

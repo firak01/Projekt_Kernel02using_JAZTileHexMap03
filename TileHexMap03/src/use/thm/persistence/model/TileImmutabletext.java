@@ -113,6 +113,7 @@ public class TileImmutabletext<IEnumTileDefaulttext> extends Immutabletext  impl
 		
    	 @IFieldDescription(description = "ARMY IMMUTABLETEXTVALUES") 
    	ARMY(10,"Army","Land army","A tile which cannot enter ocean fields. (immutable text)"),
+   	TANKARMY(10,"TankArmy","Land  tank army","A heavy armored tile which cannot enter ocean fields. (immutable text)"),
    	
    	 @IFieldDescription(description = "FLEET IMMUTABLETEXTVALUES") 
    	FLEET(20,"Fleet","Ocean fleet", "A tile which cannot enter landarea fields. (immutable text)");

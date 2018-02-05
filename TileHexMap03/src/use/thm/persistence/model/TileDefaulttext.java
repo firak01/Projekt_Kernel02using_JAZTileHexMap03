@@ -75,8 +75,9 @@ public class TileDefaulttext<IEnumTileDefaulttext> extends Defaulttext  implemen
 	//#######################################################
 	public enum EnumTileDefaulttext implements IEnumSetTextTHM,  IThiskeyProviderZZZ<Long>{//Folgendes geht nicht, da alle Enums schon von einer Java BasisKlasse erben... extends EnumSetMappedBaseZZZ{
 		
-   	 @IFieldDescription(description = "ARMY TEXTVALUES") 
-   	ARMY(1,"Army","Land army","A tile which cannot enter ocean fields."),
+   	 @IFieldDescription(description = "ARMY TYPE TEXTVALUES") 
+   	ARMYINFANTRY01(110,"InfanteryArmy","Land infantery army","A slow unit."),
+   	ARMYTANK01(120,"TankArmy","Land tank army","A motorized unit, very fast."),
    	
    	 @IFieldDescription(description = "FLEET TYPE TEXTVALUES") 
    	FLEETDESTROYER01(210,"Destroyer01","Fleet Destroyer 01", "A very fast Fleet Destroyer"),

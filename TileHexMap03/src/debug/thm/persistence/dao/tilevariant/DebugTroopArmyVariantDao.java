@@ -14,6 +14,7 @@ import use.thm.persistence.dao.TileDao;
 import use.thm.persistence.dao.TileDefaulttextDao;
 import use.thm.persistence.dao.TileImmutabletextDao;
 import use.thm.persistence.dao.TroopArmyDao;
+import use.thm.persistence.dao.TroopArmyVariantDao;
 import use.thm.persistence.dao.TroopFleetVariantDao;
 import use.thm.persistence.event.VetoFlag4ListenerZZZ;
 import use.thm.persistence.hibernate.HibernateContextProviderSingletonTHM;
@@ -31,6 +32,8 @@ import use.thm.persistence.model.TileImmutabletext;
 import use.thm.persistence.model.TroopArmy;
 import use.thm.persistence.model.TextDefaulttext.EnumTextDefaulttext;
 import use.thm.persistence.model.TileImmutabletext.EnumTileImmutabletext;
+import use.thm.persistence.model.TroopArmyVariant;
+import use.thm.persistence.model.TroopArmyVariant.EnumTroopArmyVariant;
 import use.thm.persistence.model.TroopFleetVariant;
 import use.thm.persistence.model.TroopFleetVariant.EnumTroopFleetVariant;
 import basic.persistence.util.HibernateUtil;
@@ -41,7 +44,7 @@ import basic.zBasic.util.datatype.enums.EnumSetInnerUtilZZZ;
 import basic.zBasic.util.datatype.enums.EnumSetInnerUtilZZZ.ThiskeyEnumMappingExceptionZZZ;
 import basic.zKernel.KernelZZZ;
 
-public class DebugTroopFleetVariantDao {
+public class DebugTroopArmyVariantDao {
 
 	public static void main(String[] args) {
 		
@@ -60,16 +63,18 @@ public class DebugTroopFleetVariantDao {
 //			
 			//##################################
 			
-			DebugTroopFleetVariantDao objDebug = new DebugTroopFleetVariantDao();
+			DebugTroopArmyVariantDao objDebug = new DebugTroopArmyVariantDao();
 		
 			//### VORHER SICHERHEITSHALBER ALLE LÖSCHEN....
 			objDebug.debugDeleteAll();
-									
+			
+			
+			
 			objDebug.debugCreateEntry(1);//Dabei werden ggfs. benötigte Defaulttexte erzeugt.
 			objDebug.debugCreateEntry(0);//Dabei werden ggfs. benötigte Defaulttexte erzeugt.
 			
 			//Suche mal nach einem der hoffentlich erzeugten Einträge, über den Thiskey.
-			Long lngThiskey = new Long(210);
+			Long lngThiskey = new Long(110);
 			objDebug.debugSearchKey(lngThiskey);	
 		
 	//		//TODO GOON 20180124
@@ -84,7 +89,7 @@ public class DebugTroopFleetVariantDao {
 		} 
 		
 	}
-	public DebugTroopFleetVariantDao(){		
+	public DebugTroopArmyVariantDao(){		
 	}
 	
 	public boolean debugCreateEntriesAll(){
@@ -99,8 +104,8 @@ public class DebugTroopFleetVariantDao {
 				//###################
 				//1. Hole das jeweilige Dao - Objekt
 				//####################	
-				 TroopFleetVariantDao daoTroopFleetVariant = new TroopFleetVariantDao(objContextHibernate);
-				daoTroopFleetVariant.createEntriesAll();
+				TroopArmyVariantDao daoTroopArmyVariant = new TroopArmyVariantDao(objContextHibernate);
+				daoTroopArmyVariant.createEntriesAll();
 				
 			} catch (ExceptionZZZ e) {
 				// TODO Auto-generated catch block
@@ -122,11 +127,11 @@ public class DebugTroopFleetVariantDao {
 				HibernateContextProviderSingletonTHM objContextHibernate = HibernateContextProviderSingletonTHM.getInstance(objKernel);					
 						
 				//###################
-				//1. Speichere die FLEETVARIANT		
+				//1. Speichere die ARMYVARIANT		
 				//
 				//1.1. Vorbereitung: Hole die anderen Objekte..
 				//####################
-				EnumTroopFleetVariant[] objaType = TroopFleetVariant.EnumTroopFleetVariant.values();
+				EnumTroopArmyVariant[] objaType = TroopArmyVariant.EnumTroopArmyVariant.values();
 
 				//String s = objaType[0].name(); //Prasenzstudium .... also entsprechend was als Eigenschaft vorgeschlagen wird von TileDefaulttextType.Praesenzstudium
 				//String s = objaType[0].toString(); //dito
@@ -202,7 +207,7 @@ public class DebugTroopFleetVariantDao {
 				System.out.println("+++++++++++++++++++++++++++++++++++++++++++++++++++++");
 			    
 				//###################
-				//1. Speichere die FLEETVARIANT		
+				//1. Speichere die TROOPVARIANT		
 				//
 				//1.2. Nun das eigentliche Speichern
 			    //#############
@@ -213,7 +218,7 @@ public class DebugTroopFleetVariantDao {
 				
 			    
 			    // public TroopFleetVariant(int iKey, int intMapMoveRange, String sImageUrl, TileDefaulttext objDefaulttext, TileImmutabletext objImmutabletext){
-				TroopFleetVariant objValue = new TroopFleetVariant(lngThiskey.intValue(),sUniquetext, sCategorytext, iMoveRange, sImageUrl, objDefaulttext, objImmutableText);
+				TroopArmyVariant objValue = new TroopArmyVariant(lngThiskey.intValue(),sUniquetext, sCategorytext, iMoveRange, sImageUrl, objDefaulttext, objImmutableText);
 				
 				//Merke: EINE TRANSACTION = EINE SESSION ==>  neue session von der SessionFactory holen
 				session.save(objValue); //Hibernate Interceptor wird aufgerufen																				
@@ -255,7 +260,7 @@ public class DebugTroopFleetVariantDao {
 				//
 				//1.1. Vorbereitung: Hole die anderen Objekte..
 				//####################
-				EnumTroopFleetVariant[] objaType = TroopFleetVariant.EnumTroopFleetVariant.values();
+				EnumTroopArmyVariant[] objaType = TroopArmyVariant.EnumTroopArmyVariant.values();
 
 				//String s = objaType[0].name(); //Prasenzstudium .... also entsprechend was als Eigenschaft vorgeschlagen wird von TileDefaulttextType.Praesenzstudium
 				//String s = objaType[0].toString(); //dito
@@ -286,14 +291,13 @@ public class DebugTroopFleetVariantDao {
 				HibernateContextProviderSingletonTHM objContextHibernate = HibernateContextProviderSingletonTHM.getInstance(objKernel);					
 						
 				//###################
-				//1. Speichere die FLEETVARIANT		
+				//1. Speichere die ARMYVARIANT		
 				//
 				//1.1. Vorbereitung: Hole die anderen Objekte..
 				//####################
-				EnumTroopFleetVariant[] objaType = TroopFleetVariant.EnumTroopFleetVariant.values();
-				EnumTroopFleetVariant objType = EnumSetInnerUtilZZZ.getThiskeyEnum(TroopFleetVariant.getThiskeyEnumClassStatic(), lThiskey);
-				Long lngThiskey = new Long(lThiskey);
-				
+				EnumTroopArmyVariant[] objaType = TroopArmyVariant.EnumTroopArmyVariant.values();
+				EnumTroopArmyVariant objType = EnumSetInnerUtilZZZ.getThiskeyEnum(TroopArmyVariant.getThiskeyEnumClassStatic(), lThiskey);
+				Long lngThiskey = new Long(lThiskey);				
 				
 				//String s = objaType[0].name(); //Prasenzstudium .... also entsprechend was als Eigenschaft vorgeschlagen wird von TileDefaulttextType.Praesenzstudium
 				//String s = objaType[0].toString(); //dito
@@ -368,7 +372,7 @@ public class DebugTroopFleetVariantDao {
 					
 			    
 				//###################
-				//1. Speichere die FLEETVARIANT		
+				//1. Speichere die ARMYVARIANT		
 				//
 				//1.2. Nun das eigentliche Speichern
 			    //#############
@@ -379,7 +383,7 @@ public class DebugTroopFleetVariantDao {
 				
 			    
 			    // public TroopFleetVariant(int iKey, int intMapMoveRange, String sImageUrl, TileDefaulttext objDefaulttext, TileImmutabletext objImmutabletext){
-				TroopFleetVariant objValue = new TroopFleetVariant(lngThiskey.intValue(),sUniquetext, sCategorytext, iMoveRange, sImageUrl, objDefaulttext, objImmutableText);
+				TroopArmyVariant objValue = new TroopArmyVariant(lngThiskey.intValue(),sUniquetext, sCategorytext, iMoveRange, sImageUrl, objDefaulttext, objImmutableText);
 				
 				//Merke: EINE TRANSACTION = EINE SESSION ==>  neue session von der SessionFactory holen
 				session.save(objValue); //Hibernate Interceptor wird aufgerufen																				

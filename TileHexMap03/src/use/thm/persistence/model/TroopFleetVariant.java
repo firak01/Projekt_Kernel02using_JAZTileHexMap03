@@ -94,7 +94,7 @@ public class TroopFleetVariant  extends KeyImmutable implements ITroopFleetVaria
 	 public TroopFleetVariant(){		
 	 }
 	 	 
-	 //TODO 200180119: Konstruktor, an den alles übergeben wird. Wg. "Immutable".
+	 //Konstruktor, an den alles übergeben wird. Wg. "Immutable".
 	 public TroopFleetVariant(int iKey, String sUniquetext, String sCategorytext, int intMapMoveRange, String sImageUrl, TileDefaulttext objDefaulttext, TileImmutabletext objImmutabletext){
 		 this.setThiskey(Long.valueOf(iKey));
 		 this.setUniquetext(sUniquetext);

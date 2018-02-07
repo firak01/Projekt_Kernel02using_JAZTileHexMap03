@@ -12,10 +12,12 @@ import org.hibernate.Session;
 import use.thm.persistence.event.VetoFlag4ListenerZZZ;
 import use.thm.persistence.hibernate.HibernateContextProviderSingletonTHM;
 import use.thm.persistence.interfaces.enums.IEnumSetTextTHM;
+import use.thm.persistence.interfaces.enums.IEnumSetTroopVariantTHM;
 import use.thm.persistence.model.AreaCell;
 import use.thm.persistence.model.Immutabletext;
 import use.thm.persistence.model.Key;
 import use.thm.persistence.model.Defaulttext;
+import use.thm.persistence.model.KeyImmutable;
 import use.thm.persistence.model.TextDefaulttext;
 import use.thm.persistence.model.TileDefaulttext;
 import use.thm.persistence.model.TileImmutabletext;
@@ -23,6 +25,8 @@ import use.thm.persistence.model.Troop;
 import use.thm.persistence.model.TroopArmy;
 import use.thm.persistence.model.TroopArmyVariant;
 import use.thm.persistence.model.TroopFleetVariant;
+import use.thm.util.datatype.enums.EnumSetTroopArmyVariantUtilTHM;
+import use.thm.util.datatype.enums.EnumSetTroopFleetVariantUtilTHM;
 import basic.persistence.util.HibernateUtil;
 import basic.zBasic.ExceptionZZZ;
 import basic.zBasic.ReflectCodeZZZ;
@@ -68,62 +72,21 @@ public class TroopArmyVariantDao<T> extends GeneralDaoZZZ<T> {
 				HibernateContextProviderSingletonTHM objContextHibernate = HibernateContextProviderSingletonTHM.getInstance(objKernel);					
 				
 				//###################
-				//1. Speichere die TroopArmyVarianten
+				//1. Speichere die TroopFleetVarianten
 				//####################					
 				//Session session = this.getSession();	//Vesuch eine neue Session zu bekommen. Merke: Die Session wird hier nicht gespeichert! Wg. 1 Transaktion ==> 1 Session
 				Session session = objContextHibernate.getSession();
 				if(session == null) break main;			
-								
+												
 				//Alle Enumerations hier einlesen.
 				//Anders als bei der _fillValue(...) Lösung können hier nur die Variablen gefüllt werden. Die Zuweisung muss im Konstruktor des immutable Entity-Objekts passieren, das dies keine Setter-Methodne hat.				
 				Collection<String> colsEnumAlias = EnumZZZ.getNames(TroopArmyVariant.getThiskeyEnumClassStatic());
 				for(String sEnumAlias : colsEnumAlias){
-					System.out.println("Starte Transaction:.... Gefundener Enum-Name: " + sEnumAlias);
-					TroopArmyVariant objValueTemp = new TroopArmyVariant();
-
-					//DAS GEHT NICHT, DA JAVA IMMER EIN PASS_BY_VALUE MACHT.
-					//Long lngThisValue = new Long(0);
-					//String sName = new String("");
-					//String sShorttext = new String("");
-					//String sLongtext = new String("");
-					//String sDescription = new String("");
-					//this._fillValueImmutable(objValueTemp, sEnumAlias, lngThisValue, sName, sShorttext, sLongtext, sDescription); 
-
-					//Hier der Workaround mit Refenz-Objekten, aus denen dann der Wert geholt werden kann. Also PASS_BY_REFERENCE durch auslesen der Properties der Objekte.  
-					ReferenceZZZ<Long> lngThisValue = new ReferenceZZZ(4);
-					ReferenceZZZ<String> sName = new ReferenceZZZ("");
-					ReferenceZZZ<String> sShorttext = new ReferenceZZZ("");
-					ReferenceZZZ<String> sLongtext = new ReferenceZZZ("");
-					ReferenceZZZ<String> sDescription = new ReferenceZZZ("");
-					//this._fillValueImmutable(objValueTemp, sEnumAlias, lngThisValue, sName, sShorttext, sLongtext, sDescription);
-					
-					//TODO .... nicht vergessen nun basierend auf den Thiskey-Einträgen für den Defaulttext und Immutabletext das jeweilige Objekt zu suchen.
-					//          Falls das Objekt nicht gefunden wird, muss es per TileDefaulttextDAO oder TileImmutabletextDAO erzeugt werden.
-
-					//TODO .... Mit den TEXTOBJEKTEN kann man dann über den Konstruktor das Objekt füllen. Merke: Auch die TroopFleetVarianten sind IMMUTABLE.
-					
-					
-					session.getTransaction().begin();//Ein zu persistierendes Objekt - eine Transaction, auch wenn mehrere in einer Transaction abzuhandeln wären, aber besser um Fehler abfangen zu können.
-					TileImmutabletext objValueTile = new TileImmutabletext(((int)lngThisValue.get().intValue()), sShorttext.get(), sLongtext.get(), sDescription.get());		//Bei jedem Schleifendurchlauf neu machen, sonst wird lediglich nur 1 Datensatz immer wieder verändert.
-					
-					//Merke: EINE TRANSACTION = EINE SESSION ==>  neue session von der SessionFactory holen
-					session.save(objValueTile); //Hibernate Interceptor wird aufgerufen																				
-					if (!session.getTransaction().wasCommitted()) {
-						//session.flush(); //Datenbank synchronisation, d.h. Inserts und Updates werden gemacht. ABER es wird noch nix committed.
-						session.getTransaction().commit(); //onPreInsertListener wird ausgeführt   //!!! TODO: WARUM WIRD wg. des FLUSH NIX MEHR AUSGEFÜHRT AN LISTENERN, ETC ???
-						
-						//bGoon = HibernateUtil.wasCommitSuccessful(objContextHibernate,"save",session.getTransaction());//EventType.PRE_INSERT
-						VetoFlag4ListenerZZZ objResult = HibernateUtil.getCommitResult(objContextHibernate,"save",session.getTransaction());
-	//					sMessage = objResult.getVetoMessage();
-	//					bGoon = !objResult.isVeto();
-					}
-	//				if(!bGoon){
-	//					//Mache die Ausgabe im UI nicht selbst, sondern stelle lediglich die Daten zur Verfügung. Grund: Hier stehen u.a. die UI Komponenten nicht zur Verfügung
-	//					this.getFacadeResult().setMessage(sMessage);
-	//					break validEntry;
-	//				}else{
+					boolean bErg = this.createEntryByEnumSetAlias(sEnumAlias);
+					if(bErg = true){					
 						iReturn++;
-	//				}
+					}else{						
+					}
 				}//end for
 												
 			} catch (ExceptionZZZ e) {
@@ -135,6 +98,145 @@ public class TroopArmyVariantDao<T> extends GeneralDaoZZZ<T> {
 		}//end main:
 		return iReturn;		
 	}
+		
+	boolean createEntryByEnumSetAlias(String sEnumAlias){
+		boolean bReturn = false;
+		main:{
+			System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": START: .... Gefundener Enum-Name: " + sEnumAlias);
+			
+			try {	
+			KernelZZZ objKernel = new KernelZZZ(); //Merke: Die Service Klasse selbst kann wohl nicht das KernelObjekt extenden!
+			HibernateContextProviderSingletonTHM objContextHibernate = HibernateContextProviderSingletonTHM.getInstance(objKernel);					
+			Session session = objContextHibernate.getSession(); //kürzer: session=this.getSession()
+			if(session == null) break main;	
+			
+			TroopArmyVariant objValueTemp = new TroopArmyVariant();//Quasi als Dummy, aus dem die Enumeration (angelegt als innere Klasse) ausgelesen werden kann.
+
+			//DAS GEHT NICHT, DA JAVA IMMER EIN PASS_BY_VALUE MACHT.
+			//Long lngThisValue = new Long(0);
+			//String sName = new String("");
+			//String sShorttext = new String("");
+			//String sLongtext = new String("");
+			//String sDescription = new String("");
+			//this._fillValueImmutable(objValueTemp, sEnumAlias, lngThisValue, sName, sShorttext, sLongtext, sDescription); 
+
+			//Hier der Workaround mit Referenz-Objekten, aus denen dann der Wert geholt werden kann. Also PASS_BY_REFERENCE durch auslesen der Properties der Objekte.  
+			ReferenceZZZ<Long> lngThisValue = new ReferenceZZZ(4);
+			ReferenceZZZ<String> sName = new ReferenceZZZ("");
+			ReferenceZZZ<String> sUniquetext = new ReferenceZZZ("");
+			ReferenceZZZ<String> sCategorytext = new ReferenceZZZ("");
+			ReferenceZZZ<Integer> iMoveRange = new ReferenceZZZ("");
+			ReferenceZZZ<String> sImageUrl = new ReferenceZZZ("");
+			ReferenceZZZ<Long> lngThisidDefaulttext = new ReferenceZZZ("");
+			ReferenceZZZ<Long> lngThisidImmutabletext = new ReferenceZZZ("");					
+			this._fillValueImmutable(objValueTemp, sEnumAlias, lngThisValue, sName, sUniquetext, sCategorytext, iMoveRange, sImageUrl, lngThisidDefaulttext, lngThisidImmutabletext);
+			
+			//TODO .... nicht vergessen nun basierend auf den Thiskey-Einträgen für den Defaulttext und Immutabletext das jeweilige Objekt zu suchen.
+			//          Falls das Objekt nicht gefunden wird, muss es per TileDefaulttextDAO oder TileImmutabletextDAO erzeugt werden.
+
+			//TODO .... Mit den TEXTOBJEKTEN kann man dann über den Konstruktor das Objekt füllen. Merke: Auch die TroopFleetVarianten sind IMMUTABLE.
+			
+			
+			
+			
+			
+			//Für die Ausgabe im Log: Hilfsvariablen
+			String sDescription = new String("");
+			String sShorttext = new String("");
+			String sLongtext = new String("");
+			
+			
+			//####################################################
+			//### Suchen und ggfs. Erzeugen des TileDefaulttext
+			//#####################################################	
+			TileDefaulttextDao daoTileText = new TileDefaulttextDao(objContextHibernate);
+		    Key objKey = daoTileText.searchThiskey(lngThisidDefaulttext.get());
+			if(objKey==null){
+				System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": Thiskey='"+lngThisidDefaulttext.get() +"' TileDefaulttext ('" + lngThisidDefaulttext.get() + "') NOCH NICHT gefunden.");
+				System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": Thiskey='"+lngThisidDefaulttext.get() +"' erzeuge benötigten TileDefaulttext ('" + lngThisidDefaulttext.get() + "') .");
+				
+				//TODO GOON 20180130: Hier das erstellte Objekt zurückgeben, dann braucht man auch nicht mehr danach zu suchen.
+				daoTileText.createEntryForThiskey(lngThisidDefaulttext.get());					
+				objKey = daoTileText.searchThiskey(lngThisidDefaulttext.get());
+				if(objKey==null){
+					System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": Thiskey='"+lngThisidDefaulttext.get()+"' kann benötigten TileDefaulttext ('" + lngThisidDefaulttext.get() + "') nicht erzeugen.");
+					break main;					
+				}else{
+					System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": Thiskey='"+lngThisidDefaulttext.get()+"' benötigten TileDefaulttext ('" + lngThisidDefaulttext.get() + "')  erzeugt.");						
+				}				
+			}
+			TileDefaulttext objDefaulttext = (TileDefaulttext) objKey;				
+			sDescription = objDefaulttext.getDescription();
+			sShorttext = objDefaulttext.getShorttext();				
+			sLongtext = objDefaulttext.getLongtext();				
+			System.out.println("Thiskey='"+lngThisidDefaulttext.get()+"' dazugehörender TileDefaulttext gefunden. ("+sShorttext+"|"+sLongtext+"|"+sDescription+")");									
+			System.out.println("++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
+		    
+			
+			//####################################################
+			//### Suchen und ggfs. Erzeugen des TileImmutabletext
+			//#####################################################
+			TileImmutabletextDao daoTileImmutable = new TileImmutabletextDao(objContextHibernate);			
+		    KeyImmutable objKeyImmutable = daoTileImmutable.searchThiskey(lngThisidImmutabletext.get());
+		    if(objKeyImmutable==null){
+				System.out.println("Thiskey='"+lngThisidImmutabletext.get()+"' TileImmutabletext ('" + lngThisidImmutabletext.get() + "') NOCH NICHT gefunden.");
+				System.out.println("Thiskey='"+lngThisidImmutabletext.get()+"' erzeuge benötigten TileImmutabletext ('" + lngThisidImmutabletext.get() + "') .");
+				
+				//TODO GOON 20180130: Hier das erzeugte Objekt direkt zurückgeben lassen, dann braucht man es nicht zu suchen.
+				daoTileImmutable.createEntryForThiskey(lngThisidImmutabletext.get());
+				
+				objKeyImmutable = daoTileImmutable.searchThiskey(lngThisidImmutabletext.get());
+				if(objKeyImmutable==null){
+					System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": Thiskey='"+lngThisidImmutabletext.get()+"' kann benötigten TileImmutabletext ('"+lngThisidImmutabletext.get()+"') nicht erzeugen.");
+					break main;						
+				}else{
+					System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": Thiskey='"+lngThisidImmutabletext.get()+"' benötigten TileImmutabletext ('"+lngThisidImmutabletext.get()+"') erzeugt.");						
+				}
+		    }
+		    TileImmutabletext objImmutableText = (TileImmutabletext) objKeyImmutable;				
+			sDescription = objImmutableText.getDescription();
+			sShorttext = objImmutableText.getShorttext();				
+			sLongtext = objImmutableText.getLongtext();				
+			System.out.println("Thiskey='"+lngThisidImmutabletext.get()+"' dazugehörender TileImmutabletext gefunden. ("+sShorttext+"|"+sLongtext+"|"+sDescription+")");									
+			System.out.println("+++++++++++++++++++++++++++++++++++++++++++++++++++++");
+		    
+			
+			//####################################################################################################
+			//### Erzeugen der Variante. Merke: Sie ist immutable, also alles nur über den Konstruktor erzeugen.
+			//####################################################################################################		
+			session = this.getSession(); //Die Session am Anfang ist durch die vielen anderen DaoObjekte und deren Aktionen bestimmt schon geschlossen.			
+			session.getTransaction().begin();//Ein zu persistierendes Objekt - eine Transaction, auch wenn mehrere in einer Transaction abzuhandeln wären, aber besser um Fehler abfangen zu können.			
+
+			TroopArmyVariant objValueVariant = new TroopArmyVariant(lngThisValue.get().intValue(), sUniquetext.get(), sCategorytext.get(), iMoveRange.get().intValue(), sImageUrl.get(), objDefaulttext, objImmutableText);		//Bei jedem Schleifendurchlauf neu machen, sonst wird lediglich nur 1 Datensatz immer wieder verändert.
+			
+			//Merke: EINE TRANSACTION = EINE SESSION ==>  neue session von der SessionFactory holen
+			session.save(objValueVariant); //Hibernate Interceptor wird aufgerufen																				
+			if (!session.getTransaction().wasCommitted()) {
+				//session.flush(); //Datenbank synchronisation, d.h. Inserts und Updates werden gemacht. ABER es wird noch nix committed.
+				session.getTransaction().commit(); //onPreInsertListener wird ausgeführt   //!!! TODO: WARUM WIRD wg. des FLUSH NIX MEHR AUSGEFÜHRT AN LISTENERN, ETC ???
+				
+				//bGoon = HibernateUtil.wasCommitSuccessful(objContextHibernate,"save",session.getTransaction());//EventType.PRE_INSERT
+				VetoFlag4ListenerZZZ objResult = HibernateUtil.getCommitResult(objContextHibernate,"save",session.getTransaction());
+//					sMessage = objResult.getVetoMessage();
+//					bGoon = !objResult.isVeto();
+			}
+//				if(!bGoon){
+//					//Mache die Ausgabe im UI nicht selbst, sondern stelle lediglich die Daten zur Verfügung. Grund: Hier stehen u.a. die UI Komponenten nicht zur Verfügung
+//					this.getFacadeResult().setMessage(sMessage);
+//					break validEntry;
+//				}else{
+					bReturn = true;
+//				}
+			} catch (ExceptionZZZ e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": ENDE");
+			
+		}
+		return bReturn;
+	}
+	
 	
 	
 	
@@ -197,14 +299,14 @@ public class TroopArmyVariantDao<T> extends GeneralDaoZZZ<T> {
 	boolean bReturn = false;
 	main:{
 		//Nun alle holen
-		ArrayList<TroopFleetVariant> listaObject = (ArrayList<TroopFleetVariant>) this.findLazyAll();
+		ArrayList<TroopArmyVariant> listaObject = (ArrayList<TroopArmyVariant>) this.findLazyAll();
 		
-		for(TroopFleetVariant objTroopFleetVariant : listaObject){
-			System.out.println("Lösche: TroopFleetVariant.toString(): " + objTroopFleetVariant.toString());
-			String sUniquetextStored = objTroopFleetVariant.getUniquetext();
+		for(TroopArmyVariant objVariant : listaObject){
+			System.out.println("Lösche: TroopArmyVariant.toString(): " + objVariant.toString());
+			String sUniquetextStored = objVariant.getUniquetext();
 			System.out.println("Uniquetext (gespeichert): " + sUniquetextStored);	
 
-			this.delete(objTroopFleetVariant);
+			this.delete(objVariant);
 		}//End for
 		bReturn = true;
 		
@@ -212,75 +314,63 @@ public class TroopArmyVariantDao<T> extends GeneralDaoZZZ<T> {
 	return bReturn;				
 }
 
-public boolean delete(TroopFleetVariant objFleetVariant) {
+public boolean delete(TroopArmyVariant objVariant) {
 	boolean bReturn = false;
 	main:{
-		if(objFleetVariant==null)break main;
-		bReturn = super.delete((T) objFleetVariant);
+		if(objVariant==null)break main;
+		bReturn = super.delete((T) objVariant);
 	}//end main
 	return bReturn;
 }
+
+//####### EIGENE METHODEN ###########
+/* Das ist die Variante für Entities, die nicht mit der Annotation "Immutable" versehen sind.
+* Die Entities mit der Annotation "Immutable" haben nämlich keine setter-Methoden.
+*/
+//Da Java nur ein CALL_BY_VALUE machen kann, weden hier für die eingefüllten Werte Referenz-Objekte verwendet.
+//Erst die normalen Enum-Werte, dann ... sUniquetext / sCategorytext / iMoveRange / sImageUrl / iThisKeyDefaulttext / iThiskeyImmutabletext;
+protected <T> void _fillValueImmutable(TroopArmyVariant objValue,String sEnumAlias, ReferenceZZZ<Long> objlngThiskey, 
+	ReferenceZZZ<String> objsName, ReferenceZZZ<String> objsUniquetext, ReferenceZZZ<String> objsCategorytext, 
+	ReferenceZZZ<Integer> objintMoveRange, ReferenceZZZ<String> objsImageUrl,ReferenceZZZ<Long> objlngThisidTextDefault, ReferenceZZZ<Long> objlngThisidTextImmutable){
+
+	//Merke: Direktes Reinschreiben geht wieder nicht wg. "bound exception"
+	//EnumSetDefaulttextUtilZZZ.getEnumConstant_DescriptionValue(EnumSetDefaulttextTestTypeTHM.class, sEnumAlias);
+			
+	//Also: Klasse holen und danach CASTEN.
+	Class<?> objClass = ((KeyImmutable) objValue).getThiskeyEnumClass();
+	Long lngThiskey = EnumSetTroopArmyVariantUtilTHM.readEnumConstant_ThiskeyValue((Class<IEnumSetTroopVariantTHM>) objClass, sEnumAlias);//Das darf nicht NULL sein, sonst Fehler. Über diesen Schlüssel wird der Wert dann gefunden.
+	System.out.println("Gefundener Thiskey: " + lngThiskey.toString());
+	objlngThiskey.set(lngThiskey); //Damit wird CALL_BY_VALUE quasi gemacht....
 	
-	//####### EIGENE METHODEN ###########
-	//....
-//		public Key searchKey(String sKeyType, Long lngThiskey){
-//			Key objReturn = null;
-//			
-////			select mate
-////			from Cat as cat
-////			    inner join cat.mate as mate
-//			    
-//			//1. Beispiel: wenn man aber die WHERE Parameter so als String reinprogrammiert, ist das anfällig für SQL injection.
-//			//String sHql = "SELECT id from Tile as tableTile";								
-//			//listReturn = this.findByHQL(sHql, 0, 0);//start ist indexwert also 0 = erster Wert, Danach folgt maximale Anzahl von Objekten.
-//			
-//			//2. Beispiel: Etwas sicherer ist es die Parameter mit Platzhaltern zu füllen
-//			Session session = this.getSession();
-//			//liefert die ID Spalte als Integer zurück, also nicht das TileId Objekt...  Query query = session.createQuery("SELECT id from Tile as tableTile");
-//			//                                                       wird nicht gefunden Query query = session.createQuery("SELECT TileIdObject from Tile as tableTile");
-//			
-//			//Also über die HEXCELL gehen...
-//			//JA, das liefert die HEXCELL-Objekte zurück
-//			//Query query = session.createQuery("SELECT objHexCell from Tile as tableTile");
-//							
-//			//JA, das liefert die CellId-Objekte der Hexcell zurück
-//			//Query query = session.createQuery("SELECT objHexCell.id from Tile as tableTile");
-//			
-//			//JA, das liefert die Alias Map-Werte zurück
-//			//Query query = session.createQuery("SELECT objHexCell.id.mapAlias from Tile as tableTile");
-//			
-//			//DARAUS VERSUCHEN DIE ABFRAGE ZU BAUEN....
-//			//Query query = session.createQuery("SELECT objHexCell from Tile as tableTile where tableTile.objHexCell.Id.MapAlias IN (:mapAlias)");
-//			
-//			
-//			/* Weiteres Beispiel aus TroopDao...	
-//			//Query query = session.createQuery("from TroopArmy as tableTile where tableTile.objHexCell.id.mapAlias = :mapAlias AND tableTile.objHexCell.id.mapX = :mapX AND tableTile.objHexCell.id.mapY = :mapY");
-//			Query query = session.createQuery("from TroopArmy as tableTile where tableTile.objHexCell.id.mapAlias = :mapAlias AND tableTile.objHexCell.id.mapX = :mapX AND tableTile.objHexCell.id.mapY = :mapY");
-//			
-//			query.setString("mapAlias", sMapAlias);
-//			query.setString("mapX", sX);
-//			query.setString("mapY", sY);
-//			 */
-//				
-//			//JA, das funktioniert, andere Beispiele
-//			//Query query = session.createQuery("from Tile as tableTile where tableTile.objHexCell.id.mapAlias = :mapAlias");
-//			//Query query = session.createQuery("from Tile as tableTile where tableTile.objHexCell.id.mapAlias = :mapAlias AND tableTile.objHexCell.id.mapX = :mapX AND tableTile.objHexCell.id.mapY = :mapY");
-//			//Query query = session.createQuery("from TroopArmy as tableTile where tableTile.objHexCell.id.mapAlias = :mapAlias AND tableTile.objHexCell.id.mapX = :mapX AND tableTile.objHexCell.id.mapY = :mapY");
-//			
-//			//Query query = session.createQuery("from Tile as tableTile where tableTile.tileIdObject.uniquename = :uniqueName");//Merke: In TroopArmy ist der uniquename transient. Also kommt man über das Objekt daran.
-//			//Query query = session.createQuery("from Key as tableKey where tableKey.keyType = :keyType and tableKey.thiskey = :thiskey");
-//			
-//			//Query query = session.createQuery("from TileDefaulttext as tableKey where tableKey.thiskey = :thiskey");			
-//			Query query = session.createQuery("from TileDefaulttext as tableKey where tableKey.thiskey = :thiskey and tableKey.keyType = :keyType ");
-//			query.setString("keyType", sKeyType);
-//			query.setLong("thiskey", lngThiskey);
-//
-//			
-//			Object objResult = query.uniqueResult();//für einen einzelwert, darum ist es wichtig, das der uniquename beim Einfügen eines Spielsteins auch wirklich unique ist... Bei 2 gefundenen Werten kammt es hier zum begründeten Fehler. 		
-//			//listReturn = query.list(); //Für meherer Werte
-//			
-//			objReturn = (Key) objResult;
-//			return objReturn;
-//		}
+	String sName = EnumSetTroopArmyVariantUtilTHM.readEnumConstant_NameValue((Class<IEnumSetTroopVariantTHM>) objClass, sEnumAlias);
+	System.out.println("Gefundener Typname: " + sName);
+	objsName.set(sName); //Damit wird CALL_BY_VALUE quasi gemacht....
+	
+	String sUniquetext = EnumSetTroopArmyVariantUtilTHM.readEnumConstant_UniquetextValue((Class<IEnumSetTroopVariantTHM>)objClass, sEnumAlias);
+	System.out.println("Gefundener Uniquewert: " + sUniquetext);
+	objsUniquetext.set(sUniquetext); //Damit wird CALL_BY_VALUE quasi gemacht....
+	
+	String sCategorytext = EnumSetTroopArmyVariantUtilTHM.readEnumConstant_CategorytextValue((Class<IEnumSetTroopVariantTHM>)objClass, sEnumAlias);
+	System.out.println("Gefundener Categorytext: " + sCategorytext);
+	objsCategorytext.set(sCategorytext); //Damit wird CALL_BY_VALUE quasi gemacht....
+		 
+	Integer iMoveRange = EnumSetTroopArmyVariantUtilTHM.readEnumConstant_MoveRangeValue((Class<IEnumSetTroopVariantTHM>)objClass, sEnumAlias);
+	System.out.println("Gefundener MoveRange: " + iMoveRange);
+	Integer intMoveRange = new Integer(iMoveRange);
+	objintMoveRange.set(intMoveRange); //Damit wird CALL_BY_VALUE quasi gemacht....
+		
+	String sImageUrl = EnumSetTroopArmyVariantUtilTHM.readEnumConstant_ImageUrlStringValue((Class<IEnumSetTroopVariantTHM>)objClass, sEnumAlias);
+	System.out.println("Gefundener ImageUrlString: " + sImageUrl);
+	objsImageUrl.set(sImageUrl); //Damit wird CALL_BY_VALUE quasi gemacht....	
+	 
+	Long lngThisKeyDefaulttext = EnumSetTroopArmyVariantUtilTHM.readEnumConstant_DefaulttextThisid((Class<IEnumSetTroopVariantTHM>)objClass, sEnumAlias);
+	System.out.println("Gefundener ThisKeyDefaulttext: " + lngThisKeyDefaulttext);
+	objlngThisidTextDefault.set(lngThisKeyDefaulttext); //Damit wird CALL_BY_VALUE quasi gemacht....
+	
+	Long lngThisKeyImmutabletext = EnumSetTroopArmyVariantUtilTHM.readEnumConstant_ImmutabletextThisid((Class<IEnumSetTroopVariantTHM>)objClass, sEnumAlias);
+	System.out.println("Gefundener ThisKeyImmutabletext: " + lngThisKeyImmutabletext);	
+	objlngThisidTextImmutable.set(lngThisKeyImmutabletext); //Damit wird CALL_BY_VALUE quasi gemacht....
+
+}
 			
 }//end class

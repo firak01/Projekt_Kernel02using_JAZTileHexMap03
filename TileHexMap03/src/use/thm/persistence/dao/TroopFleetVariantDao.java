@@ -38,7 +38,8 @@ import basic.zBasic.util.datatype.enums.EnumZZZ;
 import basic.zBasic.util.datatype.enums.EnumSetInnerUtilZZZ.ThiskeyEnumMappingExceptionZZZ;
 import basic.zBasic.util.dataype.calling.ReferenceZZZ;
 import basic.zKernel.KernelZZZ;
-public class TroopFleetVariantDao<T> extends GeneralDaoZZZ<T> {
+//public class TroopFleetVariantDao<T> extends GeneralDaoZZZ<T> {
+public class TroopFleetVariantDao<T> extends KeyImmutableDao<T> {
 	private static final long serialVersionUID = 1L;
 
 	/* Constructor

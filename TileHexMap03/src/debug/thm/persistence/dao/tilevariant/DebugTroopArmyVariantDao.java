@@ -66,23 +66,21 @@ public class DebugTroopArmyVariantDao {
 			DebugTroopArmyVariantDao objDebug = new DebugTroopArmyVariantDao();
 		
 			//### VORHER SICHERHEITSHALBER ALLE LÖSCHEN....
-			objDebug.debugDeleteAll();
+//			objDebug.debugDeleteAll();
+//			objDebug.debugCreateEntry(1);//Dabei werden ggfs. benötigte Defaulttexte erzeugt.
+//			objDebug.debugCreateEntry(0);//Dabei werden ggfs. benötigte Defaulttexte erzeugt.
+//			
 			
-			
-			
-			objDebug.debugCreateEntry(1);//Dabei werden ggfs. benötigte Defaulttexte erzeugt.
-			objDebug.debugCreateEntry(0);//Dabei werden ggfs. benötigte Defaulttexte erzeugt.
-			
-			//Suche mal nach einem der hoffentlich erzeugten Einträge, über den Thiskey.
-			Long lngThiskey = new Long(110);
-			objDebug.debugSearchKey(lngThiskey);	
 		
 	//		//TODO GOON 20180124
 	//		objDebug.debugFindAll();
 	//		
-	//		objDebug.debugDeleteAll();
+			objDebug.debugDeleteAll();			
+			objDebug.debugCreateEntriesAll();
 			
-			//objDebug.createEntriesAll();
+			//Suche mal nach einem der hoffentlich erzeugten Einträge, über den Thiskey.
+			Long lngThiskey = new Long(110);
+			objDebug.debugSearchKey(lngThiskey);
 			
 		} catch (ExceptionZZZ e) {
 			e.printStackTrace();
@@ -506,16 +504,17 @@ public class DebugTroopArmyVariantDao {
 	public boolean debugDeleteAll(){
 		boolean bReturn = false;
 		main:{
-			try {				
+			try {		
+				boolean bSuccess = false;
 				
 				KernelZZZ objKernel = new KernelZZZ(); //Merke: Die Service Klasse selbst kann wohl nicht das KernelObjekt extenden!
 				HibernateContextProviderSingletonTHM objContextHibernate;
 				
 				objContextHibernate = HibernateContextProviderSingletonTHM.getInstance(objKernel);					
-				objContextHibernate.getConfiguration().setProperty("hibernate.hbm2ddl.auto", "update");  //! Jetzt erst wird jede Tabelle über den Anwendungsstart hinaus gespeichert UND auch wiedergeholt.				
-				TileDefaulttextDao daoKey = new TileDefaulttextDao(objContextHibernate);
-				boolean bSuccess = daoKey.deleteAll();
-
+				//diese Methode hat darüber nicht zu entscheiden:  objContextHibernate.getConfiguration().setProperty("hibernate.hbm2ddl.auto", "update");  //! Jetzt erst wird jede Tabelle über den Anwendungsstart hinaus gespeichert UND auch wiedergeholt.				
+				TroopArmyVariantDao daoKey = new TroopArmyVariantDao(objContextHibernate);
+				bSuccess = daoKey.deleteAll();
+								
 			} catch (ExceptionZZZ e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();

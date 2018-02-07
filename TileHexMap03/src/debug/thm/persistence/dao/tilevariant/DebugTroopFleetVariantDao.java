@@ -449,12 +449,12 @@ public class DebugTroopFleetVariantDao {
 				HibernateContextProviderSingletonTHM objContextHibernate;
 				
 				objContextHibernate = HibernateContextProviderSingletonTHM.getInstance(objKernel);					
-				objContextHibernate.getConfiguration().setProperty("hibernate.hbm2ddl.auto", "update");  //! Jetzt erst wird jede Tabelle über den Anwendungsstart hinaus gespeichert UND auch wiedergeholt.				
-				TileDefaulttextDao daoKey = new TileDefaulttextDao(objContextHibernate);
+				///Diese Methode hat hierüber nicht zu entscheiden .... objContextHibernate.getConfiguration().setProperty("hibernate.hbm2ddl.auto", "update");  //! Jetzt erst wird jede Tabelle über den Anwendungsstart hinaus gespeichert UND auch wiedergeholt.				
+				TroopFleetVariantDao daoKey = new TroopFleetVariantDao(objContextHibernate);
 				String sKeytype = new String("DEFAULTTEXT");		
 				Long lngThiskey = new Long(1);
 
-				Defaulttext objKey02 = (Defaulttext) daoKey.searchKey(sKeytype, lngThiskey );
+				TroopFleetVariant objKey02 = (TroopFleetVariant) daoKey.searchKey(sKeytype, lngThiskey );
 				if(objKey02==null){
 					System.out.println("2. Abfrage: UNERWARTETES ERGEBNIS. Kein Key mit dem KeyType '" + sKeytype + "' und dem Thiskey '" + lngThiskey.toString() + "' gefunden.");
 				}else{
@@ -510,8 +510,8 @@ public class DebugTroopFleetVariantDao {
 				HibernateContextProviderSingletonTHM objContextHibernate;
 				
 				objContextHibernate = HibernateContextProviderSingletonTHM.getInstance(objKernel);					
-				objContextHibernate.getConfiguration().setProperty("hibernate.hbm2ddl.auto", "update");  //! Jetzt erst wird jede Tabelle über den Anwendungsstart hinaus gespeichert UND auch wiedergeholt.				
-				TileDefaulttextDao daoKey = new TileDefaulttextDao(objContextHibernate);
+				//Diese MEthode hat hierüber nicht zu entscheiden objContextHibernate.getConfiguration().setProperty("hibernate.hbm2ddl.auto", "update");  //! Jetzt erst wird jede Tabelle über den Anwendungsstart hinaus gespeichert UND auch wiedergeholt.				
+				TroopFleetVariantDao daoKey = new TroopFleetVariantDao(objContextHibernate);
 				boolean bSuccess = daoKey.deleteAll();
 
 			} catch (ExceptionZZZ e) {

@@ -62,18 +62,17 @@ public class DebugTroopFleetVariantDao {
 			
 			DebugTroopFleetVariantDao objDebug = new DebugTroopFleetVariantDao();
 		
-			//### VORHER SICHERHEITSHALBER ALLE LÖSCHEN....
-			objDebug.debugDeleteAll();
-									
-//			objDebug.debugCreateEntry(1);//Dabei werden ggfs. benötigte Defaulttexte erzeugt.
-//			objDebug.debugCreateEntry(0);//Dabei werden ggfs. benötigte Defaulttexte erzeugt.
-//			
-//			//Suche mal nach einem der hoffentlich erzeugten Einträge, über den Thiskey.
-//			Long lngThiskey = new Long(210);
-//			objDebug.debugSearchKey(lngThiskey);	
-//		
-//			objDebug.debugDeleteAll();
+			//### VARIANTE 1: VORHER SICHERHEITSHALBER ALLE LÖSCHEN....
+			objDebug.debugDeleteAll();							
+			objDebug.debugCreateEntryByEnumSetIndex(1);//Dabei werden ggfs. benötigte Defaulttexte erzeugt.
+			objDebug.debugCreateEntryByEnumSetIndex(0);//Dabei werden ggfs. benötigte Defaulttexte erzeugt.
 			
+			//Suche mal nach einem der hoffentlich erzeugten Einträge, über den Thiskey.
+			Long lngThiskey = new Long(210);
+			objDebug.debugSearchKey(lngThiskey);	
+		
+			//### VARIANTE 2: VORHER SICHERHEITSHALBER ALLE LÖSCHEN....
+			objDebug.debugDeleteAll();			
 			objDebug.debugCreateEntriesAll();
 			
 			//		//TODO GOON 20180124

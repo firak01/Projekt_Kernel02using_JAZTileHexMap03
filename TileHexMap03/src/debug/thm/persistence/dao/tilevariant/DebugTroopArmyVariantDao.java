@@ -65,22 +65,25 @@ public class DebugTroopArmyVariantDao {
 			
 			DebugTroopArmyVariantDao objDebug = new DebugTroopArmyVariantDao();
 		
-			//### VORHER SICHERHEITSHALBER ALLE LÖSCHEN....
-//			objDebug.debugDeleteAll();
-//			objDebug.debugCreateEntry(1);//Dabei werden ggfs. benötigte Defaulttexte erzeugt.
-//			objDebug.debugCreateEntry(0);//Dabei werden ggfs. benötigte Defaulttexte erzeugt.
-//			
-			
-		
-	//		//TODO GOON 20180124
-	//		objDebug.debugFindAll();
-	//		
-			objDebug.debugDeleteAll();			
-			objDebug.debugCreateEntriesAll();
+			//### VARIANTE 1: VORHER SICHERHEITSHALBER ALLE LÖSCHEN....
+			objDebug.debugDeleteAll();
+			objDebug.debugCreateEntryByEnumSetIndex(1);//Dabei werden ggfs. benötigte Defaulttexte erzeugt.
+			objDebug.debugCreateEntryByEnumSetIndex(0);//Dabei werden ggfs. benötigte Defaulttexte erzeugt.
 			
 			//Suche mal nach einem der hoffentlich erzeugten Einträge, über den Thiskey.
 			Long lngThiskey = new Long(110);
 			objDebug.debugSearchKey(lngThiskey);
+		
+
+			//### VARIANTE 2: VORHER SICHERHEITSHALBER ALLE LÖSCHEN....
+			objDebug.debugDeleteAll();			
+			objDebug.debugCreateEntriesAll();
+			
+			//		//TODO GOON 20180124
+			//		objDebug.debugFindAll();
+			//		
+			
+			
 			
 		} catch (ExceptionZZZ e) {
 			e.printStackTrace();
@@ -117,7 +120,7 @@ public class DebugTroopArmyVariantDao {
 	}
 	
 	
-	public boolean debugCreateEntry(int iIndex){
+	public boolean debugCreateEntryByEnumSetIndex(int iIndex){
 		boolean bReturn = false;
 		main:{
 			try {				

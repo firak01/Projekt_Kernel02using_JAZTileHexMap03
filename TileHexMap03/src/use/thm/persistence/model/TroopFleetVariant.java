@@ -91,12 +91,19 @@ public class TroopFleetVariant  extends KeyImmutable implements ITroopFleetVaria
 	//... und weitere Eigenschaften.
 	
 	//Der Default Contruktor wird für JPA - Abfragen wohl benötigt
-	 public TroopFleetVariant(){		
+	 public TroopFleetVariant(){
+		 super();		
+		 this.setKeyType("TROOPFLEETVARIANT"); //TODO: HIER EINE ENUMERATION MACHEN ÜBER DIE VERSCHIEDENEN SCHLÜSSELWERTE? 
+		//20180130: Besser eine Konstante hier. Merke: Diese Konstante wird dann in den Dao Klassen auch verwendet . Z.B. in TileDefaulttextDao.searchKey(...)		
 	 }
 	 	 
 	 //Konstruktor, an den alles übergeben wird. Wg. "Immutable".
 	 public TroopFleetVariant(int iKey, String sUniquetext, String sCategorytext, int intMapMoveRange, String sImageUrl, TileDefaulttext objDefaulttext, TileImmutabletext objImmutabletext){
-		 this.setThiskey(Long.valueOf(iKey));
+		 super();		
+		 this.setKeyType("TROOPFLEETVARIANT"); //TODO: HIER EINE ENUMERATION MACHEN ÜBER DIE VERSCHIEDENEN SCHLÜSSELWERTE? 
+		//20180130: Besser eine Konstante hier. Merke: Diese Konstante wird dann in den Dao Klassen auch verwendet . Z.B. in TileDefaulttextDao.searchKey(...)
+		 
+		 this.setThiskey(Long.valueOf(iKey)); 
 		 this.setUniquetext(sUniquetext);
 		 this.setCategorytext(sCategorytext);
 		 this.setMapMoveRange(Integer.valueOf(intMapMoveRange));
@@ -124,7 +131,16 @@ public class TroopFleetVariant  extends KeyImmutable implements ITroopFleetVaria
 		 }
 	 
 	 //### getter / setter
-		 //TODO: Dies in eine Oberklasse für alle "Varianten" verschieben.
+		//TODO: Dies in eine Oberklasse für alle "Varianten" verschieben.
+		@Column(name="KEYTYPE")
+		@Access(AccessType.PROPERTY)
+		public String getKeyType(){
+			return super.getKeyType();
+		}	
+		public void setKeyType(String sKeyType){
+			super.setKeyType(sKeyType);
+		}
+		 		 
 		 //### Aus ICategoryProviderZZZ
 		 @Column(name="TILE_UNIQUETEXT", nullable=false)
 		 public String getUniquetext(){

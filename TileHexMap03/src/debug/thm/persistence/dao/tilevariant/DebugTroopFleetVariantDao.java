@@ -116,7 +116,7 @@ public class DebugTroopFleetVariantDao {
 	}
 	
 	
-	public boolean debugCreateEntry(int iIndex){
+	public boolean debugCreateEntryByEnumSetIndex(int iIndex){
 		boolean bReturn = false;
 		main:{
 			try {				

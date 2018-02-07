@@ -8,9 +8,11 @@ import java.util.EnumSet;
 import java.util.Set;
 
 import use.thm.persistence.interfaces.enums.IEnumSetTextTHM;
+import use.thm.persistence.interfaces.enums.IEnumSetTroopFleetVariantTHM;
 import use.thm.persistence.interfaces.enums.IEnumSetTroopVariantTHM;
 import use.thm.persistence.model.Defaulttext;
 import use.thm.persistence.model.TileDefaulttext.EnumTileDefaulttext;
+import use.thm.persistence.model.TroopFleetVariant.EnumTroopFleetVariant;
 import basic.zBasic.ExceptionZZZ;
 import basic.zBasic.IFlagZZZ;
 import basic.zBasic.ObjectZZZ;
@@ -44,11 +46,12 @@ public class EnumSetTroopVariantUtilTHM extends EnumSetUtilZZZ{
 	//###############	
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public static Long readEnumConstant_ThiskeyValue(Class<IEnumSetTroopVariantTHM> clazz, String name) {
-		Long lngReturn = new Long(0);
+		Long lngReturn = new Long(-1);
 		main:{
 	    if (clazz==null || name==null || name.isEmpty()) break main;
 	  
 	    
+	    //IEnumSetTroopFleetVariantTHM[] enumaSetMapped = clazz.getEnumConstants(); //Luse.thm.persistence.model.Immutabletext$EnumImmutabletext; cannot be cast to [Luse.thm.persistence.interfaces.enums.IEnumSetTroopFleetVariantTHM;
 	    IEnumSetTroopVariantTHM[] enumaSetMapped = clazz.getEnumConstants();
 	    if(enumaSetMapped==null) break main; //Das ist der Fall, wenn es isch um die übergebene Klasse nicht um eine Enumeration handelt
 	    
@@ -113,7 +116,7 @@ public class EnumSetTroopVariantUtilTHM extends EnumSetUtilZZZ{
 	
 		if(!StringZZZ.isEmpty(driver.getCategorytext())){
 		  if(driver.getName().equals(name)){
-			  sReturn = driver.getUniquetext();
+			  sReturn = driver.getCategorytext();
 			  break main;
 		  }
 	  }

@@ -210,7 +210,7 @@ public class TroopArmyVariant  extends KeyImmutable implements ITroopArmyVariant
 	
 	 @Transient
 	 public Class getThiskeyEnumClass() {
-		 return Immutabletext.getThiskeyEnumClassStatic();
+		 return TroopArmyVariant.getThiskeyEnumClassStatic();
 	}
 		 
 		
@@ -242,7 +242,7 @@ public class TroopArmyVariant  extends KeyImmutable implements ITroopArmyVariant
 	   
 
 	   //Merke: Enums haben keinen public Konstruktor, können also nicht intiantiiert werden, z.B. durch Java-Reflektion.
-	   EnumTroopArmyVariant(int iKey, String sUniquetext, String sCategorytext, int iMoveRage, String ImageUrl, int iThisKeyDefaulttext, int iThiskeyImmutabletext){
+	   EnumTroopArmyVariant(int iKey, String sUniquetext, String sCategorytext, int iMoveRange, String sImageUrl, int iThisKeyDefaulttext, int iThiskeyImmutabletext){
 	       this.lKey = Long.valueOf(iKey);
 	       this.sUniquetext = sUniquetext;
 	       this.sCategorytext = sCategorytext;

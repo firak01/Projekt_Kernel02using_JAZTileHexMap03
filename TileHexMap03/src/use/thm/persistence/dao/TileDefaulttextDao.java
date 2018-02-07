@@ -87,7 +87,7 @@ public class TileDefaulttextDao<T> extends DefaulttextDao<T> {
 				//####################
 				//1.2. Erstellle das gewünschte Objekt
 				//####################
-				Session session = objContextHibernate.getSession();
+				Session session = objContextHibernate.getSession(); //kürzer: session=this.getSession()
 				if(session == null) break main;			
 				session.getTransaction().begin();//Ein zu persistierendes Objekt - eine Transaction, auch wenn mehrere in einer Transaction abzuhandeln wären, aber besser um Fehler abfangen zu können.
 								

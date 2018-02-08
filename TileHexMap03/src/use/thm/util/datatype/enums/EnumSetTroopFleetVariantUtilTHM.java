@@ -8,6 +8,7 @@ import java.util.EnumSet;
 import java.util.Set;
 
 import use.thm.persistence.interfaces.enums.IEnumSetTextTHM;
+import use.thm.persistence.interfaces.enums.IEnumSetTroopArmyVariantTHM;
 import use.thm.persistence.interfaces.enums.IEnumSetTroopFleetVariantTHM;
 import use.thm.persistence.interfaces.enums.IEnumSetTroopVariantTHM;
 import use.thm.persistence.model.Defaulttext;
@@ -45,5 +46,27 @@ public class EnumSetTroopFleetVariantUtilTHM extends EnumSetTroopVariantUtilTHM{
 	}
 
 	//###############	Hier werden die Unterschiede zur erweiterten Klasse behandelt. Also die Eigenschaften, die nicht jede TroopVariant hat.
-
+    //#### Speziell für FLEET
+		public static Integer readEnumConstant_NumberOfTurretValue(Class<IEnumSetTroopFleetVariantTHM> objClass, String sEnumAlias) {
+			Integer intReturn = new Integer(-1);
+			main:{
+		    if (objClass==null || sEnumAlias==null || sEnumAlias.isEmpty()) break main;
+		  
+		    
+		    IEnumSetTroopFleetVariantTHM[] enumaSetMapped = objClass.getEnumConstants();
+		    if(enumaSetMapped==null) break main; //Das ist der Fall, wenn es isch um die übergebene Klasse nicht um eine Enumeration handelt
+		    
+		  	for(IEnumSetTroopFleetVariantTHM driver : enumaSetMapped) {
+//				  System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": Driver ALIAS  als driver.name() from Enumeration="+driver.name());
+//				  System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": Driver als driver.toString() from Enumeration="+driver.toString());
+//				  System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": Driver als driver.abbreviaton from Enumeration="+driver.getAbbreviation());
+			
+			  if(driver.getName().equals(sEnumAlias)){
+				  intReturn = new Integer(driver.getNumberOfTurret());
+				  break main;
+			  }
+			}//end for
+			}//end main:
+			return intReturn;
+		}
 }

@@ -8,6 +8,7 @@ import java.util.EnumSet;
 import java.util.Set;
 
 import use.thm.persistence.interfaces.enums.IEnumSetTextTHM;
+import use.thm.persistence.interfaces.enums.IEnumSetTroopArmyVariantTHM;
 import use.thm.persistence.interfaces.enums.IEnumSetTroopFleetVariantTHM;
 import use.thm.persistence.interfaces.enums.IEnumSetTroopVariantTHM;
 import use.thm.persistence.model.Defaulttext;
@@ -218,4 +219,7 @@ public class EnumSetTroopVariantUtilTHM extends EnumSetUtilZZZ{
 		}//end main:
 		return lngReturn;
 	}
+	
+	
+	
 }

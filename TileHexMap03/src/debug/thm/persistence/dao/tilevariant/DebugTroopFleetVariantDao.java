@@ -140,14 +140,16 @@ public class DebugTroopFleetVariantDao {
 			    String sUniquetext = objaType[iIndex].getUniquetext();
 			    String sCategorytext = objaType[iIndex].getCategorytext();
 			    int iMoveRange = objaType[iIndex].getMapMoveRange();
+			    String sImageUrl = objaType[iIndex].getImageUrlString();
 			    
 			    int iDefaulttextThiskey = objaType[iIndex].getDefaulttextThisid();
 			    Long lngDefaulttextThiskey = new Long(iDefaulttextThiskey);
 			    
 			    int iImmutabletextThiskey = objaType[iIndex].getImmutabletextThisid();			    
 			    Long lngImmutabletextThiskey = new Long(iImmutabletextThiskey);
+			    			    			    
+			    int iNumberOfTurret = objaType[iIndex].getNumberOfTurret();
 			    
-			    String sImageUrl = objaType[iIndex].getImageUrlString();
 				String sDescription = null;
 				String sShorttext = null;				
 				String sLongtext = null;
@@ -214,7 +216,7 @@ public class DebugTroopFleetVariantDao {
 				
 			    
 			    // public TroopFleetVariant(int iKey, int intMapMoveRange, String sImageUrl, TileDefaulttext objDefaulttext, TileImmutabletext objImmutabletext){
-				TroopFleetVariant objValue = new TroopFleetVariant(lngThiskey.intValue(),sUniquetext, sCategorytext, iMoveRange, sImageUrl, objDefaulttext, objImmutableText);
+				TroopFleetVariant objValue = new TroopFleetVariant(lngThiskey.intValue(),sUniquetext, sCategorytext, iMoveRange, sImageUrl, objDefaulttext, objImmutableText, iNumberOfTurret);
 				
 				//Merke: EINE TRANSACTION = EINE SESSION ==>  neue session von der SessionFactory holen
 				session.save(objValue); //Hibernate Interceptor wird aufgerufen																				
@@ -312,6 +314,8 @@ public class DebugTroopFleetVariantDao {
 										
 				int iImmutabletextThiskey = objType.getImmutabletextThisid();
 				Long lngThiskeyImmutabletext = new Long(iImmutabletextThiskey);
+				
+				int iNumberOfTurret = objType.getNumberOfTurret();
 			    
 				//Variablen für die Ausgabe der Werte der Texte
 				String sDescription = null;
@@ -380,7 +384,7 @@ public class DebugTroopFleetVariantDao {
 				
 			    
 			    // public TroopFleetVariant(int iKey, int intMapMoveRange, String sImageUrl, TileDefaulttext objDefaulttext, TileImmutabletext objImmutabletext){
-				TroopFleetVariant objValue = new TroopFleetVariant(lngThiskey.intValue(),sUniquetext, sCategorytext, iMoveRange, sImageUrl, objDefaulttext, objImmutableText);
+				TroopFleetVariant objValue = new TroopFleetVariant(lngThiskey.intValue(),sUniquetext, sCategorytext, iMoveRange, sImageUrl, objDefaulttext, objImmutableText, iNumberOfTurret);
 				
 				//Merke: EINE TRANSACTION = EINE SESSION ==>  neue session von der SessionFactory holen
 				session.save(objValue); //Hibernate Interceptor wird aufgerufen																				

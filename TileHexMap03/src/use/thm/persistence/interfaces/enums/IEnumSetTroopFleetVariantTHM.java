@@ -10,4 +10,6 @@ import basic.zBasic.persistence.interfaces.enums.IThiskeyValueZZZ;
 
 public interface IEnumSetTroopFleetVariantTHM extends IEnumSetTroopVariantTHM {
 		
+	//Speziell für FLEET
+	public int getNumberOfTurret();
 }

@@ -8,4 +8,6 @@ import basic.zBasic.persistence.interfaces.enums.IThiskeyValueZZZ;
 
 public interface IEnumSetTroopArmyVariantTHM extends IEnumSetTroopVariantTHM{
 
+	//Speziell für TROOP
+	public int getDegreeOfCoverMax();
 }

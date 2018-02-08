@@ -44,5 +44,27 @@ public class EnumSetTroopArmyVariantUtilTHM extends EnumSetTroopVariantUtilTHM{
 	}
 
 	//###############	Hier werden die Unterschiede zur erweiterten Klasse behandelt. Also die Eigenschaften, die nicht jede TroopVariant hat.
-	
+	//###### Speziell für TROOP
+		public static Integer readEnumConstant_DegreeOfCoverMax(Class<IEnumSetTroopArmyVariantTHM> objClass, String sEnumAlias) {
+			Integer intReturn = new Integer(-1);
+			main:{
+		    if (objClass==null || sEnumAlias==null || sEnumAlias.isEmpty()) break main;
+		  
+		    
+		    IEnumSetTroopArmyVariantTHM[] enumaSetMapped = objClass.getEnumConstants();
+		    if(enumaSetMapped==null) break main; //Das ist der Fall, wenn es isch um die übergebene Klasse nicht um eine Enumeration handelt
+		    
+		  	for(IEnumSetTroopArmyVariantTHM driver : enumaSetMapped) {
+//				  System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": Driver ALIAS  als driver.name() from Enumeration="+driver.name());
+//				  System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": Driver als driver.toString() from Enumeration="+driver.toString());
+//				  System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": Driver als driver.abbreviaton from Enumeration="+driver.getAbbreviation());
+			
+			  if(driver.getName().equals(sEnumAlias)){
+				  intReturn = new Integer(driver.getDegreeOfCoverMax());
+				  break main;
+			  }
+			}//end for
+			}//end main:
+			return intReturn;
+		}
 }

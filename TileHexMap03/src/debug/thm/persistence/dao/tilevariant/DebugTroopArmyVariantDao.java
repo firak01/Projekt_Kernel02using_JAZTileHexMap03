@@ -152,6 +152,8 @@ public class DebugTroopArmyVariantDao {
 			    int iImmutabletextThiskey = objaType[iIndex].getImmutabletextThisid();			    
 			    Long lngImmutabletextThiskey = new Long(iImmutabletextThiskey);
 			    
+			    int iDegreeOfCoverMax = objaType[iIndex].getDegreeOfCoverMax();
+			    
 			    String sImageUrl = objaType[iIndex].getImageUrlString();
 				String sDescription = null;
 				String sShorttext = null;				
@@ -216,10 +218,8 @@ public class DebugTroopArmyVariantDao {
 				Session session = objContextHibernate.getSession();
 				if(session == null) break main;			
 				session.getTransaction().begin();//Ein zu persistierendes Objekt - eine Transaction, auch wenn mehrere in einer Transaction abzuhandeln wären, aber besser um Fehler abfangen zu können.
-				
-			    
-			    // public TroopFleetVariant(int iKey, int intMapMoveRange, String sImageUrl, TileDefaulttext objDefaulttext, TileImmutabletext objImmutabletext){
-				TroopArmyVariant objValue = new TroopArmyVariant(lngThiskey.intValue(),sUniquetext, sCategorytext, iMoveRange, sImageUrl, objDefaulttext, objImmutableText);
+							    			   
+				TroopArmyVariant objValue = new TroopArmyVariant(lngThiskey.intValue(),sUniquetext, sCategorytext, iMoveRange, sImageUrl, objDefaulttext, objImmutableText, iDegreeOfCoverMax);
 				
 				//Merke: EINE TRANSACTION = EINE SESSION ==>  neue session von der SessionFactory holen
 				session.save(objValue); //Hibernate Interceptor wird aufgerufen																				
@@ -317,6 +317,9 @@ public class DebugTroopArmyVariantDao {
 				int iImmutabletextThiskey = objType.getImmutabletextThisid();
 				Long lngThiskeyImmutabletext = new Long(iImmutabletextThiskey);
 			    
+				//Speziell für TROOP
+				int iDegreeOfCoverMax = objType.getDegreeOfCoverMax();
+				
 				//Variablen für die Ausgabe der Werte der Texte
 				String sDescription = null;
 				String sShorttext = null;
@@ -384,7 +387,7 @@ public class DebugTroopArmyVariantDao {
 				
 			    
 			    // public TroopFleetVariant(int iKey, int intMapMoveRange, String sImageUrl, TileDefaulttext objDefaulttext, TileImmutabletext objImmutabletext){
-				TroopArmyVariant objValue = new TroopArmyVariant(lngThiskey.intValue(),sUniquetext, sCategorytext, iMoveRange, sImageUrl, objDefaulttext, objImmutableText);
+				TroopArmyVariant objValue = new TroopArmyVariant(lngThiskey.intValue(),sUniquetext, sCategorytext, iMoveRange, sImageUrl, objDefaulttext, objImmutableText, iDegreeOfCoverMax);
 				
 				//Merke: EINE TRANSACTION = EINE SESSION ==>  neue session von der SessionFactory holen
 				session.save(objValue); //Hibernate Interceptor wird aufgerufen																				

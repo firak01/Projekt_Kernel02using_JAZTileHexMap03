@@ -11,7 +11,9 @@ import org.hibernate.Session;
 
 import use.thm.persistence.event.VetoFlag4ListenerZZZ;
 import use.thm.persistence.hibernate.HibernateContextProviderSingletonTHM;
+import use.thm.persistence.interfaces.ITroopArmyVariantTHM;
 import use.thm.persistence.interfaces.enums.IEnumSetTextTHM;
+import use.thm.persistence.interfaces.enums.IEnumSetTroopArmyVariantTHM;
 import use.thm.persistence.interfaces.enums.IEnumSetTroopVariantTHM;
 import use.thm.persistence.model.AreaCell;
 import use.thm.persistence.model.Immutabletext;
@@ -38,7 +40,8 @@ import basic.zBasic.util.datatype.enums.EnumZZZ;
 import basic.zBasic.util.datatype.enums.EnumSetInnerUtilZZZ.ThiskeyEnumMappingExceptionZZZ;
 import basic.zBasic.util.dataype.calling.ReferenceZZZ;
 import basic.zKernel.KernelZZZ;
-public class TroopArmyVariantDao<T> extends GeneralDaoZZZ<T> {
+
+public class TroopArmyVariantDao<T> extends TroopVariantDao<T> {
 	private static final long serialVersionUID = 1L;
 
 	/* Constructor
@@ -128,8 +131,11 @@ public class TroopArmyVariantDao<T> extends GeneralDaoZZZ<T> {
 			ReferenceZZZ<Integer> iMoveRange = new ReferenceZZZ("");
 			ReferenceZZZ<String> sImageUrl = new ReferenceZZZ("");
 			ReferenceZZZ<Long> lngThisidDefaulttext = new ReferenceZZZ("");
-			ReferenceZZZ<Long> lngThisidImmutabletext = new ReferenceZZZ("");					
-			this._fillValueImmutable(objValueTemp, sEnumAlias, lngThisValue, sName, sUniquetext, sCategorytext, iMoveRange, sImageUrl, lngThisidDefaulttext, lngThisidImmutabletext);
+			ReferenceZZZ<Long> lngThisidImmutabletext = new ReferenceZZZ("");	
+			
+			//Speziell für ARMY:
+			ReferenceZZZ<Integer> iDegreeOfCoverMax = new ReferenceZZZ("");
+			this._fillValueImmutable(objValueTemp, sEnumAlias, lngThisValue, sName, sUniquetext, sCategorytext, iMoveRange, sImageUrl, lngThisidDefaulttext, lngThisidImmutabletext, iDegreeOfCoverMax);
 			
 			//TODO .... nicht vergessen nun basierend auf den Thiskey-Einträgen für den Defaulttext und Immutabletext das jeweilige Objekt zu suchen.
 			//          Falls das Objekt nicht gefunden wird, muss es per TileDefaulttextDAO oder TileImmutabletextDAO erzeugt werden.
@@ -207,7 +213,7 @@ public class TroopArmyVariantDao<T> extends GeneralDaoZZZ<T> {
 			session = this.getSession(); //Die Session am Anfang ist durch die vielen anderen DaoObjekte und deren Aktionen bestimmt schon geschlossen.			
 			session.getTransaction().begin();//Ein zu persistierendes Objekt - eine Transaction, auch wenn mehrere in einer Transaction abzuhandeln wären, aber besser um Fehler abfangen zu können.			
 
-			TroopArmyVariant objValueVariant = new TroopArmyVariant(lngThisValue.get().intValue(), sUniquetext.get(), sCategorytext.get(), iMoveRange.get().intValue(), sImageUrl.get(), objDefaulttext, objImmutableText);		//Bei jedem Schleifendurchlauf neu machen, sonst wird lediglich nur 1 Datensatz immer wieder verändert.
+			TroopArmyVariant objValueVariant = new TroopArmyVariant(lngThisValue.get().intValue(), sUniquetext.get(), sCategorytext.get(), iMoveRange.get().intValue(), sImageUrl.get(), objDefaulttext, objImmutableText, iDegreeOfCoverMax.get().intValue());		//Bei jedem Schleifendurchlauf neu machen, sonst wird lediglich nur 1 Datensatz immer wieder verändert.
 			
 			//Merke: EINE TRANSACTION = EINE SESSION ==>  neue session von der SessionFactory holen
 			session.save(objValueVariant); //Hibernate Interceptor wird aufgerufen																				
@@ -329,48 +335,24 @@ public boolean delete(TroopArmyVariant objVariant) {
 */
 //Da Java nur ein CALL_BY_VALUE machen kann, weden hier für die eingefüllten Werte Referenz-Objekte verwendet.
 //Erst die normalen Enum-Werte, dann ... sUniquetext / sCategorytext / iMoveRange / sImageUrl / iThisKeyDefaulttext / iThiskeyImmutabletext;
-protected <T> void _fillValueImmutable(TroopArmyVariant objValue,String sEnumAlias, ReferenceZZZ<Long> objlngThiskey, 
+protected <T> void _fillValueImmutable(ITroopArmyVariantTHM objValue,String sEnumAlias, ReferenceZZZ<Long> objlngThiskey, 
 	ReferenceZZZ<String> objsName, ReferenceZZZ<String> objsUniquetext, ReferenceZZZ<String> objsCategorytext, 
-	ReferenceZZZ<Integer> objintMoveRange, ReferenceZZZ<String> objsImageUrl,ReferenceZZZ<Long> objlngThisidTextDefault, ReferenceZZZ<Long> objlngThisidTextImmutable){
+	ReferenceZZZ<Integer> objintMoveRange, ReferenceZZZ<String> objsImageUrl,
+	ReferenceZZZ<Long> objlngThisidTextDefault, ReferenceZZZ<Long> objlngThisidTextImmutable,
+	ReferenceZZZ<Integer> objintDegreeOfCoverMax){
 
 	//Merke: Direktes Reinschreiben geht wieder nicht wg. "bound exception"
 	//EnumSetDefaulttextUtilZZZ.getEnumConstant_DescriptionValue(EnumSetDefaulttextTestTypeTHM.class, sEnumAlias);
-			
+	
+	super._fillValueImmutable(objValue, sEnumAlias, objlngThiskey, objsName, objsUniquetext, objsCategorytext, objintMoveRange, objsImageUrl, objlngThisidTextDefault, objlngThisidTextImmutable);
+		
 	//Also: Klasse holen und danach CASTEN.
 	Class<?> objClass = ((KeyImmutable) objValue).getThiskeyEnumClass();
-	Long lngThiskey = EnumSetTroopArmyVariantUtilTHM.readEnumConstant_ThiskeyValue((Class<IEnumSetTroopVariantTHM>) objClass, sEnumAlias);//Das darf nicht NULL sein, sonst Fehler. Über diesen Schlüssel wird der Wert dann gefunden.
-	System.out.println("Gefundener Thiskey: " + lngThiskey.toString());
-	objlngThiskey.set(lngThiskey); //Damit wird CALL_BY_VALUE quasi gemacht....
-	
-	String sName = EnumSetTroopArmyVariantUtilTHM.readEnumConstant_NameValue((Class<IEnumSetTroopVariantTHM>) objClass, sEnumAlias);
-	System.out.println("Gefundener Typname: " + sName);
-	objsName.set(sName); //Damit wird CALL_BY_VALUE quasi gemacht....
-	
-	String sUniquetext = EnumSetTroopArmyVariantUtilTHM.readEnumConstant_UniquetextValue((Class<IEnumSetTroopVariantTHM>)objClass, sEnumAlias);
-	System.out.println("Gefundener Uniquewert: " + sUniquetext);
-	objsUniquetext.set(sUniquetext); //Damit wird CALL_BY_VALUE quasi gemacht....
-	
-	String sCategorytext = EnumSetTroopArmyVariantUtilTHM.readEnumConstant_CategorytextValue((Class<IEnumSetTroopVariantTHM>)objClass, sEnumAlias);
-	System.out.println("Gefundener Categorytext: " + sCategorytext);
-	objsCategorytext.set(sCategorytext); //Damit wird CALL_BY_VALUE quasi gemacht....
-		 
-	Integer iMoveRange = EnumSetTroopArmyVariantUtilTHM.readEnumConstant_MoveRangeValue((Class<IEnumSetTroopVariantTHM>)objClass, sEnumAlias);
-	System.out.println("Gefundener MoveRange: " + iMoveRange);
-	Integer intMoveRange = new Integer(iMoveRange);
-	objintMoveRange.set(intMoveRange); //Damit wird CALL_BY_VALUE quasi gemacht....
-		
-	String sImageUrl = EnumSetTroopArmyVariantUtilTHM.readEnumConstant_ImageUrlStringValue((Class<IEnumSetTroopVariantTHM>)objClass, sEnumAlias);
-	System.out.println("Gefundener ImageUrlString: " + sImageUrl);
-	objsImageUrl.set(sImageUrl); //Damit wird CALL_BY_VALUE quasi gemacht....	
-	 
-	Long lngThisKeyDefaulttext = EnumSetTroopArmyVariantUtilTHM.readEnumConstant_DefaulttextThisid((Class<IEnumSetTroopVariantTHM>)objClass, sEnumAlias);
-	System.out.println("Gefundener ThisKeyDefaulttext: " + lngThisKeyDefaulttext);
-	objlngThisidTextDefault.set(lngThisKeyDefaulttext); //Damit wird CALL_BY_VALUE quasi gemacht....
-	
-	Long lngThisKeyImmutabletext = EnumSetTroopArmyVariantUtilTHM.readEnumConstant_ImmutabletextThisid((Class<IEnumSetTroopVariantTHM>)objClass, sEnumAlias);
-	System.out.println("Gefundener ThisKeyImmutabletext: " + lngThisKeyImmutabletext);	
-	objlngThisidTextImmutable.set(lngThisKeyImmutabletext); //Damit wird CALL_BY_VALUE quasi gemacht....
 
+	//Speziell für ARMY	
+	Integer intDegreeOfCoverMax = EnumSetTroopArmyVariantUtilTHM.readEnumConstant_DegreeOfCoverMax((Class<IEnumSetTroopArmyVariantTHM>)objClass, sEnumAlias);
+	System.out.println("Gefundener DegreeOfCoverMax: " + intDegreeOfCoverMax);
+	objintDegreeOfCoverMax.set(intDegreeOfCoverMax); //Damit wird CALL_BY_VALUE quasi gemacht....		
 }
 			
 }//end class

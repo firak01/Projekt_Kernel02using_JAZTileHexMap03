@@ -21,6 +21,7 @@ import javax.persistence.Table;
 import javax.persistence.TableGenerator;
 import javax.persistence.Transient;
 
+import use.thm.persistence.interfaces.ITroopArmyVariantTHM;
 import use.thm.persistence.interfaces.ITroopFleetVariantTHM;
 import use.thm.persistence.interfaces.enums.IEnumSetTextTHM;
 import use.thm.persistence.interfaces.enums.IEnumSetTroopFleetVariantTHM;
@@ -47,10 +48,21 @@ import basic.zBasic.util.datatype.string.StringZZZ;
 @Access(AccessType.PROPERTY)
 @org.hibernate.annotations.Immutable //Ziel: Performancesteigerung. Siehe Buch "Java Persistance with Hibernate", S. 107. Dafür dürfen die POJOs aber keine public Setter-Methoden haben.
 
-//@Inheritance(strategy =  InheritanceType.JOINED )//ZIEL: Nur bestimmte Entiteis in einer eigenen Klasse //InheritanceType.TABEL_PER_CLASS) //Ziel: Jedes Entity der Vererbungshierarchie in einer eigenen Tabelle // InheritanceType.SINGLE_TABLE) //Hiermit werden alle Datensätze der Vererbungshierarchieklassen in einer Tabelle zusammengafasst und nur anhan ddes Discriminator Wertes unterschieden 
-//                                                                                                                   //Bei InheritanceType.TABLE_PER_CLASS gilt, es darf keinen Discriminator geben ... @DiscriminatorColumn(name="Disc", discriminatorType = DiscriminatorType.STRING) //Bei InheritanceType.SINGLE_TABLE) gilt: Voraussetzung für DiscriminatorValue in der AreaCell-Klasse. //Wird es wg. der Vererbung von HEXCell zu AreaType immer geben. Ohne Annotation ist das DTYPE und der wert ist gleich dem Klassennamen.
+//VERERBUNG...
+//ZIEL: Nur bestimmte Entities in einer eigenen Klasse 
+//@Inheritance(strategy =  InheritanceType.JOINED )
+
+//Ziel: Jedes Entity der Vererbungshierarchie in einer eigenen Tabelle 
+//@Inheritance(strategy =  InheritanceType.TABLE_PER_CLASS)
+//Bei InheritanceType.TABLE_PER_CLASS gilt, es darf keinen Discriminator geben ... @DiscriminatorColumn(name="Disc", discriminatorType = DiscriminatorType.STRING) //Bei InheritanceType.SINGLE_TABLE) gilt: Voraussetzung für DiscriminatorValue in der AreaCell-Klasse. //Wird es wg. der Vererbung von HEXCell zu AreaType immer geben. Ohne Annotation ist das DTYPE und der wert ist gleich dem Klassennamen.
+
+//Ziel: Hiermit werden alle Datensätze der Vererbungshierarchieklassen in einer Tabelle zusammengafasst und nur anhand des Discriminator Wertes unterschieden
+//@Inheritance(strategy = InheritanceType.SINGLE_TABLE)  
+//Merke: @DiscriminatorColumn(name="Disc", discriminatorType = DiscriminatorType.STRING) //Bei InheritanceType.SINGLE_TABLE) gilt: Voraussetzung für DiscriminatorValue in der AreaCell-Klasse. //Wird es wg. der Vererbung von HEXCell zu AreaType immer geben. Ohne Annotation ist das DTYPE und der wert ist gleich dem Klassennamen.
+//                                                                                                                  //Bei InheritanceType.TABLE_PER_CLASS gilt, es darf keinen Discriminator geben ... @DiscriminatorColumn(name="Disc", discriminatorType = DiscriminatorType.STRING) //Bei InheritanceType.SINGLE_TABLE) gilt: Voraussetzung für DiscriminatorValue in der AreaCell-Klasse. //Wird es wg. der Vererbung von HEXCell zu AreaType immer geben. Ohne Annotation ist das DTYPE und der wert ist gleich dem Klassennamen.
 @Table(name="FLEETVARIANT")
-public class TroopFleetVariant  extends KeyImmutable implements ITroopFleetVariantTHM, ICategoryProviderZZZ, Serializable, IOptimisticLocking{
+//public class TroopFleetVariant  extends KeyImmutable implements ITroopFleetVariantTHM, ICategoryProviderZZZ, Serializable, IOptimisticLocking{
+public class TroopFleetVariant  extends TroopVariant implements ITroopFleetVariantTHM{
 	private static final long serialVersionUID = 1113434456411176970L;
 	
 	//Variante 2: Realisierung eines Schlüssel über eine eindeutige ID, die per Generator erzeugt wird
@@ -89,6 +101,7 @@ public class TroopFleetVariant  extends KeyImmutable implements ITroopFleetVaria
 	private String sImageUrl;
 	
 	//... und weitere Eigenschaften.
+	private Integer intNumberOfTurret;
 	
 	//Der Default Contruktor wird für JPA - Abfragen wohl benötigt
 	 public TroopFleetVariant(){
@@ -98,18 +111,20 @@ public class TroopFleetVariant  extends KeyImmutable implements ITroopFleetVaria
 	 }
 	 	 
 	 //Konstruktor, an den alles übergeben wird. Wg. "Immutable".
-	 public TroopFleetVariant(int iKey, String sUniquetext, String sCategorytext, int intMapMoveRange, String sImageUrl, TileDefaulttext objDefaulttext, TileImmutabletext objImmutabletext){
-		 super();		
+	 public TroopFleetVariant(int iKey, String sUniquetext, String sCategorytext, int iMapMoveRange, String sImageUrl, TileDefaulttext objDefaulttext, TileImmutabletext objImmutabletext, int iNumberOfTurret){
+		 super(iKey, sUniquetext, sCategorytext, iMapMoveRange, sImageUrl, objDefaulttext, objImmutabletext);		
 		 this.setKeyType("TROOPFLEETVARIANT"); //TODO: HIER EINE ENUMERATION MACHEN ÜBER DIE VERSCHIEDENEN SCHLÜSSELWERTE? 
 		//20180130: Besser eine Konstante hier. Merke: Diese Konstante wird dann in den Dao Klassen auch verwendet . Z.B. in TileDefaulttextDao.searchKey(...)
 		 
-		 this.setThiskey(Long.valueOf(iKey)); 
-		 this.setUniquetext(sUniquetext);
-		 this.setCategorytext(sCategorytext);
-		 this.setMapMoveRange(Integer.valueOf(intMapMoveRange));
-		 this.setDefaulttextObject(objDefaulttext);
-		 this.setImmutabletextObject(objImmutabletext);
-		 this.setImageUrlString(sImageUrl);
+//		 this.setThiskey(Long.valueOf(iKey)); 
+//		 this.setUniquetext(sUniquetext);
+//		 this.setCategorytext(sCategorytext);
+//		 this.setMapMoveRange(Integer.valueOf(intMapMoveRange));
+//		 this.setDefaulttextObject(objDefaulttext);
+//		 this.setImmutabletextObject(objImmutabletext);
+//		 this.setImageUrlString(sImageUrl);
+//		 
+		 this.setNumberOfTurret(Integer.valueOf(iNumberOfTurret));
 	 }
 	 
 	//### Variante 2: Verwende auf dieser Ebene einen Generator, zum Erstellen einer ID
@@ -117,129 +132,137 @@ public class TroopFleetVariant  extends KeyImmutable implements ITroopFleetVaria
 	   //ABER: BEIM ERBEN VON KEY wira automatisch eine Tabelle Key erstellt.... das will ich nicht
 		
 	 
-		 @Id				
-		 @TableGenerator(name="lidGeneratorFleetVariant001", table="COMMON_FUER_IDGENERATOR_VARIANT",pkColumnName="nutzende_Klasse_als_String", pkColumnValue="SequenceTester",valueColumnName="naechster_id_wert",  initialValue=1, allocationSize=1)//@TableGenerator Name muss einzigartig im ganzen Projekt sein.
-		 @GeneratedValue(strategy = GenerationType.TABLE, generator="lidGeneratorFleetVariant001")		 //Das Klappt mit Hibernate Session, aber nicht mit dem JPA EntityManager...
-		 //Bei dieser Column Definition ist die Spalte nicht für @OneToMany mit @JoinTable zu gebrauchen @Column(name="TILE_ID_INCREMENTED", nullable=false, unique=true, columnDefinition="INTEGER NOT NULL UNIQUE  DEFAULT 1")
-		 //Entferne also das unique...
-		 @Column(name="TILE_ID_INCREMENTED", nullable=false)
-		 public int getId(){
-			 return this.iMyTestSequence;
-		 }
-		 public void setId(int iLid){
-			 this.iMyTestSequence = iLid;
-		 }
-	 
+//		 @Id				
+//		 @TableGenerator(name="lidGeneratorFleetVariant001", table="COMMON_FUER_IDGENERATOR_TROOPFLEETVARIANT",pkColumnName="nutzende_Klasse_als_String", pkColumnValue="SequenceTester",valueColumnName="naechster_id_wert",  initialValue=1, allocationSize=1)//@TableGenerator Name muss einzigartig im ganzen Projekt sein.
+//		 @GeneratedValue(strategy = GenerationType.TABLE, generator="lidGeneratorFleetVariant001")		 //Das Klappt mit Hibernate Session, aber nicht mit dem JPA EntityManager...
+//		 //Bei dieser Column Definition ist die Spalte nicht für @OneToMany mit @JoinTable zu gebrauchen @Column(name="TILE_ID_INCREMENTED", nullable=false, unique=true, columnDefinition="INTEGER NOT NULL UNIQUE  DEFAULT 1")
+//		 //Entferne also das unique...
+//		 @Column(name="TILE_ID_INCREMENTED", nullable=false)
+//		 public int getId(){
+//			 return this.iMyTestSequence;
+//		 }
+//		 public void setId(int iLid){
+//			 this.iMyTestSequence = iLid;
+//		 }
+//	 
 	 //### getter / setter
-		//TODO: Dies in eine Oberklasse für alle "Varianten" verschieben.
-		@Column(name="KEYTYPE")
-		@Access(AccessType.PROPERTY)
-		public String getKeyType(){
-			return super.getKeyType();
-		}	
-		public void setKeyType(String sKeyType){
-			super.setKeyType(sKeyType);
-		}
-		 		 
-		 //### Aus ICategoryProviderZZZ
-		 @Column(name="TILE_UNIQUETEXT", nullable=false)
-		 public String getUniquetext(){
-			 return this.sUniquetext;
-		 }
-		 protected void setUniquetext(String sUniquetext){
-			 this.sUniquetext = sUniquetext;
-		 }
-		 
-		 @Column(name="TILE_CATEGORYTEXT", nullable=false)
-		 public String getCategorytext(){
-			 return this.sCategorytext;
-		 }
-		 protected void setCategorytext(String sCategorytext){
-			 this.sCategorytext= sCategorytext;
-		 }
-		 
-		 //### Aus ITroopFleetVariant
-		 
-	//TODO GOON: Diese Properties dann in einen Oberklasse für alle Spielsteine bringen TileVariant
-	//1:1 Beziehung aufbauen
-		//Siehe Buch "Java Persistence API 2", Seite 90ff.	
-		//Variante 1) mit einer gemeinsamen Spalte
-		//@Transient //Ich will kein BLOB speichern
-		 
-		 //20180204: Nein, das ist eine 1:1 Beziehung
-//		@OneToOne(fetch = FetchType.LAZY)
-//		@JoinColumn(name="defaulttext_thiskey_id", nullable = true)//Hiermit wird die ID Spalte gespeichert
-		
-		 @ManyToOne(fetch = FetchType.LAZY)
-		 //@JoinColumn(name="defaulttext_thiskey_id", referencedColumnName = "thiskey_id") //Erst hierdurch wird die thiskey_id in der Spalte gespeichert. ABER: Fehlermeldung, weil der Wert ggfs. nicht unique sei. Allerdings sind logischerweise mehrere Objekte, die sich auf den gleichen Text beziehen erlaubt.
-		//Erst hierdurch wird die thiskey_id in der Spalte gespeichert. ABER: Fehlermeldung, weil der Wert ggfs. nicht unique sei. Allerdings sind logischerweise mehrere Objekte, die sich auf den gleichen Text beziehen erlaubt.
-		//Ohne die columnDefinition funktioniert das bei der SQLite Datenbank nicht.
-		 @JoinColumn(name="defaulttext_thiskey_id", referencedColumnName = "thiskey_id", nullable = true, unique= false,  columnDefinition="LONG NOT NULL DEFAULT 1") 
-	 public Defaulttext getDefaulttextObject(){
-		return this.objDefaulttext;
+	 @Column(name="FLEET_TURRETS", nullable=true)//muss nullable erlauben, wenn alle Varianten (z.B. auch von FLEET) in der gleichen Tabelle gespeichert werden.
+	 public Integer getNumberOfTurret(){
+		 return this.intNumberOfTurret;
+	 }
+	 protected void setNumberOfTurret(Integer intNumberOfTurret){
+		 this.intNumberOfTurret = intNumberOfTurret;				 
 	 }
 	 
-	 //Ist protected wg. immutable. Zwar ist der DefaultText an sich ängerbar (anders als der immutableText) aber die Fleet Variante ist immutable.
-	 protected void setDefaulttextObject(TileDefaulttext objDefaulttext){
-		 this.objDefaulttext = objDefaulttext;
-	 }
-	 
-	 
-	 //### getter / setter
-		//1:1 Beziehung aufbauen
-			//Siehe Buch "Java Persistence API 2", Seite 90ff.	
-			//Variante 1) mit einer gemeinsamen Spalte
-			//@Transient //Ich will kein BLOB speichern
-		 
-		 //20180203: NEIN: Das ist eine n:1 Beziehung
-			//@OneToOne(fetch = FetchType.LAZY)
-			//@JoinColumn(name="immutabletext_thiskey_id", nullable = true) //Hiermit wird die ID in der Spalte gespeichert
-		 
-		 @ManyToOne(fetch = FetchType.LAZY)
-		 //@JoinColumn(name="immutabletext_thiskey_id", referencedColumnName = "thiskey_id") //Erst hierdurch wird die thiskey_id in der Spalte gespeichert. ABER: Fehlermeldung, weil der Wert ggfs. nicht unique sei. Allerdings sind logischerweise mehrere Objekte, die sich auf den gleichen Text beziehen erlaubt.
-		 //Erst hierdurch wird die thiskey_id in der Spalte gespeichert. ABER: Fehlermeldung, weil der Wert ggfs. nicht unique sei. Allerdings sind logischerweise mehrere Objekte, die sich auf den gleichen Text beziehen erlaubt.
-  		 //Ohne die columnDefinition funktioniert das bei der SQLite Datenbank nicht.
-		 @JoinColumn(name="immutabletext_thiskey_id", referencedColumnName = "thiskey_id", nullable = true, unique= false,  columnDefinition="LONG NOT NULL DEFAULT 1") 
-		 public TileImmutabletext getImmutabletextObject(){
-			return this.objImmutabletext;
-		 }
-	 
-	 //Ist protected wg. immutable
-	 protected void setImmutabletextObject(TileImmutabletext objImmutabletext){
-		 this.objImmutabletext = objImmutabletext;
-	 }
-	 
-	 //TODO GOON: Diese Reichweite dann in einen Oberklasse für alle Spielsteine bringen
-	 @Column(name="TILE_MAPMOVE_RANGE", nullable=false)
-	 public Integer getMapMoveRange(){
-		 return this.intMapMoveRange;
-	 }
-	 protected void setMapMoveRange(Integer intMapMoveRange){
-		 this.intMapMoveRange = intMapMoveRange;				 
-	 }
-	 
-	 //TODO GOON: Diese Bildressource dann in eine Oberklasse für alle Spielsteine bringen
-	 //Merke: Das sollte NULL sein dürfen.
-	 @Column(name="TILE_IMAGEURL", nullable=true)
-	 public String getImageUrlString(){
-		 return this.sImageUrl;
-	 }
-	 protected void setImageUrlString(String sImageUrl){
-		 this.sImageUrl = sImageUrl;			 
-	 }
-	 
-	 //#### abstracte Methoden
-	 //20171106 KÄME DAS ETWA DURCH VERERBUNG AUS DER KLASSE "KEY" ???
-	 //JAAA!!!	 ABER DANN GIBT ES EINE EIGENE TABELLE "KEY" und das will ich nicht, darum hier extra definieren.
-	 @Column(name="thiskey_id",  nullable=false, unique=true, columnDefinition="LONG NOT NULL UNIQUE  DEFAULT 1")	
-	 @Override
-	public Long getThiskey() {
-		 return this.lKey;
-	}
-	@Override
-	public void setThiskey(Long thiskeyId) {
-		this.lKey = thiskeyId;
-	}
+//		//TODO: Dies in eine Oberklasse für alle "Varianten" verschieben.
+//		@Column(name="KEYTYPE")
+//		@Access(AccessType.PROPERTY)
+//		public String getKeyType(){
+//			return super.getKeyType();
+//		}	
+//		public void setKeyType(String sKeyType){
+//			super.setKeyType(sKeyType);
+//		}
+//		 		 
+//		 //### Aus ICategoryProviderZZZ
+//		 @Column(name="TILE_UNIQUETEXT", nullable=false)
+//		 public String getUniquetext(){
+//			 return this.sUniquetext;
+//		 }
+//		 protected void setUniquetext(String sUniquetext){
+//			 this.sUniquetext = sUniquetext;
+//		 }
+//		 
+//		 @Column(name="TILE_CATEGORYTEXT", nullable=false)
+//		 public String getCategorytext(){
+//			 return this.sCategorytext;
+//		 }
+//		 protected void setCategorytext(String sCategorytext){
+//			 this.sCategorytext= sCategorytext;
+//		 }
+//		 
+//		 //### Aus ITroopFleetVariant
+//		 
+//	//TODO GOON: Diese Properties dann in einen Oberklasse für alle Spielsteine bringen TileVariant
+//	//1:1 Beziehung aufbauen
+//		//Siehe Buch "Java Persistence API 2", Seite 90ff.	
+//		//Variante 1) mit einer gemeinsamen Spalte
+//		//@Transient //Ich will kein BLOB speichern
+//		 
+//		 //20180204: Nein, das ist eine 1:1 Beziehung
+////		@OneToOne(fetch = FetchType.LAZY)
+////		@JoinColumn(name="defaulttext_thiskey_id", nullable = true)//Hiermit wird die ID Spalte gespeichert
+//		
+//		 @ManyToOne(fetch = FetchType.LAZY)
+//		 //@JoinColumn(name="defaulttext_thiskey_id", referencedColumnName = "thiskey_id") //Erst hierdurch wird die thiskey_id in der Spalte gespeichert. ABER: Fehlermeldung, weil der Wert ggfs. nicht unique sei. Allerdings sind logischerweise mehrere Objekte, die sich auf den gleichen Text beziehen erlaubt.
+//		//Erst hierdurch wird die thiskey_id in der Spalte gespeichert. ABER: Fehlermeldung, weil der Wert ggfs. nicht unique sei. Allerdings sind logischerweise mehrere Objekte, die sich auf den gleichen Text beziehen erlaubt.
+//		//Ohne die columnDefinition funktioniert das bei der SQLite Datenbank nicht.
+//		 @JoinColumn(name="defaulttext_thiskey_id", referencedColumnName = "thiskey_id", nullable = true, unique= false,  columnDefinition="LONG NOT NULL DEFAULT 1") 
+//	 public Defaulttext getDefaulttextObject(){
+//		return this.objDefaulttext;
+//	 }
+//	 
+//	 //Ist protected wg. immutable. Zwar ist der DefaultText an sich ängerbar (anders als der immutableText) aber die Fleet Variante ist immutable.
+//	 protected void setDefaulttextObject(TileDefaulttext objDefaulttext){
+//		 this.objDefaulttext = objDefaulttext;
+//	 }
+//	 
+//	 
+//	 //### getter / setter
+//		//1:1 Beziehung aufbauen
+//			//Siehe Buch "Java Persistence API 2", Seite 90ff.	
+//			//Variante 1) mit einer gemeinsamen Spalte
+//			//@Transient //Ich will kein BLOB speichern
+//		 
+//		 //20180203: NEIN: Das ist eine n:1 Beziehung
+//			//@OneToOne(fetch = FetchType.LAZY)
+//			//@JoinColumn(name="immutabletext_thiskey_id", nullable = true) //Hiermit wird die ID in der Spalte gespeichert
+//		 
+//		 @ManyToOne(fetch = FetchType.LAZY)
+//		 //@JoinColumn(name="immutabletext_thiskey_id", referencedColumnName = "thiskey_id") //Erst hierdurch wird die thiskey_id in der Spalte gespeichert. ABER: Fehlermeldung, weil der Wert ggfs. nicht unique sei. Allerdings sind logischerweise mehrere Objekte, die sich auf den gleichen Text beziehen erlaubt.
+//		 //Erst hierdurch wird die thiskey_id in der Spalte gespeichert. ABER: Fehlermeldung, weil der Wert ggfs. nicht unique sei. Allerdings sind logischerweise mehrere Objekte, die sich auf den gleichen Text beziehen erlaubt.
+//  		 //Ohne die columnDefinition funktioniert das bei der SQLite Datenbank nicht.
+//		 @JoinColumn(name="immutabletext_thiskey_id", referencedColumnName = "thiskey_id", nullable = true, unique= false,  columnDefinition="LONG NOT NULL DEFAULT 1") 
+//		 public TileImmutabletext getImmutabletextObject(){
+//			return this.objImmutabletext;
+//		 }
+//	 
+//	 //Ist protected wg. immutable
+//	 protected void setImmutabletextObject(TileImmutabletext objImmutabletext){
+//		 this.objImmutabletext = objImmutabletext;
+//	 }
+//	 
+//	 //TODO GOON: Diese Reichweite dann in einen Oberklasse für alle Spielsteine bringen
+//	 @Column(name="TILE_MAPMOVE_RANGE", nullable=false)
+//	 public Integer getMapMoveRange(){
+//		 return this.intMapMoveRange;
+//	 }
+//	 protected void setMapMoveRange(Integer intMapMoveRange){
+//		 this.intMapMoveRange = intMapMoveRange;				 
+//	 }
+//	 
+//	 //TODO GOON: Diese Bildressource dann in eine Oberklasse für alle Spielsteine bringen
+//	 //Merke: Das sollte NULL sein dürfen.
+//	 @Column(name="TILE_IMAGEURL", nullable=true)
+//	 public String getImageUrlString(){
+//		 return this.sImageUrl;
+//	 }
+//	 protected void setImageUrlString(String sImageUrl){
+//		 this.sImageUrl = sImageUrl;			 
+//	 }
+//	 
+//	 //#### abstracte Methoden
+//	 //20171106 KÄME DAS ETWA DURCH VERERBUNG AUS DER KLASSE "KEY" ???
+//	 //JAAA!!!	 ABER DANN GIBT ES EINE EIGENE TABELLE "KEY" und das will ich nicht, darum hier extra definieren.
+//	 @Column(name="thiskey_id",  nullable=false, unique=true, columnDefinition="LONG NOT NULL UNIQUE  DEFAULT 1")	
+//	 @Override
+//	public Long getThiskey() {
+//		 return this.lKey;
+//	}
+//	@Override
+//	public void setThiskey(Long thiskeyId) {
+//		this.lKey = thiskeyId;
+//	}
 	
 	 @Transient
 	 public Class getThiskeyEnumClass() {
@@ -258,12 +281,15 @@ public class TroopFleetVariant  extends KeyImmutable implements ITroopFleetVaria
 		//#######################################################
 		public enum EnumTroopFleetVariant implements IEnumSetTroopFleetVariantTHM,  ICategoryProviderZZZ, IThiskeyProviderZZZ<Long>{//Folgendes geht nicht, da alle Enums schon von einer Java BasisKlasse erben... extends EnumSetMappedBaseZZZ{
 			
-		//lKey / sUniquetext / sCategorytext / iMoveRange / sImageUrl / iThisKeyDefaulttext / iThiskeyImmutabletext;
+		//lKey / sUniquetext / sCategorytext / iMoveRange / sImageUrl / 
+		//iThisKeyDefaulttext / iThiskeyImmutabletext;
+		//Speziell für FLEET:
+		//iNumberOfTurret
 	   	 @IFieldDescription(description = "DFLEETVARIANT01") 
-	   	T01(1,"DFLEET01","Destroyer",5,"url01",210,20),
+	   	T01(21,"DFLEET01","Destroyer",5,"url01",210,20,7),
 	   	
 	   	 @IFieldDescription(description = "DFLEETVARIANT02") 
-	   	T02(2,"DFLEET02","Destroyer",3,"url02",220,20);
+	   	T02(22,"DFLEET02","Destroyer",3,"url02",220,20,3);
 	   	   	
 	   private Long lKey;
 	   private String sUniquetext, sCategorytext;
@@ -272,17 +298,22 @@ public class TroopFleetVariant  extends KeyImmutable implements ITroopFleetVaria
 	   private String sImageUrl;
 	   private int iMoveRange;
 	   
+	   //Speziell für FLEET
+	   private int iNumberOfTurret;
+	   
 	   
 
 	   //Merke: Enums haben keinen public Konstruktor, können also nicht intiantiiert werden, z.B. durch Java-Reflektion.
-	   EnumTroopFleetVariant(int iKey, String sUniquetext,String sCategorytext, int iMoveRange, String sImageUrl, int iThisKeyDefaulttext, int iThiskeyImmutabletext){
+	   EnumTroopFleetVariant(int iKey, String sUniquetext,String sCategorytext, int iMoveRange, String sImageUrl, int iThisKeyDefaulttext, int iThiskeyImmutabletext, int iNumberOfTurret){
 	       this.lKey = Long.valueOf(iKey);
 	       this.sUniquetext = sUniquetext;
 	       this.sCategorytext = sCategorytext;
 	       this.iMoveRange = iMoveRange;
 	       this.sImageUrl = sImageUrl;
 	       this.iThiskeyDefaulttext = iThisKeyDefaulttext;
-	       this.iThiskeyImmutabletext = iThiskeyImmutabletext;	       
+	       this.iThiskeyImmutabletext = iThiskeyImmutabletext;	
+	       
+	       this.iNumberOfTurret = iNumberOfTurret;
 	   }
 	   
 	   //Merke: Enums haben keinen public Konstruktor, können also nicht intiantiiert werden, z.B. durch Java-Reflektion.
@@ -326,6 +357,11 @@ public class TroopFleetVariant  extends KeyImmutable implements ITroopFleetVaria
 
 		public int getImmutabletextThisid() {
 			return this.iThiskeyImmutabletext;
+		}
+		
+		//### Speziell für FLEET
+		public int getNumberOfTurret() {
+			return this.iNumberOfTurret;
 		}
 		
 		//#### Methode aus ICategoryProviderZZZ

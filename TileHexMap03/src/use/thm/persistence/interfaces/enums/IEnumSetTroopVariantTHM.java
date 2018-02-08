@@ -18,5 +18,5 @@ public interface IEnumSetTroopVariantTHM extends IThiskeyUserZZZ,IThiskeyProvide
 	public int getMapMoveRange();
 	public String getImageUrlString();
 	public int getDefaulttextThisid();
-	public int getImmutabletextThisid();  	
+	public int getImmutabletextThisid();	
 }

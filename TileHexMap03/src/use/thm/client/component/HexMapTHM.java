@@ -574,14 +574,12 @@ public class HexMapTHM extends KernelUseObjectZZZ implements ITileEventUserTHM {
 			Integer intX = new Integer(iX);			
 			String sX = intX.toString();
 			if(iX>iNrOfHexesX) iNrOfHexesX = iX; //Auch ein Weg die Kartenbreite zu ermitteln, ohne eine zusätzliche Abfrage zu starten.
-			
-			
+						
 			int iY = objCell.getMapY();
 			Integer intY = new Integer(iY);
 			String sY = intY.toString();
 			if(iY>iNrOfHexesY) iNrOfHexesY = iY; //Auch ein Weg die Kartenhöhe zu ermitteln, ohne eine zusätzliche Abfrage zu starten.
-			
-						
+									
 			//+++ Das Passende "Panel" erzeugen und in die Karte packen.
 			String sHexTypeSub = objCell.getAreaType(); //LA= LAND, OC=OCEAN       //AR=Area objCell.getHexType();
 			if(sHexTypeSub.equalsIgnoreCase("OC")){
@@ -607,8 +605,6 @@ public class HexMapTHM extends KernelUseObjectZZZ implements ITileEventUserTHM {
 				hmCell.put(sX, sY, objCellThmTemp);
 	
 				iNrOfHexes++; //Zelle zur Summe hinzufügen		
-	
-	
 			}else if(sHexTypeSub.equalsIgnoreCase("LA")){
 				AreaCellLand objCellTemp = (AreaCellLand) objCell;			
 				objCellThmTemp = new  AreaCellTHM(this.getKernelObject(), this,  objCellTemp, this.getSideLength());  //ToDo: Dass sollen dann erst "Areas" werden, dh. mit Gel�ndeinformationen, Danach "Provinzen" mit Geb�udeinfos/Armeeinfos
@@ -628,17 +624,7 @@ public class HexMapTHM extends KernelUseObjectZZZ implements ITileEventUserTHM {
 				objTileMetaEventBroker.addListenerTileMeta(objCellThmTemp);
 				
 				//###############
-				//Die Zelle in eine HashMap packen, die für´s UI verwendet wird	
-//				int iX = objCellTemp.getMapX();
-//				Integer intX = new Integer(iX);			
-//				String sX = intX.toString();
-//				if(iX>iNrOfHexesX) iNrOfHexesX = iX; //Auch ein Weg die Kartenbreite zu ermitteln, ohne eine zusätzliche Abfrage zu starten.
-//				
-//				int iY = objCellTemp.getMapY();
-//				Integer intY = new Integer(iY);
-//				String sY = intY.toString();
-//				if(iY>iNrOfHexesY) iNrOfHexesY = iY; //Auch ein Weg die Kartenhöhe zu ermitteln, ohne eine zusätzliche Abfrage zu starten.
-//				
+				//Die Zelle in eine HashMap packen, die für´s UI verwendet wird		
 				hmCell.put(sX, sY, objCellThmTemp);
 	
 				iNrOfHexes++; //Zelle zur Summe hinzufügen		
@@ -649,7 +635,7 @@ public class HexMapTHM extends KernelUseObjectZZZ implements ITileEventUserTHM {
 				throw ez;
 			}		
 		}// end for AREA
-		
+		this.iNrOfHexes = iNrOfHexes;  //Angabe ist wichtig für das Layout. s. HexagonalLayoutTHM.preferredLayoutSize(...) -> ...computeSize(...). Ohne das gibt es keine Scrolleisten.
 		this.setColumnMax(iNrOfHexesX);
 		this.setRowMax(iNrOfHexesY);
 		
@@ -1052,7 +1038,7 @@ public class HexMapTHM extends KernelUseObjectZZZ implements ITileEventUserTHM {
 			
 			//FGL 20170415: Die Session nicht schliessen, da man auch noch die Spielsteine platzieren muss
 			//session.close();	
-			this.iNrOfHexes = iNrOfHexes;
+			this.iNrOfHexes = iNrOfHexes;//Angabe ist wichtig für das Layout. s. HexagonalLayoutTHM.preferredLayoutSize(...) -> ...computeSize(...). Ohne das gibt es keine Scrolleisten.
 			if(iNrOfHexes >= 1) bReturn = true;
 		}//end main
 		return bReturn;

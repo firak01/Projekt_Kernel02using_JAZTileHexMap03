@@ -45,8 +45,8 @@ public class PanelFrmMapSingletonTHM  extends KernelJPanelCascadedZZZ implements
 		PanelMain_CENTERTHM objPanelCenter = new PanelMain_CENTERTHM(objKernel, this, hmFlag);  
 		this.setPanelSub("CENTER", objPanelCenter);//Backend Hashtable hinzuf�gen
 		
-		//FGL 20130627: Das Panel nicht mehr direkt, sondern �ber den JScrollPane einbinden this.add(objPanelCenter, BorderLayout.CENTER); //Frontend hinzuf�gen
-		JScrollPane scrollPaneCenter = new JScrollPane(objPanelCenter); //Frontend hinzuf�gen
+		//FGL 20130627: Das Panel nicht mehr direkt, sondern über den JScrollPane einbinden this.add(objPanelCenter, BorderLayout.CENTER); //Frontend hinzuf�gen
+		JScrollPane scrollPaneCenter = new JScrollPane(objPanelCenter); //Frontend hinzufügen
 		this.add(scrollPaneCenter, BorderLayout.CENTER);
 		
 		//FGL 20130627: Als Drop Ziel nun den JScrollPane. Das Panel als Drop Ziel funktioniert nicht immer, wenn gescrollt wurde.

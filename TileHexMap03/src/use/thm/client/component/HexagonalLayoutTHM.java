@@ -57,7 +57,7 @@ public class HexagonalLayoutTHM extends KernelUseObjectZZZ implements LayoutMana
 	 */
 	public void computeSizes(Container parent){
 		//int iCompTotal = parent.getComponentCount(); //Gesamtzahl der Sechsecke im Panel
-		//!!! Achtung: Was tun, wenn die Spielfiguren auch hinzugef�gt werden ??? Dann ggf. die Gesamtzahl im Konstruktor des Layout Managers mitgeben !!!
+		//!!! Achtung: Was tun, wenn die Spielfiguren auch hinzugefügt werden ??? Dann ggf. die Gesamtzahl im Konstruktor des Layout Managers mitgeben !!!
 		HexMapTHM objMap = this.getHexMap();
 		int iCompTotal = objMap.getTotalNumberOfCell();
 		
@@ -70,7 +70,7 @@ public class HexagonalLayoutTHM extends KernelUseObjectZZZ implements LayoutMana
 		this.iMinimalHeigth = 0;
 		
  		for (int i = 0; i < iCompTotal; i++){
-			//!!! Vielleicht ist es eine L�sung auf den Namen der Komponente/ Classe der Komponente zuzugreifen und nur bestimmten Komponenten
+			//!!! Vielleicht ist es eine Lösung auf den Namen der Komponente/ Classe der Komponente zuzugreifen und nur bestimmten Komponenten
 			//     in die Berechnung aufzunehmen.
 			Component c = parent.getComponent(i);
 			if(c.isVisible()){
@@ -84,10 +84,10 @@ public class HexagonalLayoutTHM extends KernelUseObjectZZZ implements LayoutMana
 			//Berechnung der Breite			
 			this.iPreferredWidth += d.width/2;  //in der zweiten Reihe erfolgt ein Versatz um eine Halbe breite. Dies muss zu gesamtbreite hinzugerechnete werden.
 			//FGL VOR 20130625 this.iPreferredWidth += (d.width * this.getColumnMax());
-			//FGL 20130626 F�ge den Bundsteg hinzu, der notwendig geworden ist, damit das Panel auf das DROP Event eines von au�en reingezogenen Objekts reagiert.
+			//FGL 20130626 Füge den Bundsteg hinzu, der notwendig geworden ist, damit das Panel auf das DROP Event eines von au�en reingezogenen Objekts reagiert.
 			this.iPreferredWidth += (d.width * this.getColumnMax())+ this.getGapLeft();
 			
-			//Berechnung der H�he �ber die Anzahl der Zeilen. Achtung: Es gibt einen Versatz			
+			//Berechnung der Höhe über die Anzahl der Zeilen. Achtung: Es gibt einen Versatz			
 			int iRow = objMap.getRowTotal();
 			int iOffset = HexCellTHM.getRowHeightOffset(this.getSideLength()) * iRow;
 			this.iPreferredHeigth += (d.height*iRow)- iOffset + this.getGapDown();
@@ -167,7 +167,7 @@ public class HexagonalLayoutTHM extends KernelUseObjectZZZ implements LayoutMana
 		return null;
 	}
 
-	/**Berechnet die bevorzugten Gr��enma�e f�r das angegebene Panel
+	/**Berechnet die bevorzugten Größenmaße f�r das angegebene Panel
 	 *  bei den gegebenen Komponenten in dem angegebenen Eltern Container
 	 */ 
 	public Dimension preferredLayoutSize(Container parent) {
@@ -176,7 +176,7 @@ public class HexagonalLayoutTHM extends KernelUseObjectZZZ implements LayoutMana
 		this.computeSizes(parent);
 		
 		
-		//Always add the container�s insets !
+		//Always add the container's insets !
 		Insets insets = parent.getInsets();
 		dim.width = this.getPreferredWidth() + insets.left + insets.right;
 		dim.height = this.getPreferredHeight() + insets.top + insets.bottom;

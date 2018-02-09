@@ -166,7 +166,7 @@ public class TileImmutabletextDao<T> extends ImmutabletextDao<T> {
 					//String sDescription = new String("");
 					//this._fillValueImmutable(objValueTemp, sEnumAlias, lngThisValue, sName, sShorttext, sLongtext, sDescription); 
 
-					//Hier der Workaround mit Refenz-Objekten, aus denen dann der Wert geholt werden kann. Also PASS_BY_REFERENCE durch auslesen der Properties der Objekte.  
+					//Hier der Workaround mit Referenz-Objekten, aus denen dann der Wert geholt werden kann. Also PASS_BY_REFERENCE durch auslesen der Properties der Objekte.  
 					ReferenceZZZ<Long> lngThisValue = new ReferenceZZZ(4);
 					ReferenceZZZ<String> sName = new ReferenceZZZ("");
 					ReferenceZZZ<String> sShorttext = new ReferenceZZZ("");

@@ -569,6 +569,20 @@ public class HexMapTHM extends KernelUseObjectZZZ implements ITileEventUserTHM {
 		int iNrOfHexesX=-1;
 		int iNrOfHexesY=-1;
 		for(AreaCell objCell : listAreaCell){
+			//+++ Ohne eine weitere Abfrage "zählen" was die maximale Anzahl Zeilen / Spalten ist			
+			int iX = objCell.getMapX();
+			Integer intX = new Integer(iX);			
+			String sX = intX.toString();
+			if(iX>iNrOfHexesX) iNrOfHexesX = iX; //Auch ein Weg die Kartenbreite zu ermitteln, ohne eine zusätzliche Abfrage zu starten.
+			
+			
+			int iY = objCell.getMapY();
+			Integer intY = new Integer(iY);
+			String sY = intY.toString();
+			if(iY>iNrOfHexesY) iNrOfHexesY = iY; //Auch ein Weg die Kartenhöhe zu ermitteln, ohne eine zusätzliche Abfrage zu starten.
+			
+						
+			//+++ Das Passende "Panel" erzeugen und in die Karte packen.
 			String sHexTypeSub = objCell.getAreaType(); //LA= LAND, OC=OCEAN       //AR=Area objCell.getHexType();
 			if(sHexTypeSub.equalsIgnoreCase("OC")){
 				AreaCellOcean objCellTemp = (AreaCellOcean) objCell;			
@@ -589,18 +603,7 @@ public class HexMapTHM extends KernelUseObjectZZZ implements ITileEventUserTHM {
 				objTileMetaEventBroker.addListenerTileMeta(objCellThmTemp);
 				
 				//###############
-				//Die Zelle in eine HashMap packen, die für´s UI verwendet wird	
-				int iX = objCellTemp.getMapX();
-				Integer intX = new Integer(iX);			
-				String sX = intX.toString();
-				if(iX>iNrOfHexesX) iNrOfHexesX = iX; //Auch ein Weg die Kartenbreite zu ermitteln, ohne eine zusätzliche Abfrage zu starten.
-				
-				
-				int iY = objCellTemp.getMapY();
-				Integer intY = new Integer(iY);
-				String sY = intY.toString();
-				if(iY>iNrOfHexesY) iNrOfHexesY = iY; //Auch ein Weg die Kartenbreite zu ermitteln, ohne eine zusätzliche Abfrage zu starten.
-				
+				//Die Zelle in eine HashMap packen, die für´s UI verwendet wird				
 				hmCell.put(sX, sY, objCellThmTemp);
 	
 				iNrOfHexes++; //Zelle zur Summe hinzufügen		
@@ -626,21 +629,24 @@ public class HexMapTHM extends KernelUseObjectZZZ implements ITileEventUserTHM {
 				
 				//###############
 				//Die Zelle in eine HashMap packen, die für´s UI verwendet wird	
-				int iX = objCellTemp.getMapX();
-				Integer intX = new Integer(iX);			
-				String sX = intX.toString();
-				if(iX>iNrOfHexesX) iNrOfHexesX = iX; //Auch ein Weg die Kartenbreite zu ermitteln, ohne eine zusätzliche Abfrage zu starten.
-				
-				int iY = objCellTemp.getMapY();
-				Integer intY = new Integer(iY);
-				String sY = intY.toString();
-				if(iY>iNrOfHexesY) iNrOfHexesY = iY; //Auch ein Weg die Kartenbreite zu ermitteln, ohne eine zusätzliche Abfrage zu starten.
-				
+//				int iX = objCellTemp.getMapX();
+//				Integer intX = new Integer(iX);			
+//				String sX = intX.toString();
+//				if(iX>iNrOfHexesX) iNrOfHexesX = iX; //Auch ein Weg die Kartenbreite zu ermitteln, ohne eine zusätzliche Abfrage zu starten.
+//				
+//				int iY = objCellTemp.getMapY();
+//				Integer intY = new Integer(iY);
+//				String sY = intY.toString();
+//				if(iY>iNrOfHexesY) iNrOfHexesY = iY; //Auch ein Weg die Kartenhöhe zu ermitteln, ohne eine zusätzliche Abfrage zu starten.
+//				
 				hmCell.put(sX, sY, objCellThmTemp);
 	
 				iNrOfHexes++; //Zelle zur Summe hinzufügen		
 			}else{
-				System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": Unbekanntes Geländeobjekt. '" + sHexTypeSub + "'");
+				String sError = "Unbekanntes Geländeobjekt. '" + sHexTypeSub + "'";
+				System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": " +sError);
+				ExceptionZZZ ez = new ExceptionZZZ(sError, iERROR_PARAMETER_VALUE, this.getClass().getName(), ReflectCodeZZZ.getMethodCurrentName());
+				throw ez;
 			}		
 		}// end for AREA
 		
@@ -967,12 +973,14 @@ public class HexMapTHM extends KernelUseObjectZZZ implements ITileEventUserTHM {
 			//Zwei verschachtelte Schleifen, Aussen: Solange wie es "Provinzen" gibt...
 			//                                                  Innen:   von 1 bis maximaleSpaltenanzahl...
 			int iY = 0;
+			int iRowMax = this.getRowMax();
+			int iColumnMax = this.getColumnMax(); 
 			do{
 			iY++;
 			Integer intY = new Integer(iY);
 			String sY = intY.toString();
 			
-			for(int iX=1; iX <= this.getColumnMax(); iX++){
+			for(int iX=1; iX <= iColumnMax; iX++){
 				Integer intX = new Integer(iX);				
 				String sX = intX.toString();
 				
@@ -1040,7 +1048,7 @@ public class HexMapTHM extends KernelUseObjectZZZ implements ITileEventUserTHM {
 					//           Daher sollte man vorher prüfen, ob es nicht schon solch ein Objekt gibt.
 					session.getTransaction().commit();										
 				}//End for iX
-			}while(iY< this.getRowMax());
+			}while(iY< iRowMax);
 			
 			//FGL 20170415: Die Session nicht schliessen, da man auch noch die Spielsteine platzieren muss
 			//session.close();	

@@ -353,5 +353,9 @@ protected <T> void _fillValueImmutable(ITroopFleetVariantTHM objValue,String sEn
 	objintNumberOfTurret.set(intNumberOfTurret); //Damit wird CALL_BY_VALUE quasi gemacht....
 }
 
+@Override
+public String getKeyTypeUsed() {
+	return "TROOPFLEETVARIANT";
+}
 			
 }//end class

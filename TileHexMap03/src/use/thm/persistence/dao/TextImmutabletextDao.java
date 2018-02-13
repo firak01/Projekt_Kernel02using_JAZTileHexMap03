@@ -12,6 +12,7 @@ import org.hibernate.Session;
 import use.thm.persistence.event.VetoFlag4ListenerZZZ;
 import use.thm.persistence.hibernate.HibernateContextProviderSingletonTHM;
 import use.thm.persistence.model.AreaCell;
+import use.thm.persistence.model.Immutabletext;
 import use.thm.persistence.model.Key;
 import use.thm.persistence.model.Defaulttext;
 import use.thm.persistence.model.TextDefaulttext;
@@ -62,9 +63,7 @@ public class TextImmutabletextDao<T> extends ImmutabletextDao<T> {
 			
 			try {				
 				KernelZZZ objKernel = new KernelZZZ(); //Merke: Die Service Klasse selbst kann wohl nicht das KernelObjekt extenden!
-				HibernateContextProviderSingletonTHM objContextHibernate;
-				
-				objContextHibernate = HibernateContextProviderSingletonTHM.getInstance(objKernel);					
+				HibernateContextProviderSingletonTHM objContextHibernate = HibernateContextProviderSingletonTHM.getInstance(objKernel);					
 				//Darüber hat diese Methode nicht zu befinden... objContextHibernate.getConfiguration().setProperty("hibernate.hbm2ddl.auto", "update");  //! Jetzt erst wird jede Tabelle über den Anwendungsstart hinaus gespeichert UND auch wiedergeholt.				
 			
 				//###################
@@ -190,29 +189,42 @@ public class TextImmutabletextDao<T> extends ImmutabletextDao<T> {
 	boolean bReturn = false;
 	main:{
 		//Nun alle holen
-		ArrayList<TextDefaulttext> listaText = (ArrayList<TextDefaulttext>) this.findLazyAll();
+		ArrayList<TextImmutabletext> listaText = (ArrayList<TextImmutabletext>) this.findLazyAll();
 		
-		for(TextDefaulttext objText : listaText){
-			System.out.println("Lösche: Texttext.toString(): " + objText.toString());
+		for(TextImmutabletext objText : listaText){
+			System.out.println("Lösche: Immutabletext.toString(): " + objText.toString());
 			String sDescriptionStored = objText.getDescription();
 			System.out.println("Description (gespeichert): " + sDescriptionStored);	
 
-			this.delete(objText);
+			//!!! SICHERSTELLEN, DASS NICHT NOCH ANDERE GELOESCHT WERDEN !!!
+			String sKeyType = objText.getKeyType();
+			if(this.getKeyTypeUsed().equalsIgnoreCase(sKeyType)){
+				this.delete(objText);
+			}
 		}//End for
 		bReturn = true;
 		
 	}//End main
 	return bReturn;				
 }
+	
+	public boolean delete(TextImmutabletext objText) {
+		boolean bReturn = false;
+		main:{
+			if(objText==null)break main;
+			
+			//!!! SICHERSTELLEN, DASS NICHT NOCH ANDERE GELOESCHT WERDEN !!!
+			String sKeyType = objText.getKeyType();
+			if(this.getKeyTypeUsed().equalsIgnoreCase(sKeyType)){
+				bReturn = super.delete((T) objText);
+			}
+		}//end main
+		return bReturn;
+	}
 
-public boolean delete(TextDefaulttext text) {
-	boolean bReturn = false;
-	main:{
-		if(text==null)break main;
-		bReturn = super.delete((T) text);
-	}//end main
-	return bReturn;
-}
+	public String getKeyTypeUsed(){		        	
+		return "IMMUTABLETEXTTEXT";
+	}
 	
 	//####### EIGENE METHODEN ###########
 	//....

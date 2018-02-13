@@ -17,6 +17,7 @@ import use.thm.persistence.model.Immutabletext;
 import use.thm.persistence.model.Key;
 import use.thm.persistence.model.Defaulttext;
 import use.thm.persistence.model.TextDefaulttext;
+import use.thm.persistence.model.TextImmutabletext;
 import use.thm.persistence.model.TileDefaulttext;
 import use.thm.persistence.model.TileImmutabletext;
 import use.thm.persistence.model.TileImmutabletext.EnumTileImmutabletext;
@@ -283,14 +284,23 @@ public class TileImmutabletextDao<T> extends ImmutabletextDao<T> {
 	return bReturn;				
 }
 
-public boolean delete(TileImmutabletext text) {
-	boolean bReturn = false;
-	main:{
-		if(text==null)break main;
-		bReturn = super.delete((T) text);
-	}//end main
-	return bReturn;
-}
+	public boolean delete(TileImmutabletext objText) {
+		boolean bReturn = false;
+		main:{
+			if(objText==null)break main;
+			
+			//!!! SICHERSTELLEN, DASS NICHT NOCH ANDERE GELOESCHT WERDEN !!!
+			String sKeyType = objText.getKeyType();
+			if(this.getKeyTypeUsed().equalsIgnoreCase(sKeyType)){
+				bReturn = super.delete((T) objText);
+			}
+		}//end main
+		return bReturn;
+	}
+
+	public String getKeyTypeUsed(){
+		return "IMMUTABLETILETEXT";
+	}
 	
 	//####### EIGENE METHODEN ###########
 	//....

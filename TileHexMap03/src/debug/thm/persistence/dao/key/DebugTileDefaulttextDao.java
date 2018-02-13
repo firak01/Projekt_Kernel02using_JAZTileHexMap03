@@ -7,7 +7,7 @@ import org.hibernate.Session;
 
 import debug.thm.persistence.keytable.DebugKeyTable_Version_TileDefaulttextTHM;
 import debug.thm.persistence.keytable.DebugKeyTable_Version_TileImmutabletextTHM;
-import use.thm.persistence.dao.KeyDao;
+import use.thm.persistence.dao.AbstractKeyDao;
 import use.thm.persistence.dao.TileDao;
 import use.thm.persistence.dao.TileDefaulttextDao;
 import use.thm.persistence.dao.TileImmutabletextDao;
@@ -133,7 +133,7 @@ public class DebugTileDefaulttextDao {
 				
 				TileDefaulttextDao daoKey = new TileDefaulttextDao(objContextHibernate);
 				String sKeytype = new String("");
-				Long lngThiskey = new Long(1);
+				Long lngThiskey = new Long(110);
 				
 				//TODO GOON 2017-06-14: Hier CellId-Schlüsselwerte vorbereiten und an die daoTroop.readByCellId(...) übergeben...
 //				sKeytype = "NIXVALUE";
@@ -172,7 +172,7 @@ public class DebugTileDefaulttextDao {
 				
 				TileDefaulttextDao daoKey = new TileDefaulttextDao(objContextHibernate);
 				String sKeytype = new String("DEFAULTTILETEXT");		
-				Long lngThiskey = new Long(1);
+				Long lngThiskey = new Long(110);
 
 				TileDefaulttext objKey02 = (TileDefaulttext) daoKey.searchKey(sKeytype, lngThiskey );
 				if(objKey02==null){

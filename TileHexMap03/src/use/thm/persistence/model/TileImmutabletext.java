@@ -49,12 +49,12 @@ import basic.zBasic.util.genericEnum.ObjectTestMappedValue.EnumSetInnerMappedTes
 //Das braucht in der erbenden Klasse nicht angegeben zu werden.
 @Inheritance(strategy =  InheritanceType.TABLE_PER_CLASS) //Ziel: Jedes Entity der Vererbungshierarchie in einer eigenen Tabelle 
 @Access(AccessType.PROPERTY) 
-@Table(name="k_immutabletext_tile") //Eine eigene Tabelle notwendig, da Thiskey eindeutig sein soll.
+@Table(name="K_IMMUTABLETEXT_TILE") //Eine eigene Tabelle notwendig, da Thiskey eindeutig sein soll.
 public class TileImmutabletext<IEnumTileDefaulttext> extends Immutabletext  implements IOptimisticLocking{
 		
 	public TileImmutabletext(){
 		super();
-		this.setKeyType("IMMUTABLETILETEXT"); //TODO: HIER EINE ENUMERATION MACHEN ÜBER DIE VERSCHIEDENEN SCHLÜSSELWERTE?
+		this.setKeyType("IMMUTABLETILETEXT"); //TODO: HIER EINE ENUMERATION MACHEN ÜBER DIE VERSCHIEDENEN SCHLÜSSELWERTE? !!! WIRD IN DER DAO-KLASSE WIEDERVERWENDET als getKeyType()....
 	}
 	
 	public TileImmutabletext(long lngThiskey, String sShorttext, String sLongtext, String sDescription){

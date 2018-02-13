@@ -48,7 +48,7 @@ import basic.zBasic.util.genericEnum.ObjectTestMappedValue.EnumSetInnerMappedTes
 //Das braucht in der erbenden Klasse nicht angegeben zu werden:
 //@Inheritance(strategy =  InheritanceType.TABLE_PER_CLASS) //Ziel: Jedes Entity der Vererbungshierarchie in einer eigenen Tabelle 
 @Access(AccessType.PROPERTY) 
-@Table(name="k_defaulttext_text") //Eine eigene Tabelle notwendig, da Thiskey eindeutig sein soll.
+@Table(name="K_DEFAULTTEXT_TEXT") //Eine eigene Tabelle notwendig, da Thiskey eindeutig sein soll.
 //<E extends Enum<E>>
 public class TextDefaulttext<IEnumDefaulttext>  extends Defaulttext  implements IOptimisticLocking{
 		

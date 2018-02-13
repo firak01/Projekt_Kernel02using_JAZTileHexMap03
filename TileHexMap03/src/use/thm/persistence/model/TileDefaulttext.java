@@ -47,7 +47,7 @@ import basic.zBasic.util.genericEnum.ObjectTestMappedValue.EnumSetInnerMappedTes
 //Das braucht in der erbenden Klassenicht angegeben zu werden.
 //@Inheritance(strategy =  InheritanceType.TABLE_PER_CLASS) //Ziel: Jedes Entity der Vererbungshierarchie in einer eigenen Tabelle 
 @Access(AccessType.PROPERTY) 
-@Table(name="k_defaulttext_tile") //Eine eigene Tabelle notwendig, da Thiskey eindeutig sein soll.
+@Table(name="K_DEFAULTTEXT_TILE") //Eine eigene Tabelle notwendig, da Thiskey eindeutig sein soll.
 public class TileDefaulttext<IEnumTileDefaulttext> extends Defaulttext  implements IOptimisticLocking{
 		
 	public TileDefaulttext(){

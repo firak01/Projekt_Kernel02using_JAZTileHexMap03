@@ -54,16 +54,16 @@ import basic.zBasic.util.datatype.string.StringZZZ;
 //@Inheritance(strategy =  InheritanceType.JOINED )
 
 //Ziel: Jedes Entity der Vererbungshierarchie in einer eigenen Tabelle 
-//@Inheritance(strategy =  InheritanceType.TABLE_PER_CLASS)
+@Inheritance(strategy =  InheritanceType.TABLE_PER_CLASS)
 //Bei InheritanceType.TABLE_PER_CLASS gilt, es darf keinen Discriminator geben ... @DiscriminatorColumn(name="Disc", discriminatorType = DiscriminatorType.STRING) //Bei InheritanceType.SINGLE_TABLE) gilt: Voraussetzung für DiscriminatorValue in der AreaCell-Klasse. //Wird es wg. der Vererbung von HEXCell zu AreaType immer geben. Ohne Annotation ist das DTYPE und der wert ist gleich dem Klassennamen.
 
 //Ziel: Hiermit werden alle Datensätze der Vererbungshierarchieklassen in einer Tabelle zusammengafasst und nur anhand des Discriminator Wertes unterschieden
 //DAS IST DER DEFAULT, wenn nur java-mäßig verebt wird.
-@Inheritance(strategy = InheritanceType.SINGLE_TABLE)  
+//@Inheritance(strategy = InheritanceType.SINGLE_TABLE)  
 //Merke: Bei InheritanceType.SINGLE_TABLE) gilt: Voraussetzung für DiscriminatorValue in der AreaCell-Klasse. //Wird es wg. der Vererbung von HEXCell zu AreaType immer geben. Ohne Annotation ist das DTYPE und der wert ist gleich dem Klassennamen.
-@DiscriminatorColumn(name="Entityclass", discriminatorType = DiscriminatorType.STRING) 
+//@DiscriminatorColumn(name="Entityclass", discriminatorType = DiscriminatorType.STRING) 
 //
-@Table(name="TROOPVARIANT")
+@Table(name="troopvariant")
 public class TroopVariant  extends KeyImmutable implements ITroopVariantTHM, ICategoryProviderZZZ, Serializable, IOptimisticLocking{
 	private static final long serialVersionUID = 1113434456411176970L;
 	

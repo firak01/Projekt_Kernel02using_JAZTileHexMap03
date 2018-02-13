@@ -155,9 +155,9 @@ public class TileDefaulttextDao<T> extends DefaulttextDao<T> {
 				//TODO 20171114 ...ohje das irgendwie generisch machen ... vgl. meine _fillValue(...) Lösung..
 				Collection<String> colsEnumAlias = EnumZZZ.getNames(TileDefaulttext.getThiskeyEnumClassStatic());
 				for(String sEnumAlias : colsEnumAlias){
-					System.out.println("Starte Transaction:.... Gefundener Enum-Name: " + sEnumAlias);
-					TileDefaulttext objValueTile = new TileDefaulttext();		//Bei jedem Schleifendurchlauf neu machen, sonst wird lediglich nur 1 Datensatz immer wieder verändert.
+					System.out.println("Starte Transaction:.... Gefundener Enum-Name: " + sEnumAlias);					
 					session.getTransaction().begin();//Ein zu persistierendes Objekt - eine Transaction, auch wenn mehrere in einer Transaction abzuhandeln wären, aber besser um Fehler abfangen zu können.
+					TileDefaulttext objValueTile = new TileDefaulttext();		//Bei jedem Schleifendurchlauf neu machen, sonst wird lediglich nur 1 Datensatz immer wieder verändert.
 				
 					this._fillValue(objValueTile, sEnumAlias);
 
@@ -255,11 +255,16 @@ public class TileDefaulttextDao<T> extends DefaulttextDao<T> {
 		ArrayList<TileDefaulttext> listaText = (ArrayList<TileDefaulttext>) this.findLazyAll();
 		
 		for(Defaulttext objText : listaText){
-			System.out.println("Lösche: Texttext.toString(): " + objText.toString());
-			String sDescriptionStored = objText.getDescription();
-			System.out.println("Description (gespeichert): " + sDescriptionStored);	
-
-			this.delete(objText);
+			
+			//!!! SICHERSTELLEN, DASS NICHT NOCH ANDERE GELOESCHT WERDEN !!!
+			String sKeyType = objText.getKeyType();
+			if(this.getKeyTypeUsed().equalsIgnoreCase(sKeyType)){
+				System.out.println("Lösche: Texttext.toString(): " + objText.toString());
+				String sDescriptionStored = objText.getDescription();
+				System.out.println("Description (gespeichert): " + sDescriptionStored);	
+				
+				this.delete(objText);
+			}
 		}//End for
 		bReturn = true;
 		
@@ -267,13 +272,23 @@ public class TileDefaulttextDao<T> extends DefaulttextDao<T> {
 	return bReturn;				
 }
 
-public boolean delete(TileDefaulttext text) {
+public boolean delete(TileDefaulttext objText) {
 	boolean bReturn = false;
 	main:{
-		if(text==null)break main;
-		bReturn = super.delete((T) text);
+		if(objText==null)break main;
+		
+		//!!! SICHERSTELLEN, DASS NICHT NOCH ANDERE GELOESCHT WERDEN !!!
+		String sKeyType = objText.getKeyType();
+		if(this.getKeyTypeUsed().equalsIgnoreCase(sKeyType)){
+			bReturn = super.delete((T) objText);
+		}
 	}//end main
 	return bReturn;
+}
+
+@Override
+public String getKeyTypeUsed() {	
+	return "DEFAULTTILETEXT";
 }
 	
 	//####### EIGENE METHODEN ###########

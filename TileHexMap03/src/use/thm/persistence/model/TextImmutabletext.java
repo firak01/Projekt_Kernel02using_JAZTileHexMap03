@@ -48,18 +48,18 @@ import basic.zBasic.util.genericEnum.ObjectTestMappedValue.EnumSetInnerMappedTes
 //Das braucht in der erbenden Klasse nicht angegeben zu werden:
 //@Inheritance(strategy =  InheritanceType.TABLE_PER_CLASS) //Ziel: Jedes Entity der Vererbungshierarchie in einer eigenen Tabelle 
 @Access(AccessType.PROPERTY) 
-@Table(name="k_immutabletext_text") //Eine eigene Tabelle notwendig, da Thiskey eindeutig sein soll.
+@Table(name="K_IMMUTABLETEXT_TEXT") //Eine eigene Tabelle notwendig, da Thiskey eindeutig sein soll.
 //<E extends Enum<E>>
 public class TextImmutabletext<IEnumDefaulttext>  extends Immutabletext  implements IOptimisticLocking{
 		
 	public TextImmutabletext(){
 		super();
-		this.setKeyType("IMMUTABLETEXT"); //TODO: HIER EINE ENUMERATION MACHEN ÜBER DIE VERSCHIEDENEN SCHLÜSSELWERTE?
+		this.setKeyType("IMMUTABLETEXTTEXT"); //TODO: HIER EINE ENUMERATION MACHEN ÜBER DIE VERSCHIEDENEN SCHLÜSSELWERTE?
 	}
 	
 	public TextImmutabletext(long lngThiskey, String sShorttext, String sLongtext, String sDescription){
 		super();
-		this.setKeyType("IMMUTABLETEXT");
+		this.setKeyType("IMMUTABLETEXTTEXT");
 		this.setThiskey(lngThiskey);
 		this.setShorttext(sShorttext);
 		this.setLongtext(sLongtext);

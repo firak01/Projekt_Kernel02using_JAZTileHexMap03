@@ -186,13 +186,23 @@ public class TextDefaulttextDao<T> extends DefaulttextDao<T> {
 	return bReturn;				
 }
 
-public boolean delete(TextDefaulttext text) {
-	boolean bReturn = false;
-	main:{
-		if(text==null)break main;
-		bReturn = super.delete((T) text);
-	}//end main
-	return bReturn;
+	public boolean delete(TextDefaulttext objText) {
+		boolean bReturn = false;
+		main:{
+			if(objText==null)break main;
+			
+			//!!! SICHERSTELLEN, DASS NICHT NOCH ANDERE GELOESCHT WERDEN !!!
+			String sKeyType = objText.getKeyType();
+			if(this.getKeyTypeUsed().equalsIgnoreCase(sKeyType)){
+				bReturn = super.delete((T) objText);
+			}
+		}//end main
+		return bReturn;
+	}
+
+@Override
+public String getKeyTypeUsed() {	
+	return "TEXT";
 }
 	
 	//####### EIGENE METHODEN ###########

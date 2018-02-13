@@ -64,12 +64,14 @@ public class DebugKeyTable_Version_TileDefaulttextTHM {
 		//LÖSCHE ALLE EINTRÄGE
 		//Lösche alle erzeugten Einträge vor dem Test. D.h. es muss eine DAO-Klasse für die DefaultValues geben
 		System.out.println("\n##########################\nLÖSCHE ALLE EINTRÄGE VORAB");
-		daoDefaulttext.deleteAll();//Das reicht, wg. der "Hibernate-Vererbung" der Model Klasse ... Diese Vererbungsstruktur spiegelt sich dann auch in den Dao-Klassen wieder.
+		daoDefaulttext.deleteAll();//Das reicht "Normalerweise", wg. der "Hibernate-Vererbung" der Model Klasse ... Diese Vererbungsstruktur spiegelt sich dann auch in den Dao-Klassen wieder.
+		//                           ABER: Wg. der KeyType Einschränkung, wird wirklich nur gelöscht, was für diese DAO-Klasse relevant ist.
 				
 		//Zähle die Anzahl der Einträge
-		iFound = daoDefaulttext.count();//FGL 20171108: TODO GOON: Der Count liefert alle Elemente auch der Kindklasse wieder. Also: Neues Entitiy TextDefaulttext, erbend aus Defaulttext.
-		//																							Entsprechend auch TextDefaulttextDao als neue Klasse.
-		System.out.println("Anzahl gefundener Defaultttext - Einträge nach Löschung aller Defaulttext - Einträge: " + iFound);
+		iFound = daoDefaulttext.count();//Der Count liefert alle Elemente auch der Kindklasse wieder. Also: Neues Entitiy TextDefaulttext, erbend aus Defaulttext.
+		//								  Entsprechend auch TextDefaulttextDao als neue Klasse.
+		//TODO GOON: Wie auch beim Löschen, so beim count() den KeyType einbeziehen.		
+		System.out.println("Anzahl gefundener Defaulttext - Einträge nach Löschung aller Defaulttext - Einträge: " + iFound);
 		
 		iFound = daoTiletext.count();
 		System.out.println("Anzahl gefundener TileDefaulttext - Einträge nach Löschung aller Defaulttext - Einträge: " + iFound);
@@ -79,7 +81,7 @@ public class DebugKeyTable_Version_TileDefaulttextTHM {
 		
 		//Erzeuge nun für die Tabellen jeweils einen Eintrag
 		System.out.println("\n---------------------------------------\nErzeuge einen Eintrag in  Defaultttext");		
-		objDebug.debugCreateEntry_TileDefaulttext(0);
+		objDebug.debugCreateEntry_Defaulttext(0);
 				
 		//Zähle die Anzahl der Einträge
 		System.out.println("\n---------------------------------------\nZähle alle Einträge");		
@@ -93,12 +95,16 @@ public class DebugKeyTable_Version_TileDefaulttextTHM {
 		System.out.println("Anzahl gefundener TextDefaulttext - Einträge nach Erzeugen eines Eintrags " + iFound);
 	
 		System.out.println("\n--------------------------------------------\nErzeuge jeweil weitere Einträge in TileDefaulttext / Defaultttext / Texttext");		
-		objDebug.debugCreateEntry_TileDefaulttext(1);
-		
-		objDebug.debugCreateEntry_TextDefaulttext(0);
-		objDebug.debugCreateEntry_Defaulttext(0);
-		objDebug.debugCreateEntry_TextDefaulttext(1);
 		objDebug.debugCreateEntry_Defaulttext(1);
+		
+		//LÖSCHE ALLE EINTRÄGE: TEXTTEXT 
+		System.out.println("\n##########################\nLÖSCHE ALLE TEXT(!)TEXT EINTRÄGE");
+		daoTexttext.deleteAll();
+		
+		//LÖSCHE ALLE EINTRÄGE: TILETEXT 
+		System.out.println("\n##########################\nLÖSCHE ALLE TILE(!)TEXT EINTRÄGE");
+		daoTiletext.deleteAll();			
+		
 		
 		//Zähle die Anzahl der Einträge
 		System.out.println("\n---------------------------------------\nZähle alle Einträge");	
@@ -111,24 +117,28 @@ public class DebugKeyTable_Version_TileDefaulttextTHM {
 		iFound = daoTexttext.count();
 		System.out.println("Anzahl gefundener Texttext - Einträge nach Erzeugen eines Eintrags " + iFound);
 
-		//LÖSCHE ALLE EINTRÄGE: TILETEXT 
-		System.out.println("\n##########################\nLÖSCHE ALLE TILE(!)TEXT EINTRÄGE");
-		daoTiletext.deleteAll();
+		
+		objDebug.debugCreateEntry_TextDefaulttext(0);		
+		objDebug.debugCreateEntry_TextDefaulttext(1);
+		
+		objDebug.debugCreateEntry_TileDefaulttext(0);
+		objDebug.debugCreateEntry_TileDefaulttext(1);
+		
 		
 		//Zähle die Anzahl der Einträge
 		iFound = daoTiletext.count();
-		System.out.println("Anzahl gefundener Tiletext - Einträge nach Löschung aller Tiletext - Einträge: " + iFound);
+		System.out.println("Anzahl gefundener Tiletext - Einträge nach Erstellung von 2 Tiletext - Einträge: " + iFound);
 				
 		iFound = daoTexttext.count();
-		System.out.println("Anzahl gefundener Texttext - Einträge nach Löschung aller Tiletext - Einträge: " + iFound);
+		System.out.println("Anzahl gefundener Texttext - Einträge nach Erstellung von 2 Textext - Einträge: " + iFound);
 		
 		iFound = daoDefaulttext.count();
-		System.out.println("Anzahl gefundener Defaulttext - Einträge nach Löschung aller Tiletext - Einträge: " + iFound);
+		System.out.println("Anzahl gefundener Defaulttext - Einträge: " + iFound);
 		
 		 
 		//LÖSCHE ALLE EINTRÄGE ALS VORBEREITUNG ÜR DEN NÄCHSTEN SCHRITT... alle generieren
 		System.out.println("\n##########################\nLÖSCHE ALLE EINTRÄGE ALS VORBEREITUNG ZUM NEUEN GENERIEREN ALLER EINTRÄGE");
-		daoDefaulttext.deleteAll();
+		daoDefaulttext.deleteAllInherited();
 		
 		//Zähle die Anzahl der Einträge
 		iFound = daoDefaulttext.count();
@@ -155,10 +165,10 @@ public class DebugKeyTable_Version_TileDefaulttextTHM {
 		
 		//##############################################################################################################################
 		System.out.println("\n##########################\nSUCHE EINTRAG NACH THISKEY");
-		int iThiskey = 1;
+		int iThiskey = 10;
 		objDebug.debugTileDefaulttextDao_searchDefaulttextByThiskey(iThiskey);
 		
-		iThiskey = 2;
+		iThiskey = 20;
 		objDebug.debugTileDefaulttextDao_searchDefaulttextByThiskey(iThiskey);
 		
 		//TODO GOON 20171109
@@ -506,10 +516,8 @@ public class DebugKeyTable_Version_TileDefaulttextTHM {
 			
 			try {				
 				KernelZZZ objKernel = new KernelZZZ(); //Merke: Die Service Klasse selbst kann wohl nicht das KernelObjekt extenden!
-				HibernateContextProviderSingletonTHM objContextHibernate;
-				
-				objContextHibernate = HibernateContextProviderSingletonTHM.getInstance(objKernel);					
-				objContextHibernate.getConfiguration().setProperty("hibernate.hbm2ddl.auto", "update");  //! Jetzt erst wird jede Tabelle über den Anwendungsstart hinaus gespeichert UND auch wiedergeholt.				
+				HibernateContextProviderSingletonTHM objContextHibernate = HibernateContextProviderSingletonTHM.getInstance(objKernel);					
+				//objContextHibernate.getConfiguration().setProperty("hibernate.hbm2ddl.auto", "update");  //! Jetzt erst wird jede Tabelle über den Anwendungsstart hinaus gespeichert UND auch wiedergeholt.				
 			
 				//###################
 				//1. Hole das jeweilige Dao - Objekt

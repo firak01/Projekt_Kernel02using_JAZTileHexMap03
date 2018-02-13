@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.hibernate.HibernateException;
 import org.hibernate.Query;
 import org.hibernate.Session;
 
@@ -22,6 +23,7 @@ import basic.zBasic.ExceptionZZZ;
 import basic.zBasic.ReflectCodeZZZ;
 import basic.zBasic.persistence.dao.GeneralDaoZZZ;
 import basic.zBasic.persistence.interfaces.IHibernateContextProviderZZZ;
+import basic.zBasic.persistence.interfaces.enums.IThiskeyUserDaoZZZ;
 import basic.zBasic.util.datatype.string.StringZZZ;
 
 /** DAS WÄRE DIE VARIANTE, WENN ES EINE TABELLE "KEY" GÄBE.
@@ -32,26 +34,26 @@ import basic.zBasic.util.datatype.string.StringZZZ;
  *
  * @param <T>
  */
-public class KeyDao<T> extends GeneralDaoZZZ<T> {
+public abstract class AbstractKeyDao<T> extends GeneralDaoZZZ<T> implements IThiskeyUserDaoZZZ {
 	private static final long serialVersionUID = 1L;
 
 	/* Constructor 
 	 * WICHTIG: Der hier angegebenen Name der Entity-Klasse wird von den GeneralDAO - Klassen verwendet.
 	 *                Daher unbedingt beim Einsatz von Vererbung korrekt anpassen.
 	 *                Z.B. Will man mit dem Dao eigentlicht TileDefaulttexte behandel und gibt hier Defaulttext an, werden sowohl die TileDefaulttexte als auch die Defaulttexte mit .findLazyAll() gefunden. */
-	public KeyDao() throws ExceptionZZZ{
+	public AbstractKeyDao() throws ExceptionZZZ{
 		super();
 		this.installLoger(Key.class);//Durch das Installieren des Loggers mit der korrekten Klasse wird GeneralDao.getT() erst korrekt ermöglicht.
 	}
-	public KeyDao(IHibernateContextProviderZZZ objContextHibernate) throws ExceptionZZZ{
+	public AbstractKeyDao(IHibernateContextProviderZZZ objContextHibernate) throws ExceptionZZZ{
 		super(objContextHibernate);		
 		this.installLoger(Key.class);//Durch das Installieren des Loggers mit der korrekten Klasse wird GeneralDao.getT() erst korrekt ermöglicht.
 	}
-	public KeyDao(IHibernateContextProviderZZZ objContextHibernate, String sFlagControl) throws ExceptionZZZ{
+	public AbstractKeyDao(IHibernateContextProviderZZZ objContextHibernate, String sFlagControl) throws ExceptionZZZ{
 		super(objContextHibernate, sFlagControl);
 		this.installLoger(Key.class);//Durch das Installieren des Loggers mit der korrekten Klasse wird GeneralDao.getT() erst korrekt ermöglicht.
 	}
-	public KeyDao(IHibernateContextProviderZZZ objContextHibernate, String[] saFlagControl) throws ExceptionZZZ{
+	public AbstractKeyDao(IHibernateContextProviderZZZ objContextHibernate, String[] saFlagControl) throws ExceptionZZZ{
 		super(objContextHibernate, saFlagControl);
 		this.installLoger(Key.class);//Durch das Installieren des Loggers mit der korrekten Klasse wird GeneralDao.getT() erst korrekt ermöglicht.
 	}
@@ -228,5 +230,54 @@ public class KeyDao<T> extends GeneralDaoZZZ<T> {
 		return objReturn;
 	}
 			
+	//Das kann dann z.B. zum gezielteren Löschen ausgeführt werden.
+	public abstract String getKeyTypeUsed();
+	
+	@Override
+	public int count(){
+		int iReturn = -1;
+		try{
+		String sTableName = this.getDaoTableName();
 		
+		this.getLog().debug(ReflectCodeZZZ.getPositionCurrent() + ": Counting '" + sTableName);
+		
+//		20171101: daoKey.count "locked" die Datenbank. 
+//		Lösungsidee: Es wurde hier keine Transaktion gebraucht? Das Ziel muss aber sein 1 Session : 1 Transaktion.
+//		                    Daher this.begin() und this.commit(), um die Transaktion wieder zu schliessen.
+		
+		this.begin();
+			
+		String sKeyType = this.getKeyTypeUsed();
+		Query query = getSession().createQuery("select count(tableKey) from " + sTableName + " tableKey where tableKey.keyType = :keyType ");
+		query.setString("keyType", sKeyType);
+		
+		iReturn = ((Long)query.uniqueResult()).intValue();
+		
+		this.commit();
+		
+//		catch (NonUniqueObjectException non) {
+//			log.error("Method delete failed NonUniqueObjectException +\n" + session.hashCode() + "\n ThreadID:" + Thread.currentThread().getId() +"\n" , non);
+//			System.out.println("NON UNIQUE!!!");
+//			return this.helpCatchException(non, instance);			
+//		}
+//		catch(StaleObjectStateException er){
+//			log.error("Method delete failed StaleObjectStateException +\n" + session.hashCode() + "\n ThreadID:" + Thread.currentThread().getId() +"\n" , er);
+//			System.out.println("STALE!!!");
+//			return this.staleObjectStateException(instance, er);
+		}catch(HibernateException he){
+			log.error("Method delete failed HibernateException +\n" + getSession().hashCode() + "\n ThreadID:" + Thread.currentThread().getId() +"\n" , he);
+			System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": HIBERNATE EXCEPTION!!!!");
+			he.printStackTrace();
+			 iReturn = -1;
+		}finally {
+			if (getSession().getTransaction().isActive()) {
+				this.rollback();
+				log.debug(ReflectCodeZZZ.getPositionCurrent() + ": rollback executed");
+				System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": HIBERNATE ROLLBACK EXECUTED!!!!");
+				iReturn = -1;
+			}
+		}
+
+		return iReturn;
+	}
 }

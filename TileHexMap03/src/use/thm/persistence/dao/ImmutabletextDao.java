@@ -35,7 +35,7 @@ import basic.zBasic.util.datatype.enums.EnumZZZ;
 import basic.zBasic.util.datatype.enums.EnumSetInnerUtilZZZ.ThiskeyEnumMappingExceptionZZZ;
 import basic.zBasic.util.dataype.calling.ReferenceZZZ;
 import basic.zKernel.KernelZZZ;
-public class ImmutabletextDao<T> extends KeyImmutableDao<T> {
+public class ImmutabletextDao<T> extends AbstractKeyImmutableDao<T> {
 	private static final long serialVersionUID = 1L;
 
 	/* Constructor
@@ -309,11 +309,15 @@ public class ImmutabletextDao<T> extends KeyImmutableDao<T> {
 		ArrayList<Immutabletext> listaText = (ArrayList<Immutabletext>) this.findLazyAll();
 		
 		for(Immutabletext objText : listaText){
-			System.out.println("Lösche: Texttext.toString(): " + objText.toString());
-			String sDescriptionStored = objText.getDescription();
-			System.out.println("Description (gespeichert): " + sDescriptionStored);	
-
-			this.delete(objText);
+			
+			String sKeyType = objText.getKeyType();
+			if(this.getKeyTypeUsed().equalsIgnoreCase(sKeyType)){
+				System.out.println("Lösche: Texttext.toString(): " + objText.toString());
+				String sDescriptionStored = objText.getDescription();
+				System.out.println("Description (gespeichert): " + sDescriptionStored);	
+	
+				this.delete(objText);
+			}
 		}//End for
 		bReturn = true;
 		
@@ -321,13 +325,51 @@ public class ImmutabletextDao<T> extends KeyImmutableDao<T> {
 	return bReturn;				
 }
 
-public boolean delete(Immutabletext text) {
+public boolean delete(Immutabletext objText) {
 	boolean bReturn = false;
 	main:{
-		if(text==null)break main;
-		bReturn = super.delete((T) text);
+		if(objText==null)break main;
+		
+		//!!! SICHERSTELLEN, DASS NICHT NOCH ANDERE GELOESCHT WERDEN !!!
+		String sKeyType = objText.getKeyType();
+		if(this.getKeyTypeUsed().equalsIgnoreCase(sKeyType)){
+			bReturn = super.delete((T) objText);
+		}
 	}//end main
 	return bReturn;
+}
+
+/** Bei dieser Löschvariante wird nicht auf einen KeyType Rücksicht genommen.
+ *  Daher werden alle Objekte, die aus dieser Klasse erben auch gelöscht.
+ *  
+ * @return
+ */
+public boolean deleteAllInherited(){
+	boolean bReturn = false;
+	main:{
+		//Nun alle holen
+		ArrayList<Immutabletext> listaText = (ArrayList<Immutabletext>) this.findLazyAll();
+		
+		for(Immutabletext objText : listaText){
+			
+			String sKeyType = objText.getKeyType();
+			if(this.getKeyTypeUsed().equalsIgnoreCase(sKeyType)){					
+				this.delete(objText);
+			}
+		}//End for
+		bReturn = true;
+		
+	}//End main
+	return bReturn;				
+}
+
+public int countAllInherited(){
+	return super.countAllInherited();	
+}
+
+@Override
+public String getKeyTypeUsed() {
+	return "IMMUTABLETEXT";
 }
 	
 	//####### EIGENE METHODEN ###########

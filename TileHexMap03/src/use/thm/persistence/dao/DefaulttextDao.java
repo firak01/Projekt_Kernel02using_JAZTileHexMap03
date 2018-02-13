@@ -30,7 +30,7 @@ import basic.zBasic.util.datatype.enums.EnumSetInnerUtilZZZ;
 import basic.zBasic.util.datatype.enums.EnumZZZ;
 import basic.zBasic.util.datatype.enums.EnumSetInnerUtilZZZ.ThiskeyEnumMappingExceptionZZZ;
 import basic.zKernel.KernelZZZ;
-public class DefaulttextDao<T> extends KeyDao<T> {
+public class DefaulttextDao<T> extends AbstractKeyDao<T> {
 	private static final long serialVersionUID = 1L;
 
 	/* Constructor
@@ -212,25 +212,69 @@ public class DefaulttextDao<T> extends KeyDao<T> {
 		ArrayList<Defaulttext> listaText = (ArrayList<Defaulttext>) this.findLazyAll();
 		
 		for(Defaulttext objText : listaText){
-			System.out.println("Lösche: Texttext.toString(): " + objText.toString());
-			String sDescriptionStored = objText.getDescription();
-			System.out.println("Description (gespeichert): " + sDescriptionStored);	
-
-			this.delete(objText);
+			
+			//!!! SICHERSTELLEN, DASS NICHT NOCH ANDERE GELOESCHT WERDEN !!!
+			String sKeyType = objText.getKeyType();
+			if(this.getKeyTypeUsed().equalsIgnoreCase(sKeyType)){
+				System.out.println("Lösche: Texttext.toString(): " + objText.toString());
+				String sDescriptionStored = objText.getDescription();
+				System.out.println("Description (gespeichert): " + sDescriptionStored);	
+				
+				this.delete(objText);
+			}
+			
 		}//End for
 		bReturn = true;
 		
 	}//End main
 	return bReturn;				
 }
+	
+	/** Bei dieser Löschvariante wird nicht auf einen KeyType Rücksicht genommen.
+	 *  Daher werden alle Objekte, die aus dieser Klasse erben auch gelöscht.
+	 *  
+	 * @return
+	 */
+	public boolean deleteAllInherited(){
+		boolean bReturn = false;
+		main:{
+			//Nun alle holen
+			ArrayList<Defaulttext> listaText = (ArrayList<Defaulttext>) this.findLazyAll();
+			
+			for(Defaulttext objText : listaText){
+				
+				String sKeyType = objText.getKeyType();
+				if(this.getKeyTypeUsed().equalsIgnoreCase(sKeyType)){					
+					this.delete(objText);
+				}
+			}//End for
+			bReturn = true;
+			
+		}//End main
+		return bReturn;				
+	}
+	
+	public int countAllInherited(){
+		return super.count();		
+	}
 
-public boolean delete(Defaulttext text) {
+public boolean delete(Defaulttext objText) {
 	boolean bReturn = false;
 	main:{
-		if(text==null)break main;
-		bReturn = super.delete((T) text);
+		if(objText==null)break main;
+		
+		//!!! SICHERSTELLEN, DASS NICHT NOCH ANDERE GELOESCHT WERDEN !!!
+		String sKeyType = objText.getKeyType();
+		if(this.getKeyTypeUsed().equalsIgnoreCase(sKeyType)){
+			bReturn = super.delete((T) objText);
+		}
 	}//end main
 	return bReturn;
+}
+
+@Override
+public String getKeyTypeUsed() {	
+	return "DEFAULTTEXT";
 }
 	
 	//####### EIGENE METHODEN ###########

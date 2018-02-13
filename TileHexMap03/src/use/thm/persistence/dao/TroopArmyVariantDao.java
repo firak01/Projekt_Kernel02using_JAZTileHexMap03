@@ -354,5 +354,10 @@ protected <T> void _fillValueImmutable(ITroopArmyVariantTHM objValue,String sEnu
 	System.out.println("Gefundener DegreeOfCoverMax: " + intDegreeOfCoverMax);
 	objintDegreeOfCoverMax.set(intDegreeOfCoverMax); //Damit wird CALL_BY_VALUE quasi gemacht....		
 }
+
+@Override
+public String getKeyTypeUsed() {
+	return "TROOPARMYVARIANT";
+}
 			
 }//end class

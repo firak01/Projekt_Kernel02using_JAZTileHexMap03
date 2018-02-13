@@ -48,7 +48,7 @@ import basic.zKernel.KernelZZZ;
  *
  * @param <T>
  */
-public class TroopVariantDao<T> extends KeyImmutableDao<T> {
+public class TroopVariantDao<T> extends AbstractKeyImmutableDao<T> {
 	private static final long serialVersionUID = 1L;
 
 	/* Constructor
@@ -139,6 +139,10 @@ protected <T> void _fillValueImmutable(ITroopVariantTHM objValue,String sEnumAli
 	Long lngThisKeyImmutabletext = EnumSetTroopArmyVariantUtilTHM.readEnumConstant_ImmutabletextThisid((Class<IEnumSetTroopVariantTHM>)objClass, sEnumAlias);
 	System.out.println("Gefundener ThisKeyImmutabletext: " + lngThisKeyImmutabletext);	
 	objlngThisidTextImmutable.set(lngThisKeyImmutabletext); //Damit wird CALL_BY_VALUE quasi gemacht....		
+}
+@Override
+public String getKeyTypeUsed() {
+	return "TROOPVARIANT";
 }
 			
 }//end class

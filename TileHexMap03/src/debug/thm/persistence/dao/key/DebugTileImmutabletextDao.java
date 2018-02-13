@@ -7,7 +7,7 @@ import org.hibernate.Session;
 
 import debug.thm.persistence.keytable.DebugKeyTable_Version_TileDefaulttextTHM;
 import debug.thm.persistence.keytable.DebugKeyTable_Version_TileImmutabletextTHM;
-import use.thm.persistence.dao.KeyDao;
+import use.thm.persistence.dao.AbstractKeyDao;
 import use.thm.persistence.dao.TileDao;
 import use.thm.persistence.dao.TileDefaulttextDao;
 import use.thm.persistence.dao.TileImmutabletextDao;

@@ -56,4 +56,11 @@ public interface IThiskeyValueZZZ<E extends Enum<E> & IThiskeyProviderZZZ<Long>>
      * @return HisKeyProvider<Long> Enum mit allen unterstützten Hiskeys
      */
    abstract Class<E> getThiskeyEnumClass();
+   
+   /** Weitere Spalte zur Differenzierung welche DAO-Klasse den Schlüssel erzeugt hat.
+    *  Wird z.B. für die Suche oder für das Löschen per DOA-Klasse herangezogen.
+    * @return
+    */
+   abstract String getKeyType();
+   abstract void setKeyType(String sKeyType);
 }

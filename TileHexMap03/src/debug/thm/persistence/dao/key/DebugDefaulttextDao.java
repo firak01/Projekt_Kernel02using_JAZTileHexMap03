@@ -2,7 +2,8 @@ package debug.thm.persistence.dao.key;
 
 import java.util.List;
 
-import use.thm.persistence.dao.KeyDao;
+import use.thm.persistence.dao.AbstractKeyDao;
+import use.thm.persistence.dao.DefaulttextDao;
 import use.thm.persistence.dao.TileDao;
 import use.thm.persistence.dao.TroopArmyDao;
 import use.thm.persistence.hibernate.HibernateContextProviderSingletonTHM;
@@ -12,24 +13,34 @@ import use.thm.persistence.model.TroopArmy;
 import basic.zBasic.ExceptionZZZ;
 import basic.zKernel.KernelZZZ;
 
-public class DebugKeyDao {
+public class DebugDefaulttextDao {
 
 	public static void main(String[] args) {
-		DebugKeyDao objDebug = new DebugKeyDao();	
-		objDebug.debugSearchKey();		
+		try {
+		KernelZZZ objKernel = new KernelZZZ();
+		
+		//Merke: Die Service Klasse selbst kann wohl nicht das KernelObjekt extenden!
+		HibernateContextProviderSingletonTHM objContextHibernate = HibernateContextProviderSingletonTHM.getInstance(objKernel);					
+		objContextHibernate.getConfiguration().setProperty("hibernate.hbm2ddl.auto", "update");  //! Jetzt erst wird jede Tabelle über den Anwendungsstart hinaus gespeichert UND auch wiedergeholt.
+		
+		DebugDefaulttextDao objDebug = new DebugDefaulttextDao();	
+		objDebug.debugSearchKey();
+		
+		} catch (ExceptionZZZ e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} 
 	}
-	public DebugKeyDao(){		
+	public DebugDefaulttextDao(){		
 	}
 	public boolean debugSearchKey(){
 		boolean bReturn = false;
 		main:{
 			try {				
 				KernelZZZ objKernel = new KernelZZZ(); //Merke: Die Service Klasse selbst kann wohl nicht das KernelObjekt extenden!
-				HibernateContextProviderSingletonTHM objContextHibernate;
-				
-				objContextHibernate = HibernateContextProviderSingletonTHM.getInstance(objKernel);					
-				objContextHibernate.getConfiguration().setProperty("hibernate.hbm2ddl.auto", "update");  //! Jetzt erst wird jede Tabelle über den Anwendungsstart hinaus gespeichert UND auch wiedergeholt.				
-				KeyDao daoKey = new KeyDao(objContextHibernate);
+				HibernateContextProviderSingletonTHM objContextHibernate = HibernateContextProviderSingletonTHM.getInstance(objKernel);					
+				//objContextHibernate.getConfiguration().setProperty("hibernate.hbm2ddl.auto", "update");  //! Jetzt erst wird jede Tabelle über den Anwendungsstart hinaus gespeichert UND auch wiedergeholt.				
+				DefaulttextDao daoKey = new DefaulttextDao(objContextHibernate);
 				String sKeytype = new String("");
 
 				sKeytype = "NIXVALUE";

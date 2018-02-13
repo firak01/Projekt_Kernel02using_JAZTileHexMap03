@@ -24,6 +24,7 @@ import use.thm.persistence.model.KeyImmutable;
 import use.thm.persistence.model.TextDefaulttext;
 import use.thm.persistence.model.TextDefaulttext.EnumTextDefaulttext;
 import use.thm.persistence.model.TextImmutabletext;
+import use.thm.persistence.model.TextImmutabletext.EnumTextImmutabletext;
 import use.thm.persistence.model.TileDefaulttext;
 import use.thm.persistence.model.TileDefaulttext.EnumTileDefaulttext;
 import use.thm.persistence.model.TileDefaulttextType;
@@ -59,8 +60,7 @@ public class DebugKeyTable_Version_TileImmutabletextTHM {
 		objDebug.getEntrySetTextImmutabletextValues();
 
 		KernelZZZ objKernel = new KernelZZZ();			
-		HibernateContextProviderSingletonTHM objContextHibernate;		
-		objContextHibernate = HibernateContextProviderSingletonTHM.getInstance(objKernel);					
+		HibernateContextProviderSingletonTHM objContextHibernate = HibernateContextProviderSingletonTHM.getInstance(objKernel);					
 		objContextHibernate.getConfiguration().setProperty("hibernate.hbm2ddl.auto", "update");  //! Jetzt erst wird jede Tabelle über den Anwendungsstart hinaus gespeichert UND auch wiedergeholt.							
 
 		int iFound = -1;
@@ -71,7 +71,7 @@ public class DebugKeyTable_Version_TileImmutabletextTHM {
 		
 		//LÖSCHE ALLE EINTRÄGE
 		//Lösche alle erzeugten Einträge vor dem Test. D.h. es muss eine DAO-Klasse für die DefaultValues geben
-		System.out.println("\n##########################\nLÖSCHE ALLE EINTRÄGE VORAB");
+		System.out.println("\n##########################\nLÖSCHE ALLE EINTRÄGE (IMMUTABLETEXT) VORAB");
 		daoImmutabletext.deleteAll();//Das reicht, wg. der "Hibernate-Vererbung" der Model Klasse ... Diese Vererbungsstruktur spiegelt sich dann auch in den Dao-Klassen wieder.
 				
 		//Zähle die Anzahl der Einträge
@@ -88,13 +88,13 @@ public class DebugKeyTable_Version_TileImmutabletextTHM {
 		//Erzeuge nun für die Tabellen jeweils einen Eintrag
 		System.out.println("\n---------------------------------------\nErzeuge einen Eintrag in  Immutabletext");		
 		objDebug.debugCreateEntry_Immutabletext(0);
-		
-		System.out.println("\n---------------------------------------\nErzeuge einen Eintrag in  TileImmutabletext");		
-		objDebug.debugCreateEntry_TileImmutabletext(0);
 				
 		//Zähle die Anzahl der Einträge
 		System.out.println("\n---------------------------------------\nZähle alle Einträge");		
 		iFound = daoImmutabletext.count();
+		System.out.println("Anzahl gefundener Immutabletext - Einträge nach Erzeugen eines Eintrags " + iFound);
+		
+		iFound = daoImmutabletext.countAllInherited();
 		System.out.println("Anzahl gefundener Immutabletext - Einträge (UND DER DARAUS ERBENDEN ENTITIES) nach Erzeugen eines Eintrags " + iFound);
 		
 		iFound = daoTileImmutabletext.count();
@@ -103,17 +103,35 @@ public class DebugKeyTable_Version_TileImmutabletextTHM {
 		iFound = daoTextImmutabletext.count();
 		System.out.println("Anzahl gefundener TextImmutabletext - Einträge nach Erzeugen eines Eintrags " + iFound);
 	
+		System.out.println("\n##########################\nLÖSCHE ALLE EINTRÄGE (TILEIMMUTABLETEXT) VORAB");
+		daoTileImmutabletext.deleteAll();
+		
+		//Zähle die Anzahl der Einträge
+		iFound = daoImmutabletext.count();//Der Count liefert alle Elemente auch der Kindklasse wieder. Also: Neues Entitiy TextDefaulttext, erbend aus Defaulttext.
+		//									Entsprechend auch TextImmutabletextDao als neue Klasse.
+		System.out.println("Anzahl gefundener Immutabletext - Einträge nach Löschung aller TILEImmutabletext - Einträge: " + iFound);
+		
+		iFound = daoTileImmutabletext.count();
+		System.out.println("Anzahl gefundener TileImmutabletext - Einträge nach Löschung aller TILEImmutabletext - Einträge: " + iFound);
+
+		iFound = daoTextImmutabletext.count();
+		System.out.println("Anzahl gefundener TextImmutabletext - Einträge nach Löschung aller TILEImmutabletext - Einträge: " + iFound);
+		
+		
+		System.out.println("\n---------------------------------------\nErzeuge einen Eintrag in  TileImmutabletext");		
+		objDebug.debugCreateEntry_TileImmutabletext(0);
+		
+		
 		System.out.println("\n--------------------------------------------\nErzeuge jeweil weitere Einträge in TileImmutabletext / Immutabletext / TextImmutabletext");		
 		objDebug.debugCreateEntry_TileImmutabletext(1);
 		objDebug.debugCreateEntry_Immutabletext(1);
-		
-		objDebug.debugCreateEntry_TextImmutabletext(0);
-		objDebug.debugCreateEntry_TextImmutabletext(1);
-
-		
+				
 		//Zähle die Anzahl der Einträge
 		System.out.println("\n---------------------------------------\nZähle alle Einträge");	
 		iFound = daoImmutabletext.count();
+		System.out.println("Anzahl gefundener Immutabletext - Einträge nach Erzeugen eines Eintrags " + iFound);
+		
+		iFound = daoImmutabletext.countAllInherited();
 		System.out.println("Anzahl gefundener Immutabletext - Einträge (UND DER DARAUS ERBENDEN ENTITIES) nach Erzeugen eines Eintrags " + iFound);
 
 		iFound = daoTileImmutabletext.count();
@@ -151,6 +169,22 @@ public class DebugKeyTable_Version_TileImmutabletextTHM {
 		iFound = daoTextImmutabletext.count();
 		System.out.println("Anzahl gefundener TextImmutabletext - Einträge nach Löschung aller Einträge " + iFound);
 			
+		
+//		//LÖSCHE ALLE EINTRÄGE ALS VORBEREITUNG ÜR DEN NÄCHSTEN SCHRITT... alle generieren
+		System.out.println("\n##########################\nLÖSCHE ALLE EINTRÄGE ALS VORBEREITUNG ZUM NEUEN GENERIEREN ALLER EINTRÄGE");
+		daoTextImmutabletext.deleteAll();
+		
+//		//Zähle die Anzahl der Einträge
+		iFound = daoImmutabletext.count();
+		System.out.println("Anzahl gefundener Immutabletext - Einträge (UND DER DARAUS ERBENDEN ENTITIES) nach Löschung aller Einträge " + iFound);
+
+		iFound = daoTileImmutabletext.count();
+		System.out.println("Anzahl gefundener TileImmutabletext - Einträge nach Löschung aller Einträge " + iFound);
+
+		iFound = daoTextImmutabletext.count();
+		System.out.println("Anzahl gefundener TextImmutabletext - Einträge nach Löschung aller Einträge " + iFound);
+		
+		System.out.println("\n################################################################################");
 		System.out.println("\n---------------------------------------\nErzeuge alle Einträge");
 		objDebug.debugCreateEntriesAll();
 		
@@ -164,12 +198,19 @@ public class DebugKeyTable_Version_TileImmutabletextTHM {
 		iFound = daoImmutabletext.count();
 		System.out.println("Anzahl gefundener Immutabletext - Einträge nach Erzeugung aller Einträge: " + iFound);
 		
+		
+		//#############################################################################################################################
+		System.out.println("\n##########################\nLÖSCHE ALLE EINTRÄGE (TEXTIMMUTABLETEXT) VORAB");
+		daoTextImmutabletext.deleteAll();
+		objDebug.debugCreateEntry_TextImmutabletext(0);
+		objDebug.debugCreateEntry_TextImmutabletext(1);
+				
 		//##############################################################################################################################
 		System.out.println("\n##########################\nSUCHE EINTRAG NACH THISKEY");
-		int iThiskey = 1;
+		int iThiskey = 10;
 		objDebug.debugTileImmutabletextDao_searchImmutabletextByThiskey(iThiskey);
 		
-		iThiskey = 2;
+		iThiskey = 20;
 		objDebug.debugTileImmutabletextDao_searchImmutabletextByThiskey(iThiskey);
 		
 		//TODO GOON 20171109
@@ -448,7 +489,7 @@ public class DebugKeyTable_Version_TileImmutabletextTHM {
 				if(session == null) break main;			
 				session.getTransaction().begin();//Ein zu persistierendes Objekt - eine Transaction, auch wenn mehrere in einer Transaction abzuhandeln wären, aber besser um Fehler abfangen zu können.
 				
-				EnumTextDefaulttext[] objaType = TextDefaulttext.EnumTextDefaulttext.values();
+				EnumTextImmutabletext[] objaType = TextImmutabletext.EnumTextImmutabletext.values();
 
 				//String s = objaType[0].name(); //Prasenzstudium .... also entsprechend was als Eigenschaft vorgeschlagen wird von TileDefaulttextType.Praesenzstudium
 				//String s = objaType[0].toString(); //dito

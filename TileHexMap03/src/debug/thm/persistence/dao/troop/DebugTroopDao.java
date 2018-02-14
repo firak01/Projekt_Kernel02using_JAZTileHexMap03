@@ -42,6 +42,10 @@ public class DebugTroopDao {
 				
 				for(TroopArmy objArmy : list02){
 					System.out.println("Gefundene uniquenames: " + objArmy.getUniquename());
+					
+					//20180214: 
+					//Versuche hier eine "berechnete" Spalte auszugeben, die mit @Formula "zur Laufzeit" erstellt wird.
+					System.out.println("Gefundene (zur Laufzeit errechnete Formelspalte) shorttext: " + objArmy.getShorttext());
 				}
 				
 			} catch (ExceptionZZZ e) {

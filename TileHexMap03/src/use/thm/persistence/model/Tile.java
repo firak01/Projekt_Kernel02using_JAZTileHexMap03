@@ -21,6 +21,8 @@ import javax.persistence.Table;
 import javax.persistence.TableGenerator;
 import javax.persistence.Transient;
 
+import org.hibernate.annotations.Formula;
+
 import basic.persistence.model.IOptimisticLocking;
 import basic.zBasic.util.datatype.string.StringZZZ;
 
@@ -85,7 +87,7 @@ public class Tile implements Serializable, IOptimisticLocking{
 	*/
 	private TileId id;
 	
-	
+	private String sTextDefault; //wird mit einer @Formula zur Laufzeit berechnet. 
 	
 	
 	//DAS PERSISTIERT ALS BLOB
@@ -320,5 +322,24 @@ public class Tile implements Serializable, IOptimisticLocking{
 		public void setHexCell(HexCell objHexCell){
 			this.objHexCell = objHexCell;
 		}
+		
+		//#### Berechnete Formel-Werte
+		//Siehe Buch "Java Persistence with Hibernate (2016) Kapitel 5.1.3. (S.115 im E-Book reader)
+		//TODO GOON:
+		//1. Thisid der TileVariante hier aufnehmen und n:1 gemäß mit defaulttext verknüpfen
+		//2. Hier mit einem Subselect die TileVariante holen und dann daraus den Defaulttext holen.
+		//@Formula("(select Shorttext from TileDefaulttext dt where dt.Thiskey = 110)") //1. Die innere klammer ist wichtig. 2. Momnetan noch Fehler "no such table: TileDefaulttext"
+		//@Formula("(select Shorttext from K_DEFAULTTEXT_TILE dt where dt.Thiskey = 110)") //SQL error or missing database (no such column: tile1_.Shorttext)
+		//FUNKTIONIERT: DA SICH DIE SQL FORMEL AUF DAS GLEICHE ENTITY BEZIEHT @Formula("(select substr(UNIQUENAME,1,12) from TILE t where t.TILE_ID_INCREMENTED = 1)")
+		//FUNKTIONIERT: BEIDE WERTE WERDEN ZUSAMMENGEZOGEN, so gibt es: ARMY_ARMY_1518628141555 ...... @Formula("substr(uniquename,1,5) || (select uniquename from TILE dt where dt.TILE_ID_INCREMENTED = 1)")
+		//IDEE: Das kann man ggfs. für die XX und YY Spalte verwenden, die sich ja aus SX und SY - den Stringwerten - errechnet.
+		@Column(name="shorttext", nullable=true, columnDefinition="string default 'xxx'")  //Merke UNIQUE ist ein Datenbankschlüsselwort
+	    public String getShorttext(){
+	    	return this.sTextDefault;
+	    }
+		protected void setShorttext(String sTextDefault){
+			this.sTextDefault = sTextDefault;
+		}
+	    
 	    
 }

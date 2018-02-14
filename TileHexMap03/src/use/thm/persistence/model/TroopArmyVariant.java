@@ -109,22 +109,13 @@ public class TroopArmyVariant  extends TroopVariant implements ITroopArmyVariant
 		//20180130: Besser eine Konstante hier. Merke: Diese Konstante wird dann in den Dao Klassen auch verwendet . Z.B. in TileDefaulttextDao.searchKey(...)
 	 }
 	 	 
-	 //Konstruktor, an den alles übergeben wird. Wg. "Immutable".
+	 //Konstruktor, an den alles übergeben wird. Wg. "Immutable" gibt es keine 'public' Setter.
 	 public TroopArmyVariant(int iKey, String sUniquetext, String sCategorytext, int iMapMoveRange, String sImageUrl, TileDefaulttext objDefaulttext, TileImmutabletext objImmutabletext, int iDegreeOfCover){
 		 super(iKey, sUniquetext, sCategorytext, iMapMoveRange, sImageUrl, objDefaulttext, objImmutabletext);		
 		 this.setKeyType("TROOPARMYVARIANT"); //TODO: HIER EINE ENUMERATION MACHEN ÜBER DIE VERSCHIEDENEN SCHLÜSSELWERTE? 
 		//20180130: Besser eine Konstante hier. Merke: Diese Konstante wird dann in den Dao Klassen auch verwendet . Z.B. in TileDefaulttextDao.searchKey(...)
-//		 
-//		 this.setThiskey(Long.valueOf(iKey));
-//		 this.setUniquetext(sUniquetext);
-//		 this.setCategorytext(sCategorytext);
-//		 this.setMapMoveRange(Integer.valueOf(iMapMoveRange));
-//		 this.setDefaulttextObject(objDefaulttext);
-//		 this.setImmutabletextObject(objImmutabletext);
-//		 this.setImageUrlString(sImageUrl);
 		 
-		 this.setDegreeOfCoverMax(Integer.valueOf(iDegreeOfCover));
-		 
+		 this.setDegreeOfCoverMax(Integer.valueOf(iDegreeOfCover));		 
 	 }
 	 
 	//### Variante 2: Verwende auf dieser Ebene einen Generator, zum Erstellen einer ID
@@ -146,7 +137,7 @@ public class TroopArmyVariant  extends TroopVariant implements ITroopArmyVariant
 //		 }
 	 
 	 //### getter / setter
-	 @Column(name="ARMY_COVER_MAX", nullable=true)//muss nullable erlauben, wenn alle Varianten (z.B. auch von FLEET) in der gleichen Tabelle gespeichert werden.
+	 @Column(name="ARMY_COVER_MAX", nullable=true)//muss nullable erlauben, wenn alle Varianten (z.B. auch von FLEET) in der gleichen Tabelle gespeichert würeden, aufgrund der Vererbungsstrategie.
 	 public Integer getDegreeOfCoverMax(){
 		 return this.intDegreeOfCoverMax;
 	 }
@@ -154,110 +145,7 @@ public class TroopArmyVariant  extends TroopVariant implements ITroopArmyVariant
 		 this.intDegreeOfCoverMax = intDegreeOfCoverMax;				 
 	 }
 	 
-//		 //TODO: Dies in eine Oberklasse für alle "Varianten" verschieben.
-//		 @Column(name="KEYTYPE")
-//			@Access(AccessType.PROPERTY)
-//			public String getKeyType(){
-//				return super.getKeyType();
-//			}	
-//			public void setKeyType(String sKeyType){
-//				super.setKeyType(sKeyType);
-//			}
-//					
-//		 //### Aus ICategoryProviderZZZ
-//		 @Column(name="TILE_UNIQUETEXT", nullable=false)
-//		 public String getUniquetext(){
-//			 return this.sUniquetext;
-//		 }
-//		 protected void setUniquetext(String sUniquetext){
-//			 this.sUniquetext = sUniquetext;
-//		 }
-//		 
-//		 @Column(name="TILE_CATEGORYTEXT", nullable=false)
-//		 public String getCategorytext(){
-//			 return this.sCategorytext;
-//		 }
-//		 protected void setCategorytext(String sCategorytext){
-//			 this.sCategorytext= sCategorytext;
-//		 }
-//		 
-//		 //### Aus ITroopArmyVariant
-//	//TODO GOON: Diese Properties dann in einen Oberklasse für alle Spielsteine bringen TileVariant
-//	//1:1 Beziehung aufbauen
-//		//Siehe Buch "Java Persistence API 2", Seite 90ff.	
-//		//Variante 1) mit einer gemeinsamen Spalte
-//		//@Transient //Ich will kein BLOB speichern
-//		@OneToOne(fetch = FetchType.LAZY)
-//		//@JoinColumn(name="defaulttext_thiskey_id", referencedColumnName = "thiskey_id") //Erst hierdurch wird die thiskey_id in der Spalte gespeichert. ABER: Fehlermeldung, weil der Wert ggfs. nicht unique sei. Allerdings sind logischerweise mehrere Objekte, die sich auf den gleichen Text beziehen erlaubt.
-//		//Erst hierdurch wird die thiskey_id in der Spalte gespeichert. ABER: Fehlermeldung, weil der Wert ggfs. nicht unique sei. Allerdings sind logischerweise mehrere Objekte, die sich auf den gleichen Text beziehen erlaubt.
-//		//Ohne die columnDefinition funktioniert das bei der SQLite Datenbank nicht.
-//		@JoinColumn(name="defaulttext_thiskey_id", referencedColumnName = "thiskey_id", nullable = true, unique= false,  columnDefinition="LONG NOT NULL DEFAULT 1")
-//	 public Defaulttext getDefaulttextObject(){
-//		return this.objDefaulttext;
-//	 }
-//	 
-//		//Ist protected wg. immutable
-//	 protected void setDefaulttextObject(TileDefaulttext objDefaulttext){
-//		 this.objDefaulttext = objDefaulttext;
-//	 }
-//	 
-//	 
-//	 //### getter / setter
-//	 	//### Aus ITroopArmyVariant
-//	//1:1 Beziehung aufbauen
-//		//Siehe Buch "Java Persistence API 2", Seite 90ff.	
-//		//Variante 1) mit einer gemeinsamen Spalte
-//		//@Transient //Ich will kein BLOB speichern
-//		
-//	 //20180203: NEIN: Das ist eine n:1 Beziehung
-//		//@OneToOne(fetch = FetchType.LAZY)
-//		//@JoinColumn(name="immutabletext_thiskey_id", nullable = true) //Hiermit wird die ID in der Spalte gespeichert
-//	 
-//	 @ManyToOne(fetch = FetchType.LAZY)
-//	 //@JoinColumn(name="immutabletext_thiskey_id", referencedColumnName = "thiskey_id") //Erst hierdurch wird die thiskey_id in der Spalte gespeichert. ABER: Fehlermeldung, weil der Wert ggfs. nicht unique sei. Allerdings sind logischerweise mehrere Objekte, die sich auf den gleichen Text beziehen erlaubt.
-//	 //Erst hierdurch wird die thiskey_id in der Spalte gespeichert. ABER: Fehlermeldung, weil der Wert ggfs. nicht unique sei. Allerdings sind logischerweise mehrere Objekte, die sich auf den gleichen Text beziehen erlaubt.
-//	 //Ohne die columnDefinition funktioniert das bei der SQLite Datenbank nicht.
-//	 @JoinColumn(name="immutabletext_thiskey_id", referencedColumnName = "thiskey_id", nullable = true, unique= false,  columnDefinition="LONG NOT NULL DEFAULT 1") 
-//	 public TileImmutabletext getImmutabletextObject(){
-//		return this.objImmutabletext;
-//	 }
-//	 
-//	 //Ist protected wg. immutable
-//	 protected void setImmutabletextObject(TileImmutabletext objImmutabletext){
-//		 this.objImmutabletext = objImmutabletext;
-//	 }
-//	 
-//	 //TODO GOON: Diese Reichweite dann in einen Oberklasse für alle Spielsteine bringen
-//	 @Column(name="TILE_MAPMOVE_RANGE", nullable=false)
-//	 public Integer getMapMoveRange(){
-//		 return this.intMapMoveRange;
-//	 }
-//	 protected void setMapMoveRange(Integer intMapMoveRange){
-//		 this.intMapMoveRange = intMapMoveRange;				 
-//	 }
-//	 
-//	 //TODO GOON: Diese Bildressource dann in eine Oberklasse für alle Spielsteine bringen
-//	 @Column(name="TILE_IMAGEURL", nullable=false)
-//	 public String getImageUrlString(){
-//		 return this.sImageUrl;
-//	 }
-//	 protected void setImageUrlString(String sImageUrl){
-//		 this.sImageUrl = sImageUrl;			 
-//	 }
-//	 
-//	 //#### abstracte Methoden
-//	 //20171106 KÄME DAS ETWA DRUCH VERERBUNG AUS DER KLASSE "KEY" ???
-//	 //JAAA!!!	 ABER DANN GIBT ES EINE EIGENE TABELLE "KEY" und das will ich nicht.
-//	 @Column(name="thiskey_id",  nullable=false, unique=true, columnDefinition="LONG NOT NULL UNIQUE  DEFAULT 1")	
-//	 @Override
-//	public Long getThiskey() {
-//		 return this.lKey;
-//	}
-//	@Override
-//	public void setThiskey(Long thiskeyId) {
-//		this.lKey = thiskeyId;
-//	}
-	
+	 
 	 @Transient
 	 public Class getThiskeyEnumClass() {
 		 return TroopArmyVariant.getThiskeyEnumClassStatic();

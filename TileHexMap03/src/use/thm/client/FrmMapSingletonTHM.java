@@ -43,14 +43,14 @@ public class FrmMapSingletonTHM  extends KernelJFrameCascadedZZZ implements IGho
 	private FrmMapSingletonTHM(KernelZZZ objKernel, KernelJFrameCascadedZZZ objFrame) throws ExceptionZZZ{
 		super(objKernel, objFrame);
 		
-		//Todo: Den glassPane in die Klasse KernelJFrameCascadedZZZ �bernehmen, oder eine Unterklasse daf�r zur Verf�gung stellen.
+		//Todo: Den glassPane in die Klasse KernelJFrameCascadedZZZ �bernehmen, oder eine Unterklasse dafür zur Verfügung stellen.
 		//Ohne diesen Glass Pane funktionieren die Ghost...Adapter nicht, z.B. der GhostMotionAdapter.
 	     setGhostGlassPane(new GhostGlassPane(this));
 	}
 	private FrmMapSingletonTHM(){
 		super(); 
 	
-	     //Todo: Den glassPane in die Klasse KernelJFrameCascadedZZZ �bernehmen, oder eine Unterklasse daf�r zur Verf�gung stellen.
+	     //Todo: Den glassPane in die Klasse KernelJFrameCascadedZZZ �bernehmen, oder eine Unterklasse dafür zur Verfügung stellen.
 	     //Ohne diesen Glass Pane funktionieren die Ghost...Adapter nicht, z.B. der GhostMotionAdapter.
          setGhostGlassPane(new GhostGlassPane(this));		
 	}

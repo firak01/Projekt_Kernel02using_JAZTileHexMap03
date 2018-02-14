@@ -25,7 +25,9 @@ import use.thm.persistence.dao.TextDefaulttextDao;
 import use.thm.persistence.dao.TileDefaulttextDao;
 import use.thm.persistence.dao.TileImmutabletextDao;
 import use.thm.persistence.dao.TroopArmyDao;
+import use.thm.persistence.dao.TroopArmyVariantDao;
 import use.thm.persistence.dao.TroopDao;
+import use.thm.persistence.dao.TroopFleetVariantDao;
 import use.thm.persistence.daoFacade.TroopArmyDaoFacade;
 import use.thm.persistence.daoFacade.TroopFleetDaoFacade;
 import use.thm.persistence.dto.DtoFactoryGenerator;
@@ -106,6 +108,8 @@ public class HexMapTHM extends KernelUseObjectZZZ implements ITileEventUserTHM {
 		//### THEMA PERSISTIERUNG IN EINER DATENBANK
 		//TODO GOON 20180111: Nun werden weitere Informationen in die Datenbank gefüllt und nicht nur die Karte gefüllt.
 		//Daher schon an dieser Stelle prüfen, ob die Datenbank existiert. Die entsprechenden Methoden dann mit einem neuen Parameter (bDatabaseNew) versehen.
+		//IDEE: Das Füllen der Schlüsselwerttabellen (Default- / Immutabletexte /Troopvarianten) sogar noch eher machen,
+		//      weil ggfs. die Datensätze daraus zum Aufbau auch anderer(!) Panels (Buttontexte, zur Verfügung stehende Truppen, ...) benötigt werden.
 		//
 		//Den Namen der Datenbank/des Schemas aus der Kernelkonfiguration holen.
 		//HibernateContextProviderSingletonTHM objContextHibernate = new HibernateContextProviderSingletonTHM(this.getKernelObject());
@@ -122,8 +126,10 @@ public class HexMapTHM extends KernelUseObjectZZZ implements ITileEventUserTHM {
 		objContextHibernate.getConfiguration().setProperty("hibernate.hbm2ddl.auto", "update");  //! Jetzt erst wird jede Tabelle über den Anwendungsstart hinaus gepseichert.
 		
 		boolean bSuccessDefaulttext = fillDefaulttextAll(bDbExists);
-		
 		boolean bSuccessImmutabletext = fillImmutabletextAll(bDbExists);
+		boolean bSuccessTroopArmyVariant = fillTroopArmyVariantAll(bDbExists);
+		boolean bSuccessTroopFleetVariant = fillTroopFleetVariantAll(bDbExists);
+		
 		
 		//Die MapInformationen und die Informationen für Hexfelder sollen aus einer SQL Tabelle kommen. Das legt dann auch die Größe der Karte fest fest....
 		//Wenn es schon Mapinformationen gibt (ggf. neu "Map Alias" beachten) dann soll die Karten nicht neu aufgebaut, sondern aus der SQL Datenbank ausgelesen werden.
@@ -221,6 +227,7 @@ public class HexMapTHM extends KernelUseObjectZZZ implements ITileEventUserTHM {
 		return this.hmCell;
 	}
 	
+	//### DEFAULTTEXTE ###########################################################
 	public boolean fillDefaulttextAll() throws ExceptionZZZ{
 		return this.fillDefaulttextAll(false);
 	}
@@ -254,11 +261,7 @@ public class HexMapTHM extends KernelUseObjectZZZ implements ITileEventUserTHM {
 					
 				}
 				
-				//Erzeuge neuen Datenbankinhalte
-				//Merke: Weitere noch nicht genutzte TextDaos..
-//				TextDefaulttextDao daoTexttext = new TextDefaulttextDao(objContextHibernate);		
-//				DefaulttextDao daoDefaulttext = new DefaulttextDao(objContextHibernate);
-				
+				//Erzeuge neuen Datenbankinhalte:				
 				//Per Hibernate & Session 
 				int iTileDefaultTextCreated = fillTileDefaulttext_createNew(objContextHibernate);
 				
@@ -271,6 +274,22 @@ public class HexMapTHM extends KernelUseObjectZZZ implements ITileEventUserTHM {
 		return bReturn;
 	}
 	
+	private int fillTileDefaulttext_createNew(HibernateContextProviderSingletonTHM objContextHibernate) throws ExceptionZZZ{
+		int iReturn = 0;
+		main:{								
+			TileDefaulttextDao daoTileText = new TileDefaulttextDao(objContextHibernate);	
+			iReturn = daoTileText.createEntriesAll();
+			System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": Erstellte TileDefaultTexte: " + iReturn);
+
+			System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": ENDE ##############");						
+		}//end main:
+		return iReturn;	
+	}
+	
+	//### IMMUTABLETEXTE #############################################################################
+	public boolean fillImmutabletextAll() throws ExceptionZZZ{
+		return this.fillImmutabletextAll(false);
+	}
 	public boolean fillImmutabletextAll(boolean bDbExists) throws ExceptionZZZ{
 		boolean bReturn = false;
 		main:{
@@ -300,11 +319,7 @@ public class HexMapTHM extends KernelUseObjectZZZ implements ITileEventUserTHM {
 					
 				}
 				
-				//Erzeuge neuen Datenbankinhalte
-				//Merke: Weitere noch nicht genutzte TextDaos..
-//				TextDefaulttextDao daoTexttext = new TextDefaulttextDao(objContextHibernate);		
-//				DefaulttextDao daoDefaulttext = new DefaulttextDao(objContextHibernate);
-				
+				//Erzeuge neuen Datenbankinhalte:				
 				//Per Hibernate & Session 
 				int iTileImmutbleTextCreated = fillTileImmutabletext_createNew(objContextHibernate);
 				
@@ -316,118 +331,138 @@ public class HexMapTHM extends KernelUseObjectZZZ implements ITileEventUserTHM {
 		}//end main:		
 		return bReturn;
 	}
-	
-	private int fillTileDefaulttext_createNew(HibernateContextProviderSingletonTHM objContextHibernate) throws ExceptionZZZ{
-		int iReturn = 0;
-		main:{
-			/*++++++++++++++
-			//Hibernate Beispiel für einfaches Erzeugen der Entities
-			SessionFactory sf = HibernateUtil.getSessionFactory();
-			Session session = sf.openSession();
-			session.beginTransaction();
-
-			Person person = new Person("Steve", "Balmer");
-			session.save(person);
-
-			Employee employee = new Employee("James", "Gosling", "Marketing", new Date());
-			session.save(employee);
-
-			Owner owner = new Owner("Bill", "Gates", 300L, 20L);
-			session.save(owner);
-					
-			session.getTransaction().commit();
-			session.close();
-			*/			
-								
-			//Diese Methode hat drüber nicht zu entscheiden... objContextHibernate.getConfiguration().setProperty("hibernate.hbm2ddl.auto", "update");  //! Jetzt erst wird jede Tabelle über den Anwendungsstart hinaus gespeichert UND auch wiedergeholt.							
-
-//			
-
-			try {						
-				TileDefaulttextDao daoTileText = new TileDefaulttextDao(objContextHibernate);	
-				iReturn = daoTileText.createEntriesAll();
-				System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": Erstellte TileDefaultTexte: " + iReturn);
-	
-		} catch (ExceptionZZZ e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": ENDE ##############");			
-		
-		
-	}//end main:
-	return iReturn;	
-}
-	
+			
 	private int fillTileImmutabletext_createNew(HibernateContextProviderSingletonTHM objContextHibernate) throws ExceptionZZZ{
 		int iReturn = 0;
-		main:{
-			/*++++++++++++++
-			//Hibernate Beispiel für einfaches Erzeugen der Entities
-			SessionFactory sf = HibernateUtil.getSessionFactory();
-			Session session = sf.openSession();
-			session.beginTransaction();
+		main:{							
+			TileImmutabletextDao daoTileText = new TileImmutabletextDao(objContextHibernate);	
+			iReturn = daoTileText.createEntriesAll();
+			System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": Erstellte TileImmutableTexte: " + iReturn);
 
-			Person person = new Person("Steve", "Balmer");
-			session.save(person);
-
-			Employee employee = new Employee("James", "Gosling", "Marketing", new Date());
-			session.save(employee);
-
-			Owner owner = new Owner("Bill", "Gates", 300L, 20L);
-			session.save(owner);
-					
-			session.getTransaction().commit();
-			session.close();
-			*/			
-								
-			//Diese Methode hat drüber nicht zu entscheiden... objContextHibernate.getConfiguration().setProperty("hibernate.hbm2ddl.auto", "update");  //! Jetzt erst wird jede Tabelle über den Anwendungsstart hinaus gespeichert UND auch wiedergeholt.							
-
-//			
-
-			try {						
-				TileImmutabletextDao daoTileText = new TileImmutabletextDao(objContextHibernate);	
-				iReturn = daoTileText.createEntriesAll();
-				System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": Erstellte TileImmutableTexte: " + iReturn);
-	
-		} catch (ExceptionZZZ e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": ENDE ##############");			
-		
-		
-	}//end main:
-	return iReturn;	
-}
-	
-	private <T> void _fillValue(Defaulttext<T> objValue, String sEnumAlias){
-		
-		//Merke: Direktes Reinschreiben geht wieder nicht wg. "bound exception"
-		//EnumSetDefaulttextUtilZZZ.getEnumConstant_DescriptionValue(EnumSetDefaulttextTestTypeTHM.class, sEnumAlias);
-				
-		//Also: Klasse holen und danach CASTEN.
-		Class<?> objClass = ((Key) objValue).getThiskeyEnumClass();
-		String sName = EnumSetDefaulttextUtilZZZ.readEnumConstant_NameValue((Class<IEnumSetTextTHM>) objClass, sEnumAlias);
-		System.out.println("Gefundener Spielsteintypname: " + sName);
-		
-		String sShorttext = EnumSetDefaulttextUtilZZZ.readEnumConstant_ShorttextValue((Class<IEnumSetTextTHM>) objClass, sEnumAlias);
-		System.out.println("Gefundener Spielsteintypkurztext: " + sShorttext);
-		((Defaulttext) objValue).setShorttext(sShorttext);
-		
-		String sLongtext = EnumSetDefaulttextUtilZZZ.readEnumConstant_LongtextValue((Class<IEnumSetTextTHM>) objClass, sEnumAlias);
-		System.out.println("Gefundener Spielsteintyplangtext: " + sLongtext);
-		((Defaulttext) objValue).setLongtext(sLongtext);
-				
-		String sDescription = EnumSetDefaulttextUtilZZZ.readEnumConstant_DescriptionValue((Class<IEnumSetTextTHM>) objClass, sEnumAlias);
-		System.out.println("Gefundene Description: " + sDescription);			
-		((Defaulttext) objValue).setDescription(sDescription);
-		
-	    Long lngThiskey = EnumSetDefaulttextUtilZZZ.readEnumConstant_ThiskeyValue((Class<IEnumSetTextTHM>) objClass, sEnumAlias);//Das darf nicht NULL sein, sonst Fehler. Über diesen Schlüssel wird der Wert dann gefunden.
-	    System.out.println("Gefundener Thiskey: " + lngThiskey.toString());	
-		((Key) objValue).setThiskey(lngThiskey);
-		
+			System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": ENDE ##############");						
+		}//end main:
+		return iReturn;	
 	}
+
+	//### TROOPARMYVARIANT #############################################################################
+		public boolean fillTroopArmyVariantAll() throws ExceptionZZZ{
+			return this.fillTroopArmyVariantAll(false);
+		}
+		public boolean fillTroopArmyVariantAll(boolean bDbExists) throws ExceptionZZZ{
+			boolean bReturn = false;
+			main:{
+				boolean bFillDatabaseNew = true;
+				
+				//Kernel Objekt
+				KernelZZZ objKernel = this.getKernelObject();
+							
+				//Der HibernateContext ist ein Singleton Objekt, darum braucht man ihn nicht als Parameter im Methodenaufruf weitergeben.
+				HibernateContextProviderSingletonTHM objContextHibernate = HibernateContextProviderSingletonTHM.getInstance(this.getKernelObject());			
+				if(bDbExists){
+					System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": Datenbank existiert schon.");
+					
+					//Momentan passiert noch nichts mit den Defaulttexten, also kein Auslesen und ggfs. irgendwoanders hineinfüllen...
+					bFillDatabaseNew = false;
+				}else{
+					//Fall: Datenbank existiert noch nicht
+					System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": Datenbank existiert noch nicht.");						
+					bFillDatabaseNew=true;
+				}//end if bDbExists
+				
+				if(bFillDatabaseNew){
+					if(bDbExists){
+						System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": Datenbank existiert zwar, es hat aber Probleme beim Einlesen gegeben.");
+						System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": Datenbank sollte gelöscht werden, damit der Neuaufbau keine Probleme bekommt.");
+						//	TODO ggfs. zur Sicherheit die gesamte Datenbankdatei löschen, was aber nur geht, wenn z.B. kein anderer Client darauf zugreift. Vor dem endgültigen Löschen immer ein Backup machen.
+						
+					}
+					
+					//Erzeuge neuen Datenbankinhalte:					
+					//Per Hibernate & Session 
+					int iTroopArmyVariantCreated = fillTroopArmyVariant_createNew(objContextHibernate);
+					
+					//Per EntityManager, aber das hat Probleme, zumindest mit SQLITE und den @TableGenerator Annotations zum automatischen Erstellen von IDs  
+					//bReturn = fillMap_createNew_ENTITYMANAGER_EXAMPLE(objContextHibernate, panelMap);
+				}else{
+					bReturn = true;
+				}
+			}//end main:		
+			return bReturn;
+		}
+		
+		private int fillTroopArmyVariant_createNew(HibernateContextProviderSingletonTHM objContextHibernate) throws ExceptionZZZ{
+			int iReturn = 0;
+			main:{																											
+				TroopArmyVariantDao daoTroopArmy = new TroopArmyVariantDao(objContextHibernate);	
+				iReturn = daoTroopArmy.createEntriesAll();
+				System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": Erstellte TroopArmyVarianten: " + iReturn);
+	
+				System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": ENDE ##############");								
+			}//end main:
+			return iReturn;	
+		}
+		
+		
+		
+		//### TROOFLEETVARIANT #############################################################################
+		public boolean fillTroopFleetVariantAll() throws ExceptionZZZ{
+			return this.fillTroopFleetVariantAll(false);
+		}
+		public boolean fillTroopFleetVariantAll(boolean bDbExists) throws ExceptionZZZ{
+			boolean bReturn = false;
+			main:{
+				boolean bFillDatabaseNew = true;
+				
+				//Kernel Objekt
+				KernelZZZ objKernel = this.getKernelObject();
+							
+				//Der HibernateContext ist ein Singleton Objekt, darum braucht man ihn nicht als Parameter im Methodenaufruf weitergeben.
+				HibernateContextProviderSingletonTHM objContextHibernate = HibernateContextProviderSingletonTHM.getInstance(this.getKernelObject());			
+				if(bDbExists){
+					System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": Datenbank existiert schon.");
+					
+					//Momentan passiert noch nichts mit den Defaulttexten, also kein Auslesen und ggfs. irgendwoanders hineinfüllen...
+					bFillDatabaseNew = false;
+				}else{
+					//Fall: Datenbank existiert noch nicht
+					System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": Datenbank existiert noch nicht.");						
+					bFillDatabaseNew=true;
+				}//end if bDbExists
+				
+				if(bFillDatabaseNew){
+					if(bDbExists){
+						System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": Datenbank existiert zwar, es hat aber Probleme beim Einlesen gegeben.");
+						System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": Datenbank sollte gelöscht werden, damit der Neuaufbau keine Probleme bekommt.");
+						//	TODO ggfs. zur Sicherheit die gesamte Datenbankdatei löschen, was aber nur geht, wenn z.B. kein anderer Client darauf zugreift. Vor dem endgültigen Löschen immer ein Backup machen.
+						
+					}
+					
+					//Erzeuge neuen Datenbankinhalte:					
+					//Per Hibernate & Session 
+					int iTroopFleetVariantCreated = fillTroopFleetVariant_createNew(objContextHibernate);
+					
+					//Per EntityManager, aber das hat Probleme, zumindest mit SQLITE und den @TableGenerator Annotations zum automatischen Erstellen von IDs  
+					//bReturn = fillMap_createNew_ENTITYMANAGER_EXAMPLE(objContextHibernate, panelMap);
+				}else{
+					bReturn = true;
+				}
+			}//end main:		
+			return bReturn;
+		}
+		private int fillTroopFleetVariant_createNew(HibernateContextProviderSingletonTHM objContextHibernate) throws ExceptionZZZ{
+			int iReturn = 0;
+			main:{																
+				TroopFleetVariantDao daoTroopFleet = new TroopFleetVariantDao(objContextHibernate);	
+				iReturn = daoTroopFleet.createEntriesAll();
+				System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": Erstellte TroopFleetVarianten: " + iReturn);
+
+				System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": ENDE ##############");								
+		}//end main:
+		return iReturn;	
+	}
+		
+//#########################################
+
 			
 	public boolean fillMap() throws ExceptionZZZ{
 		return this.fillMap(false);

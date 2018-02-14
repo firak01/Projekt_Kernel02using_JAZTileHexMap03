@@ -111,7 +111,7 @@ public class TroopVariant  extends KeyImmutable implements ITroopVariantTHM, ICa
 		//20180130: Besser eine Konstante hier. Merke: Diese Konstante wird dann in den Dao Klassen auch verwendet . Z.B. in TileDefaulttextDao.searchKey(...)
 	 }
 	 	 
-	 //Konstruktor, an den alles übergeben wird. Wg. "Immutable".
+	 //Konstruktor, an den alles übergeben wird. Wg. "Immutable" gibt es keine 'public' Setter.
 	 public TroopVariant(int iKey, String sUniquetext, String sCategorytext, int intMapMoveRange, String sImageUrl, TileDefaulttext objDefaulttext, TileImmutabletext objImmutabletext){
 		 super();		
 		 this.setKeyType("TROOPVARIANT"); //TODO: HIER EINE ENUMERATION MACHEN ÜBER DIE VERSCHIEDENEN SCHLÜSSELWERTE? 

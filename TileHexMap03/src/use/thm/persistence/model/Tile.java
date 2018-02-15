@@ -77,7 +77,7 @@ public class Tile implements Serializable, IOptimisticLocking{
 //			@AttributeOverride(name = "sMapY", column= @Column(name="Y", length = 2))
 //	})
 	
-	/*Meine Variante VOR dem Lösungsversuch mit dem generierten, eindeutigem Schlüssel.... Beide Varainten kann man nicht vereinen. 
+	/*Meine Variante VOR dem Lösungsversuch mit dem generierten, eindeutigem Schlüssel.... Beide Varianten kann man nicht vereinen. 
 	//Merke: Attribut Access über PROPERTY	
 	@AttributeOverrides({
 			@AttributeOverride(name = "mapAlias", column= @Column(name="MAPALIAS")),
@@ -87,7 +87,11 @@ public class Tile implements Serializable, IOptimisticLocking{
 	*/
 	private TileId id;
 	
-	private String sTextDefault; //wird mit einer @Formula zur Laufzeit berechnet. 
+	private String sUniquedate; //wird mit einer @Formula zur Laufzeit berechnet. 
+	private Long lngUniquedate; //wird mit einer @Formula zur Laufzeit berechnet.
+	
+	private int iXstarted=-1;
+	private int iYstarted=-1;
 	
 	
 	//DAS PERSISTIERT ALS BLOB
@@ -172,6 +176,53 @@ public class Tile implements Serializable, IOptimisticLocking{
 		//Versuch mit MAX(X) darauf zuzugreifen aus der Methode fillMap(..)
 		//ABER: Da das String ist, wird "9" als maximaler Wert zurückgeliefert und kein Integerwert.	
 		@Access(AccessType.PROPERTY)
+		@Column(name="XXstarted", nullable=false, columnDefinition="integer default 0")
+	    public int getMapXstarted(){
+			if(this.iXstarted<=0){
+				if(this.getHexCell()!=null){
+			    	String stemp = this.getHexCell().getId().getMapX();
+			    	Integer objReturn = new Integer(stemp);
+			    	return objReturn.intValue();
+				}else{
+					return -1;
+				}
+			}else{
+				return this.iXstarted;
+			}
+	    }
+		private void setMapXstarted(int iValue){
+			this.iXstarted = iValue;
+		}
+	    
+		@Access(AccessType.PROPERTY)
+		@Column(name="YYstarted", nullable=false, columnDefinition="integer default 0")
+	    public int getMapYstarted(){
+			if(this.iYstarted<=0){
+				if(this.getHexCell()!=null){
+					String stemp =  this.getHexCell().getId().getMapY();
+			    	Integer objReturn = new Integer(stemp);
+			    	return objReturn.intValue();
+				}else{
+					return -1;
+				}
+			}else{
+				return this.iYstarted;
+			}
+	    	//return objReturn;
+	    }
+		private void setMapYstarted(int iValue){
+			this.iYstarted = iValue;
+		}
+		
+		
+		//Merke 20180215: Versuch das auf @Formula umzustellen. IST ABER GESCHEITERT, DA ZU KOMPLIZERT auf den zusammengesetzten Schlüssel des gespeicherten HEXCELL 
+		//                Die Ausgangsversion ist nun in getMapXstarted()
+		//                       
+		//Versuch mit MAX(X) darauf zuzugreifen aus der Methode fillMap(..)
+		//ABER: Da das String ist, wird "9" als maximaler Wert zurückgeliefert und kein Integerwert.	
+		@Access(AccessType.PROPERTY)
+		//@Formula("(select substr(UNIQUENAME,6,19) from TILE t where t.TILE_ID_INCREMENTED = 1)")
+		//So sollte man theoretisch casten können.   @Formula("select CAST( as decimal)")
 		@Column(name="XX", nullable=false, columnDefinition="integer default 0")
 	    public int getMapX(){
 			if(this.getHexCell()!=null){
@@ -187,10 +238,10 @@ public class Tile implements Serializable, IOptimisticLocking{
 			String sX = intValue.toString();
 			
 			//TODO GOON 20170715: Müsste hier jetzt nicht die korrekte HexCell ermittelt werden? 
-//				this.getHexCell().getId().setMapX(sX);
-//			}
+//						this.getHexCell().getId().setMapX(sX);
+//					}
 		}
-	    
+		
 		@Access(AccessType.PROPERTY)
 		@Column(name="YY", nullable=false, columnDefinition="integer default 0")
 	    public int getMapY(){
@@ -207,11 +258,11 @@ public class Tile implements Serializable, IOptimisticLocking{
 			Integer intValue = new Integer(iValue);
 			String sY = intValue.toString();
 			
-			//TODO GOON 20170715: Müsste hier jetzt nicht die korrekte HexCell ermittelt werden? Das Setzen klappt so nmlich nicht...
+			//TODO GOON 20170715: Müsste hier jetzt nicht die korrekte HexCell ermittelt werden? Das Setzen klappt so nämlich nicht...
 //			if(this.getHexCell()!=null){
 //				this.getHexCell().getId().setMapY(sY);
 //			}
-		}
+		}	    	    
 	 
 	 
 	 //Siehe Buch "Java Persistence API", Seite 37ff
@@ -330,16 +381,35 @@ public class Tile implements Serializable, IOptimisticLocking{
 		//2. Hier mit einem Subselect die TileVariante holen und dann daraus den Defaulttext holen.
 		//@Formula("(select Shorttext from TileDefaulttext dt where dt.Thiskey = 110)") //1. Die innere klammer ist wichtig. 2. Momnetan noch Fehler "no such table: TileDefaulttext"
 		//@Formula("(select Shorttext from K_DEFAULTTEXT_TILE dt where dt.Thiskey = 110)") //SQL error or missing database (no such column: tile1_.Shorttext)
-		//FUNKTIONIERT: DA SICH DIE SQL FORMEL AUF DAS GLEICHE ENTITY BEZIEHT @Formula("(select substr(UNIQUENAME,1,12) from TILE t where t.TILE_ID_INCREMENTED = 1)")
+		//IDEE:  @Formula("select CAST( as decimal)") , klappt aber in den Unterschiedlichsten Varianten as Integer, etc. nicht...
+		
+		//FUNKTIONIERT: DA SICH DIE SQL FORMEL AUF DAS GLEICHE ENTITY BEZIEHT 
+		@Formula("(select substr(UNIQUENAME,6,19) from TILE t where t.TILE_ID_INCREMENTED = 1)")
+		
+		//funktioniert nicht @Formula("( (CAST(UNIQUEDATE) AS INTEGER) || (select substr(UNIQUENAME,6,19) from TILE t where t.TILE_ID_INCREMENTED = 1) )")
 		//FUNKTIONIERT: BEIDE WERTE WERDEN ZUSAMMENGEZOGEN, so gibt es: ARMY_ARMY_1518628141555 ...... @Formula("substr(uniquename,1,5) || (select uniquename from TILE dt where dt.TILE_ID_INCREMENTED = 1)")
-		//IDEE: Das kann man ggfs. für die XX und YY Spalte verwenden, die sich ja aus SX und SY - den Stringwerten - errechnet.
-		@Column(name="shorttext", nullable=true, columnDefinition="string default 'xxx'")  //Merke UNIQUE ist ein Datenbankschlüsselwort
-	    public String getShorttext(){
-	    	return this.sTextDefault;
+		@Column(name="UNIQUEDATE", nullable=true, columnDefinition="STRING default '0'")  //Merke UNIQUE ist ein Datenbankschlüsselwort
+	    public String getUniqueDate(){
+	    	return this.sUniquedate;
 	    }
-		protected void setShorttext(String sTextDefault){
-			this.sTextDefault = sTextDefault;
+		protected void setUniqueDate(String sUniquedate){
+			this.sUniquedate = sUniquedate;
 		}
-	    
-	    
+		
+		//TODO GOON: Probier mal etwas zu CASTEN
+		//IDEE: Das kann man ggfs. für die XX und YY Spalte verwenden, die sich ja aus SX und SY - den Stringwerten - errechnet.
+		//
+		//klappt aber alles nicht:
+		//@Formula("(CAST(select substr(UNIQUENAME,6,19) from TILE t where t.TILE_ID_INCREMENTED = 1) as \"DECIMAL\")")		
+		//@Formula("(CAST((select substr(UNIQUENAME,6,19) from TILE t where t.TILE_ID_INCREMENTED = 1) as \"DECIMAL\"))")
+		//@Formula("(CAST((select substr(UNIQUENAME,6,19) from TILE t where t.TILE_ID_INCREMENTED = 1) as DECIMAL))")
+		
+//		@Formula("(CAST(UNIQUEDATE as DECIMAL))")			
+//		@Column(name="UNIQUEDATE_LONG", nullable=true, columnDefinition="long default 0")  //Merke UNIQUE ist ein Datenbankschlüsselwort
+//	    public Long getUniqueDateLong(){
+//	    	return this.lngUniquedate;
+//	    }
+//		protected void setUniqueDateLong(Long lngUniquedate){
+//			this.lngUniquedate = lngUniquedate;
+//		}							
 }

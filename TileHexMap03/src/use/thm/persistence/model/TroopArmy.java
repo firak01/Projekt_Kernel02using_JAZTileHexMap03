@@ -35,14 +35,14 @@ public class TroopArmy extends Troop{
 	}
 	
 	
-	//Versuch Callback - Methoden aufzurufen..... aber das Scheint nicht mit Hibernate zu gehen, sondern nur mti JPA & EntityManagager
+	//Versuch Callback - Methoden aufzurufen..... aber das scheint nicht mit Hibernate zu gehen, sondern nur mit JPA & EntityManagager
 	//@PrePersist
 //	private void vorEinfuegen(){
 //		System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": Vor dem Einfügen. Das wäre eine ideale Stelle für Validierung....");
 //	}
 	
 	//### Getter / Setter
-	/* FGL TODO GOON 20171106: ERST MAL DIE TRROPARMYVARIANT Tabelle sauber hinbekommen
+	/* FGL TODO GOON 20171106: ERST MAL DIE TROOPARMYVARIANT Tabelle sauber hinbekommen
 	//1:1 Beziehung aufbauen
 		//Siehe Buch "Java Persistence API 2", Seite 90ff.	
 		//Variante 1) mit einer gemeinsamen Spalte

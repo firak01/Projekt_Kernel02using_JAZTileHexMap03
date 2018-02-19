@@ -1,6 +1,8 @@
 package use.thm.persistence.daoFacade;
 
+import java.util.Calendar;
 import java.util.Collection;
+import java.util.Date;
 
 import javax.swing.JOptionPane;
 
@@ -68,6 +70,18 @@ public class TroopArmyDaoFacade extends TileDaoFacade{
 			objTroopTemp.setHexCell(objArea); //Füge Zelle der Trupppe hinzu, wg. 1:1 Beziehung
 			
 			//Merke: EINE TRANSACTION = EINE SESSION ==>  neue session von der SessionFactory holen
+			//FGL: TEST 20180215, Probiere das Setzen eines Datum aus, HIS Style
+			//Das Klappt. Das Ergebnis ist aber in der SQLite Datenbank ebenfalls nur ein "kryptischer" (d.h. Long Zahl) Timestamp
+			Calendar cal = Calendar.getInstance();
+			//TEST: Setze ein beliebiges Datum
+//			cal.set(2006,5,25);			
+//			Date objDate = cal.getTime();
+			
+			//Ist der Vorteil der HIS-Lösung, dass man beliebige Datumsformate "reinwerfen kann"?
+			Date objDate = cal.getTime();
+								
+			//LocalDateTime now = LocalDateTime.now();
+			objTroopTemp.setCreatedThisAt(objDate); //Die HIS Lösung, für die zahlreiche andere Klassen (s. Packages in base) und Bibliotheken (u.a. aspectj Tools) eigebunden werden mussten.
 			session.save(objTroopTemp); //Hibernate Interceptor wird aufgerufen																				
 			if (!session.getTransaction().wasCommitted()) {
 				//session.flush(); //Datenbank synchronisation, d.h. Inserts und Updates werden gemacht. ABER es wird noch nix committed.
@@ -139,7 +153,12 @@ public class TroopArmyDaoFacade extends TileDaoFacade{
 			if (!session.getTransaction().wasCommitted()) {
 				//session.flush();								
 				session.getTransaction().commit();///SaveOrUpdate-Listener wird ausgeführt, FÜR EIN TROOPARMY OBJEKT!!!
-				session.flush(); //versuch folgendes zu 
+				
+				//FGL 20180215: Fehlermeldung beim Versuch mit DateTimestamp und @Version
+				//Exception in thread "main" org.hibernate.TransientObjectException: object references an unsaved transient instance - save the transient instance before flushing: use.thm.persistence.model.Tile
+				//also rausnehmen des flushing.....  
+				//session.flush(); //versuch folgendes zu
+				
 				//bGoon = HibernateUtil.wasCommitSuccessful(objContextHibernate,"update",session.getTransaction());
 				VetoFlag4ListenerZZZ objResult = HibernateUtil.getCommitResult(this.getHibernateContext(),"update",session.getTransaction());					
 				sMessage = objResult.getVetoMessage();

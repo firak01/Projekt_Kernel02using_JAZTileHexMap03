@@ -1,6 +1,7 @@
 package use.thm.persistence.model;
 
 import java.io.Serializable;
+import java.util.Date;
 
 import javax.persistence.Access;
 import javax.persistence.AccessType;
@@ -19,11 +20,16 @@ import javax.persistence.JoinTable;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.TableGenerator;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 import javax.persistence.Transient;
+import javax.persistence.Version;
 
 import org.hibernate.annotations.Formula;
+import org.hibernate.annotations.Type;
 
 import basic.persistence.model.IOptimisticLocking;
+import basic.zBasic.persistence.hibernate.DateMapping;
 import basic.zBasic.util.datatype.string.StringZZZ;
 
 /**Klasse für einen Spielstein - persistierbar per JPA. Wird nach Troop vererbt. 
@@ -88,10 +94,12 @@ public class Tile implements Serializable, IOptimisticLocking{
 	private TileId id;
 	
 	private String sUniquedate; //wird mit einer @Formula zur Laufzeit berechnet. 
-	private Long lngUniquedate; //wird mit einer @Formula zur Laufzeit berechnet.
 	
 	private int iXstarted=-1;
 	private int iYstarted=-1;
+	
+	private Date dateUpdatedAt;
+	private Date dateCreatedThis;
 	
 	
 	//DAS PERSISTIERT ALS BLOB
@@ -376,7 +384,6 @@ public class Tile implements Serializable, IOptimisticLocking{
 		
 		//#### Berechnete Formel-Werte
 		//Siehe Buch "Java Persistence with Hibernate (2016) Kapitel 5.1.3. (S.115 im E-Book reader)
-		//TODO GOON:
 		//1. Thisid der TileVariante hier aufnehmen und n:1 gemäß mit defaulttext verknüpfen
 		//2. Hier mit einem Subselect die TileVariante holen und dann daraus den Defaulttext holen.
 		//@Formula("(select Shorttext from TileDefaulttext dt where dt.Thiskey = 110)") //1. Die innere klammer ist wichtig. 2. Momnetan noch Fehler "no such table: TileDefaulttext"
@@ -396,7 +403,7 @@ public class Tile implements Serializable, IOptimisticLocking{
 			this.sUniquedate = sUniquedate;
 		}
 		
-		//TODO GOON: Probier mal etwas zu CASTEN
+		//Probier mal etwas zu CASTEN
 		//IDEE: Das kann man ggfs. für die XX und YY Spalte verwenden, die sich ja aus SX und SY - den Stringwerten - errechnet.
 		//
 		//klappt aber alles nicht:
@@ -411,5 +418,74 @@ public class Tile implements Serializable, IOptimisticLocking{
 //	    }
 //		protected void setUniqueDateLong(Long lngUniquedate){
 //			this.lngUniquedate = lngUniquedate;
-//		}							
+//		}		
+		
+				
+//		//###### BERECHNETE DATUMSWERTE: Versuch CreatedAt automatisch zu erhalten
+//		//Fazit 20180219: Funktioniert nicht
+//		//Variante 1: funktioniert nicht
+//		//@Temporal(TemporalType.TIMESTAMP)
+//		//@org.hibernate.annotations.Generated( //Merke Fehler beim Versuch Variante 1 & 2 zu kombinieren: org.hibernate.AnnotationException: @Generated(INSERT) on a @Version property not allowed, use ALWAYS: use.thm.persistence.model.Tile.createdAt
+//		//	org.hibernate.annotations.GenerationTime.INSERT
+//		//	)
+//		
+//		//Variante 2: funktioniert nicht
+//		//@Version 
+//		//@Type(type = "timestamp")//Versuch mehr als das Jahr zu bekommen, ja, das ist dann ein Timestamp basierend auf einer LONG - Zahl, wie ich sie schon beim UNIQUE-Namen verwende		
+//		@Column(name="createdAt", insertable = true, updatable = true)
+//		public Date getCreatedAt(){
+//			return this.dateCreatedAt;
+//		}
+//		protected void setCreatedAt(Date dateCreateddAt){
+//			this.dateCreatedAt = dateCreatedAt;
+//		}
+		
+		//DAS IST DIE VERSION DER HIS mit einem USER_TYPE ....
+		//FGL: das wäre der Versuch mit @Version. Dafür muss die verwendete Klasse aber implementieren: UserVersionType
+		//Das klappt aber so nicht automatisch ... @Version, daher diesen Wert über das DAO explizit setzen.
+		//Sie funktioniert, wenn zahlreiche Klassen für das Date-Handling und andere Bibliothek (z.B. aspectj - Tools) eingebunden werden.
+		//Vielleicht der Vorteil, dass man hier beliebige Datumsformate "reinwerfen kann".
+		@Column(name="createdThisAt", insertable = true, updatable = false)
+		@Type(type = DateMapping.USER_TYPE_NAME)
+		public Date getCreatedThisAt(){
+			return this.dateCreatedThis;
+		}
+		public void setCreatedThisAt(Date dateCreatedThis){
+			this.dateCreatedThis = dateCreatedThis;
+		}
+		
+				
+		//##### BERECHNETE DATUMSWERTE. Versuch UpdatedAt automatisch zu erhalten
+		//Vgl. Buch "Java Persistence with Hibernate (2016)", Kapitel 5.1.5, (S. 117 in E-Book Readern).
+		//SQLITE Datenbank: Das Arbeiten mit TemporalType.TIMESTAMP funktioniert nicht
+//		@Temporal(TemporalType.TIMESTAMP)
+//		@Column(insertable = false, updatable = false)
+//		@org.hibernate.annotations.Generated(
+//				org.hibernate.annotations.GenerationTime.ALWAYS
+//		)
+//		public Date getUpdatedAt(){
+//			return this.dateUpdatedAt;
+//		}
+//		protected void setUpdatedAt(Date dateUpdatedAt){
+//			this.dateUpdatedAt = dateUpdatedAt;
+//		}
+//
+		//Ebook-Reader Seite 118
+//		@Temporal(TemporalType.TIMESTAMP)
+//		@Column(insertable = false, updatable = false)
+		//Das funktioniert nicht, das erst ab Hibernate 4.3.x vorhanden .... @org.hibernate.annotations.CreationTimestamp
+		
+		//Arbeite mit @Version. Der Vorteil ist, das man den Zeitstempel nicht extra setzen muss, da dies atomatisch passiert.
+		@Version  //https://www.thoughts-on-java.org/hibernate-tips-use-timestamp-versioning-optimistic-locking/
+		//@Type(type = "dbtimestamp")//Erstaunlicherweise gibt es hier einen Eintrag. Das ist zwar nur das Jahr (2018) aber immerhin				
+		@Type(type = "timestamp")//Versuch mehr als das Jahr zu bekommen, ja, das ist dann ein Timestamp basierend auf einer LONG - Zahl, wie ich sie schon beim UNIQUE-Namen verwende		
+		public Date getUpdatedAt(){
+			return this.dateUpdatedAt;
+		}
+		protected void setUpdatedAt(Date dateUpdatedAt){
+			this.dateUpdatedAt = dateUpdatedAt;
+		}
+			
+		
 }
+

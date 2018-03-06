@@ -30,6 +30,8 @@ import org.hibernate.annotations.Type;
 
 import basic.persistence.model.IOptimisticLocking;
 import basic.zBasic.persistence.hibernate.DateMapping;
+import basic.zBasic.persistence.interfaces.IModelDateTimestampProviderZZZ;
+import basic.zBasic.persistence.model.AbstractPersistentObjectTimestampedZZZ;
 import basic.zBasic.util.datatype.string.StringZZZ;
 
 /**Klasse für einen Spielstein - persistierbar per JPA. Wird nach Troop vererbt. 
@@ -46,7 +48,8 @@ import basic.zBasic.util.datatype.string.StringZZZ;
 @Access(AccessType.PROPERTY)
 
 //VERERBUNG und STRATEGIEN:
-//ZIEL: Nur bestimmte Entities in einer eigenen Klasse 
+//ZIEL: Anders als bei der SINGLE_TABLE Variante werden hier die sich unterscheidenden Spalten in eine eigenen Tabelle gepackt.
+//      Der Vorteil ist, dass es keine NULL WERTE gibt. Allerdings hat man als Nachteil nicht alles im Blick.
 //@Inheritance(strategy =  InheritanceType.JOINED )
 
 //Ziel: Jedes Entity der Vererbungshierarchie in einer eigenen Tabelle 
@@ -55,6 +58,7 @@ import basic.zBasic.util.datatype.string.StringZZZ;
 
 //Ziel: Hiermit werden alle Datensätze der Vererbungshierarchieklassen in einer Tabelle zusammengafasst und nur anhand des Discriminator Wertes unterschieden
 //DAS IST DER DEFAULT, wenn nur java-mäßig verebt wird.
+//PROBLEM: NULL WERTE WENN SICH DIE SPALTEN DER ENTITIES UNTERSCHEIDEN. VORTEIL: Es sind definitv weniger Tabellen.
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)  
 //Merke: Bei InheritanceType.SINGLE_TABLE) gilt: Voraussetzung für DiscriminatorValue in der AreaCell-Klasse. //Wird es wg. der Vererbung von HEXCell zu AreaType immer geben. Ohne Annotation ist das DTYPE und der wert ist gleich dem Klassennamen.
 @DiscriminatorColumn(name="Entityclass", discriminatorType = DiscriminatorType.STRING) 
@@ -64,43 +68,23 @@ import basic.zBasic.util.datatype.string.StringZZZ;
 //FGL: ALTE VERSION 20180209: @Inheritance(strategy =  InheritanceType.JOINED )//ZIEL: Nur bestimmte Entiteis in einer eigenen Klasse //InheritanceType.TABEL_PER_CLASS) //Ziel: Jedes Entity der Vererbungshierarchie in einer eigenen Tabelle // InheritanceType.SINGLE_TABLE) //Hiermit werden alle Datensätze der Vererbungshierarchieklassen in einer Tabelle zusammengafasst und nur anhan ddes Discriminator Wertes unterschieden 
 //Bei InheritanceType.TABLE_PER_CLASS gilt, es darf keinen Discriminator geben ... @DiscriminatorColumn(name="Disc", discriminatorType = DiscriminatorType.STRING) //Bei InheritanceType.SINGLE_TABLE) gilt: Voraussetzung für DiscriminatorValue in der AreaCell-Klasse. //Wird es wg. der Vererbung von HEXCell zu AreaType immer geben. Ohne Annotation ist das DTYPE und der wert ist gleich dem Klassennamen.
 @Table(name="TILE")
-public class Tile implements Serializable, IOptimisticLocking{
+public class Tile  implements Serializable, IOptimisticLocking, IModelDateTimestampProviderZZZ {//Merke: Mit Hibernate pur ist das scheinbar schwierig, da man kein @Superclass nutzen kann .... extends AbstractPersistentObjectTimestampedZZZ{
 	private static final long serialVersionUID = 1113434456411176970L;
 	
 	//Variante 2: Realisierung eines Schlüssel über eine eindeutige ID, die per Generator erzeugt wird
 	private int iMyTestSequence;
-	
-	
-	//Variante 1) Beispielsweise für das Spielbrett gewählte Variante...
-	//Realisierung eines Zusammengesetzten Schlüssels
-	//Siehe Buch "Java Persistence API 2", Seite 48ff.
-	//@EmbeddedId
-	
-	//Merke: Attribut Access über FIELD.
-//	@AttributeOverrides({
-//			@AttributeOverride(name = "sMapAlias", column= @Column(name="MAPALIAS")),
-//			@AttributeOverride(name = "sMapX", column= @Column(name="X", length = 2)),
-//			@AttributeOverride(name = "sMapY", column= @Column(name="Y", length = 2))
-//	})
-	
-	/*Meine Variante VOR dem Lösungsversuch mit dem generierten, eindeutigem Schlüssel.... Beide Varianten kann man nicht vereinen. 
-	//Merke: Attribut Access über PROPERTY	
-	@AttributeOverrides({
-			@AttributeOverride(name = "mapAlias", column= @Column(name="MAPALIAS")),
-			@AttributeOverride(name = "player", column= @Column(name="PLAYER", length = 2)),
-			@AttributeOverride(name = "uniquename", column= @Column(name="UNIQUENAME", length = 6))	//Merke UNIQUE selbst nicht verwendbar, ist ein Schlüsselwort				
-	})
-	*/
+
 	private TileId id;
 	
 	private String sUniquedate; //wird mit einer @Formula zur Laufzeit berechnet. 
 	
+	//Aus dem IModelDateTimestampProvider. FGL: 20180220: Versuche dies in eine abstrakte Superklasse zu verschieben und so Vererbung zu nutzen sind mit pur Hibernate gescheitert.
+	private Date dateCreatedThis;
+	private String sDateCreatedThis;
+	private Date dateUpdatedAt;
+	
 	private int iXstarted=-1;
 	private int iYstarted=-1;
-	
-	private Date dateUpdatedAt;
-	private Date dateCreatedThis;
-	
 	
 	//DAS PERSISTIERT ALS BLOB
 	//@Enumerated(EnumType.STRING)	
@@ -129,7 +113,9 @@ public class Tile implements Serializable, IOptimisticLocking{
 			 inverseJoinColumns= {@JoinColumn(name="mapAlias", nullable = false, unique = true), @JoinColumn(name="mapX", nullable = false, unique = true), @JoinColumn(name="mapY", nullable = false, unique = true)} //private String sMapAlias = new String("TEST");  	private String sMapX = null; //X-KoordinatedId	private String sMapY = null; //Y-Koordinate
 			 )
 	private HexCell objHexCell;
-	
+	 
+		 
+	//########################################################################################################################
 	//Der Default Contruktor wird für JPA - Abfragen wohl benötigt
 	 public Tile(){
 		 //bisher nur die eine Sorte des TileType vorhanden, darum nicht im Konstruktor als Parameter aufgenommen
@@ -142,19 +128,41 @@ public class Tile implements Serializable, IOptimisticLocking{
 		 this.enumTileType = TileType.TROOP;
 	 }
 	 
+		//Variante 1) Beispielsweise für das Spielbrett gewählte Variante...
+		//Realisierung eines Zusammengesetzten Schlüssels
+		//Siehe Buch "Java Persistence API 2", Seite 48ff.
+		//@EmbeddedId
+		
+		//Merke: Attribut Access über FIELD.
+//		@AttributeOverrides({
+//				@AttributeOverride(name = "sMapAlias", column= @Column(name="MAPALIAS")),
+//				@AttributeOverride(name = "sMapX", column= @Column(name="X", length = 2)),
+//				@AttributeOverride(name = "sMapY", column= @Column(name="Y", length = 2))
+//		})
+		
+		/*Meine Variante VOR dem Lösungsversuch mit dem generierten, eindeutigem Schlüssel.... Beide Varianten kann man nicht vereinen. 
+		//Merke: Attribut Access über PROPERTY	
+		@AttributeOverrides({
+				@AttributeOverride(name = "mapAlias", column= @Column(name="MAPALIAS")),
+				@AttributeOverride(name = "player", column= @Column(name="PLAYER", length = 2)),
+				@AttributeOverride(name = "uniquename", column= @Column(name="UNIQUENAME", length = 6))	//Merke UNIQUE selbst nicht verwendbar, ist ein Schlüsselwort				
+		})
+		*/
+	
+	
 	//### Variante 2: Verwende auf dieser Ebene einen Generator, zum Erstellen einer ID
-		 @Id				
-		 @TableGenerator(name="lidGeneratorTile001", table="COMMON_FUER_IDGENERATOR_ASSOCIATION",pkColumnName="nutzende_Klasse_als_String", pkColumnValue="SequenceTester",valueColumnName="naechster_id_wert",  initialValue=1, allocationSize=1)//@TableGenerator Name muss einzigartig im ganzen Projekt sein.
-		 @GeneratedValue(strategy = GenerationType.TABLE, generator="lidGeneratorTile001")		 //Das Klappt mit Hibernate Session, aber nicht mit dem JPA EntityManager...
-		 //Bei dieser Column Definition ist die Spalte nicht für @OneToMany mit @JoinTable zu gebrauchen @Column(name="TILE_ID_INCREMENTED", nullable=false, unique=true, columnDefinition="INTEGER NOT NULL UNIQUE  DEFAULT 1")
-		 //Entferne also das unique...
-		 @Column(name="TILE_ID_INCREMENTED", nullable=false)
-		 public int getId(){
-			 return this.iMyTestSequence;
-		 }
-		 public void setId(int iLid){
-			 this.iMyTestSequence = iLid;
-		 }
+	 @Id				
+	 @TableGenerator(name="lidGeneratorTile001", table="COMMON_FUER_IDGENERATOR_ASSOCIATION",pkColumnName="nutzende_Klasse_als_String", pkColumnValue="SequenceTester",valueColumnName="naechster_id_wert",  initialValue=1, allocationSize=1)//@TableGenerator Name muss einzigartig im ganzen Projekt sein.
+	 @GeneratedValue(strategy = GenerationType.TABLE, generator="lidGeneratorTile001")		 //Das Klappt mit Hibernate Session, aber nicht mit dem JPA EntityManager...
+	 //Bei dieser Column Definition ist die Spalte nicht für @OneToMany mit @JoinTable zu gebrauchen @Column(name="TILE_ID_INCREMENTED", nullable=false, unique=true, columnDefinition="INTEGER NOT NULL UNIQUE  DEFAULT 1")
+	 //Entferne also das unique...
+	 @Column(name="TILE_ID_INCREMENTED", nullable=false)
+	 public int getId(){
+		 return this.iMyTestSequence;
+	 }
+	 public void setId(int iLid){
+		 this.iMyTestSequence = iLid;
+	 }
 	 
 	 //### getter / setter
 	 //Siehe Buch "Java Persistence API", Seite 37ff
@@ -402,6 +410,7 @@ public class Tile implements Serializable, IOptimisticLocking{
 		protected void setUniqueDate(String sUniquedate){
 			this.sUniquedate = sUniquedate;
 		}
+	
 		
 		//Probier mal etwas zu CASTEN
 		//IDEE: Das kann man ggfs. für die XX und YY Spalte verwenden, die sich ja aus SX und SY - den Stringwerten - errechnet.
@@ -418,33 +427,11 @@ public class Tile implements Serializable, IOptimisticLocking{
 //	    }
 //		protected void setUniqueDateLong(Long lngUniquedate){
 //			this.lngUniquedate = lngUniquedate;
-//		}		
+//		}
 		
-				
+		
 //		//###### BERECHNETE DATUMSWERTE: Versuch CreatedAt automatisch zu erhalten
-//		//Fazit 20180219: Funktioniert nicht
-//		//Variante 1: funktioniert nicht
-//		//@Temporal(TemporalType.TIMESTAMP)
-//		//@org.hibernate.annotations.Generated( //Merke Fehler beim Versuch Variante 1 & 2 zu kombinieren: org.hibernate.AnnotationException: @Generated(INSERT) on a @Version property not allowed, use ALWAYS: use.thm.persistence.model.Tile.createdAt
-//		//	org.hibernate.annotations.GenerationTime.INSERT
-//		//	)
-//		
-//		//Variante 2: funktioniert nicht
-//		//@Version 
-//		//@Type(type = "timestamp")//Versuch mehr als das Jahr zu bekommen, ja, das ist dann ein Timestamp basierend auf einer LONG - Zahl, wie ich sie schon beim UNIQUE-Namen verwende		
-//		@Column(name="createdAt", insertable = true, updatable = true)
-//		public Date getCreatedAt(){
-//			return this.dateCreatedAt;
-//		}
-//		protected void setCreatedAt(Date dateCreateddAt){
-//			this.dateCreatedAt = dateCreatedAt;
-//		}
-		
-		//DAS IST DIE VERSION DER HIS mit einem USER_TYPE ....
-		//FGL: das wäre der Versuch mit @Version. Dafür muss die verwendete Klasse aber implementieren: UserVersionType
-		//Das klappt aber so nicht automatisch ... @Version, daher diesen Wert über das DAO explizit setzen.
-		//Sie funktioniert, wenn zahlreiche Klassen für das Date-Handling und andere Bibliothek (z.B. aspectj - Tools) eingebunden werden.
-		//Vielleicht der Vorteil, dass man hier beliebige Datumsformate "reinwerfen kann".
+		//MERKE: Die Annotations werden dann aus dem Interface IModelDateTimestampProviderZZZ hier NICHT automatisch ergänzt		
 		@Column(name="createdThisAt", insertable = true, updatable = false)
 		@Type(type = DateMapping.USER_TYPE_NAME)
 		public Date getCreatedThisAt(){
@@ -453,39 +440,28 @@ public class Tile implements Serializable, IOptimisticLocking{
 		public void setCreatedThisAt(Date dateCreatedThis){
 			this.dateCreatedThis = dateCreatedThis;
 		}
-		
 				
-		//##### BERECHNETE DATUMSWERTE. Versuch UpdatedAt automatisch zu erhalten
-		//Vgl. Buch "Java Persistence with Hibernate (2016)", Kapitel 5.1.5, (S. 117 in E-Book Readern).
-		//SQLITE Datenbank: Das Arbeiten mit TemporalType.TIMESTAMP funktioniert nicht
-//		@Temporal(TemporalType.TIMESTAMP)
-//		@Column(insertable = false, updatable = false)
-//		@org.hibernate.annotations.Generated(
-//				org.hibernate.annotations.GenerationTime.ALWAYS
-//		)
-//		public Date getUpdatedAt(){
-//			return this.dateUpdatedAt;
-//		}
-//		protected void setUpdatedAt(Date dateUpdatedAt){
-//			this.dateUpdatedAt = dateUpdatedAt;
-//		}
-//
-		//Ebook-Reader Seite 118
-//		@Temporal(TemporalType.TIMESTAMP)
-//		@Column(insertable = false, updatable = false)
-		//Das funktioniert nicht, das erst ab Hibernate 4.3.x vorhanden .... @org.hibernate.annotations.CreationTimestamp
-		
-		//Arbeite mit @Version. Der Vorteil ist, das man den Zeitstempel nicht extra setzen muss, da dies atomatisch passiert.
-		@Version  //https://www.thoughts-on-java.org/hibernate-tips-use-timestamp-versioning-optimistic-locking/
-		//@Type(type = "dbtimestamp")//Erstaunlicherweise gibt es hier einen Eintrag. Das ist zwar nur das Jahr (2018) aber immerhin				
-		@Type(type = "timestamp")//Versuch mehr als das Jahr zu bekommen, ja, das ist dann ein Timestamp basierend auf einer LONG - Zahl, wie ich sie schon beim UNIQUE-Namen verwende		
+		@Column(name="createdThisAtString", insertable = true, updatable = false)		
+		@Type(type = DateMapping.USER_TYPE_NAME)  //FGL TOD GOON 20180305: Fehler Exception in thread "main" org.hibernate.HibernateException: Could not save '06-03-18:12:07:357' as it could not be casted to 'java.util.Date'.
+		//Merke zur Fehleranalyse: Vorher wird aufgerufen: XXXXXX  FGL DateMapping.nullSaveSet(...) für die als Usertype angegebene DateMapping Klasse. Hier: In der Klasse selbstxxxxxxxxxxxxxx
+		//                         Der Fehler tritt beim Speichern auf.
+		public String getCreatedThisAtString(){
+			return this.sDateCreatedThis;
+		}
+		public void setCreatedThisAtString(String sDateCreatedThis){
+			this.sDateCreatedThis = sDateCreatedThis;
+		}
+
+				
+		//##### BERECHNETE DATUMSWERTE. Versuch UpdatedAt automatisch zu erhalten		
+		//MERKE: Die Annotations werden dann aus dem Interface IModelDateTimestampProviderZZZ NICHT automatisch hier ergänzt. Warum ?????
+		@Version  //https://www.thoughts-on-java.org/hibernate-tips-use-timestamp-versioning-optimistic-locking/		//
+		@Type(type = DateMapping.DATE_TYPE_TIMESTAMP_SQLITE_FGL) //Das ist "timestamp"		
 		public Date getUpdatedAt(){
 			return this.dateUpdatedAt;
 		}
 		protected void setUpdatedAt(Date dateUpdatedAt){
 			this.dateUpdatedAt = dateUpdatedAt;
 		}
-			
-		
 }
 

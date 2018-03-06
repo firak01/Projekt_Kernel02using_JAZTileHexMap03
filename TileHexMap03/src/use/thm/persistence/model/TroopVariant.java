@@ -136,7 +136,7 @@ public class TroopVariant  extends KeyImmutable implements ITroopVariantTHM, ICa
 		 @GeneratedValue(strategy = GenerationType.TABLE, generator="lidGeneratorTroopVariant001")		 //Das Klappt mit Hibernate Session, aber nicht mit dem JPA EntityManager...
 		 //Bei dieser Column Definition ist die Spalte nicht für @OneToMany mit @JoinTable zu gebrauchen @Column(name="TILE_ID_INCREMENTED", nullable=false, unique=true, columnDefinition="INTEGER NOT NULL UNIQUE  DEFAULT 1")
 		 //Entferne also das unique...
-		 @Column(name="TILE_ID_INCREMENTED", nullable=false)
+		 @Column(name="TROOPVARIANT_ID_INCREMENTED", nullable=false)
 		 public int getId(){
 			 return this.iMyTestSequence;
 		 }

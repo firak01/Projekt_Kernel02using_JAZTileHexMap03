@@ -8,6 +8,7 @@ import javax.persistence.EntityListeners;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import javax.persistence.PrePersist;
 import javax.persistence.Table;
@@ -23,9 +24,12 @@ import use.thm.persistence.listener.TroopArmyListener;
 @Table(name="ARMY") 
 //@EntityListeners(PersistListenerTHM.class)//Versuch JPA Callback/ListenerMethoden, aber hier funktionieren nur Hibernate EventListener
 public class TroopArmy extends Troop{
-
 	private static final long serialVersionUID = 1L;
-		
+
+	//+++++ Die Variante der TroopArmy. Hierüber sind alle Detaileigenschaften und auch Defaulttext/Immutabletextobjekte festgelegt
+	private TroopArmyVariant objTroopArmyVariant;
+	
+	//###############################################################################################################
 	//Der Default Contruktor wird für JPA - Abfragen wohl benötigt
 	public TroopArmy(){
 		super();
@@ -64,4 +68,16 @@ public class TroopArmy extends Troop{
 //				 )
 //		private TroopArmyVariant objVariant;
 	
+	 @OneToOne(targetEntity = TroopArmyVariant.class, fetch = FetchType.LAZY)
+	 //@JoinColumn(name="immutabletext_thiskey_id", referencedColumnName = "thiskey_id") //Erst hierdurch wird die thiskey_id in der Spalte gespeichert. ABER: Fehlermeldung, weil der Wert ggfs. nicht unique sei. Allerdings sind logischerweise mehrere Objekte, die sich auf den gleichen Text beziehen erlaubt.
+	 //Erst hierdurch wird die thiskey_id in der Spalte gespeichert. ABER: Fehlermeldung, weil der Wert ggfs. nicht unique sei. Allerdings sind logischerweise mehrere Objekte, die sich auf den gleichen Text beziehen erlaubt.
+	 //Ohne die columnDefinition funktioniert das bei der SQLite Datenbank nicht.
+	 //@JoinColumn(name="trooparmyvariant_thiskey_id", referencedColumnName = "thiskey_id") //, nullable = true, unique= false,  columnDefinition="LONG NOT NULL DEFAULT 1")
+	 @JoinColumn(name="trooparmyvariant_thiskey_id", referencedColumnName = "TROOPVARIANT_ID_INCREMENTED") //, nullable = true, unique= false,  columnDefinition="LONG NOT NULL DEFAULT 1")	 
+	 public TroopArmyVariant getTroopArmyVariantObject(){
+		return this.objTroopArmyVariant;
+	 }
+	public void setTroopArmyVariantObject(TroopArmyVariant objTroopArmyVariant){
+		this.objTroopArmyVariant = objTroopArmyVariant;
+	}
 }

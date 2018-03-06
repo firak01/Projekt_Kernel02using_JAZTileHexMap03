@@ -151,6 +151,8 @@ public class HexMapTHM extends KernelUseObjectZZZ implements ITileEventUserTHM {
 		System.out.println("Es gibt keine Troop mit der ID= "+primaryKey.intValue());	
 		}else{
 		System.out.println("Troop mit der ID = " + primaryKey.intValue() + " hat als Uniquename()= "+objTroopTemp.getUniquename());
+		System.out.println(".... wurde erstellt:" + objTroopTemp.getCreatedThisAt() + " || als String: " + objTroopTemp.getCreatedThisAtString());
+		System.out.println(".... wurde aktualisiert:" + objTroopTemp.getUpdatedAt());
 		
 		HexCell objHexCell = objTroopTemp.getHexCell();
 		if(objHexCell==null){

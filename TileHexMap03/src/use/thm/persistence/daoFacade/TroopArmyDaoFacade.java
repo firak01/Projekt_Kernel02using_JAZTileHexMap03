@@ -20,6 +20,7 @@ import basic.persistence.daoFacade.GeneralDaoFacadeZZZ;
 import basic.persistence.util.HibernateUtil;
 import basic.zBasic.ExceptionZZZ;
 import basic.zBasic.ReflectCodeZZZ;
+import basic.zBasic.persistence.hibernate.DateMapping;
 import basic.zBasic.persistence.hibernate.HibernateContextProviderZZZ;
 import basic.zBasic.util.abstractList.VectorExtendedZZZ;
 import use.thm.client.component.ArmyTileTHM;
@@ -94,9 +95,10 @@ public class TroopArmyDaoFacade extends TileDaoFacade{
 	        System.out.println("Today in dd/MM/yy pattern : " + sDate);
 	     
 	        //formatting Date with time information
-	        DATE_FORMAT = new SimpleDateFormat("dd-MM-yy:HH:mm:SS");
+	        String sDateFormat = DateMapping.DATE_FORMAT_SIMPLE_FULL_FGL; //"dd-MM-yy:HH:mm:SS"
+	        DATE_FORMAT = new SimpleDateFormat(sDateFormat);
 	        sDate = DATE_FORMAT.format(objDate);
-	        System.out.println("Today in dd-MM-yy:HH:mm:SS : " + sDate);
+	        System.out.println("Today in '" + sDateFormat + "' : " + sDate);
 	        objTroopTemp.setCreatedThisAtString(sDate); //Die HIS Lösung, für die zahlreiche andere Klassen (s. Packages in base) und Bibliotheken (u.a. aspectj Tools) eigebunden werden mussten.
 											
 			session.save(objTroopTemp); //Hibernate Interceptor wird aufgerufen																				

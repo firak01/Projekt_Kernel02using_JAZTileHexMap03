@@ -440,11 +440,12 @@ public class Tile  implements Serializable, IOptimisticLocking, IModelDateTimest
 		public void setCreatedThisAt(Date dateCreatedThis){
 			this.dateCreatedThis = dateCreatedThis;
 		}
-				
+		
+		//FGL 20180306: Hier die DateMapping.java Klasse der HIS erweitert. 
+		//Nun kann man Timestamps auch als String speichern und zurückholen.
+		//Diese Strings sind sogar als Datumswert validiert worden und passen in den angegebenen Datums-Bereiche (min / max)
 		@Column(name="createdThisAtString", insertable = true, updatable = false)		
-		@Type(type = DateMapping.USER_TYPE_NAME)  //FGL TOD GOON 20180305: Fehler Exception in thread "main" org.hibernate.HibernateException: Could not save '06-03-18:12:07:357' as it could not be casted to 'java.util.Date'.
-		//Merke zur Fehleranalyse: Vorher wird aufgerufen: XXXXXX  FGL DateMapping.nullSaveSet(...) für die als Usertype angegebene DateMapping Klasse. Hier: In der Klasse selbstxxxxxxxxxxxxxx
-		//                         Der Fehler tritt beim Speichern auf.
+		@Type(type = DateMapping.USER_TYPE_NAME)  
 		public String getCreatedThisAtString(){
 			return this.sDateCreatedThis;
 		}

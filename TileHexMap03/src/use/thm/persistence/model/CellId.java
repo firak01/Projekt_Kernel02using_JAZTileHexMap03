@@ -21,7 +21,7 @@ public class CellId implements IPrimaryKeys{ //IPrimaryKeys hat zwar @Embeddable
 	 */
 	private static final long serialVersionUID = 1L;
 
-
+    //TODO GOON 20180308: Diesen String Defaultwert nicht im Java-Code definieren, sondern in den Annotations. 
 	private String sMapAlias = new String("TEST"); //Hiermit werden alle Felder einer Map zusammengehalten, momentan wird nur 1 Map in der Tabelle gespeichert	
 	private String sMapX = null; //X-KoordinatedId
 	private String sMapY = null; //Y-Koordinate

@@ -3,6 +3,8 @@ package basic.zBasic.persistence.interfaces;
 import java.util.Date;
 
 import javax.persistence.Column;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 import javax.persistence.Version;
 
 import org.hibernate.annotations.Type;
@@ -66,9 +68,11 @@ public interface IModelDateTimestampProviderZZZ {
 	//Buch "Java Persistence with Hibernate" Kapitel 5.1.5 Listing 5.4. = So wird die Spalte auf ReadOnly gesetzt. Ziel ist, dass der übergebene Wert eingetragen wird und nicht der Datenbankwert
 	//hmm dann wird einfach nix geschrieben @Column(name="updatedAt", insertable = false, updatable = false)
 		
-	//##### BERECHNETE DATUMSWERTE. Versuch UpdatedAt automatisch zu erhalten
+	//##### BERECHNETE DATUMSWERTE. Versuch UpdatedAt automatisch zu erhalten	
 	//Vgl. Buch "Java Persistence with Hibernate (2016)", Kapitel 5.1.5, (S. 117 in E-Book Readern).
 	//SQLITE Datenbank: Das Arbeiten mit TemporalType.TIMESTAMP funktioniert nicht
+	
+	//+++VERSUCH Variante 1:
 //	@Temporal(TemporalType.TIMESTAMP)
 //	@Column(insertable = false, updatable = false)
 //	@org.hibernate.annotations.Generated(
@@ -80,21 +84,44 @@ public interface IModelDateTimestampProviderZZZ {
 //	protected void setUpdatedAt(Date dateUpdatedAt){
 //		this.dateUpdatedAt = dateUpdatedAt;
 //	}
-//
+	
+	//+++VERSUCH Variante 2: insertable auf "true" und nur beim INSERT
+//	@Temporal(TemporalType.TIMESTAMP)
+//	@Column(name="updatedAt", insertable = true, updatable = false)
+//	@org.hibernate.annotations.Generated(
+//			org.hibernate.annotations.GenerationTime.INSERT
+//	)
+//	public Date getUpdatedAt(){
+//		return this.dateUpdatedAt;
+//	}
+//	protected void setUpdatedAt(Date dateUpdatedAt){
+//		this.dateUpdatedAt = dateUpdatedAt;
+//	}
+	
+	//
+	//Das wäre das geplante UpdatedAt.... in diesem Interface
+	//Merke: Scheinbar kann das nicht gleichzeitig mit @Version verwendet werden.
+	//public Date getUpdatedAt();
+	//nicht im Interface... protected void setUpdatedAt(Date dateUpdatedAt);
+
+
 	//Ebook-Reader Seite 118
 //	@Temporal(TemporalType.TIMESTAMP)
 //	@Column(insertable = false, updatable = false)
-	//Das funktioniert nicht, das erst ab Hibernate 4.3.x vorhanden .... @org.hibernate.annotations.CreationTimestamp
+	//Das funktioniert nicht, das ist erst ab Hibernate 4.3.x vorhanden .... @org.hibernate.annotations.CreationTimestamp
 	
+	
+	//##### BERECHNETE DATUMSWERTE. Versuch UpdatedAt automatisch zu erhalten
 	//Arbeite mit @Version. Der Vorteil ist, das man den Zeitstempel nicht extra setzen muss, da dies atomatisch passiert.
 //	@Version  //https://www.thoughts-on-java.org/hibernate-tips-use-timestamp-versioning-optimistic-locking/
 	//@Type(type = "dbtimestamp")//Erstaunlicherweise gibt es hier einen Eintrag. Das ist zwar nur das Jahr (2018) aber immerhin				
 //	@Type(type = "timestamp")//Versuch mehr als das Jahr zu bekommen, ja, das ist dann ein Timestamp basierend auf einer LONG - Zahl, wie ich sie schon beim UNIQUE-Namen verwende
 
-	
+
+	//+++ Das unktioniert
 	@Version  //https://www.thoughts-on-java.org/hibernate-tips-use-timestamp-versioning-optimistic-locking/			
 	@Type(type = "timestamp")//Versuch mehr als das Jahr zu bekommen, ja, das ist dann ein Timestamp basierend auf einer LONG - Zahl, wie ich sie schon beim UNIQUE-Namen verwende
-	//@Type(type = DateMapping.DATE_TYPE_TIMESTAMP) //CLASS NOT FOUND EXCEPTION "TIMESTAMP"
+//	//@Type(type = DateMapping.DATE_TYPE_TIMESTAMP) //CLASS NOT FOUND EXCEPTION "TIMESTAMP"
 	public Date getUpdatedAt();
 	//nicht im Interface... protected void setUpdatedAt(Date dateUpdatedAt);		
 }

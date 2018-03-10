@@ -28,4 +28,6 @@ public interface IHibernateContextProviderZZZ {
 	public boolean hasSessionFactory();
 	public boolean hasSessionFactory_open();
 	public void setSessionFactoryWithNewSession(SessionFactoryImpl sf);
+	
+	public void closeAll() throws ExceptionZZZ; //Wichtig, um z.B. nach dem Einlesen der Karte (TileHexMap-Projekt) die SQLite Datenbank wieder freizugeben, so dass andere Backendoperationen mit weiteren Programmen durchgeführt werden können.
 }

@@ -165,6 +165,11 @@ public class HexMapTHM extends KernelUseObjectZZZ implements ITileEventUserTHM {
 			System.out.println("HexCell für diese Troop ist: " + objHexCell.getFieldAlias());
 		}
 		}
+		
+		//### PROBLEM: Nach dem Einlesen der Datenbank bleibt diese "loaded",
+		//                        Das wirft entsprechenden Fehler wenn man danach mit einer Debug Dao-Klasse z.B. Texte einlesen will (DebugKeyTable_Version_TileDefaulttextTHM.java).
+		//+++ Lösungsansatz 20180309: Schliesse alles im objContextSingleton Objekt.caa
+		objContextHibernate.closeAll();
 	}
 	
 	/** Anzahl der Hexes in einer Zeile. 
@@ -981,6 +986,7 @@ public class HexMapTHM extends KernelUseObjectZZZ implements ITileEventUserTHM {
 			session.getTransaction().commit();
 			session.close();
 			*/			
+			
 			
 			
 			bReturn = fillMap_createNewAreas(objContextHibernate, panelMap);

@@ -417,6 +417,13 @@ public void integrate(Configuration configuration,
 	public void setListenerProviderObject(IHibernateListenerProviderZZZ objHibernateListener) {
 		this.objListenerProvider = objHibernateListener;
 	}
+	
+	//Wichtig, um z.B. nach dem Einlesen der Karte (TileHexMap-Projekt) die SQLite Datenbank wieder freizugeben, so dass andere Backendoperationen mit weiteren Programmen durchgeführt werden können.
+	public void closeAll() throws ExceptionZZZ{
+		this.getSession().clear();
+		this.getSession().close();
+		this.getSessionFactory().close();//Wenn man nur die SessionFactory schliesst gibt es anschliessend z.B. beim Bewegen eines Spielsteins einen "unknown Service requested" Fehler. 		
+	}
 
 	//############## Abstracte Methoden, die auf jeden Fall überschrieben werden müssen.
 	//Verwende intern den SessionBuilder um eine Session zurückzuliefern, die einen Interceptor benutzt.

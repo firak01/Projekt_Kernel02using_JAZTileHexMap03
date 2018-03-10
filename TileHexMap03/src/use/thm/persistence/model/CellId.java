@@ -35,6 +35,20 @@ public class CellId implements IPrimaryKeys{ //IPrimaryKeys hat zwar @Embeddable
 		this.sMapY = sMapY;		
 	}
 	
+	
+	
+//	//##### BERECHNETE WERTE. Versuch diese automatisch zu erhalten
+//	//Vgl. Buch "Java Persistence with Hibernate (2016)", Kapitel 5.1.5, (S. 117 in E-Book Readern), Listing 5.4.
+//	//Variante 1:
+//	//@Column(name="generatedStringTest", insertable = true, updatable = true)
+//	//Das steht in meiner Hibernate Version nicht zur Verfügung @org.hibernate.annotations.ColumnDefault("Eins")
+//	
+//	//Also Variante 2: Das Klappt in einfachem Entity. Merke für Integer wäre der SQLITE spezifische Definitionsstring: "INTEGER DEFAULT 1"
+//                           ABER:	Klappt nicht aber in diesem Eingebettetem Key.
+//	@Column(name="mapAlias", insertable = true, updatable = true, columnDefinition="TEXT DEFAULT 'EINS")
+//	@org.hibernate.annotations.Generated(
+//			org.hibernate.annotations.GenerationTime.INSERT
+//	)
 	public String getMapAlias(){
 		return this.sMapAlias;
 	}

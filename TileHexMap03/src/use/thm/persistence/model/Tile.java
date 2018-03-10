@@ -467,23 +467,25 @@ public class Tile  implements Serializable, IOptimisticLocking, IModelDateTimest
 		}
 		
 		
-		//##### BERECHNETE WERTE. Versuch diese automatisch zu erhalten
-		//Vgl. Buch "Java Persistence with Hibernate (2016)", Kapitel 5.1.5, (S. 117 in E-Book Readern), Listing 5.4.
-		//Variante 1:
-		//@Column(name="generatedStringTest", insertable = true, updatable = true)
-		//Das steht in meiner Hibernate Version nicht zur Verfügung @org.hibernate.annotations.ColumnDefault("Eins")
-		
-		//Also variante 2: Das Klappt. Merke für Integer wäre der SQLITE spezifische Definitionsstring: "INTEGER DEFAULT 1"
-		@Column(name="generatedStringTest", insertable = true, updatable = true, columnDefinition="TEXT DEFAULT 'Eins'")
-		@org.hibernate.annotations.Generated(
-				org.hibernate.annotations.GenerationTime.INSERT
-		)
-		public String getGeneratedStringTest(){
-			return this.sGeneratedTest;
-		}
-		protected void setGeneratedStringTest(String sGeneratedTest){
-			this.sGeneratedTest = sGeneratedTest;
-		}
+//		//##### BERECHNETE WERTE. Versuch diese automatisch zu erhalten
+//		//Vgl. Buch "Java Persistence with Hibernate (2016)", Kapitel 5.1.5, (S. 117 in E-Book Readern), Listing 5.4.
+//		//Variante 1:
+//		//@Column(name="generatedStringTest", insertable = true, updatable = true)
+//		//Das steht in meiner Hibernate Version nicht zur Verfügung @org.hibernate.annotations.ColumnDefault("Eins")
+//		
+//		//Also variante 2: Das Klappt in einfachem Entity. Merke für Integer wäre der SQLITE spezifische Definitionsstring: "INTEGER DEFAULT 1"
+		//                       ABER: Das klappt nicht in einem eingebetteten Key (wie CellId)
+//		@Column(name="generatedStringTest", insertable = true, updatable = true, columnDefinition="TEXT DEFAULT 'Eins'")
+//		@org.hibernate.annotations.Generated(
+//				org.hibernate.annotations.GenerationTime.INSERT
+//		)
+//		public String getGeneratedStringTest(){
+//			return this.sGeneratedTest;
+//		}
+//		protected void setGeneratedStringTest(String sGeneratedTest){
+//			this.sGeneratedTest = sGeneratedTest;
+//		}
+		//Merke: Diese Lösung wurde dann in CellId.java für die Erstellung des "Kartenaliasses/Kartennamens" verwendet.
 		
 }
 

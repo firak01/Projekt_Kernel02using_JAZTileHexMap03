@@ -46,15 +46,14 @@ public class TroopArmy extends Troop{
 //	}
 	
 	//### Getter / Setter
-	/* FGL TODO GOON 20171106: ERST MAL DIE TROOPARMYVARIANT Tabelle sauber hinbekommen
-	//1:1 Beziehung aufbauen
+	//1:1 Beziehung aufbauen zur ARMYVARIANT - Tabelle
 		//Siehe Buch "Java Persistence API 2", Seite 90ff.	
 		//Variante 1) mit einer gemeinsamen Spalte
 		//@Transient //Ich will kein BLOB speichern
-		@OneToOne(fetch = FetchType.LAZY)
-		@JoinColumn(name="thiskey_id", nullable = true)
-		private TroopArmyVariant objVariant;
-		*/
+//		@OneToOne(fetch = FetchType.LAZY)
+//		@JoinColumn(name="thiskey_id", nullable = true)
+//		private TroopArmyVariant objVariant;
+//		
 		
 		//Variante 2) mit einer gemeinsamen Tabelle
 		 //Speichert nur die ID ab. Das Abspeichern des Objekts wird mit @Transient über dem entsprechenden GETTER/SETTER verhindert
@@ -68,12 +67,17 @@ public class TroopArmy extends Troop{
 //				 )
 //		private TroopArmyVariant objVariant;
 	
+
+	//+++ Variante: Speichere die Id des Datensatzes ab
+//	 @OneToOne(targetEntity = TroopArmyVariant.class, fetch = FetchType.LAZY)
+//	 @JoinColumn(name="trooparmyvariant_thiskey_id", referencedColumnName = "TROOPVARIANT_ID_INCREMENTED") //, nullable = true, unique= false,  columnDefinition="LONG NOT NULL DEFAULT 1")
+	
+	//+++ Variante: Speichere als refernzierten Wert die Thiskey_id ab und nicht die Id des Datensatzes. DAS IST AUCH DAS ZIEL
 	 @OneToOne(targetEntity = TroopArmyVariant.class, fetch = FetchType.LAZY)
 	 //@JoinColumn(name="immutabletext_thiskey_id", referencedColumnName = "thiskey_id") //Erst hierdurch wird die thiskey_id in der Spalte gespeichert. ABER: Fehlermeldung, weil der Wert ggfs. nicht unique sei. Allerdings sind logischerweise mehrere Objekte, die sich auf den gleichen Text beziehen erlaubt.
 	 //Erst hierdurch wird die thiskey_id in der Spalte gespeichert. ABER: Fehlermeldung, weil der Wert ggfs. nicht unique sei. Allerdings sind logischerweise mehrere Objekte, die sich auf den gleichen Text beziehen erlaubt.
-	 //Ohne die columnDefinition funktioniert das bei der SQLite Datenbank nicht.
-	 //@JoinColumn(name="trooparmyvariant_thiskey_id", referencedColumnName = "thiskey_id") //, nullable = true, unique= false,  columnDefinition="LONG NOT NULL DEFAULT 1")
-	 @JoinColumn(name="trooparmyvariant_thiskey_id", referencedColumnName = "TROOPVARIANT_ID_INCREMENTED") //, nullable = true, unique= false,  columnDefinition="LONG NOT NULL DEFAULT 1")	 
+	 //Ohne die columnDefinition funktioniert das bei der SQLite Datenbank nicht
+	 @JoinColumn(name="trooparmyvariant_thiskey_id", referencedColumnName = "thiskey_id", nullable = true, unique= false,  columnDefinition="LONG NOT NULL DEFAULT 1")
 	 public TroopArmyVariant getTroopArmyVariantObject(){
 		return this.objTroopArmyVariant;
 	 }

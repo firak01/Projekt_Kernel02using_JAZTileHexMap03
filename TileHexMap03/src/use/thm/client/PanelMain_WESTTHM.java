@@ -52,7 +52,7 @@ public class PanelMain_WESTTHM extends KernelJPanelCascadedZZZ implements IGhost
 		     Box box = Box.createVerticalBox();
 		     box.setBorder(new EmptyBorder(0, 0, 0, 20));
 		     
-		   //Eclipse Worspace
+		   //Eclipse Workspace
 			File f = new File("");
 		    String sPathEclipse = f.getAbsolutePath();
 		    ReportLogZZZ.write(ReportLogZZZ.DEBUG, "Eclipse absolut path: " + sPathEclipse);

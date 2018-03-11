@@ -36,7 +36,16 @@ public class PanelFrmMapSingletonTHM  extends KernelJPanelCascadedZZZ implements
 		
 		//### Layout Manager
 		this.setLayout(new BorderLayout());
-			 
+		
+		//### PANEL WEST - GRUNDLAGEN
+		//Merke: Man kann das Panel-West noch nicht erstellen, da der Listener an pictureAdapter.addGostDropListener(listener) erst nach der PANEL_CENTRAL Erstellung existiert.
+		//TODO GOON: FGL 20180311
+				//HIER MUSSES EINE "LISTE" ÜBER ALLE TROOP- / FLEETVARIANTEN geben, die dann erstellt wird.
+				//FÜR JEDE VARIANTE WIRD EIN EIGNER GHOST PICURE ADAPTER ERSTELLT
+				//- neben der aciton "new_sale" 
+				//- muss es hier auch die THISKEY_ID der VARIANTE als Argument im Konstruktor geben. Diese erhällt man aus der "LISTE".
+				
+											
 		//### PANEL CENTER
 		//Merke: Das Panel Center muss erst definiert werden, da das Panel West dies anschliessend schon als DROP-Ziel verwendet.
 		HashMap<String, Boolean> hmFlag = new HashMap<String, Boolean>();
@@ -52,26 +61,26 @@ public class PanelFrmMapSingletonTHM  extends KernelJPanelCascadedZZZ implements
 		//FGL 20130627: Als Drop Ziel nun den JScrollPane. Das Panel als Drop Ziel funktioniert nicht immer, wenn gescrollt wurde.
 		//GhostDropListener listener = new GhostDropManagerHexMapPanelTHM(objPanelCenter); //Funktioniert nicht, wenn mit den ScrollBars gescrollt worden ist.
 		//Probleme bei zu gro�en Hexes GhostDropListener listener = new GhostDropManagerHexMapPanelTHM(this.getKernelObject(), scrollPaneCenter, objPanelCenter.getHexMap());  
-		GhostDropListener listener = new GhostDropManagerHexMapPanelTHM(this.getKernelObject(), scrollPaneCenter, objPanelCenter.getHexMap());
-
-		 
-	    //Es muss das pictureAdapter-Objekt der gleich sein, der das DRAGGEN bereitstellt, wie auch das DROPPEN!!!!
-		//TODO GOON: Diese pictureAdapter-Objekte in einer HashMap verwalten, so dass über ein Schlüsselwort der korrekte Picture Adapter
-		//           sowohl für die zu DRAGGENDE Komponente als auch für die den DROP empfangende Komponente 
-		//           geholt werden kann.
-		 //Eclipse Worspace
-		 File f = new File("");
-		 String sPathEclipse = f.getAbsolutePath();
-		 String sBaseDirectory = sPathEclipse + File.separator + "images";
-		 String sFile = sBaseDirectory + File.separator + "new_sale.png";
-		 GhostPictureAdapter pictureAdapter = new GhostPictureAdapter(glassPane, "new_sale", sFile);
-	     pictureAdapter.addGhostDropListener(listener);
+		GhostDropListener listener = new GhostDropManagerHexMapPanelTHM(this.getKernelObject(), scrollPaneCenter, objPanelCenter.getHexMap());		
 		
-		//### PANEL WEST
-	    //Es muss das pictureAdapter-Objekt der gleich sein, der das DRAGGEN bereitstellt, wie auch das DROPPEN!!!!
-		PanelMain_WESTTHM objPanelWest = new PanelMain_WESTTHM(objKernel, this, pictureAdapter);				
-		this.setPanelSub("WEST", objPanelWest);       //Backend Hashtable hinzuf�gen
-		this.add(objPanelWest, BorderLayout.WEST); //Frontend hinzuf�gen
+		//### PANEL WEST - FÜLLEN				
+			    //Es muss das pictureAdapter-Objekt der gleich sein, der das DRAGGEN bereitstellt, wie auch das DROPPEN!!!!
+				//TODO GOON: Diese pictureAdapter-Objekte in einer HashMap verwalten, so dass über ein Schlüsselwort der korrekte Picture Adapter
+				//           sowohl für die zu DRAGGENDE Komponente als auch für die den DROP empfangende Komponente 
+				//           geholt werden kann.
+				 //Eclipse Worspace
+				 File f = new File("");
+				 String sPathEclipse = f.getAbsolutePath();
+				 String sBaseDirectory = sPathEclipse + File.separator + "images";
+				 String sFile = sBaseDirectory + File.separator + "new_sale.png";
+				 GhostPictureAdapter pictureAdapter = new GhostPictureAdapter(glassPane, "new_sale", sFile);
+			     pictureAdapter.addGhostDropListener(listener);
+								
+			    //Es muss das pictureAdapter-Objekt der gleich sein, der das DRAGGEN bereitstellt, wie auch das DROPPEN!!!!
+				PanelMain_WESTTHM objPanelWest = new PanelMain_WESTTHM(objKernel, this, pictureAdapter);				
+				this.setPanelSub("WEST", objPanelWest);       //Backend Hashtable hinzuf�gen
+				this.add(objPanelWest, BorderLayout.WEST); //Frontend hinzuf�gen
+		
 	}
 	
 	//#### Interface Methoden #####################

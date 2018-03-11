@@ -17,6 +17,7 @@ import use.thm.client.event.EventTileDroppedToCellTHM;
 import use.thm.client.event.TileMetaEventBrokerTHM;
 import use.thm.client.event.TileMoveEventBrokerTHM;
 import use.thm.persistence.dao.AreaCellDao;
+import use.thm.persistence.dao.TroopArmyVariantDao;
 import use.thm.persistence.daoFacade.TroopArmyDaoFacade;
 import use.thm.persistence.dto.DtoFactoryGenerator;
 import use.thm.persistence.dto.ITileDtoAttribute;
@@ -24,6 +25,7 @@ import use.thm.persistence.dto.TileDtoFactory;
 import use.thm.persistence.hibernate.HibernateContextProviderSingletonTHM;
 import use.thm.persistence.model.AreaCell;
 import use.thm.persistence.model.CellId;
+import use.thm.persistence.model.TroopArmyVariant;
 import basic.persistence.dto.GenericDTO;
 import basic.zBasic.ExceptionZZZ;
 import basic.zBasic.ReflectCodeZZZ;
@@ -98,7 +100,10 @@ public class GhostDropManagerHexMapPanelTHM extends AbstractGhostDropManager imp
 				   if(sAction.equalsIgnoreCase("new_sale")){
 					   
 					   //FGL: 20170703 - Hier erst einmal im Backend prüfen, ob eine neue Army hier überhaupt erstellt werden darf.
-					   boolean bGoon = false;					   					   
+					   boolean bGoon = false;	
+					 //###################
+						//Hole das passende Area-Objekt
+						//###################
 						//Die in eine Methode gekapselte (DAO Klasse) Vorgehensweise verwenden. //Der Code stammt aus HexMapTH.fillMap_createNewTiles(...)
 					   //Allerdings müssen erst einmal alle Voraussetzungen erfüllt werden. HibernateContext,..., PrimaryKey..., AreaCell Objekt...,
 					    HibernateContextProviderSingletonTHM objContextHibernate = HibernateContextProviderSingletonTHM.getInstance(this.getKernelObject());
@@ -110,10 +115,16 @@ public class GhostDropManagerHexMapPanelTHM extends AbstractGhostDropManager imp
 					    
 					    AreaCell objCellTemp = objAreaDao.findByKey(primaryKeyCell);//Spannend. Eine Transaction = Eine Session, d.h. es müsste dann wieder eine neue Session gemacht werden, beim zweiten DAO Aufruf.
 					    
+						//###################
+						//Hole das passende TroopVariant-Objekt
+						//###################
+					    long lngTroopArmyVariant_Thiskeyid = 11; //"Infanterie". TODO GOON 20180311: Aus dem GhostDropEvent (via GhostpictureAdapter) die im PANEL_WEST ausgewählte Variante holen.			
+						TroopArmyVariantDao daoKey = new TroopArmyVariantDao(objContextHibernate);
+						TroopArmyVariant objTroopArmyVariant = (TroopArmyVariant) daoKey.searchKey("TROOPARMYVARIANT", lngTroopArmyVariant_Thiskeyid );
+											    
 						TroopArmyDaoFacade objTroopDaoFacade = new TroopArmyDaoFacade(objContextHibernate);
-						//String sUniquename = "ARMY UNIQUE NEW"; //TODO GOON 20170703: BERECHNE DEN NÄCHSTEN uniquenamen einer Truppe.
-						String sUniquename = objTroopDaoFacade.computeUniquename();
-						bGoon = objTroopDaoFacade.insertTroopArmy(sUniquename, objCellTemp);//Falls das aus irgendwelchen Gründen nicht erlaubt ist, ein Veto einlegen.
+						String sUniquename = objTroopDaoFacade.computeUniquename();						
+						bGoon = objTroopDaoFacade.insertTroopArmy(sUniquename, objTroopArmyVariant, objCellTemp);//Falls das aus irgendwelchen Gründen nicht erlaubt ist, ein Veto einlegen.
 						if(!bGoon){
 							//0170703: Hole auch irgendwie einen Grund ab, warum an dieser Stelle nix eingefügt werden darf.//Dies muss aus TroopArmyDaoFacade abgeholt werden.							
 							String sMessage = objTroopDaoFacade.getFacadeResult().getMessage(); //Hole die Meldung ab.

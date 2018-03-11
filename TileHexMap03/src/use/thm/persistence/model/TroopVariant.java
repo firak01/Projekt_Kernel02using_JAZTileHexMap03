@@ -239,6 +239,12 @@ public class TroopVariant  extends KeyImmutable implements ITroopVariantTHM, ICa
 	 //#### abstracte Methoden
 	 //20171106 KÄME DAS ETWA DRUCH VERERBUNG AUS DER KLASSE "KEY" ???
 	 //JAAA!!!	 ABER DANN GIBT ES EINE EIGENE TABELLE "KEY" und das will ich nicht.
+	 //Merke: Wenn man diese Definition nicht in den hieraus erbenden Klassen explzit überschreibt, gibt es beim Refernzieren der Spalte eine Fehlermeldung
+	 //Exception in thread "main" org.hibernate.AnnotationException: referencedColumnNames(thiskey_id) of use.thm.persistence.model.TroopArmy.troopArmyVariantObject referencing use.thm.persistence.model.TroopArmyVariant not mapped to a single property
+	 //Lösung: die Spalte explizit in die hierauserbende Klasse aufnehmen.
+	 //Nachdem dadurch der oben genannte Fehler behoben ist, gibt es die Fehlermeldung, dass insert="false" update="false" notwendig ist. Also: , insertable=false, updatable=false, 
+	 //in der oben neu hinzugefügten Spalte.
+	 @JoinColumn(name="trooparmyvariant_thiskey_id", referencedColumnName = "thiskey_id", nullable = true, unique= false,  columnDefinition="LONG NOT NULL DEFAULT 1")	 
 	 @Column(name="thiskey_id",  nullable=false, unique=true, columnDefinition="LONG NOT NULL UNIQUE  DEFAULT 1")	
 	 @Override
 	public Long getThiskey() {

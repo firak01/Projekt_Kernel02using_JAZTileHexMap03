@@ -22,19 +22,23 @@ import basic.zBasic.ExceptionZZZ;
 import basic.zBasic.ReflectCodeZZZ;
 import basic.zBasic.persistence.hibernate.DateMapping;
 import basic.zBasic.persistence.hibernate.HibernateContextProviderZZZ;
+import basic.zBasic.persistence.interfaces.IHibernateContextProviderZZZ;
 import basic.zBasic.util.abstractList.VectorExtendedZZZ;
 import use.thm.client.component.ArmyTileTHM;
 import use.thm.client.event.EventTileCreatedInCellTHM;
 import use.thm.persistence.dao.AreaCellDao;
 import use.thm.persistence.dao.TroopArmyDao;
+import use.thm.persistence.dao.TroopArmyVariantDao;
 import use.thm.persistence.event.VetoFlag4ListenerZZZ;
 import use.thm.persistence.hibernate.HibernateContextProviderSingletonTHM;
 import use.thm.persistence.model.AreaCell;
 import use.thm.persistence.model.AreaCellLand;
 import use.thm.persistence.model.CellId;
 import use.thm.persistence.model.Tile;
+import use.thm.persistence.model.TileDefaulttext;
 import use.thm.persistence.model.TileId;
 import use.thm.persistence.model.TroopArmy;
+import use.thm.persistence.model.TroopArmyVariant;
 import use.thm.persistence.model.TroopType;
 import use.thm.rule.facade.TroopArmyRuleFacade;
 import use.thm.rule.model.TroopArmyRuleType;
@@ -51,14 +55,14 @@ public class TroopArmyDaoFacade extends TileDaoFacade{
 	public TroopArmyDaoFacade(HibernateContextProviderZZZ objContextHibernate){
 		super(objContextHibernate);
 	}
-	public boolean insertTroopArmy(String sUniqueName, AreaCell objArea) throws ExceptionZZZ{
+	public boolean insertTroopArmy(String sUniqueName, TroopArmyVariant objTroopArmyVariant, AreaCell objArea) throws ExceptionZZZ{
 		boolean bReturn = false;
 		main:{
 		
 			validEntry:{
 			boolean bGoon = false;
 			String sMessage = new String("");
-			
+						
 			//###################
 			//1. Speicher die TroopArmy neu, füge die Area der TroopArmy hinzu, damit sie weiss in welchem Feld sie steht.
 			//####################					
@@ -71,6 +75,9 @@ public class TroopArmyDaoFacade extends TileDaoFacade{
 			session.update(objArea);//20170703: GROSSE PROBLEME WG. LAZY INITIALISIERUNG DES PERSISTENTBAG in dem area-Objekt. Versuche damit das zu inisiteliesen.
 			objTroopTemp.setHexCell(objArea); //Füge Zelle der Trupppe hinzu, wg. 1:1 Beziehung
 			
+			//FGL TODO GOON 20180311 Füge Variante der Truppe hinzu wg n:1 Beziehung. ABER: Diese muss schon zuvor geholt worden sein, sonst überschneiden sich die Transaktionen.
+			objTroopTemp.setTroopArmyVariantObject(objTroopArmyVariant);
+						
 			//Merke: EINE TRANSACTION = EINE SESSION ==>  neue session von der SessionFactory holen
 			//FGL: TEST 20180215, Probiere das Setzen eines Datum aus, HIS Style
 			//Das Klappt. Das Ergebnis ist aber in der SQLite Datenbank ebenfalls nur ein "kryptischer" (d.h. Long Zahl) Timestamp

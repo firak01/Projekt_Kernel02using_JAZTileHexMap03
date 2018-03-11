@@ -50,7 +50,9 @@ import use.thm.persistence.model.TileDefaulttext;
 import use.thm.persistence.model.TileId;
 import use.thm.persistence.model.Troop;
 import use.thm.persistence.model.TroopArmy;
+import use.thm.persistence.model.TroopArmyVariant;
 import use.thm.persistence.model.TroopFleet;
+import use.thm.persistence.model.TroopFleetVariant;
 import basic.persistence.dto.GenericDTO;
 import basic.persistence.util.HibernateUtil;
 import basic.zBasic.ExceptionZZZ;
@@ -1093,6 +1095,17 @@ public class HexMapTHM extends KernelUseObjectZZZ implements ITileEventUserTHM {
 	private boolean fillMap_createNewTiles(HibernateContextProviderSingletonTHM objContextHibernate, KernelJPanelCascadedZZZ panelMap) throws ExceptionZZZ{
 		boolean bReturn = false;
 		main:{			
+			//###################
+			//Hole das passende TroopVariant-Objekt
+			//###################
+		    long lngTroopArmyVariant_Thiskeyid = 11; //"Infanterie". TODO GOON 20180311: Aus dem GhostDropEvent (via GhostpictureAdapter) die im PANEL_WEST ausgewählte Variante holen.			
+			TroopArmyVariantDao daoKey = new TroopArmyVariantDao(objContextHibernate);
+			TroopArmyVariant objTroopArmyVariant = (TroopArmyVariant) daoKey.searchKey("TROOPARMYVARIANT", lngTroopArmyVariant_Thiskeyid );
+			
+			
+			//##################
+			//Hole die Areas
+			//###################
 			
 			//Nun hatte es sich gezeigt, dass es wesentlich schneller ist, alle Provinzen auf einen Schlag abzufragen, statt jede Provinz per CellId zu suchen.
 			//Steuerung über DAO - Klassen
@@ -1144,7 +1157,8 @@ public class HexMapTHM extends KernelUseObjectZZZ implements ITileEventUserTHM {
 						TroopArmyDaoFacade objTroopDaoFacade = new TroopArmyDaoFacade(objContextHibernate);
 						//String sUniquename = "ARMY UNIQUE " + sY;//TODO GOON : sY als Uniquename zu verwenden ist nur heuristisch und nicht wirklich UNIQUE
 						String sUniquename = objTroopDaoFacade.computeUniquename();
-						bGoon = objTroopDaoFacade.insertTroopArmy(sUniquename, objCellTemp);
+																	
+						bGoon = objTroopDaoFacade.insertTroopArmy(sUniquename, objTroopArmyVariant, objCellTemp);
 						if(bGoon){
 														
 							//+++ UI Operationen & die TroopArmy noch an das UI-verwendete Objekt weitergeben
@@ -1257,8 +1271,8 @@ public class HexMapTHM extends KernelUseObjectZZZ implements ITileEventUserTHM {
 
 					//20170629: Dies in eine Methode kapseln (DAO Klasse?). Ziel: Dies ohne Redundanz beim Einsetzen eines neuen Spielsteins verwenden.
 					TroopArmyDaoFacade objTroopDaoFacade = new TroopArmyDaoFacade(objContextHibernate);
-					String sUniquename = "ARMY TEST OCCUPIED FIELD " + sY;//TODO GOON : sY als Uniquename zu verwenden ist nur heuristisch und nicht wirklich UNIQUE
-					bGoon = objTroopDaoFacade.insertTroopArmy(sUniquename, objCellTemp);
+					String sUniquename = "ARMY TEST OCCUPIED FIELD " + sY;//TODO GOON : sY als Uniquename zu verwenden ist nur heuristisch und nicht wirklich UNIQUE																				
+					bGoon = objTroopDaoFacade.insertTroopArmy(sUniquename, objTroopArmyVariant, objCellTemp);
 					if(bGoon){
 						//TEST: DIESER CODE DARF NICHT AUSGEFÜHRT WERDEN, DER onPreInsert-Listener muss das verhindern.
 						String sMessage = "FALSCHES TESTERGEBNIS: HIER DARF NIX ERZEUGT WERDEN, WG. STACKING-LIMIT REGEL.";		

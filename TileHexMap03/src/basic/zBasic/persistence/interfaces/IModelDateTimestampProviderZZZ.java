@@ -49,12 +49,14 @@ public interface IModelDateTimestampProviderZZZ {
 	public Date getCreatedThisAt();	
 	public void setCreatedThisAt(Date dateCreatedThis);
 	
+	/*wegen der Progleme 20180212 auskommenteiert
 	@Column(name="createdThisAtString", insertable = true, updatable = false)
 	//Buch "Java Persistence with Hibernate" Kapitel 5.1.5 Listing 5.4. = So wird die Spalte auf ReadOnly gesetzt. Ziel ist, dass der übergebene Wert eingetragen wird und nicht der Datenbankwert
 	//hmm dann wird einfach nix geschrieben @Column(name="createdThisAtString", insertable = false, updatable = false)
 	@Type(type = DateMapping.USER_TYPE_NAME)
 	public String getCreatedThisAtString();	
 	public void setCreatedThisAtString(String sDateCreatedThis);
+		*/
 		
 	//##### BERECHNETE DATUMSWERTE. Versuch UpdatedAt automatisch zu erhalten
 //	@Version  //https://www.thoughts-on-java.org/hibernate-tips-use-timestamp-versioning-optimistic-locking/
@@ -118,10 +120,11 @@ public interface IModelDateTimestampProviderZZZ {
 //	@Type(type = "timestamp")//Versuch mehr als das Jahr zu bekommen, ja, das ist dann ein Timestamp basierend auf einer LONG - Zahl, wie ich sie schon beim UNIQUE-Namen verwende
 
 
-	//+++ Das unktioniert
+	//+++ Das funktioniert
 	@Version  //https://www.thoughts-on-java.org/hibernate-tips-use-timestamp-versioning-optimistic-locking/			
 	@Type(type = "timestamp")//Versuch mehr als das Jahr zu bekommen, ja, das ist dann ein Timestamp basierend auf einer LONG - Zahl, wie ich sie schon beim UNIQUE-Namen verwende
 //	//@Type(type = DateMapping.DATE_TYPE_TIMESTAMP) //CLASS NOT FOUND EXCEPTION "TIMESTAMP"
 	public Date getUpdatedAt();
 	//nicht im Interface... protected void setUpdatedAt(Date dateUpdatedAt);		
+
 }

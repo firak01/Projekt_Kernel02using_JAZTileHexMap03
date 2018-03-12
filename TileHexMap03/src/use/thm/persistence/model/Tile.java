@@ -442,29 +442,32 @@ public class Tile  implements Serializable, IOptimisticLocking, IModelDateTimest
 			this.dateCreatedThis = dateCreatedThis;
 		}
 		
+		/*
 		//FGL 20180306: Hier die DateMapping.java Klasse der HIS erweitert. 
 		//Nun kann man Timestamps auch als String speichern und zurückholen.
 		//Diese Strings sind sogar als Datumswert validiert worden und passen in den angegebenen Datums-Bereiche (min / max)
 		@Column(name="createdThisAtString", insertable = true, updatable = false)		
-		@Type(type = DateMapping.USER_TYPE_NAME)  
+		@Type(type = DateMapping.DATE_TYPE_TIMESTAMP_SQLITE_STRING_FGL)  //Das ist "timestamp" (kleingeschreiben)... soll allerdings in einem bestimmten String Format sein.
 		public String getCreatedThisAtString(){
 			return this.sDateCreatedThis;
 		}
 		public void setCreatedThisAtString(String sDateCreatedThis){
 			this.sDateCreatedThis = sDateCreatedThis;
 		}
+		*/
 
-				
+
 		//##### BERECHNETE DATUMSWERTE. Versuch UpdatedAt automatisch zu erhalten		
 		//MERKE: Die Annotations werden dann aus dem Interface IModelDateTimestampProviderZZZ NICHT automatisch hier ergänzt. Warum ?????
 		@Version  //https://www.thoughts-on-java.org/hibernate-tips-use-timestamp-versioning-optimistic-locking/		//
-		@Type(type = DateMapping.DATE_TYPE_TIMESTAMP_SQLITE_FGL) //Das ist "timestamp"		
+		@Type(type = DateMapping.DATE_TYPE_TIMESTAMP_SQLITE_FGL) 		//Das ist "timestamp" (kleingeschreiben)
 		public Date getUpdatedAt(){
 			return this.dateUpdatedAt;
 		}
 		protected void setUpdatedAt(Date dateUpdatedAt){
 			this.dateUpdatedAt = dateUpdatedAt;
 		}
+	
 		
 		
 //		//##### BERECHNETE WERTE. Versuch diese automatisch zu erhalten

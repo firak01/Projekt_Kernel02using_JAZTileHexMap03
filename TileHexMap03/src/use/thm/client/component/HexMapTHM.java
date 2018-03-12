@@ -157,7 +157,7 @@ public class HexMapTHM extends KernelUseObjectZZZ implements ITileEventUserTHM {
 		System.out.println("Es gibt keine Troop mit der ID= "+primaryKey.intValue());	
 		}else{
 		System.out.println("Troop mit der ID = " + primaryKey.intValue() + " hat als Uniquename()= "+objTroopTemp.getUniquename());
-		System.out.println(".... wurde erstellt:" + objTroopTemp.getCreatedThisAt() + " || als String: " + objTroopTemp.getCreatedThisAtString());
+		//System.out.println(".... wurde erstellt:" + objTroopTemp.getCreatedThisAt() + " || als String: " + objTroopTemp.getCreatedThisAtString());
 		System.out.println(".... wurde aktualisiert:" + objTroopTemp.getUpdatedAt());
 		
 		HexCell objHexCell = objTroopTemp.getHexCell();
@@ -170,8 +170,9 @@ public class HexMapTHM extends KernelUseObjectZZZ implements ITileEventUserTHM {
 		
 		//### PROBLEM: Nach dem Einlesen der Datenbank bleibt diese "loaded",
 		//                        Das wirft entsprechenden Fehler wenn man danach mit einer Debug Dao-Klasse z.B. Texte einlesen will (DebugKeyTable_Version_TileDefaulttextTHM.java).
-		//+++ Lösungsansatz 20180309: Schliesse alles im objContextSingleton Objekt.caa
-		objContextHibernate.closeAll();
+		//+++ Lösungsansatz 20180309: Schliesse alles im objContextSingleton Objekt.
+		//objContextHibernate.closeAll();
+		//ABER: Anschliessend gilt die Database als "locked"??? Wenn man hier weiterarbeitet.
 	}
 	
 	/** Anzahl der Hexes in einer Zeile. 

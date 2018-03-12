@@ -92,21 +92,21 @@ public class TroopArmyDaoFacade extends TileDaoFacade{
 			//Ist der Vorteil der HIS-Lösung, dass man beliebige Datumsformate "reinwerfen kann"?
 			//Read more: http://www.java67.com/2013/01/how-to-format-date-in-java-simpledateformat-example.html#ixzz58xBTYHvU
 			//Date today = new Date();
-			SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("dd-MM-yyyy");
-	        String sDate = DATE_FORMAT.format(objDate);
-	        System.out.println("Today in dd-MM-yyyy format : " + sDate);
-	     
-	        //Another Example of formatting Date in Java using SimpleDateFormat
-	        DATE_FORMAT = new SimpleDateFormat("dd/MM/yy");
-	        sDate = DATE_FORMAT.format(objDate);
-	        System.out.println("Today in dd/MM/yy pattern : " + sDate);
+//			SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("dd-MM-yyyy");
+//	        String sDate = DATE_FORMAT.format(objDate);
+//	        System.out.println("Today in dd-MM-yyyy format : " + sDate);
+//	     
+//	        //Another Example of formatting Date in Java using SimpleDateFormat
+//	        DATE_FORMAT = new SimpleDateFormat("dd/MM/yy");
+//	        sDate = DATE_FORMAT.format(objDate);
+//	        System.out.println("Today in dd/MM/yy pattern : " + sDate);
 	     
 	        //formatting Date with time information
 	        String sDateFormat = DateMapping.DATE_FORMAT_SIMPLE_FULL_FGL; //"dd-MM-yy:HH:mm:SS"
-	        DATE_FORMAT = new SimpleDateFormat(sDateFormat);
-	        sDate = DATE_FORMAT.format(objDate);
+	        SimpleDateFormat DATE_FORMAT = new SimpleDateFormat(sDateFormat);
+	        String sDate = DATE_FORMAT.format(objDate);
 	        System.out.println("Today in '" + sDateFormat + "' : " + sDate);
-	        objTroopTemp.setCreatedThisAtString(sDate); //Die HIS Lösung, für die zahlreiche andere Klassen (s. Packages in base) und Bibliotheken (u.a. aspectj Tools) eigebunden werden mussten.
+	        //objTroopTemp.setCreatedThisAtString(sDate); //Die HIS Lösung, für die zahlreiche andere Klassen (s. Packages in base) und Bibliotheken (u.a. aspectj Tools) eigebunden werden mussten.
 											
 			session.save(objTroopTemp); //Hibernate Interceptor wird aufgerufen																				
 			if (!session.getTransaction().wasCommitted()) {

@@ -19,6 +19,7 @@ import org.hibernate.event.spi.EventType;
 import basic.persistence.daoFacade.GeneralDaoFacadeZZZ;
 import basic.persistence.util.HibernateUtil;
 import basic.zBasic.ExceptionZZZ;
+import basic.zBasic.IConstantZZZ;
 import basic.zBasic.ReflectCodeZZZ;
 import basic.zBasic.persistence.hibernate.DateMapping;
 import basic.zBasic.persistence.hibernate.HibernateContextProviderZZZ;
@@ -106,8 +107,28 @@ public class TroopArmyDaoFacade extends TileDaoFacade{
 	        SimpleDateFormat DATE_FORMAT = new SimpleDateFormat(sDateFormat);
 	        String sDate = DATE_FORMAT.format(objDate);
 	        System.out.println("Today in '" + sDateFormat + "' : " + sDate);
-	        //objTroopTemp.setCreatedThisAtString(sDate); //Die HIS Lösung, für die zahlreiche andere Klassen (s. Packages in base) und Bibliotheken (u.a. aspectj Tools) eigebunden werden mussten.
-											
+	        objTroopTemp.setCreatedThisAtString(sDate); //Die HIS Lösung, für die zahlreiche andere Klassen (s. Packages in base) und Bibliotheken (u.a. aspectj Tools) eigebunden werden mussten.
+			
+	        String sDateValid = DATE_FORMAT.format(objDate);
+	        System.out.println("Today (valid) in '" + sDateFormat + "' : " + sDateValid);
+	        objTroopTemp.setCreatedThisAtStringValid(sDateValid); //Die HIS Lösung, für die zahlreiche andere Klassen (s. Packages in base) und Bibliotheken (u.a. aspectj Tools) eigebunden werden mussten.
+			
+	        //TEST AUF UNGÜLTIGES DATUMSFORMAT
+	        String sDateFormatInvalid = "ddMMyy";
+	        SimpleDateFormat DATE_FORMATINVALID = new SimpleDateFormat(sDateFormatInvalid);
+	        String sDateInValid = DATE_FORMATINVALID.format(objDate);
+	        
+	        //Merke: Den Fehler muss man wohl beim Commit abfangen, vorher geht wohl nicht.
+//	        try{	        
+		        //System.out.println("Today (InValid) in '" + sDateFormat + "' : " + sDateInValid);
+		        //objTroopTemp.setCreatedThisAtStringValid(sDateInValid); //Die HIS Lösung, für die zahlreiche andere Klassen (s. Packages in base) und Bibliotheken (u.a. aspectj Tools) eigebunden werden mussten.
+		        
+//		        ExceptionZZZ ez = new ExceptionZZZ("DAS DATUM IST IN DEM FORMAT UNGUELTIG. DAS HAETTE ABGEFANGEN WERDEN SOLLEN: '" + sDateInValid + "'", IConstantZZZ.iERROR_PROPERTY_VALUE, this.getClass().getName(), ReflectCodeZZZ.getMethodCurrentName());
+//				throw ez;
+//	        }catch(RuntimeException e){
+//	        	System.out.println("Today (InValid) wurde erfolgreich als Fehler abgefangen (Format / Datum): '(" + sDateFormat + "'/'" + sDateInValid + "'");
+//	        }
+	        
 			session.save(objTroopTemp); //Hibernate Interceptor wird aufgerufen																				
 			if (!session.getTransaction().wasCommitted()) {
 				//session.flush(); //Datenbank synchronisation, d.h. Inserts und Updates werden gemacht. ABER es wird noch nix committed.

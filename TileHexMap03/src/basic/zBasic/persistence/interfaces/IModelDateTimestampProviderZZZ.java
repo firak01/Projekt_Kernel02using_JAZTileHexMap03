@@ -49,14 +49,14 @@ public interface IModelDateTimestampProviderZZZ {
 	public Date getCreatedThisAt();	
 	public void setCreatedThisAt(Date dateCreatedThis);
 	
-	/*wegen der Progleme 20180212 auskommenteiert
+	//*wegen der Probleme 20180212 auskommenteiert
 	@Column(name="createdThisAtString", insertable = true, updatable = false)
 	//Buch "Java Persistence with Hibernate" Kapitel 5.1.5 Listing 5.4. = So wird die Spalte auf ReadOnly gesetzt. Ziel ist, dass der übergebene Wert eingetragen wird und nicht der Datenbankwert
 	//hmm dann wird einfach nix geschrieben @Column(name="createdThisAtString", insertable = false, updatable = false)
 	@Type(type = DateMapping.USER_TYPE_NAME)
 	public String getCreatedThisAtString();	
 	public void setCreatedThisAtString(String sDateCreatedThis);
-		*/
+	//	*/
 		
 	//##### BERECHNETE DATUMSWERTE. Versuch UpdatedAt automatisch zu erhalten
 //	@Version  //https://www.thoughts-on-java.org/hibernate-tips-use-timestamp-versioning-optimistic-locking/

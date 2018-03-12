@@ -30,6 +30,7 @@ import org.hibernate.annotations.Type;
 
 import basic.persistence.model.IOptimisticLocking;
 import basic.zBasic.persistence.hibernate.DateMapping;
+import basic.zBasic.persistence.hibernate.DateMappingString;
 import basic.zBasic.persistence.interfaces.IModelDateTimestampProviderZZZ;
 import basic.zBasic.persistence.model.AbstractPersistentObjectTimestampedZZZ;
 import basic.zBasic.util.datatype.string.StringZZZ;
@@ -82,6 +83,7 @@ public class Tile  implements Serializable, IOptimisticLocking, IModelDateTimest
 	//Aus dem IModelDateTimestampProvider. FGL: 20180220: Versuche dies in eine abstrakte Superklasse zu verschieben und so Vererbung zu nutzen sind mit pur Hibernate gescheitert.
 	private Date dateCreatedThis;
 	private String sDateCreatedThis;
+	private String sDateCreatedThisValid;
 	private Date dateUpdatedAt;
 	
 	private int iXstarted=-1;
@@ -442,19 +444,30 @@ public class Tile  implements Serializable, IOptimisticLocking, IModelDateTimest
 			this.dateCreatedThis = dateCreatedThis;
 		}
 		
-		/*
-		//FGL 20180306: Hier die DateMapping.java Klasse der HIS erweitert. 
+		//FGL 20180306: Hier die DateMapping.java Klasse der HIS kopiert und erweitert. 
 		//Nun kann man Timestamps auch als String speichern und zurückholen.
 		//Diese Strings sind sogar als Datumswert validiert worden und passen in den angegebenen Datums-Bereiche (min / max)
 		@Column(name="createdThisAtString", insertable = true, updatable = false)		
-		@Type(type = DateMapping.DATE_TYPE_TIMESTAMP_SQLITE_STRING_FGL)  //Das ist "timestamp" (kleingeschreiben)... soll allerdings in einem bestimmten String Format sein.
+		@Type(type = DateMapping.DATE_TYPE_TIMESTAMP_SQLITE_STRING_FGL) //Das ist "string" (kleingeschreiben)... soll allerdings in einem bestimmten String Format sein.  
 		public String getCreatedThisAtString(){
 			return this.sDateCreatedThis;
 		}
 		public void setCreatedThisAtString(String sDateCreatedThis){
 			this.sDateCreatedThis = sDateCreatedThis;
 		}
-		*/
+		
+		//TODO GOON: Valide als String speichern mit einem eigenen Datentyp
+		//Nun kann man Timestamps auch als String speichern und zurückholen.
+		//Diese Strings sind sogar als Datumswert validiert worden und passen in den angegebenen Datums-Bereiche (min / max)
+		@Column(name="createdThisAtStringValid", insertable = true, updatable = false)		
+		@Type(type = DateMappingString.USER_TYPE_NAME)  		
+		public String getCreatedThisAtStringValid(){
+			return this.sDateCreatedThisValid;
+		}
+		public void setCreatedThisAtStringValid(String sDateCreatedThisValid){
+			this.sDateCreatedThisValid = sDateCreatedThisValid;
+		}
+
 
 
 		//##### BERECHNETE DATUMSWERTE. Versuch UpdatedAt automatisch zu erhalten		

@@ -43,6 +43,7 @@ import com.google.common.base.Optional;
 
 
 
+
 //import de.his.core.base.invariants.EnsureArgument;
 import base.invariants.EnsureArgument;
 //import de.his.core.datatype.KeyEnum;
@@ -111,7 +112,7 @@ import base.datatype.KeyEnumHelper;
 //FGL: Original HIS, ohne UserVersionType: public class DateMapping implements UserType, ParameterizedType{
 //UserVersionType ist wohl notwendig, damit man @Version der Spalte hinzufügen kann...
 //FGL: Das klappt aber so nicht  public class DateMapping implements UserType, ParameterizedType, UserVersionType {
-public class DateMappingString implements UserType, ParameterizedType{
+public class DateMappingString extends AbstractDateMapping{
     /**
      * Date types supported by the {@link DateMappingString}.
      * 
@@ -427,31 +428,6 @@ public class DateMappingString implements UserType, ParameterizedType{
     /** The name of the user type required for the {@link Type}-annotation ({@link Type#type()}). */
     public static final String USER_TYPE_NAME = "basic.zBasic.persistence.hibernate.DateMappingString";
 
-    /** The {@code dateType} property. See {@link DateMappingString} for usage example. */
-    public static final String DATE_TYPE = "dateType";
-
-    /** dateType for dates; Corresponds to {@link DateType#DATE} */
-    public static final String DATE_TYPE_DATE = "DATE";
-
-    /** dateType for times; Corresponds to {@link DateType#TIME} */
-    public static final String DATE_TYPE_TIME = "TIME";
-
-    /** dateType for timestamps (default); Corresponds to {@link DateType#TIMESTAMP} */
-    public static final String DATE_TYPE_TIMESTAMP = "TIMESTAMP";
-    
-    /** dateType for timestamps (default). FGL 20180305: Notwendig, weil die Großschreibung TIMESTAMP in den Annotations einen Fehler wirft "Class not found ... TIMESTAMP" zumindest bei SQLITE !; Corresponds to {@link DateType#TIMESTAMP} */
-    public static final String DATE_TYPE_TIMESTAMP_SQLITE_FGL = "timestamp";
-    
-    /** dateType for timestamps (default). FGL 20180305: Also, den Usertype "string" gibt es auch nur in der Kleinscheibung bei SQLITE! "STRING" in den Annotations einen Fehler wirft "Class not found ... STRING" zumindest bei SQLITE !; Corresponds to {@link DateType#STRING} */
-    public static final String DATE_TYPE_TIMESTAMP_SQLITE_STRING_FGL = "string";
-    public static final String DATE_FORMAT_SIMPLE_FULL_FGL = "dd-MM-yy:HH:mm:SS";
-    
-    /** the minimum time supported by {@link DateMappingString} used for dates within entities */
-    public static final Date MIN_TIMESTAMP = parseIso("1000-01-01 00:00:00.000");
-
-    /** the maximum time supported by {@link DateMappingString} used for dates within entities */
-    public static final Date MAX_TIMESTAMP = parseIso("2100-12-31 23:59:59.999");
-
     //FGL 20180305: HIS Original: private static final DateType DEFAULT_DATE_TYPE = DateType.TIMESTAMP;
     private static final DateType DEFAULT_DATE_TYPE = DateType.TIMESTAMP_SQLITE_FGL;
 
@@ -460,36 +436,6 @@ public class DateMappingString implements UserType, ParameterizedType{
     private DateType dateType = DEFAULT_DATE_TYPE;
 
     private static final Class<Date> RETURNED_CLASS = Date.class;
-
-    private static Date parseIso(String date) {
-        try {
-	        //FGL 20180218: An der ganzen Date-Lösung der HIS hängen unzählige andere Klassen, für die dann wieder zahlreiche Bibliotheken importiert werden müssen (inklusive aspectj - Tools)         	       
-	    	System.out.println("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXxxxxxxxxxxxxxxxxxxxxXXXXXXXXXXXXXXXXXXXXXXXXXXXXX");
-	    	System.out.println("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXxxxxxxxxxxxxxxxxxxxxXXXXXXXXXXXXXXXXXXXXXXXXXXXXX");
-	    	System.out.println("XXXXXX  FGL DateMappingString: MISSING DateUtil.parseISO(date).                            xxxxxxxxxxxxxx");
-	    	System.out.println("XXXXXX  Hier für war es notwendig viele andere Bibliotheken aufzunehmen XXXXXXXXXXXXXX");
-	    	System.out.println("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXxxxxxxxxxxxxxxxxxxxxXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX");
-	    	System.out.println("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXxxxxxxxxxxxxxxxxxxxxXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX");
-	    	//return de.his.core.common.datetime.DateUtil.parseISO(date);
-	    	return base.common.datetime.DateUtil.parseISO(date);
-        } catch (ParseException e) {
-            throw new RuntimeException("Could not parse ISO date '" + date + "'.", e);
-        }
-    }
-    
-    /*FGL: Ergänzt um das SimpleDateFormat */
-    private static Date parseSimpleDateFormat(String sDate) throws ParseException{
-    	Date dateReturn = null;
-    	main:{
-    		String sDateFormat = DateMappingString.DATE_FORMAT_SIMPLE_FULL_FGL;
-    		SimpleDateFormat formatter = new SimpleDateFormat(sDateFormat);
-    		
-    		dateReturn = formatter.parse(sDate);
-    		
-    	}//end main:
-    	return dateReturn;
-    }
-
 
     /**
      * Checks whether the given field is marked with the given {@code dateType} or not.
@@ -525,43 +471,6 @@ public class DateMappingString implements UserType, ParameterizedType{
         return dateType.getKey().equals(dateTypeParameter.value());
     }
 
-    /**
-     * Checks whether the given {@code date} is within the valid
-     * and supported date range or not.
-     *
-     * @param date  the date to check
-     *
-     * @return {@code true} if the date is within the valid range; {@code false} otherwise
-     *
-     * @throws IllegalArgumentException if {@code date == null}
-     */
-    public static boolean isWithinValidRange(Date date) {
-        EnsureArgument.notNull(date, "date must not be null");
-
-        if (underrunsLowerBoundary(date) || exceedsUpperBoundary(date)) {
-            return false;
-        }
-
-        return true;
-    }
-
-    private static Parameter findParameter(Type userType, String parameterName) {
-        EnsureArgument.notBlank(parameterName, "parameterName must not be blank");
-
-        Parameter[] parameters = userType.parameters();
-        if (parameters == null) {
-            return null;
-        }
-
-        for (Parameter parameter : parameters) {
-            if (parameterName.equals(parameter.name())) {
-                return parameter;
-            }
-        }
-
-        return null;
-    }
-
     @Override
     public int[] sqlTypes() {
         return new int[] { dateType.getSqlType() };
@@ -570,39 +479,6 @@ public class DateMappingString implements UserType, ParameterizedType{
     @Override
     public Class<?> returnedClass() {
         return RETURNED_CLASS;
-    }
-
-    @Override
-    public boolean equals(Object left, Object right) throws HibernateException {
-        return Objects.equals(left, right);
-    }
-
-    @Override
-    public int hashCode(Object obj) throws HibernateException {
-        return Objects.hashCode(obj);
-    }
-
-    
-
-    /**
-     * @param date must not be {@code null}
-     */
-    private void validateDateRange(Date date) {
-        if (underrunsLowerBoundary(date)) {
-            throw new HibernateException("Given date '" + date + "' is less than the allowed minimum date '" + MIN_TIMESTAMP + "'.");
-        }
-
-        if (exceedsUpperBoundary(date)) {
-            throw new HibernateException("Given date '" + date + "' is greater than the allowed maximum date '" + MAX_TIMESTAMP + "'.");
-        }
-    }
-
-    private static boolean exceedsUpperBoundary(Date date) {
-        return MAX_TIMESTAMP.compareTo(date) < 0;
-    }
-
-    private static boolean underrunsLowerBoundary(Date date) {
-        return MIN_TIMESTAMP.compareTo(date) > 0;
     }
 
     @Override
@@ -617,26 +493,6 @@ public class DateMappingString implements UserType, ParameterizedType{
         } catch (ClassCastException e) {
             throw new HibernateException("Could not save '" + value + "' as it could not be casted to '" + RETURNED_CLASS.getCanonicalName() + "'.");
         }
-    }
-
-    @Override
-    public boolean isMutable() {
-        return true;
-    }
-
-    @Override
-    public Serializable disassemble(Object value) throws HibernateException {
-        return (Serializable) value;
-    }
-
-    @Override
-    public Object assemble(Serializable cached, Object owner) throws HibernateException {
-        return cached;
-    }
-
-    @Override
-    public Object replace(Object original, Object target, Object owner) throws HibernateException {
-        return original;
     }
 
     @Override
@@ -758,52 +614,6 @@ public class DateMappingString implements UserType, ParameterizedType{
 	            throw new HibernateException("Could not save '" + value + "' as it could not be casted to '" + RETURNED_CLASS.getCanonicalName() + "'.");
 	        }
 	}
-
-	//FGL 20180215: Ziel ist es dies als UserVersionType in Hibernate nutzen zu können.
-	//              aber da das so nicht klappt, auskommentiert
-//	@Override
-//	public int compare(Object arg0, Object arg1) {
-//		// TODO Auto-generated method stub
-//		return 0;
-//	}
-//
-//	@Override
-//	public Object seed(SessionImplementor session) {
-//		// TODO Auto-generated method stub
-//		return null;
-//	}
-//
-//	@Override
-//	public Object next(Object current, SessionImplementor session) {
-//		// TODO Auto-generated method stub
-//		return null;
-//	}
-
-//IM HIS ORIGINAL	
-//	@Override
-//    public Object nullSafeGet(ResultSet rs, String[] names, Object owner) throws HibernateException, SQLException {
-//        return dateType.nullSafeGet(rs, names);
-//    }
-//
-//    @Override
-//    public void nullSafeSet(PreparedStatement st, Object value, int index) throws HibernateException, SQLException {
-//        if (value == null) {
-//            st.setNull(index, dateType.getSqlType());
-//            return;
-//        }
-//
-//        try {
-//            Date date = (Date) value;
-//
-//            if (dateType.isPerformDateValidation()) {
-//                validateDateRange(date);
-//            }
-//
-//            dateType.nullSafeSet(st, date, index);
-//        } catch (ClassCastException e) {
-//            throw new HibernateException("Could not save '" + value + "' as it could not be casted to '" + RETURNED_CLASS.getCanonicalName() + "'.");
-//        }
-//    }
-
+	
 }
 

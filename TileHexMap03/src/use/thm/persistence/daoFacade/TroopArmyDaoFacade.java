@@ -102,15 +102,17 @@ public class TroopArmyDaoFacade extends TileDaoFacade{
 //	        sDate = DATE_FORMAT.format(objDate);
 //	        System.out.println("Today in dd/MM/yy pattern : " + sDate);
 	     
-	        //formatting Date with time information
-	        String sDateFormat = DateMapping.DATE_FORMAT_SIMPLE_FULL_FGL; //"dd-MM-yy:HH:mm:SS"
-	        SimpleDateFormat DATE_FORMAT = new SimpleDateFormat(sDateFormat);
-	        String sDate = DATE_FORMAT.format(objDate);
-	        System.out.println("Today in '" + sDateFormat + "' : " + sDate);
-	        objTroopTemp.setCreatedThisAtString(sDate); //Die HIS Lösung, für die zahlreiche andere Klassen (s. Packages in base) und Bibliotheken (u.a. aspectj Tools) eigebunden werden mussten.
+	        //formatting Date with time information	        
+			String sDateFormatAlternative = "dd_MM_yy";
+	        SimpleDateFormat DATE_FORMATALTERNATIVE = new SimpleDateFormat(sDateFormatAlternative);
+	        String sDateAlternative = DATE_FORMATALTERNATIVE.format(objDate);
+	        System.out.println("Today in '" + sDateFormatAlternative + "' : " + sDateAlternative);
+	        objTroopTemp.setCreatedThisAtString(sDateAlternative); //Die HIS Lösung, für die zahlreiche andere Klassen (s. Packages in base) und Bibliotheken (u.a. aspectj Tools) eigebunden werden mussten.
 			
-	        String sDateValid = DATE_FORMAT.format(objDate);
-	        System.out.println("Today (valid) in '" + sDateFormat + "' : " + sDateValid);
+	        String sDateFormatValid = DateMapping.DATE_FORMAT_SIMPLE_FULL_FGL; //"dd-MM-yy:HH:mm:SS"
+	        SimpleDateFormat DATE_FORMATVALID = new SimpleDateFormat(sDateFormatAlternative);
+	        String sDateValid = DATE_FORMATVALID.format(objDate);
+	        System.out.println("Today (valid) in '" + sDateFormatValid + "' : " + sDateValid);
 	        objTroopTemp.setCreatedThisAtStringValid(sDateValid); //Die HIS Lösung, für die zahlreiche andere Klassen (s. Packages in base) und Bibliotheken (u.a. aspectj Tools) eigebunden werden mussten.
 			
 	        //TEST AUF UNGÜLTIGES DATUMSFORMAT

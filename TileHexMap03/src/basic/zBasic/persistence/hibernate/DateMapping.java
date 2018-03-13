@@ -263,7 +263,7 @@ public class DateMapping  extends AbstractDateMapping{
   				// TODO Auto-generated method stub	
   				System.out.println("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxXXXXXXXXXXXXXXXXXXXXXXXXXXXXX");
       	    	System.out.println("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxXXXXXXXXXXXXXXXXXXXXXXXXXXXXX");
-      	    	System.out.println("XXXXXX  FGL DateMapping.nullSafeSet(...NICHT String ... muss in Date umgewandelt werden) für die als Usertype angegebene DateMapping Klasse. Hier: ENUMERATION xxxxxxxxxxxxxx");    	    	
+      	    	System.out.println("XXXXXX  FGL DateMapping.nullSafeSet(...String ... muss in Date umgewandelt werden) für die als Usertype angegebene DateMapping Klasse. Hier: ENUMERATION xxxxxxxxxxxxxx");    	    	
       	    	System.out.println("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX");
       	    	System.out.println("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX");
                 
@@ -590,8 +590,10 @@ public class DateMapping  extends AbstractDateMapping{
 	        		}
 	        		
 	        		//Wenn alle Parseversuche gescheitert sind:
+	        		//HIER KEINENE FEHLER WERFEN
 	        		if(isParsingError){
-	        			throw new RuntimeException("Could not parse date '" + sToParse + "'.");
+	        			//throw new RuntimeException("Could not parse date '" + sToParse + "'.");
+	        			bSaveAsString = true;
 	        		}
 	        	}else{
 	        		System.out.println("Caste value nach Date.");

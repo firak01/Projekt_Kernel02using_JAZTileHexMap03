@@ -82,8 +82,10 @@ public class Tile  implements Serializable, IOptimisticLocking, IModelDateTimest
 	
 	//Aus dem IModelDateTimestampProvider. FGL: 20180220: Versuche dies in eine abstrakte Superklasse zu verschieben und so Vererbung zu nutzen sind mit pur Hibernate gescheitert.
 	private Date dateCreatedThis;
+	private Date dateCreatedThisAt;
 	private String sDateCreatedThis;
-	private String sDateCreatedThisValid;
+	private String sDateCreatedThisAt;
+	private String sDateCreatedThisAtValid;
 	private Date dateUpdatedAt;
 	
 	private int iXstarted=-1;
@@ -434,14 +436,42 @@ public class Tile  implements Serializable, IOptimisticLocking, IModelDateTimest
 		
 		
 //		//###### BERECHNETE DATUMSWERTE: Versuch CreatedAt automatisch zu erhalten
+		//FGL 2018-03-14: Erneuter Ansatz. Diesmal den null-Teil in DateMapping.nullSafeSet() erweitern
+		@Column(name="createdThis", insertable = true, updatable = false)
+		@Type(type = DateMapping.USER_TYPE_NAME)
+		public Date getCreatedThis(){
+			return this.dateCreatedThis;
+		}
+		//Merke: DAMIT soll dann das aktuelle Datum verwendet werden.
+		//Ohne Argument findet Hibernate den Setter nicht... public void setCreatedThis(){
+		public void setCreatedThis(Date dateCreatedThis){
+			//Das Setzen dem CustomUserType s. @Type Annotation überlassen.
+			//Daher kann hier auch NULL übergeben werden. 
+			//Trotzdem kommt Hibenate ohne Wertübergabe nicht aus
+			this.dateCreatedThis = dateCreatedThis;
+		}
+		
+		//FGL 2018-03-14: Erneuter Ansatz. Diesmal den null-Teil in DateMapping.nullSafeSet() erweitern
+		@Column(name="createdThisString", insertable = true, updatable = false)
+		@Type(type = DateMappingString.USER_TYPE_NAME)
+		public String getCreatedThisString(){
+			return this.sDateCreatedThis;
+		}
+		public void setCreatedThisString(String sDateCreatedThis){
+			//Das Setzen dem CustomUserType s. @Type Annotation überlassen.
+			//Daher kann hier auch NULL übergeben werden. 
+			//Trotzdem kommt Hibenate ohne Wertübergabe nicht aus
+			this.sDateCreatedThis = sDateCreatedThis;
+		}
+						
 		//MERKE: Die Annotations werden dann aus dem Interface IModelDateTimestampProviderZZZ hier NICHT automatisch ergänzt		
 		@Column(name="createdThisAt", insertable = true, updatable = false)
 		@Type(type = DateMapping.USER_TYPE_NAME)
 		public Date getCreatedThisAt(){
-			return this.dateCreatedThis;
+			return this.dateCreatedThisAt;
 		}
-		public void setCreatedThisAt(Date dateCreatedThis){
-			this.dateCreatedThis = dateCreatedThis;
+		public void setCreatedThisAt(Date dateCreatedThisAt){
+			this.dateCreatedThisAt = dateCreatedThisAt;
 		}
 		
 		//FGL 20180306: Hier die DateMapping.java Klasse der HIS kopiert und erweitert. 
@@ -450,10 +480,10 @@ public class Tile  implements Serializable, IOptimisticLocking, IModelDateTimest
 		@Column(name="createdThisAtString", insertable = true, updatable = false)		
 		@Type(type = DateMapping.DATE_TYPE_TIMESTAMP_SQLITE_STRING_FGL) //Das ist "string" (kleingeschreiben)... soll allerdings in einem bestimmten String Format sein.  
 		public String getCreatedThisAtString(){
-			return this.sDateCreatedThis;
+			return this.sDateCreatedThisAt;
 		}
-		public void setCreatedThisAtString(String sDateCreatedThis){
-			this.sDateCreatedThis = sDateCreatedThis;
+		public void setCreatedThisAtString(String sDateCreatedThisAt){
+			this.sDateCreatedThisAt = sDateCreatedThisAt;
 		}
 		
 		//TODO GOON: Valide als String speichern mit einem eigenen Datentyp
@@ -462,10 +492,10 @@ public class Tile  implements Serializable, IOptimisticLocking, IModelDateTimest
 		@Column(name="createdThisAtStringValid", insertable = true, updatable = false)		
 		@Type(type = DateMappingString.USER_TYPE_NAME)  		
 		public String getCreatedThisAtStringValid(){
-			return this.sDateCreatedThisValid;
+			return this.sDateCreatedThisAtValid;
 		}
-		public void setCreatedThisAtStringValid(String sDateCreatedThisValid){
-			this.sDateCreatedThisValid = sDateCreatedThisValid;
+		public void setCreatedThisAtStringValid(String sDateCreatedThisAtValid){
+			this.sDateCreatedThisAtValid = sDateCreatedThisAtValid;
 		}
 
 

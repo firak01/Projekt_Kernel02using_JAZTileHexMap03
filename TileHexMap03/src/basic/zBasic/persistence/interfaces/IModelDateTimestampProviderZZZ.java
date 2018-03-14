@@ -42,6 +42,16 @@ public interface IModelDateTimestampProviderZZZ {
 	//Vielleicht der Vorteil, dass man hier beliebige Datumsformate "reinwerfen kann".
 	//@Column(name="createdThisAt", insertable = true, updatable = false)
 	
+    //20180314: Hier wird es dem CustomType überlassen einen konkreten Wert zu setzen.
+	//           Der null-Fall wird in den DateMapping / DateMappingString Klassen gezielt angesprungen		
+	@Column(name="createdThis", insertable = true, updatable = false)
+	@Type(type = DateMapping.USER_TYPE_NAME)
+	public Date getCreatedThis();	
+	//public void setCreatedThis();////Das setzen dem CustomUserType s. @Type Annotation überlassen
+	//Ohne Argument findet Hibernate aber den Setter nicht... public void setCreatedThis(){
+    //                               Exception in thread "main" org.hibernate.MappingException: Could not get constructor for org.hibernate.persister.entity.SingleTableEntityPersister
+	public void setCreatedThis(Date dateCreatedThis);////Das setzen dem CustomUserType s. @Type Annotation überlassen
+	
 	//Buch "Java Persistence with Hibernate" Kapitel 5.1.5 Listing 5.4. = So wird die Spalte auf ReadOnly gesetzt. Ziel ist, dass der übergebene Wert eingetragen wird und nicht der Datenbankwert
 	//hmm dann wird einfach nix geschrieben @Column(name="createdThisAt", insertable = false, updatable = false)
 	@Column(name="createdThisAt", insertable = true, updatable = false)

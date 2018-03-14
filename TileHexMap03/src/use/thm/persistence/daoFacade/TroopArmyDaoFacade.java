@@ -131,6 +131,16 @@ public class TroopArmyDaoFacade extends TileDaoFacade{
 //	        	System.out.println("Today (InValid) wurde erfolgreich als Fehler abgefangen (Format / Datum): '(" + sDateFormat + "'/'" + sDateInValid + "'");
 //	        }
 	        
+	        //20180314: Wenn schon CustomTypes verwendet werden, dann sollte es unnötig sein überhaupt einen Wert als Eingabeparameter zu übergeben.
+	        //          Das aktuelle Datum kann auch hier verwendet werden.
+	        //          Merke: Ganz ohne ein Argument in der Methode kann Hibernate diese nicht Mappen
+	        //Exception in thread "main" org.hibernate.MappingException: Could not get constructor for org.hibernate.persister.entity.SingleTableEntityPersister
+	        System.out.println("Setze createdThis(null), d.h. CustomType sollte aktuelles Datum autmatisch verwenden");
+	        objTroopTemp.setCreatedThis(null); //Die HIS Lösung, für die zahlreiche andere Klassen (s. Packages in base) und Bibliotheken (u.a. aspectj Tools) eigebunden werden mussten.
+	        
+	        System.out.println("Setze createdThisString(null), d.h. CustomType sollte aktuelles Datum autmatisch verwenden");
+	        objTroopTemp.setCreatedThisString(null); //Die HIS Lösung, für die zahlreiche andere Klassen (s. Packages in base) und Bibliotheken (u.a. aspectj Tools) eigebunden werden mussten.
+			 	        	        
 			session.save(objTroopTemp); //Hibernate Interceptor wird aufgerufen																				
 			if (!session.getTransaction().wasCommitted()) {
 				//session.flush(); //Datenbank synchronisation, d.h. Inserts und Updates werden gemacht. ABER es wird noch nix committed.

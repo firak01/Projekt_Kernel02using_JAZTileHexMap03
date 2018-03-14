@@ -44,12 +44,15 @@ import com.google.common.base.Optional;
 
 
 
+
+
 //import de.his.core.base.invariants.EnsureArgument;
 import base.invariants.EnsureArgument;
 //import de.his.core.datatype.KeyEnum;
 import base.datatype.KeyEnum; 
 //import de.his.core.util.KeyEnumHelper;
 import base.datatype.KeyEnumHelper;
+import basic.zBasic.util.datatype.string.StringZZZ;
 
 
 /**
@@ -151,6 +154,13 @@ public class DateMapping  extends AbstractDateMapping{
 				// TODO Auto-generated method stub
 				
 			}
+
+			@Override
+			void nullSafeSet(PreparedStatement st, int index)
+					throws SQLException {
+				// TODO Auto-generated method stub
+				
+			}
         },
 
         /** A time mapping (corresponds to {@link StandardBasicTypes#TIME}). */
@@ -183,6 +193,13 @@ public class DateMapping  extends AbstractDateMapping{
 				//    Wird hier noch nicht genutzt.
 				// TODO Auto-generated method stub				
 			}
+
+			@Override
+			void nullSafeSet(PreparedStatement st, int index)
+					throws SQLException {
+				// TODO Auto-generated method stub
+				
+			}
         },
 
         /** A timestamp mapping (corresponds to {@link StandardBasicTypes#TIMESTAMP}). */
@@ -214,6 +231,13 @@ public class DateMapping  extends AbstractDateMapping{
 				//FGL Erweiterung: Den Timestamp auch als String speichern, wenn er als String ankommt.
 				//    Wird hier noch nicht genutzt.
 				// TODO Auto-generated method stub				
+			}
+
+			@Override
+			void nullSafeSet(PreparedStatement st, int index)
+					throws SQLException {
+				// TODO Auto-generated method stub
+				
 			}
         },                
         
@@ -268,6 +292,29 @@ public class DateMapping  extends AbstractDateMapping{
       	    	System.out.println("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX");
                 
   			}
+
+			@Override
+			void nullSafeSet(PreparedStatement st, int index)
+					throws SQLException {
+				 //FGL 201800314: An der ganzen Date-Lösung der HIS hängen unzählige andere Klassen, für die dann wieder zahlreiche Bibliotheken importiert werden müssen (inklusive aspectj - Tools)         	       
+    	    	System.out.println("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxXXXXXXXXXXXXXXXXXXXXXXXXXXXXX");
+    	    	System.out.println("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxXXXXXXXXXXXXXXXXXXXXXXXXXXXXX");
+    	    	System.out.println("XXXXXX  FGL DateMaping.nullSafeSet(... LEER: Mit Timestamp füllen ...)  für die als Usertype angegebene DateMapping Klasse. Hier: ENUMERATION xxxxxxxxxxxxxxxxxxx");    	    	
+    	    	System.out.println("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX");
+    	    	System.out.println("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX");
+                
+    	    	//Hier nun den aktuellen Wert als Timestamp "erzeugen" und speichern
+    	    	//Das Klappt. Das Ergebnis ist aber in der SQLite Datenbank ebenfalls nur ein "kryptischer" (d.h. Long Zahl) Timestamp
+    			Calendar cal = Calendar.getInstance();
+    			//TEST: Setze ein beliebiges Datum
+    			//cal.set(2006,5,25);			
+    			
+    			//Hiermit wird erfolgreich der Timestamp gesetzt.	
+    			Date objDate = cal.getTime(); //Ist letztendlich nur der Timestamp
+    	    	
+    			Timestamp timestamp = new Timestamp(objDate.getTime());
+                st.setTimestamp(index, timestamp);
+			}
             },
             	
             	/** A timestamp mapping (corresponds to {@link StandardBasicTypes#STRING}). */
@@ -385,6 +432,13 @@ public class DateMapping  extends AbstractDateMapping{
             Date deepCopy(Date value) {
                 return JdbcTimestampTypeDescriptor.INSTANCE.getMutabilityPlan().deepCopy(value);
             }
+
+			@Override
+			void nullSafeSet(PreparedStatement st, int index)
+					throws SQLException {
+				// TODO Auto-generated method stub
+				
+			}
         };
 
         private final int sqlType;
@@ -423,19 +477,27 @@ public class DateMapping  extends AbstractDateMapping{
         //              Beachte: Dieser Timestamp wird dann nicht validiert sein bzgl. einrs bestimmten "erlaubten" Stringformats.
         //                       DateMappingString erlaubt hingegen nur valide Strings.
 		abstract void nullSafeSet(PreparedStatement st, String string, int index) throws SQLException;
+		
+		//FGL 20180314: Erweiterung: Wenn man schon CustomTypes in den HibernateAnnotations verwendet,
+		//                           dann kann man sich für einen Timestamp auch die ganze Parameterübergabe sparen.
+		//                           In den Methoden wird dann der gewünschte Wert einfach gesetzt. 
+		//                           Ist sinnvollerweise das aktuelle Datum in irgendeiner Form (Date-Objekt, String, ...)
+		abstract void nullSafeSet(PreparedStatement st, int index) throws SQLException;
     }
 
     /** The name of the user type required for the {@link Type}-annotation ({@link Type#type()}). */
-    //FGL 20180215: Das ist der Origanle PackageName dieser Klasse. Natürlich angepasst
+    //FGL 20180215: Das ist der Originale PackageName dieser Klasse. Natürlich angepasst
     //public static final String USER_TYPE_NAME = "de.his.appserver.persistence.hibernate.DateMapping";
     public static final String USER_TYPE_NAME = "basic.zBasic.persistence.hibernate.DateMapping";
 
     //FGL 20180305: HIS Original: private static final DateType DEFAULT_DATE_TYPE = DateType.TIMESTAMP;
+    //Merke: Diese Enumeration-Klasse wird aufgerufen, wenn in den Annotation diese Klasse als CustomType genannt wird: 
+    //      Also: @Type(type = DateMappingString.USER_TYPE_NAME)
     private static final DateType DEFAULT_DATE_TYPE = DateType.TIMESTAMP_SQLITE_FGL;
 
     private static final Log LOGGER = LogFactory.getLog(DateMapping.class);
 
-    private DateType dateType = DEFAULT_DATE_TYPE;
+    private DateType dateType = DEFAULT_DATE_TYPE; //Merke: Hier wird dataType mit der angegebenen Enumeration-Klasse initialisiert
 
     private static final Class<Date> RETURNED_CLASS = Date.class;
 
@@ -546,8 +608,12 @@ public class DateMapping  extends AbstractDateMapping{
     	System.out.println("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX");
 		 if (value == null) {
 			 System.out.println("Null - Zweig");
-	            st.setNull(index, dateType.getSqlType());
-	            return;
+//	            st.setNull(index, dateType.getSqlType());
+
+			   //20180314: Fall NULL übergeben wird, soll nun für den Datatype die Methode OHNE Wertübergabe aufgerufen werden.
+			   //          Dann wird ggfs. ein Defaultwert eingetragen.
+			 	dateType.nullSafeSet(st, index);
+			 	return; //Hiernach dann beenden, weil value NULL ist schlägt alles nachfolgende fehl.
 	        }
 
 	        try {
@@ -562,6 +628,14 @@ public class DateMapping  extends AbstractDateMapping{
 	        	if(value instanceof String){	
 	        		bSaveAsString = true;
 	        		String sToParse = (String) value;
+	        		System.out.println("Übergebener String '" + sToParse + "'.");
+	        		
+	        		//Besonderheit: Falls ein Leerstring übergeben wurde hier wie beim NULL Fall verfahren.
+	        		if(StringZZZ.isBlank((String) value)){
+	        			dateType.nullSafeSet(st, index);
+	    			 	return; //Hiernach dann beenden. Wie beim value NULL ist schlägt alles nachfolgende fehl.
+	        		}
+	        			        		
 	        		System.out.println("Parse String '" + sToParse + "' nach einem Datumswert.");
 	        		
 	        		//Diverse Parse-Varianten. Merke: Fehler beim Parsen abfangen.

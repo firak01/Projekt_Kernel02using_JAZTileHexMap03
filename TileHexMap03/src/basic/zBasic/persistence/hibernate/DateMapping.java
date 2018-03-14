@@ -420,6 +420,8 @@ public class DateMapping  extends AbstractDateMapping{
         abstract Date deepCopy(Date value);
 
         //FGL 20180306: Erweiterung: Den Timestamp auch als String speichern, wenn er als String ankommt
+        //              Beachte: Dieser Timestamp wird dann nicht validiert sein bzgl. einrs bestimmten "erlaubten" Stringformats.
+        //                       DateMappingString erlaubt hingegen nur valide Strings.
 		abstract void nullSafeSet(PreparedStatement st, String string, int index) throws SQLException;
     }
 
@@ -550,6 +552,7 @@ public class DateMapping  extends AbstractDateMapping{
 
 	        try {
 	        	System.out.println("Not Null - Zweig. Umwandlung in date und danach Validierung.");
+	        	System.out.println("Datetype='"+dateType.getKey()+"'");
 	        	 Date date = null;
 	        	//FGL: TODO GOON 20180305: Hier tritt dann der CASTING Fehler auf, 
 	        	//     wenn man @Type(type = DateMapping.USER_TYPE_NAME) als Annotation an eine String-Spalte angibt.

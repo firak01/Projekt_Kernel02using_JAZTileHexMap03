@@ -106,11 +106,11 @@ public class TroopArmyDaoFacade extends TileDaoFacade{
 			String sDateFormatAlternative = "dd_MM_yy";
 	        SimpleDateFormat DATE_FORMATALTERNATIVE = new SimpleDateFormat(sDateFormatAlternative);
 	        String sDateAlternative = DATE_FORMATALTERNATIVE.format(objDate);
-	        System.out.println("Today in '" + sDateFormatAlternative + "' : " + sDateAlternative);
+	        System.out.println("Today (alternative) in '" + sDateFormatAlternative + "' : " + sDateAlternative);
 	        objTroopTemp.setCreatedThisAtString(sDateAlternative); //Die HIS Lösung, für die zahlreiche andere Klassen (s. Packages in base) und Bibliotheken (u.a. aspectj Tools) eigebunden werden mussten.
 			
 	        String sDateFormatValid = DateMapping.DATE_FORMAT_SIMPLE_FULL_FGL; //"dd-MM-yy:HH:mm:SS"
-	        SimpleDateFormat DATE_FORMATVALID = new SimpleDateFormat(sDateFormatAlternative);
+	        SimpleDateFormat DATE_FORMATVALID = new SimpleDateFormat(sDateFormatValid);
 	        String sDateValid = DATE_FORMATVALID.format(objDate);
 	        System.out.println("Today (valid) in '" + sDateFormatValid + "' : " + sDateValid);
 	        objTroopTemp.setCreatedThisAtStringValid(sDateValid); //Die HIS Lösung, für die zahlreiche andere Klassen (s. Packages in base) und Bibliotheken (u.a. aspectj Tools) eigebunden werden mussten.

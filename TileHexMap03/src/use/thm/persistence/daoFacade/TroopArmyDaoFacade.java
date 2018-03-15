@@ -140,7 +140,11 @@ public class TroopArmyDaoFacade extends TileDaoFacade{
 	        
 	        System.out.println("Setze createdThisString(null), d.h. CustomType sollte aktuelles Datum autmatisch verwenden");
 	        objTroopTemp.setCreatedThisString(null); //Die HIS Lösung, für die zahlreiche andere Klassen (s. Packages in base) und Bibliotheken (u.a. aspectj Tools) eigebunden werden mussten.
-			 	        	        
+			 
+	        System.out.println("Setze createdThisStringComment('TileHexMap ist toll'), d.h. CustomType sollte aktuelles Datum autmatisch verwenden");
+	        objTroopTemp.setCreatedThisStringComment("TileHexMap ist toll"); //Die HIS Lösung, für die zahlreiche andere Klassen (s. Packages in base) und Bibliotheken (u.a. aspectj Tools) eigebunden werden mussten.
+			
+	        
 			session.save(objTroopTemp); //Hibernate Interceptor wird aufgerufen																				
 			if (!session.getTransaction().wasCommitted()) {
 				//session.flush(); //Datenbank synchronisation, d.h. Inserts und Updates werden gemacht. ABER es wird noch nix committed.

@@ -66,6 +66,14 @@ public interface IModelDateTimestampProviderZZZ {
 	@Type(type = DateMapping.USER_TYPE_NAME)
 	public String getCreatedThisAtString();	
 	public void setCreatedThisAtString(String sDateCreatedThis);
+	
+	public String getCreatedThisString();
+	public void setCreatedThisString(String sDateOrEmpty);
+	
+	public String getCreatedThisStringComment();
+	public void setCreatedThisStringComment(String sComment);
+	
+	
 	//	*/
 		
 	//##### BERECHNETE DATUMSWERTE. Versuch UpdatedAt automatisch zu erhalten
@@ -134,7 +142,7 @@ public interface IModelDateTimestampProviderZZZ {
 	@Version  //https://www.thoughts-on-java.org/hibernate-tips-use-timestamp-versioning-optimistic-locking/			
 	@Type(type = "timestamp")//Versuch mehr als das Jahr zu bekommen, ja, das ist dann ein Timestamp basierend auf einer LONG - Zahl, wie ich sie schon beim UNIQUE-Namen verwende
 //	//@Type(type = DateMapping.DATE_TYPE_TIMESTAMP) //CLASS NOT FOUND EXCEPTION "TIMESTAMP"
-	public Date getUpdatedAt();
+	public Date getUpdated();
 	//nicht im Interface... protected void setUpdatedAt(Date dateUpdatedAt);		
 
 }

@@ -30,7 +30,9 @@ import org.hibernate.annotations.Type;
 
 import basic.persistence.model.IOptimisticLocking;
 import basic.zBasic.persistence.hibernate.DateMapping;
-import basic.zBasic.persistence.hibernate.DateMappingString;
+import basic.zBasic.persistence.hibernate.DateMappingCustomTypeTimestampString;
+import basic.zBasic.persistence.hibernate.DateMappingCustomTypeTimestamp;
+import basic.zBasic.persistence.hibernate.DateMappingCustomTypeTimestampStringAsComment;
 import basic.zBasic.persistence.interfaces.IModelDateTimestampProviderZZZ;
 import basic.zBasic.persistence.model.AbstractPersistentObjectTimestampedZZZ;
 import basic.zBasic.util.datatype.string.StringZZZ;
@@ -84,9 +86,10 @@ public class Tile  implements Serializable, IOptimisticLocking, IModelDateTimest
 	private Date dateCreatedThis;
 	private Date dateCreatedThisAt;
 	private String sDateCreatedThis;
+	private String sDateCreatedThisWithComment;
 	private String sDateCreatedThisAt;
 	private String sDateCreatedThisAtValid;
-	private Date dateUpdatedAt;
+	private Date dateUpdated;
 	
 	private int iXstarted=-1;
 	private int iYstarted=-1;
@@ -436,9 +439,10 @@ public class Tile  implements Serializable, IOptimisticLocking, IModelDateTimest
 		
 		
 //		//###### BERECHNETE DATUMSWERTE: Versuch CreatedAt automatisch zu erhalten
+		//MERKE: Die Annotations werden dann aus dem Interface IModelDateTimestampProviderZZZ hier NICHT automatisch ergänzt	
 		//FGL 2018-03-14: Erneuter Ansatz. Diesmal den null-Teil in DateMapping.nullSafeSet() erweitern
 		@Column(name="createdThis", insertable = true, updatable = false)
-		@Type(type = DateMapping.USER_TYPE_NAME)
+		@Type(type = DateMappingCustomTypeTimestamp.USER_TYPE_NAME)
 		public Date getCreatedThis(){
 			return this.dateCreatedThis;
 		}
@@ -451,9 +455,23 @@ public class Tile  implements Serializable, IOptimisticLocking, IModelDateTimest
 			this.dateCreatedThis = dateCreatedThis;
 		}
 		
-		//FGL 2018-03-14: Erneuter Ansatz. Diesmal den null-Teil in DateMapping.nullSafeSet() erweitern
+		@Column(name="createdThisAt", insertable = true, updatable = false)
+		@Type(type = DateMappingCustomTypeTimestamp.USER_TYPE_NAME)
+		public Date getCreatedThisAt(){
+			return this.dateCreatedThisAt;
+		}
+		public void setCreatedThisAt(Date dateCreatedThisAt){
+			this.dateCreatedThisAt = dateCreatedThisAt;
+		}
+		
+		/**Nun kann man Timestamps auch als String speichern und zurückholen.
+		//TODO GOON 20180315: Dies auf einen neuen CustomType umstellen: DateMappingCustomTypeTimestampString
+		 *                                     Diesmal den null-Teil in DateMappingCustomTypeTimestampString.nullSafeSet() erweitern.
+		//Der Datumsteil des Timestamps wird valide automatisch erzeugt und passt in den angegebenen Datums-Bereiche (min / max).
+		//FGL 20180306: Hier die DateMapping.java Klasse der HIS kopiert und erweitert. 
+		 */
 		@Column(name="createdThisString", insertable = true, updatable = false)
-		@Type(type = DateMappingString.USER_TYPE_NAME)
+		@Type(type = DateMappingCustomTypeTimestampString.USER_TYPE_NAME)
 		public String getCreatedThisString(){
 			return this.sDateCreatedThis;
 		}
@@ -463,20 +481,29 @@ public class Tile  implements Serializable, IOptimisticLocking, IModelDateTimest
 			//Trotzdem kommt Hibenate ohne Wertübergabe nicht aus
 			this.sDateCreatedThis = sDateCreatedThis;
 		}
-						
-		//MERKE: Die Annotations werden dann aus dem Interface IModelDateTimestampProviderZZZ hier NICHT automatisch ergänzt		
-		@Column(name="createdThisAt", insertable = true, updatable = false)
-		@Type(type = DateMapping.USER_TYPE_NAME)
-		public Date getCreatedThisAt(){
-			return this.dateCreatedThisAt;
-		}
-		public void setCreatedThisAt(Date dateCreatedThisAt){
-			this.dateCreatedThisAt = dateCreatedThisAt;
-		}
-		
+				
+		/**Nun kann man Timestamps auch als String speichern und zurückholen.
+		//TODO GOON 20180315: Dies auf einen neuen CustomType umstellen: DateMappingCustomTypeTimestampStringAsComment
+		 *                                     Diesmal NICHT den null-Teil wie in DateMappingCustomTypeTimestampString.nullSafeSet() erweitern.
+		 *                                     Sondern den nicht null Teil verändern. Da der Stirn als Kommentar gesehen wird, ist eine VALIDIERUNG gegen ein DAtum Quatsch.
+		//Der Datumsteil des Timestamps wird valide automatisch erzeugt und passt in den angegebenen Datums-Bereiche (min / max).
+		//Der Textteil wird dann angehängt, quasi als Kommentar. 
 		//FGL 20180306: Hier die DateMapping.java Klasse der HIS kopiert und erweitert. 
-		//Nun kann man Timestamps auch als String speichern und zurückholen.
-		//Diese Strings sind sogar als Datumswert validiert worden und passen in den angegebenen Datums-Bereiche (min / max)
+		 */
+		@Column(name="createdThisStringComment", insertable = true, updatable = false)
+		@Type(type = DateMappingCustomTypeTimestampStringAsComment.USER_TYPE_NAME)
+		public String getCreatedThisStringComment(){
+			return this.sDateCreatedThisWithComment;
+		}
+		public void setCreatedThisStringComment(String sComment){
+			//Das Setzen dem CustomUserType s. @Type Annotation überlassen.
+			//Daher kann hier auch NULL übergeben werden. 
+			//Trotzdem kommt Hibenate ohne Wertübergabe nicht aus. 
+			//Wird hier ein String übergeben, so wird er als Commentar gesehen und hinter einem automatisch generierten Timestamp gesetzt.
+			this.sDateCreatedThisWithComment = sComment;
+		}
+
+	
 		@Column(name="createdThisAtString", insertable = true, updatable = false)		
 		@Type(type = DateMapping.DATE_TYPE_TIMESTAMP_SQLITE_STRING_FGL) //Das ist "string" (kleingeschreiben)... soll allerdings in einem bestimmten String Format sein.  
 		public String getCreatedThisAtString(){
@@ -486,11 +513,13 @@ public class Tile  implements Serializable, IOptimisticLocking, IModelDateTimest
 			this.sDateCreatedThisAt = sDateCreatedThisAt;
 		}
 		
-		//TODO GOON: Valide als String speichern mit einem eigenen Datentyp
+		/**Valide als String speichern mit einem eigenen Datentyp
 		//Nun kann man Timestamps auch als String speichern und zurückholen.
 		//Diese Strings sind sogar als Datumswert validiert worden und passen in den angegebenen Datums-Bereiche (min / max)
+		 * @return
+		 */
 		@Column(name="createdThisAtStringValid", insertable = true, updatable = false)		
-		@Type(type = DateMappingString.USER_TYPE_NAME)  		
+		@Type(type = DateMappingCustomTypeTimestampString.USER_TYPE_NAME)  		
 		public String getCreatedThisAtStringValid(){
 			return this.sDateCreatedThisAtValid;
 		}
@@ -500,15 +529,18 @@ public class Tile  implements Serializable, IOptimisticLocking, IModelDateTimest
 
 
 
-		//##### BERECHNETE DATUMSWERTE. Versuch UpdatedAt automatisch zu erhalten		
-		//MERKE: Die Annotations werden dann aus dem Interface IModelDateTimestampProviderZZZ NICHT automatisch hier ergänzt. Warum ?????
+		//##### BERECHNETE DATUMSWERTE. Versuch UpdatedAt automatisch zu erhalten. Klappt als long-Timestamp.		
+		/**Es wird ein long Zeitstempel gesetzt.
+		 * MERKE: Die Annotations werden dann aus dem Interface IModelDateTimestampProviderZZZ NICHT automatisch hier ergänzt. Warum ?????			
+		 * MERKE: Diese Updates passieren automatisch, d.h. ohne in einer DAO-Klasse diese Methode aufzurufen.	 Darum hat diese Methode nicht das This...Postfix.	             
+		 */
 		@Version  //https://www.thoughts-on-java.org/hibernate-tips-use-timestamp-versioning-optimistic-locking/		//
 		@Type(type = DateMapping.DATE_TYPE_TIMESTAMP_SQLITE_FGL) 		//Das ist "timestamp" (kleingeschreiben)
-		public Date getUpdatedAt(){
-			return this.dateUpdatedAt;
+		public Date getUpdated(){
+			return this.dateUpdated;
 		}
-		protected void setUpdatedAt(Date dateUpdatedAt){
-			this.dateUpdatedAt = dateUpdatedAt;
+		protected void setUpdated(Date dateUpdated){
+			this.dateUpdated = dateUpdated;
 		}
 	
 		

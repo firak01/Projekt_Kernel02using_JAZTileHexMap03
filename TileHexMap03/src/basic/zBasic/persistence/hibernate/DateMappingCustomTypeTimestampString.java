@@ -47,6 +47,7 @@ import com.google.common.base.Optional;
 
 
 
+
 //import de.his.core.base.invariants.EnsureArgument;
 import base.invariants.EnsureArgument;
 //import de.his.core.datatype.KeyEnum;
@@ -116,196 +117,17 @@ import basic.zBasic.util.datatype.string.StringZZZ;
 //FGL: Original HIS, ohne UserVersionType: public class DateMapping implements UserType, ParameterizedType{
 //UserVersionType ist wohl notwendig, damit man @Version der Spalte hinzufügen kann...
 //FGL: Das klappt aber so nicht  public class DateMapping implements UserType, ParameterizedType, UserVersionType {
-public class DateMappingString extends AbstractDateMapping{
+public class DateMappingCustomTypeTimestampString extends AbstractDateMapping{
     /**
-     * Date types supported by the {@link DateMappingString}.
+     * Date types supported by the {@link DateMappingCustomTypeTimestampString}.
      * 
      * FGL:
      * Merke, der konstruktor ist: private DateType(String key, int sqlType, boolean performDateValidation) {
      */
     public static enum DateType implements KeyEnum<String> {
-        /** A date mapping (corresponds to {@link StandardBasicTypes#DATE}). */
-        DATE(DateMappingString.DATE_TYPE_DATE, StandardBasicTypes.DATE.sqlType(), true) {
-            @Override
-            Date nullSafeGet(ResultSet rs, String[] names) throws SQLException {
-                java.sql.Date date = rs.getDate(names[0]);
-
-                if (rs.wasNull()) {
-                    return null;
-                }
-
-                return new java.sql.Date(date.getTime());
-            }
-
-            @Override
-            void nullSafeSet(PreparedStatement st, Date value, int index) throws SQLException {
-                java.sql.Date date = new java.sql.Date(value.getTime());
-                st.setDate(index, date);
-            }
-
-            @Override
-            Date deepCopy(Date value) {
-                return JdbcDateTypeDescriptor.INSTANCE.getMutabilityPlan().deepCopy(value);
-            }
-
-			@Override
-			void nullSafeSet(PreparedStatement st, String string, int index) throws SQLException {
-				//FGL Erweiterung: Den Timestamp auch als String speichern, wenn er als String ankommt.
-				//    Wird hier noch nicht genutzt.
-				// TODO Auto-generated method stub
-				
-			}
-
-			@Override
-			void nullSafeSet(PreparedStatement st, int index)
-					throws SQLException {
-				// TODO Auto-generated method stub
-				
-			}
-        },
-
-        /** A time mapping (corresponds to {@link StandardBasicTypes#TIME}). */
-        TIME(DateMappingString.DATE_TYPE_TIME, StandardBasicTypes.TIME.sqlType(), false) {
-            @Override
-            Date nullSafeGet(ResultSet rs, String[] names) throws SQLException {
-                Time time = rs.getTime(names[0]);
-
-                if (rs.wasNull()) {
-                    return null;
-                }
-
-                return new java.sql.Time(time.getTime());
-            }
-
-            @Override
-            void nullSafeSet(PreparedStatement st, Date value, int index) throws SQLException {
-                Time time = new Time(value.getTime());
-                st.setTime(index, time);
-            }
-
-            @Override
-            Date deepCopy(Date value) {
-                return JdbcTimeTypeDescriptor.INSTANCE.getMutabilityPlan().deepCopy(value);
-            }
-
-			@Override
-			void nullSafeSet(PreparedStatement st, String string, int index)  throws SQLException {
-				//FGL Erweiterung: Den Timestamp auch als String speichern, wenn er als String ankommt.
-				//    Wird hier noch nicht genutzt.
-				// TODO Auto-generated method stub				
-			}
-
-			@Override
-			void nullSafeSet(PreparedStatement st, int index)
-					throws SQLException {
-				// TODO Auto-generated method stub
-				
-			}
-        },
-
-        /** A timestamp mapping (corresponds to {@link StandardBasicTypes#TIMESTAMP}). */
-        TIMESTAMP(DateMappingString.DATE_TYPE_TIMESTAMP, StandardBasicTypes.TIMESTAMP.sqlType(), true) {
-            @Override
-            Date nullSafeGet(ResultSet rs, String[] names) throws SQLException {
-                Timestamp timestamp = rs.getTimestamp(names[0]);
-
-                if (rs.wasNull()) {
-                    return null;
-                }
-
-                return new java.sql.Timestamp(timestamp.getTime());
-            }
-
-            @Override
-            void nullSafeSet(PreparedStatement st, Date value, int index) throws SQLException {
-                Timestamp timestamp = new Timestamp(value.getTime());
-                st.setTimestamp(index, timestamp);
-            }
-
-            @Override
-            Date deepCopy(Date value) {
-                return JdbcTimestampTypeDescriptor.INSTANCE.getMutabilityPlan().deepCopy(value);
-            }
-
-			@Override
-			void nullSafeSet(PreparedStatement st, String string, int index)  throws SQLException  {
-				//FGL Erweiterung: Den Timestamp auch als String speichern, wenn er als String ankommt.
-				//    Wird hier noch nicht genutzt.
-				// TODO Auto-generated method stub				
-			}
-
-			@Override
-			void nullSafeSet(PreparedStatement st, int index)
-					throws SQLException {
-				// TODO Auto-generated method stub
-				
-			}
-        },                
-        
-        /** A timestamp mapping (corresponds to {@link StandardBasicTypes#TIMESTAMP}). */
-        TIMESTAMP_SQLITE_FGL(DateMappingString.DATE_TYPE_TIMESTAMP_SQLITE_STRING_FGL, StandardBasicTypes.STRING.sqlType(), true) {
-        	  @Override
-              String nullSafeGet(ResultSet rs, String[] names) throws SQLException {
-        		  
-        		  //FGL 20180218: An der ganzen Date-Lösung der HIS hängen unzählige andere Klassen, für die dann wieder zahlreiche Bibliotheken importiert werden müssen (inklusive aspectj - Tools)         	       
-      	    	System.out.println("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxXXXXXXXXXXXXXXXXXXXXXXXXXXXXX");
-      	    	System.out.println("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxXXXXXXXXXXXXXXXXXXXXXXXXXXXXX");
-      	    	System.out.println("XXXXXX  FGL DateMappingString: TIMESTAMP_SQLITE_FGL.nullSafeGet(...)  für die als Usertype angegebene DateMapping Klasse. Hier: ENUMERATION                       xxxxxxxxxxxxxx");    	    	
-      	    	System.out.println("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX");
-      	    	System.out.println("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX");
-                          		          		  
-                  //Timestamp timestamp = rs.getTimestamp(names[0]);
-      	    	  String sTimestamp = rs.getString(names[0]);
-                  if (rs.wasNull()) {
-                      return null;
-                  }
-
-                  //return new java.sql.Timestamp(timestamp.getTime());
-                  return sTimestamp;
-              }
-
-              @Override
-              void nullSafeSet(PreparedStatement st, Date value, int index) throws SQLException {
-            	System.out.println("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxXXXXXXXXXXXXXXXXXXXXXXXXXXXXX");
-      	    	System.out.println("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxXXXXXXXXXXXXXXXXXXXXXXXXXXXXX");
-      	    	System.out.println("XXXXXX  FGL DateMappingString: TIMESTAMP_SQLITE_FGL.nullSafeSet(...NICHT  String ...) für die als Usertype angegebene DateMapping Klasse. Hier: ENUMERATION xxxxxxxxxxxxxx");    	    	
-      	    	System.out.println("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX");
-      	    	System.out.println("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX");
-                  
-            	  
-                  Timestamp timestamp = new Timestamp(value.getTime());
-                  st.setTimestamp(index, timestamp);
-              }
-
-              @Override
-              Date deepCopy(Date value) {
-                  return JdbcTimestampTypeDescriptor.INSTANCE.getMutabilityPlan().deepCopy(value);
-              }
-
-  			@Override
-  			void nullSafeSet(PreparedStatement st, String string, int index)  throws SQLException  {
-  				//FGL Erweiterung: Den Timestamp auch als String speichern, wenn er als String ankommt.
-  				//    Wird hier noch nicht genutzt.
-  				// TODO Auto-generated method stub	
-  				System.out.println("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxXXXXXXXXXXXXXXXXXXXXXXXXXXXXX");
-      	    	System.out.println("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxXXXXXXXXXXXXXXXXXXXXXXXXXXXXX");
-      	    	System.out.println("XXXXXX  FGL DateMappingString: TIMESTAMP_SQLITE_FGL.nullSafeSet(...NICHT String ... muss in Date umgewandelt werden) für die als Usertype angegebene DateMapping Klasse. Hier: ENUMERATION xxxxxxxxxxxxxx");    	    	
-      	    	System.out.println("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX");
-      	    	System.out.println("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX");
-                
-      	    	st.setString(index, string);
-  			}
-
-			@Override
-			void nullSafeSet(PreparedStatement st, int index)
-					throws SQLException {
-				// TODO Auto-generated method stub
-				
-			}
-            },
-            	
+                  	
             	/** A timestamp mapping (corresponds to {@link StandardBasicTypes#STRING}). */
-                TIMESTAMP_SQLITE_STRING_FGL(DateMappingString.DATE_TYPE_TIMESTAMP_SQLITE_STRING_FGL, StandardBasicTypes.STRING.sqlType(), true) {
+                TIMESTAMP_SQLITE_STRING_FGL(DateMappingCustomTypeTimestampString.DATE_TYPE_TIMESTAMP_SQLITE_STRING_FGL, StandardBasicTypes.STRING.sqlType(), true) {
                     @Override
                     Object nullSafeGet(ResultSet rs, String[] names) throws SQLException {
                     //FGL: Weil wir jetzt auch einen String als Wert zurückgeben wollen: Date nullSafeGet(ResultSet rs, String[] names) throws SQLException {
@@ -313,7 +135,7 @@ public class DateMappingString extends AbstractDateMapping{
                         //FGL 20180218: An der ganzen Date-Lösung der HIS hängen unzählige andere Klassen, für die dann wieder zahlreiche Bibliotheken importiert werden müssen (inklusive aspectj - Tools)         	       
             	    	System.out.println("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxXXXXXXXXXXXXXXXXXXXXXXXXXXXXX");
             	    	System.out.println("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxXXXXXXXXXXXXXXXXXXXXXXXXXXXXX");
-            	    	System.out.println("XXXXXX  FGL DateMappingString: TIMESTAMP_SQLITE_STRING_FGL.nullSafeGet(...)  für die als Usertype angegebene DateMapping Klasse. Hier: ENUMERATION xxxxxxxxxxxxxxxxxxx");    	    	
+            	    	System.out.println("XXXXXX  FGL DateMappingCustomTypeTimestampString: TIMESTAMP_SQLITE_STRING_FGL.nullSafeGet(...)  für die als Usertype angegebene DateMapping Klasse. Hier: ENUMERATION xxxxxxxxxxxxxxxxxxx");    	    	
             	    	System.out.println("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX");
             	    	System.out.println("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX");
                         
@@ -387,7 +209,7 @@ public class DateMappingString extends AbstractDateMapping{
             void nullSafeSet(PreparedStatement st, Date value, int index) throws SQLException {
             	System.out.println("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxXXXXXXXXXXXXXXXXXXXXXXXXXXXXX");
     	    	System.out.println("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxXXXXXXXXXXXXXXXXXXXXXXXXXXXXX");
-    	    	System.out.println("XXXXXX  FGL DateMappingString: TIMESTAMP_SQLITE_STRING_FGL.nullSafeSet(... DATE! Muss nach String!! ...) für die als Usertype angegebene DateMapping Klasse. Hier: ENUMERATION xxxxxxxxxxxxxx");    	    	
+    	    	System.out.println("XXXXXX  FGL DateMappingCustomTypeTimestampString: TIMESTAMP_SQLITE_STRING_FGL.nullSafeSet(... DATE! Muss nach String!! ...) für die als Usertype angegebene DateMapping Klasse. Hier: ENUMERATION xxxxxxxxxxxxxx");    	    	
     	    	System.out.println("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX");
     	    	System.out.println("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX");
                 
@@ -395,7 +217,7 @@ public class DateMappingString extends AbstractDateMapping{
     	    	Date date = new Date();    	    			
 	    		date.setTime(value.getTime());
 	    		
-	    		SimpleDateFormat objSimpleDateFormat  = new SimpleDateFormat(DateMappingString.DATE_FORMAT_SIMPLE_FULL_FGL);
+	    		SimpleDateFormat objSimpleDateFormat  = new SimpleDateFormat(DateMappingCustomTypeTimestampString.DATE_FORMAT_SIMPLE_FULL_FGL);
 	    		String sTimestamp = objSimpleDateFormat.format(date);
 
     	    	//Das gibt es nicht.. st.setTimestamp(index, sTimestamp);
@@ -408,7 +230,7 @@ public class DateMappingString extends AbstractDateMapping{
             void nullSafeSet(PreparedStatement st, String sValue, int index) throws SQLException {                      	       
     	    	System.out.println("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxXXXXXXXXXXXXXXXXXXXXXXXXXXXXX");
     	    	System.out.println("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxXXXXXXXXXXXXXXXXXXXXXXXXXXXXX");
-    	    	System.out.println("XXXXXX  FGL DateMappingString: TIMESTAMP_SQLITE_STRING_FGL.nullSafeSet(... String ...) für die als Usertype angegebene DateMapping Klasse. Hier: ENUMERATION xxxxxxxxxxxxxx");    	    	
+    	    	System.out.println("XXXXXX  FGL DateMappingCustomTypeTimestampString: TIMESTAMP_SQLITE_STRING_FGL.nullSafeSet(... String ...) für die als Usertype angegebene DateMapping Klasse. Hier: ENUMERATION xxxxxxxxxxxxxx");    	    	
     	    	System.out.println("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX");
     	    	System.out.println("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX");
                 
@@ -426,7 +248,7 @@ public class DateMappingString extends AbstractDateMapping{
 				 //FGL 201800314: An der ganzen Date-Lösung der HIS hängen unzählige andere Klassen, für die dann wieder zahlreiche Bibliotheken importiert werden müssen (inklusive aspectj - Tools)         	       
     	    	System.out.println("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxXXXXXXXXXXXXXXXXXXXXXXXXXXXXX");
     	    	System.out.println("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxXXXXXXXXXXXXXXXXXXXXXXXXXXXXX");
-    	    	System.out.println("XXXXXX  FGL DateMapingString: TIMESTAMP_SQLITE_STRING_FGL..nullSafeSet(... LEER: Mit Timestamp als validen String füllen ...)  für die als Usertype angegebene DateMapping Klasse. Hier: ENUMERATION xxxxxxxxxxxxxxxxxxx");    	    	
+    	    	System.out.println("XXXXXX  FGL DateMappingCustomTypeTimestampString: TIMESTAMP_SQLITE_STRING_FGL..nullSafeSet(... LEER: Mit Timestamp als validen String füllen ...)  für die als Usertype angegebene DateMapping Klasse. Hier: ENUMERATION xxxxxxxxxxxxxxxxxxx");    	    	
     	    	System.out.println("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX");
     	    	System.out.println("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX");
                 
@@ -438,7 +260,7 @@ public class DateMappingString extends AbstractDateMapping{
     			
     			//Hiermit wird erfolgreich der Timestamp gesetzt.	
     			Date objDate = cal.getTime(); //Ist letztendlich nur der Timestamp    	    	    				    		
-	    		SimpleDateFormat objSimpleDateFormat  = new SimpleDateFormat(DateMappingString.DATE_FORMAT_SIMPLE_FULL_FGL);
+	    		SimpleDateFormat objSimpleDateFormat  = new SimpleDateFormat(DateMappingCustomTypeTimestampString.DATE_FORMAT_SIMPLE_FULL_FGL);
 	    		String sTimestamp = objSimpleDateFormat.format(objDate);
 
     	    	//Das gibt es nicht.. st.setTimestamp(index, sTimestamp);
@@ -495,14 +317,14 @@ public class DateMappingString extends AbstractDateMapping{
     /** The name of the user type required for the {@link Type}-annotation ({@link Type#type()}). */
   //FGL 20180215: Das ist der Originale PackageName der "Ursprungsidee" dieser Klasse. Natürlich angepasst
     //public static final String USER_TYPE_NAME = "de.his.appserver.persistence.hibernate.DateMapping";
-    public static final String USER_TYPE_NAME = "basic.zBasic.persistence.hibernate.DateMappingString";
+    public static final String USER_TYPE_NAME = "basic.zBasic.persistence.hibernate.DateMappingCustomTypeTimestampString";
 
     //FGL 20180305: HIS Original: private static final DateType DEFAULT_DATE_TYPE = DateType.TIMESTAMP;
     //Merke: Diese Enumeration-Klasse wird aufgerufen, wenn in den Annotation diese Klasse als CustomType genannt wird: 
     //     Also: @Type(type = DateMappingString.USER_TYPE_NAME)
     private static final DateType DEFAULT_DATE_TYPE = DateType.TIMESTAMP_SQLITE_STRING_FGL; 
 
-    private static final Log LOGGER = LogFactory.getLog(DateMappingString.class);
+    private static final Log LOGGER = LogFactory.getLog(DateMappingCustomTypeTimestampString.class);
 
     private DateType dateType = DEFAULT_DATE_TYPE; //Merke: Hier wird dataType mit der angegebenen Enumeration-Klasse initialisiert 
 
@@ -578,7 +400,7 @@ public class DateMappingString extends AbstractDateMapping{
                 dateType = KeyEnumHelper.getKeyEnum(DateType.class, optionalSqlType.get());
             } catch (IllegalArgumentException e) {
                 dateType = DEFAULT_DATE_TYPE;
-                LOGGER.warn( DATE_TYPE + "'" + optionalSqlType.get() + "' is not a valid value. Falling back to default dateType. See " + DateMappingString.class.getCanonicalName() + " for further information.", e);
+                LOGGER.warn( DATE_TYPE + "'" + optionalSqlType.get() + "' is not a valid value. Falling back to default dateType. See " + DateMappingCustomTypeTimestampString.class.getCanonicalName() + " for further information.", e);
             }
         }
     }
@@ -592,7 +414,7 @@ public class DateMappingString extends AbstractDateMapping{
 		//               sondern muss eine andere dateType-Methode aufrufen.
 		System.out.println("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxXXXXXXXXXXXXXXXXXXXXXXXXXXXXX");
     	System.out.println("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxXXXXXXXXXXXXXXXXXXXXXXXXXXXXX");
-    	System.out.println("XXXXXX  FGL DateMappingString.nullSaveGet(ResultSet rs, Sring[] names, ...) für die als Usertype angegebene DateMapping Klasse. Hier: In der Klasse selbst xxxxxxx");    	
+    	System.out.println("XXXXXX  FGL DateMappingCustomTypeTimestampString.nullSaveGet(ResultSet rs, Sring[] names, ...) für die als Usertype angegebene DateMapping Klasse. Hier: In der Klasse selbst xxxxxxx");    	
     	System.out.println("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX");
     	System.out.println("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX");
 		return dateType.nullSafeGet(rs, names);
@@ -602,101 +424,100 @@ public class DateMappingString extends AbstractDateMapping{
 	public void nullSafeSet(PreparedStatement st, Object value, int index,
 			SessionImplementor session) throws HibernateException, SQLException {
 		//FGL 20180306: Merke, das ist eine Methode von Hibernate (CustomType), die überschreiben wird. 
-		//              Daher kann an nicht einfach eine  "String"-Methode hinzufügen
-		//               sondern muss eine andere dateType-Methode aufrufen.
-		System.out.println("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXxxxxxxxxxxxxxxxxxxxxxxxxxxxxcxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxXXXXXXXXXXXXXXXXXXXXXXXXXXXXX");
-    	System.out.println("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxXXXXXXXXXXXXXXXXXXXXXXXXXXXXX");
-    	System.out.println("XXXXXX  FGL DateMappingString.nullSafeSet(... Object value ...) für die als Usertype angegebene DateMapping Klasse. Hier: In der Klasse selbst xxxxxxxxxxxxx");    	
-    	System.out.println("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX");
-    	System.out.println("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX");
-		 if (value == null) {
-			 System.out.println("Null - Zweig");
-	            //st.setNull(index, dateType.getSqlType());
-			 
-			 	//20180314: Fall NULL übergeben wird, soll nun für den Datatype die Methode OHNE Wertübergabe aufgerufen werden.
-			   	//          Dann wird ggfs. ein Defaultwert eingetragen.
-			 	dateType.nullSafeSet(st, index);
-			 	return; //Hiernach dann beenden, weil value NULL ist schlägt alles nachfolgende fehl.	            
-	        }
+				//              Daher kann an nicht einfach eine  "String"-Methode hinzufügen
+				//               sondern muss eine andere dateType-Methode aufrufen.
+				System.out.println("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXxxxxxxxxxxxxxxxxxxxxxxxxxxxxcxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxXXXXXXXXXXXXXXXXXXXXXXXXXXXXX");
+		    	System.out.println("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxXXXXXXXXXXXXXXXXXXXXXXXXXXXXX");
+		    	System.out.println("XXXXXX  FGL DateMappingCustomTypeTimestampString.nullSafeSet(... Object value ...) für die als Usertype angegebene DateMapping Klasse. Hier: In der Klasse selbst xxxxxxxxxxxxx");    	
+		    	System.out.println("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX");
+		    	System.out.println("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX");
+				 if (value == null) {
+					 System.out.println("Null - Zweig");
+			            //st.setNull(index, dateType.getSqlType());
+					 
+					 	//20180314: Fall NULL übergeben wird, soll nun für den Datatype die Methode OHNE Wertübergabe aufgerufen werden.
+					   	//          Dann wird ggfs. ein Defaultwert eingetragen.
+					 	dateType.nullSafeSet(st, index);
+					 	return; //Hiernach dann beenden, weil value NULL ist schlägt alles nachfolgende fehl.	            
+			        }
 
-	        try {
-	        	System.out.println("Not Null - Zweig. Umwandlung in date und danach Validierung.");
-	        	 Date date = null;
-	        	//FGL: TODO GOON 20180305: Hier tritt dann der CASTING Fehler auf, 
-	        	//     wenn man @Type(type = DateMapping.USER_TYPE_NAME) als Annotation an eine String-Spalte angibt.
-	        	
-	        	//Also: Prüfen, ob String. 
-	        	boolean bSaveAsString = false;
-	        	if(value instanceof String){
-	        		String sToParse = (String) value;
-	        		System.out.println("Übergebener String '" + sToParse + "'.");
-	        			        		
-	        		//Besonderheit: Falls ein Leerstring übergeben wurde hier wie beim NULL Fall verfahren.
-	        		if(StringZZZ.isBlank((String)value)){
-	        			dateType.nullSafeSet(st, index);
-	    			 	return; //Hiernach dann beenden. Wie beim value NULL ist schlägt alles nachfolgende fehl.
-	        		}
-	        		
-	        		bSaveAsString = true;
-	        		System.out.println("Parse String '" + sToParse + "' nach einem Datumswert.");
-	        		
-	        		//Diverse Parse-Varianten. Merke: Fehler beim Parsen abfangen.
-	        		boolean isParsingError = true;
-	        		
-	        		//1. Variante:
-	        		if(isParsingError){
-		        		try{
-		        			System.out.println("1. Variante: Iso");			        		
-			        		date = parseIso(sToParse); 
-			        		isParsingError = false;
+			        try {
+			        	System.out.println("Not Null - Zweig. Umwandlung in date und danach Validierung.");
+			        	 Date date = null;
+			        	//FGL: TODO GOON 20180305: Hier tritt dann der CASTING Fehler auf, 
+			        	//     wenn man @Type(type = DateMapping.USER_TYPE_NAME) als Annotation an eine String-Spalte angibt.
+			        	
+			        	//Also: Prüfen, ob String. 
+			        	boolean bSaveAsString = false;
+			        	if(value instanceof String){
+			        		String sToParse = (String) value;
+			        		System.out.println("Übergebener String '" + sToParse + "'.");
+			        			        		
+			        		//Besonderheit: Falls ein Leerstring übergeben wurde hier wie beim NULL Fall verfahren.
+			        		if(StringZZZ.isBlank((String)value)){
+			        			dateType.nullSafeSet(st, index);
+			    			 	return; //Hiernach dann beenden. Wie beim value NULL ist schlägt alles nachfolgende fehl.
+			        		}
 			        		
-		        		}catch (Exception e){
-		        			isParsingError = true;	        			
-		        		}
-	        		}
-	        		
-	        		//2. Variante
-	        		//Falls es String ist mit "Simple Date Format arbeiten und diesen String irgendwie parsen, um daraus ein echtes Datum zu bekommen.
-		            //ABER: Nicht vergessen. Falls es String ist, soll es auch als String gespeichert werden.
-	        		if(isParsingError){
-		        		try{
-		        			System.out.println("2. Variante: SimpleDateFormat");			        		
-		        			date = parseSimpleDateFormat(sToParse); 
-			        		isParsingError = false;
-		        		}catch (ParseException e){
-		        			isParsingError = true;	        			
-		        		}
-	        		}
-	        		
-	        		//Wenn alle Parseversuche gescheitert sind:
-	        		if(isParsingError){
-	        			throw new RuntimeException("Could not parse date '" + sToParse + "'.");
-	        		}
-	        	}else{
-	        		System.out.println("Caste value nach Date.");
-	        		date = (Date) value;
-	        	}                                     
-	          
-	        	System.out.println("dateType=" + dateType.key);
-	            if (dateType.isPerformDateValidation()) {
-	            	System.out.println("Validiere Datumswert.");
-	                validateDateRange(date);
-	            }
+			        		bSaveAsString = true;
+			        		System.out.println("Parse String '" + sToParse + "' nach einem Datumswert.");
+			        		
+			        		//Diverse Parse-Varianten. Merke: Fehler beim Parsen abfangen.
+			        		boolean isParsingError = true;
+			        		
+			        		//1. Variante:
+			        		if(isParsingError){
+				        		try{
+				        			System.out.println("1. Variante: Iso");			        		
+					        		date = parseIso(sToParse); 
+					        		isParsingError = false;
+					        		
+				        		}catch (Exception e){
+				        			isParsingError = true;	        			
+				        		}
+			        		}
+			        		
+			        		//2. Variante
+			        		//Falls es String ist mit "Simple Date Format arbeiten und diesen String irgendwie parsen, um daraus ein echtes Datum zu bekommen.
+				            //ABER: Nicht vergessen. Falls es String ist, soll es auch als String gespeichert werden.
+			        		if(isParsingError){
+				        		try{
+				        			System.out.println("2. Variante: SimpleDateFormat");			        		
+				        			date = parseSimpleDateFormat(sToParse); 
+					        		isParsingError = false;
+				        		}catch (ParseException e){
+				        			isParsingError = true;	        			
+				        		}
+			        		}
+			        		
+			        		//Wenn alle Parseversuche gescheitert sind:
+			        		if(isParsingError){
+			        			throw new RuntimeException("Could not parse date '" + sToParse + "'.");
+			        		}
+			        	}else{
+			        		System.out.println("Caste value nach Date.");
+			        		date = (Date) value;
+			        	}                                     
+			          
+			        	System.out.println("dateType=" + dateType.key);
+			            if (dateType.isPerformDateValidation()) {
+			            	System.out.println("Validiere Datumswert.");
+			                validateDateRange(date);
+			            }
 
-	            if(bSaveAsString){
-	                 //FGL 20180306: Erweiterung: String rein und Speichern als String
-	            	System.out.println("DateMappingString.nullSafeSet(...): bSaveAsString=TRUE");
-	            	System.out.println("dateType.key = '" + dateType.key + "'");
-	            	dateType.nullSafeSet(st, ((String)value), index);
-	            }else{
-	            	System.out.println("DateMappingString.nullSafeSet(...): bSaveAsString=FALSE");
-	            	System.out.println("dateType.key = '" + dateType.key + "'");
-	            	dateType.nullSafeSet(st, date, index);	            
-	            }
-	        } catch (ClassCastException e) {
-	            throw new HibernateException("Could not save '" + value + "' as it could not be casted to '" + RETURNED_CLASS.getCanonicalName() + "'.");
-	        }
-	}
-	
+			            if(bSaveAsString){
+			                 //FGL 20180306: Erweiterung: String rein und Speichern als String
+			            	System.out.println("DateMappingString.nullSafeSet(...): bSaveAsString=TRUE");
+			            	System.out.println("dateType.key = '" + dateType.key + "'");
+			            	dateType.nullSafeSet(st, ((String)value), index);
+			            }else{
+			            	System.out.println("DateMappingString.nullSafeSet(...): bSaveAsString=FALSE");
+			            	System.out.println("dateType.key = '" + dateType.key + "'");
+			            	dateType.nullSafeSet(st, date, index);	            
+			            }
+			        } catch (ClassCastException e) {
+			            throw new HibernateException("Could not save '" + value + "' as it could not be casted to '" + RETURNED_CLASS.getCanonicalName() + "'.");
+			        }
+			}	
 }
 

@@ -162,9 +162,10 @@ public class HexMapTHM extends KernelUseObjectZZZ implements ITileEventUserTHM {
 					
 			System.out.println(".... wurde erstellt (null Übergabe):" + objTroopTemp.getCreatedThis());
 			System.out.println(".... wurde erstellt (als String mit null Übergabe):" + objTroopTemp.getCreatedThisString());				
+			System.out.println(".... wurde erstellt (als String mit Kommentar):" + objTroopTemp.getCreatedThisStringComment());
 			System.out.println(".... wurde erstellt (als String mit validierter Übergabe):" + objTroopTemp.getCreatedThisAtStringValid());
 			
-			System.out.println(".... wurde aktualisiert:" + objTroopTemp.getUpdatedAt());
+			System.out.println(".... wurde aktualisiert:" + objTroopTemp.getUpdated());
 			
 			HexCell objHexCell = objTroopTemp.getHexCell();
 		if(objHexCell==null){

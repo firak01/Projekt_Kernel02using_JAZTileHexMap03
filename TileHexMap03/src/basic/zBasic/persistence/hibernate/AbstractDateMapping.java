@@ -231,6 +231,8 @@ public abstract class AbstractDateMapping implements UserType, ParameterizedType
 
         return null;
     }
+    
+    
 
 
 

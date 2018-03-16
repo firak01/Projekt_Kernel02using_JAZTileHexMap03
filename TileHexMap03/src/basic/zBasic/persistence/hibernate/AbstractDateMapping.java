@@ -155,6 +155,7 @@ public abstract class AbstractDateMapping implements UserType, ParameterizedType
     /** dateType for timestamps (default). FGL 20180305: Also, den Usertype "string" gibt es auch nur in der Kleinscheibung bei SQLITE! "STRING" in den Annotations einen Fehler wirft "Class not found ... STRING" zumindest bei SQLITE !; Corresponds to {@link DateType#STRING} */
     public static final String DATE_TYPE_TIMESTAMP_SQLITE_STRING_FGL = "string";
     public static final String DATE_FORMAT_SIMPLE_FULL_FGL = "dd-MM-yy:HH:mm:SS";
+    public static final String DATE_FORMAT_SIMPLE_FULL_HISTORIC_FGL = "dd-MM-yyyy:HH:mm:SS"; //nur mit 4-stelliger Jahrszahl kann z.B. 8. Juni 793: Überfall der Wikinger auf das Kloster Lindisfarne.... dargestellt werden.
     
     /** the minimum time supported by {@link AbstractDateMapping} used for dates within entities */
     public static final Date MIN_TIMESTAMP = parseIso("1000-01-01 00:00:00.000");

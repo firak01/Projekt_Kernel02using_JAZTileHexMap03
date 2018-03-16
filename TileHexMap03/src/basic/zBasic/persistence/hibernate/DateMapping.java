@@ -46,6 +46,7 @@ import com.google.common.base.Optional;
 
 
 
+
 //import de.his.core.base.invariants.EnsureArgument;
 import base.invariants.EnsureArgument;
 //import de.his.core.datatype.KeyEnum;
@@ -468,6 +469,12 @@ public class DateMapping  extends AbstractDateMapping{
 	        		if(isParsingError){
 	        			//throw new RuntimeException("Could not parse date '" + sToParse + "'.");
 	        			bSaveAsString = true;
+	        		}else{
+	        			System.out.println("dateType=" + dateType.key);
+			            if (dateType.isPerformDateValidation()) {
+			            	System.out.println("Validiere übergebenen Datumswert.");					            	
+			            	validateDateRange(date);					            		        			
+			            }	
 	        		}
 	        	}else{
 	        		System.out.println("Caste value nach Date.");

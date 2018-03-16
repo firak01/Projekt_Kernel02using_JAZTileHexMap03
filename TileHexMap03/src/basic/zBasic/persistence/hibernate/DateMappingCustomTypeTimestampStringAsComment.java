@@ -234,11 +234,24 @@ public class DateMappingCustomTypeTimestampStringAsComment extends AbstractDateM
     	    	System.out.println("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX");
     	    	System.out.println("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX");
                 
-    	    	//TODO GOON FGL 20180315
-    	    	//1. Einen validen String Timestamp holen
-    	         //2. Den übergebenen String daran anhängen
-    	    	sValue = "DAS IST NEU" + sValue;
+    	    	//1. Einen validen String Timestamp machen, holen
+    	    	//Timestamp timestamp = new Timestamp(value.getTime());      
     	    	
+    	    	Calendar cal = Calendar.getInstance();
+    			//TEST: Setze ein beliebiges Datum
+    			//cal.set(2006,5,25);			
+    			
+    			//Hiermit wird erfolgreich der Timestamp gesetzt.	
+    			Date objDate = cal.getTime(); //Ist letztendlich nur der Timestamp
+	    		
+	    		SimpleDateFormat objSimpleDateFormat  = new SimpleDateFormat(DateMappingCustomTypeTimestampStringAsComment.DATE_FORMAT_SIMPLE_FULL_FGL);
+	    		String sTimestamp = objSimpleDateFormat.format(objDate);
+    	    	
+    	    	
+    	         //2. Den übergebenen String daran anhängen. Für den Fall, dass der String mit Ziffern anfängt, sollte er von den Ziffern des Timestamps abgetrennt sein. Darum die Klammern.   	    	    	    	
+    	    	sValue = sTimestamp + "(" + sValue + ")"; 
+    	    	
+    	    	//3. Wert an das Statement zurückgeben.
                 st.setString(index, sValue);
             }
             
@@ -447,26 +460,29 @@ public class DateMappingCustomTypeTimestampStringAsComment extends AbstractDateM
 			        }
 
 			        try {
-			        	System.out.println("Not Null - Zweig. Automatische Generierung des Zeitstempels und danach anhängen des Textes als Kommentar.");
+			        	System.out.println("Not Null - Zweig.");
 			        	 Date date = null;
+			        	 String sComment = null;
+			        	 
 			        	//FGL: TODO GOON 20180305: Hier tritt dann der CASTING Fehler auf, 
 			        	//     wenn man @Type(type = DateMapping.USER_TYPE_NAME) als Annotation an eine String-Spalte angibt.
 			        	
 			        	//Also: Prüfen, ob String. 
 			        	boolean bSaveAsString = false;
 			        	if(value instanceof String){
-			        		String sToParse = (String) value;
-			        		System.out.println("Übergebener String '" + sToParse + "'.");
-			        			        		
+			        		sComment = (String) value;
+			        		System.out.println("Not Null - Zweig. String übergeben. Prüfe auf Datum.");
+			        					        			        	
 			        		//Besonderheit: Falls ein Leerstring übergeben wurde hier wie beim NULL Fall verfahren.
 			        		if(StringZZZ.isBlank((String)value)){
+			        			System.out.println("Not Null - Zweig. Leerstring übergeben. Generiere String Timestamp..");
 			        			dateType.nullSafeSet(st, index);
 			    			 	return; //Hiernach dann beenden. Wie beim value NULL ist schlägt alles nachfolgende fehl.
 			        		}
 			        		
-			        		bSaveAsString = true;
-			        		System.out.println("Parse String '" + sToParse + "' nach einem Datumswert.");
-			        		
+			        		String sToParse = (String) value;
+			        		System.out.println("Not Null - Zweig. Übergebener String '" + sToParse + "'. Parse String nach Datumswert.");
+			    			        	
 			        		//Diverse Parse-Varianten. Merke: Fehler beim Parsen abfangen.
 			        		boolean isParsingError = true;
 			        		
@@ -495,29 +511,52 @@ public class DateMappingCustomTypeTimestampStringAsComment extends AbstractDateM
 				        		}
 			        		}
 			        		
+			        		
 			        		//Wenn alle Parseversuche gescheitert sind:
 			        		if(isParsingError){
 			        			//... IN DIESER VARIANTE GEHT MAN DAVON AUS, DASS DER STRING NUN EIN KOMMENTAR IST...	        			
-			        			//throw new RuntimeException("Could not parse date '" + sToParse + "'.");
-			        			dateType.nullSafeSet(st, ((String)value), index);
-			        			return; //Hiernach dann beenden. Wie beim value NULL ist schlägt alles nachfolgende fehl.
+			        			//throw new RuntimeException("Could not parse date '" + sToParse + "'.");			   
+			        			System.out.println("Not Null - Zweig. String kann nicht als Datum geparsed werden. Werte den String als übergebenen Kommentarstring.");
+			        			bSaveAsString = true; //Dann soll der NICHTDATUMSWERT als Kommentar gespeichert werden.
+			        		}else{
+			        			
+			        			System.out.println("dateType=" + dateType.key);
+					            if (dateType.isPerformDateValidation()) {
+					            	System.out.println("Validiere übergebenen Datumswert.");	
+					            	try{
+						            	validateDateRange(date);		
+						            	bSaveAsString = false; //Dann soll der validierte Datumswert auch über die Datumswertschiene gespeichert werden.
+					            	}catch(HibernateException e){	
+					        			System.out.println("Not Null - Zweig. String kann zwar als Datum geparsed werden, ist aber nicht im gültigen Datumsbereich. Werte den String als übergebenen Kommentarstring.");
+					            		bSaveAsString = true; //Dann soll der NICHT GÜLTIGE DATUMSWERT auch als Kommentar gespeichert werden.
+					            	}
+					            }			        		
 			        		}
 			        	}else{
-			        		System.out.println("Caste value nach Date.");
+			        		System.out.println("Not Null - Zweig. Wahrscheinlich Datum  übergeben. Caste value nach Date.");
 			        		date = (Date) value;
-			        	}                                     
-			          
-			        	System.out.println("dateType=" + dateType.key);
-			            if (dateType.isPerformDateValidation()) {
-			            	System.out.println("Validiere Datumswert.");
-			                validateDateRange(date);
-			            }
+			        		
+			        		System.out.println("dateType=" + dateType.key);
+				            if (dateType.isPerformDateValidation()) {
+				            	System.out.println("Validiere übergebenen Datumswert.");
+				            	try{
+				            		validateDateRange(date);
+				            		bSaveAsString = false; //Dann soll der validierte Datumswert auch über die Datumswertschiene gespeichert werden.
+				            	}catch(HibernateException e){
+				            		System.out.println("Not Null - Zweig. Übergebener Datumswert ist nicht im gültigen Datumsbereich. Werte den String als übergebenen Kommentarstring.");
+				            		SimpleDateFormat objSimpleDateFormat  = new SimpleDateFormat(DateMappingCustomTypeTimestampStringAsComment.DATE_FORMAT_SIMPLE_FULL_FGL);
+				    	    		sComment = objSimpleDateFormat.format(date);
+				            		bSaveAsString = true; //Dann soll der NICHT GÜLTIGE DATUMSWERT auch als Kommentar gespeichert werden.
+				            	}
+				            }
+			        	}                                     			          			        	
 
 			            if(bSaveAsString){
-			                 //FGL 20180306: Erweiterung: String rein und Speichern als String
+			                 //FGL 20180306: Erweiterung: String rein und Speichern als String.... Der passende 
+			            	System.out.println("Not Null - Zweig. Kommentarstring übergeben. Generiere String Timestamp und hänge Kommentar an).");
 			            	System.out.println("DateMappingString.nullSafeSet(...): bSaveAsString=TRUE");
 			            	System.out.println("dateType.key = '" + dateType.key + "'");
-			            	dateType.nullSafeSet(st, ((String)value), index);
+			            	dateType.nullSafeSet(st, (sComment), index);
 			            }else{
 			            	System.out.println("DateMappingString.nullSafeSet(...): bSaveAsString=FALSE");
 			            	System.out.println("dateType.key = '" + dateType.key + "'");

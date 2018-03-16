@@ -4,6 +4,7 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
+import java.util.GregorianCalendar;
 
 import javax.swing.JOptionPane;
 
@@ -83,10 +84,6 @@ public class TroopArmyDaoFacade extends TileDaoFacade{
 			//FGL: TEST 20180215, Probiere das Setzen eines Datum aus, HIS Style
 			//Das Klappt. Das Ergebnis ist aber in der SQLite Datenbank ebenfalls nur ein "kryptischer" (d.h. Long Zahl) Timestamp
 			Calendar cal = Calendar.getInstance();
-			//TEST: Setze ein beliebiges Datum
-			//cal.set(2006,5,25);			
-			
-			//Hiermit wird erfolgreich der Timestamp gesetzt.	
 			Date objDate = cal.getTime(); //Ist letztendlich nur der Timestamp
 			objTroopTemp.setCreatedThisAt(objDate); //Die HIS Lösung, für die zahlreiche andere Klassen (s. Packages in base) und Bibliotheken (u.a. aspectj Tools) eigebunden werden mussten.
 			
@@ -140,10 +137,26 @@ public class TroopArmyDaoFacade extends TileDaoFacade{
 	        
 	        System.out.println("Setze createdThisString(null), d.h. CustomType sollte aktuelles Datum autmatisch verwenden");
 	        objTroopTemp.setCreatedThisString(null); //Die HIS Lösung, für die zahlreiche andere Klassen (s. Packages in base) und Bibliotheken (u.a. aspectj Tools) eigebunden werden mussten.
-			 
-	        System.out.println("Setze createdThisStringComment('TileHexMap ist toll'), d.h. CustomType sollte aktuelles Datum autmatisch verwenden");
-	        objTroopTemp.setCreatedThisStringComment("TileHexMap ist toll"); //Die HIS Lösung, für die zahlreiche andere Klassen (s. Packages in base) und Bibliotheken (u.a. aspectj Tools) eigebunden werden mussten.
+
+	        //Teste die DateMappingCustomTimestampStringAsComment.java Hier Fall: Kommentarstring wird übergeben.
+//	        System.out.println("Setze createdThisStringComment('TileHexMap ist toll'), d.h. CustomType sollte aktuelles Datum autmatisch verwenden");
+//	        objTroopTemp.setCreatedThisStringComment("TileHexMap ist toll"); //Die HIS Lösung, für die zahlreiche andere Klassen (s. Packages in base) und Bibliotheken (u.a. aspectj Tools) eigebunden werden mussten.
 			
+	        //Teste die DateMappingCustomTimestampStringAsComment.java Hier Fall: Korrektes Datum-Objekt wird übergeben.
+	       // objTroopTemp.setCreatedThisStringComment(sDateValid); //Die HIS Lösung, für die zahlreiche andere Klassen (s. Packages in base) und Bibliotheken (u.a. aspectj Tools) eigebunden werden mussten.
+	        
+	      //Teste die DateMappingCustomTimestampStringAsComment.java Hier Fall: Korrektes Datum-Objekt wird übergeben, liegt aber ausserhalb des gültigen Wertebereichs.
+	       //Calendar cal4invalid = new GregorianCalendar(793,6,8);//Setze ein beliebiges Datum, ausserhalb des Datumsbereichs. 8. Juni 793: Überfall der Wikinger auf das Kloster Lindisfarne....
+	       Calendar cal4invalid = Calendar.getInstance();
+	       cal4invalid.set(793,6,8);//Setze ein beliebiges Datum, ausserhalb des Datumsbereichs. 8. Juni 793: Überfall der Wikinger auf das Kloster Lindisfarne....
+	       SimpleDateFormat DATE_FORMATHISTRORIC = new SimpleDateFormat(DateMapping.DATE_FORMAT_SIMPLE_FULL_HISTORIC_FGL);
+	       Date objDate4invalid = cal4invalid.getTime(); //Ist letztendlich nur der Timestamp
+	       String sDate4invalid=DATE_FORMATHISTRORIC.format(objDate4invalid);
+		   objTroopTemp.setCreatedThisStringComment(sDate4invalid); //Die HIS Lösung, für die zahlreiche andere Klassen (s. Packages in base) und Bibliotheken (u.a. aspectj Tools) eigebunden werden mussten.
+		        	        
+	      //Teste die DateMappingCustomTimestampStringAsComment.java Hier Fall: Ungültiges Datum-Objekt wird übergeben.
+		  //objTroopTemp.setCreatedThisStringComment(sDateInValid); //Die HIS Lösung, für die zahlreiche andere Klassen (s. Packages in base) und Bibliotheken (u.a. aspectj Tools) eigebunden werden mussten.
+		        
 	        
 			session.save(objTroopTemp); //Hibernate Interceptor wird aufgerufen																				
 			if (!session.getTransaction().wasCommitted()) {

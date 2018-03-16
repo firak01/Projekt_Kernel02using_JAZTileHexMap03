@@ -139,20 +139,20 @@ public class TroopArmyDaoFacade extends TileDaoFacade{
 	        objTroopTemp.setCreatedThisString(null); //Die HIS Lösung, für die zahlreiche andere Klassen (s. Packages in base) und Bibliotheken (u.a. aspectj Tools) eigebunden werden mussten.
 
 	        //Teste die DateMappingCustomTimestampStringAsComment.java Hier Fall: Kommentarstring wird übergeben.
-//	        System.out.println("Setze createdThisStringComment('TileHexMap ist toll'), d.h. CustomType sollte aktuelles Datum autmatisch verwenden");
-//	        objTroopTemp.setCreatedThisStringComment("TileHexMap ist toll"); //Die HIS Lösung, für die zahlreiche andere Klassen (s. Packages in base) und Bibliotheken (u.a. aspectj Tools) eigebunden werden mussten.
+	        System.out.println("Setze createdThisStringComment('TileHexMap ist toll'), d.h. CustomType sollte aktuelles Datum autmatisch verwenden");
+	        objTroopTemp.setCreatedThisStringComment("TileHexMap ist toll"); //Die HIS Lösung, für die zahlreiche andere Klassen (s. Packages in base) und Bibliotheken (u.a. aspectj Tools) eigebunden werden mussten.
 			
 	        //Teste die DateMappingCustomTimestampStringAsComment.java Hier Fall: Korrektes Datum-Objekt wird übergeben.
 	       // objTroopTemp.setCreatedThisStringComment(sDateValid); //Die HIS Lösung, für die zahlreiche andere Klassen (s. Packages in base) und Bibliotheken (u.a. aspectj Tools) eigebunden werden mussten.
 	        
 	      //Teste die DateMappingCustomTimestampStringAsComment.java Hier Fall: Korrektes Datum-Objekt wird übergeben, liegt aber ausserhalb des gültigen Wertebereichs.
 	       //Calendar cal4invalid = new GregorianCalendar(793,6,8);//Setze ein beliebiges Datum, ausserhalb des Datumsbereichs. 8. Juni 793: Überfall der Wikinger auf das Kloster Lindisfarne....
-	       Calendar cal4invalid = Calendar.getInstance();
-	       cal4invalid.set(793,6,8);//Setze ein beliebiges Datum, ausserhalb des Datumsbereichs. 8. Juni 793: Überfall der Wikinger auf das Kloster Lindisfarne....
-	       SimpleDateFormat DATE_FORMATHISTRORIC = new SimpleDateFormat(DateMapping.DATE_FORMAT_SIMPLE_FULL_HISTORIC_FGL);
-	       Date objDate4invalid = cal4invalid.getTime(); //Ist letztendlich nur der Timestamp
-	       String sDate4invalid=DATE_FORMATHISTRORIC.format(objDate4invalid);
-		   objTroopTemp.setCreatedThisStringComment(sDate4invalid); //Die HIS Lösung, für die zahlreiche andere Klassen (s. Packages in base) und Bibliotheken (u.a. aspectj Tools) eigebunden werden mussten.
+//	       Calendar cal4invalid = Calendar.getInstance();
+//	       cal4invalid.set(793,6,8);//Setze ein beliebiges Datum, ausserhalb des Datumsbereichs. 8. Juni 793: Überfall der Wikinger auf das Kloster Lindisfarne....
+//	       SimpleDateFormat DATE_FORMATHISTRORIC = new SimpleDateFormat(DateMapping.DATE_FORMAT_SIMPLE_FULL_HISTORIC_FGL);
+//	       Date objDate4invalid = cal4invalid.getTime(); //Ist letztendlich nur der Timestamp
+//	       String sDate4invalid=DATE_FORMATHISTRORIC.format(objDate4invalid);
+//		   objTroopTemp.setCreatedThisStringComment(sDate4invalid); //Die HIS Lösung, für die zahlreiche andere Klassen (s. Packages in base) und Bibliotheken (u.a. aspectj Tools) eigebunden werden mussten.
 		        	        
 	      //Teste die DateMappingCustomTimestampStringAsComment.java Hier Fall: Ungültiges Datum-Objekt wird übergeben.
 		  //objTroopTemp.setCreatedThisStringComment(sDateInValid); //Die HIS Lösung, für die zahlreiche andere Klassen (s. Packages in base) und Bibliotheken (u.a. aspectj Tools) eigebunden werden mussten.

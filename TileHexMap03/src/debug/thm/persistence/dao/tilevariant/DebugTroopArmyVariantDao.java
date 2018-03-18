@@ -71,7 +71,7 @@ public class DebugTroopArmyVariantDao {
 			objDebug.debugCreateEntryByEnumSetIndex(0);//Dabei werden ggfs. benötigte Defaulttexte erzeugt.
 			
 			//Suche mal nach einem der hoffentlich erzeugten Einträge, über den Thiskey.
-			Long lngThiskey = new Long(110);
+			Long lngThiskey = new Long(11);
 			objDebug.debugSearchKey(lngThiskey);
 		
 
@@ -425,20 +425,19 @@ public class DebugTroopArmyVariantDao {
 				KernelZZZ objKernel = new KernelZZZ(); //Merke: Die Service Klasse selbst kann wohl nicht das KernelObjekt extenden!
 				HibernateContextProviderSingletonTHM objContextHibernate = HibernateContextProviderSingletonTHM.getInstance(objKernel);
 				
-				TileDefaulttextDao daoKey = new TileDefaulttextDao(objContextHibernate);
+				TroopArmyVariantDao daoTroopArmyVariant = new TroopArmyVariantDao(objContextHibernate);
 				String sKeytype = new String("");
 				
-				//TODO GOON: FEHLER HIER WIRD nach der VARIANTE gesucht und nicht nach dem Defaulttext....
-				sKeytype = "DEFAULTTILETEXT";
-				TileDefaulttext objKey02 = (TileDefaulttext) daoKey.searchKey(sKeytype, lngThiskey );
+				sKeytype = "TROOPARMYVARIANT";
+				TroopArmyVariant objKey02 = (TroopArmyVariant) daoTroopArmyVariant.searchKey(sKeytype, lngThiskey );
 				if(objKey02==null){
 					System.out.println("2. Abfrage: UNERWARTETES ERGEBNIS. Kein Key mit dem KeyType '" + sKeytype + "' und dem Thiskey '" + lngThiskey.toString() + "' gefunden.");
 				}else{
 					System.out.println("2. Abfrage: Erwartetes Ergebnis. Key mit dem KeyType '" + sKeytype + "' und dem Thiskey '" + lngThiskey.toString() + "' gefunden.");					
 				}			
 				
-				String sLongtext = objKey02.getLongtext();
-				System.out.println("Longtext = " + sLongtext);
+				String sCategorytext = objKey02.getCategorytext();
+				System.out.println("Categorytext = " + sCategorytext);
 			} catch (ExceptionZZZ e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();

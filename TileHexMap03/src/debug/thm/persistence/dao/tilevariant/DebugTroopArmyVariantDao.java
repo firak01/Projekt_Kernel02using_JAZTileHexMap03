@@ -36,6 +36,7 @@ import use.thm.persistence.model.TroopArmyVariant;
 import use.thm.persistence.model.TroopArmyVariant.EnumTroopArmyVariant;
 import use.thm.persistence.model.TroopFleetVariant;
 import use.thm.persistence.model.TroopFleetVariant.EnumTroopFleetVariant;
+import use.thm.util.datatype.enums.EnumSetTroopVariantUtilTHM;
 import basic.persistence.util.HibernateUtil;
 import basic.zBasic.ExceptionZZZ;
 import basic.zBasic.ReflectCodeZZZ;
@@ -77,14 +78,9 @@ public class DebugTroopArmyVariantDao {
 
 			//### VARIANTE 2: VORHER SICHERHEITSHALBER ALLE LÖSCHEN....
 			objDebug.debugDeleteAll();			
-			objDebug.debugCreateEntriesAll();
-			
-			//		//TODO GOON 20180124
-			//		objDebug.debugFindAll();
-			//		
-			
-			
-			
+			objDebug.debugCreateEntriesAll();		
+			objDebug.debugFindAll();
+
 		} catch (ExceptionZZZ e) {
 			e.printStackTrace();
 		} 
@@ -455,39 +451,41 @@ public class DebugTroopArmyVariantDao {
 				
 				objContextHibernate = HibernateContextProviderSingletonTHM.getInstance(objKernel);					
 				objContextHibernate.getConfiguration().setProperty("hibernate.hbm2ddl.auto", "update");  //! Jetzt erst wird jede Tabelle über den Anwendungsstart hinaus gespeichert UND auch wiedergeholt.				
-				TileDefaulttextDao daoKey = new TileDefaulttextDao(objContextHibernate);
-				String sKeytype = new String("DEFAULTTEXT");		
+				TroopArmyVariantDao daoTroopArmyVariant = new TroopArmyVariantDao(objContextHibernate);
+				String sKeytype = new String("TROOPARMYVARIANT");
 				Long lngThiskey = new Long(1);
 
-				Defaulttext objKey02 = (Defaulttext) daoKey.searchKey(sKeytype, lngThiskey );
-				if(objKey02==null){
-					System.out.println("2. Abfrage: UNERWARTETES ERGEBNIS. Kein Key mit dem KeyType '" + sKeytype + "' und dem Thiskey '" + lngThiskey.toString() + "' gefunden.");
-				}else{
-					System.out.println("2. Abfrage: Erwartetes Ergebnis. Key mit dem KeyType '" + sKeytype + "' und dem Thiskey '" + lngThiskey.toString() + "' gefunden.");			
+//				Defaulttext objKey02 = (Defaulttext) daoTroopArmyVariant.searchKey(sKeytype, lngThiskey );
+//				if(objKey02==null){
+//					System.out.println("2. Abfrage: UNERWARTETES ERGEBNIS. Kein Key mit dem KeyType '" + sKeytype + "' und dem Thiskey '" + lngThiskey.toString() + "' gefunden.");
+//				}else{
+//					System.out.println("2. Abfrage: Erwartetes Ergebnis. Key mit dem KeyType '" + sKeytype + "' und dem Thiskey '" + lngThiskey.toString() + "' gefunden.");			
 					
 					//Nun alle holen
-					ArrayList<Defaulttext> listaTileDefaulttext = (ArrayList<Defaulttext>) daoKey.findLazyAll();
-					for(Defaulttext text : listaTileDefaulttext){
-						System.out.println("TileDefaulttext.toString(): " + text.toString());
-//						String sTYPE = "ARMY";
-//						String sValue = EnumSetDefaulttextUtilZZZ.readEnumConstant_DescriptionValue(text.getThiskeyEnumClass(), sTYPE);
-						Long lngThiskeyTemp = text.getThiskey();
-						String sDescriptionStored = text.getDescription();
-						System.out.println("Description (gespeichert): " + sDescriptionStored);
+					ArrayList<TroopArmyVariant> listaEntity = (ArrayList<TroopArmyVariant>) daoTroopArmyVariant.findLazyAll();
+					for(TroopArmyVariant objEntity : listaEntity){
+						System.out.println("TroopArmyVariant.toString(): " + objEntity.toString());
+
+						//Vergleich des gespeicherten Textes mit dem Defaulttext
+						Long lngThiskeyTemp = objEntity.getThiskey();
+						String sCategorytextStored = objEntity.getCategorytext();
+						System.out.println("Categorytext (gespeichert): " + sCategorytextStored);
 						
-						String sDescriptionDefault = null; 
+						String sUniquetext = objEntity.getUniquetext();
+						System.out.println("Uniquetext (gespeichert): " + sUniquetext);
+						String sCategorytextDefault = null; 
 						try {
-							String sType = EnumSetInnerUtilZZZ.getThiskeyEnum(text.getThiskeyEnumClass(), lngThiskeyTemp).name();							
+							String sType = EnumSetInnerUtilZZZ.getThiskeyEnum(objEntity.getThiskeyEnumClass(), lngThiskeyTemp).name();							
 							System.out.println("Typ: " + sType);
 							
-							sDescriptionDefault = EnumSetDefaulttextUtilZZZ.readEnumConstant_DescriptionValue(text.getThiskeyEnumClass(), sType);
-							System.out.println("Description (Default): " + sDescriptionDefault);
+							sCategorytextDefault = EnumSetTroopVariantUtilTHM.readEnumConstant_CategorytextValue(objEntity.getThiskeyEnumClass(), sType);
+							System.out.println("Categorytext (Default): " + sCategorytextDefault);
 						} catch (ThiskeyEnumMappingExceptionZZZ e) {
 							// TODO Auto-generated catch block
 							e.printStackTrace();
 						}
 						
-						if(sDescriptionStored.equals(sDescriptionDefault)){
+						if(sCategorytextDefault.equals(sCategorytextStored)){
 							System.out.println("Wert ist unverändert");							
 						}else{
 							System.out.println("WERT WURDE VERÄNDERT");
@@ -496,7 +494,7 @@ public class DebugTroopArmyVariantDao {
 						
 					}
 					
-				}		
+				//}		
 				
 			} catch (ExceptionZZZ e) {
 				// TODO Auto-generated catch block

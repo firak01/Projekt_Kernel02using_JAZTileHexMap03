@@ -144,7 +144,11 @@ public class GhostDropManagerHexMapPanelTHM extends AbstractGhostDropManager imp
 							GenericDTO dto = objFactoryGenerator.createDtoForClass(ArmyTileTHM.class);		
 														
 							dto.set(ITileDtoAttribute.UNIQUENAME, sUniquename);
-							//objTile = new ArmyTileTHM(objMap.getPanelParent(), objMap.getTileMoveEventBroker(), sUniquename, objCell.getMapX(), objCell.getMapY(), objMap.getSideLength());
+							
+							//TODO GOON 20180320: Auch hier die  DTO mit den Werten aus der Variante füllen
+							//objTroopDaoFacade.fillDto(sUniquename, dto);
+							dto.set(ITileDtoAttribute.VARIANT_SHORTTEXT, "DRGTST");
+							
 							objTile = new ArmyTileTHM(objMap.getPanelParent(), objMap.getTileMoveEventBroker(), dto, objCell.getMapX(), objCell.getMapY(), objMap.getSideLength());
 						}
 				   }

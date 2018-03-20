@@ -741,7 +741,10 @@ public class HexMapTHM extends KernelUseObjectZZZ implements ITileEventUserTHM {
 				DtoFactoryGenerator objFactoryGenerator = DtoFactoryGenerator.getInstance();
 				GenericDTO dto = objFactoryGenerator.createDtoForClass(ArmyTileTHM.class);
 				dto.set(ITileDtoAttribute.UNIQUENAME, sUniquename);
-				//ArmyTileTHM objArmyTemp = new ArmyTileTHM(panelMap, objTileMoveEventBroker, sUniquename, sX, sY, this.getSideLength());
+				
+				//objTroopDaoFacade.fillDto(sUniquename, dto);
+				dto.set(ITileDtoAttribute.VARIANT_SHORTTEXT, "NEUTEST");
+				
 				ArmyTileTHM objArmyTemp = new ArmyTileTHM(panelMap, objTileMoveEventBroker, dto, sX, sY, this.getSideLength());
 				EventTileCreatedInCellTHM objEventTileCreated = new EventTileCreatedInCellTHM(objArmyTemp, 1, sX, sY);
 				objTileMetaEventBroker.fireEvent(objEventTileCreated);
@@ -771,7 +774,10 @@ public class HexMapTHM extends KernelUseObjectZZZ implements ITileEventUserTHM {
 				GenericDTO dto = objFactoryGenerator.createDtoForClass(FleetTileTHM.class);
 				
 				dto.set(ITileDtoAttribute.UNIQUENAME, sUniquename);
-//				FleetTileTHM objFleetTemp = new FleetTileTHM(panelMap, objTileMoveEventBroker, sUniquename, sX, sY, this.getSideLength());
+
+				//objTroopDaoFacade.fillDto(sUniquename, dto);
+				//dto.set(ITileDtoAttribute.VARIANT_SHORTTEXT, "NEUTEST");
+				
 				FleetTileTHM objFleetTemp = new FleetTileTHM(panelMap, objTileMoveEventBroker, dto, sX, sY, this.getSideLength());
 				EventTileCreatedInCellTHM objEventTileCreated = new EventTileCreatedInCellTHM(objFleetTemp, 1, sX, sY);
 				objTileMetaEventBroker.fireEvent(objEventTileCreated);
@@ -1165,7 +1171,7 @@ public class HexMapTHM extends KernelUseObjectZZZ implements ITileEventUserTHM {
 						TroopArmyDaoFacade objTroopDaoFacade = new TroopArmyDaoFacade(objContextHibernate);
 						//String sUniquename = "ARMY UNIQUE " + sY;//TODO GOON : sY als Uniquename zu verwenden ist nur heuristisch und nicht wirklich UNIQUE
 						String sUniquename = objTroopDaoFacade.computeUniquename();
-																	
+																							
 						bGoon = objTroopDaoFacade.insertTroopArmy(sUniquename, objTroopArmyVariant, objCellTemp);
 						if(bGoon){
 														
@@ -1184,7 +1190,11 @@ public class HexMapTHM extends KernelUseObjectZZZ implements ITileEventUserTHM {
 							GenericDTO dto = objFactoryGenerator.createDtoForClass(ArmyTileTHM.class);
 
 							dto.set(ITileDtoAttribute.UNIQUENAME, sUniquename);
-							//ArmyTileTHM objArmyTemp = new ArmyTileTHM(panelMap, objTileMoveEventBroker, sUniquename, sX, sY, this.getSideLength());
+							
+							//20180320: TODO GOON: 
+							//objTroopDaoFacade.fillDto(sUniquename, dto);
+							dto.set(ITileDtoAttribute.VARIANT_SHORTTEXT, "NEUTEST");
+							
 							ArmyTileTHM objArmyTemp = new ArmyTileTHM(panelMap, objTileMoveEventBroker, dto, sX, sY, this.getSideLength());
 							
 							EventTileCreatedInCellTHM objEventTileCreated = new EventTileCreatedInCellTHM(objArmyTemp, 1, sX, sY);

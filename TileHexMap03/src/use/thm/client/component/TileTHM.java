@@ -171,19 +171,29 @@ public class TileTHM extends JPanel implements IMapPositionableTHM, IBackendPers
 		
 		g.setFont( font );
 		
-		//TODO GOON: Einen Namen (Kurz, nomal, lang) als Eigenschaft den Objekten hinzufügen. 
-		//                      und dann die "Kurzform" hier anzeigen.
-		String sUniquename = this.getUniquename();
+		String sComponentLabelUsed = null;
+		
+		//Einen Namen (Kurz, nomal, lang) als Eigenschaft den Objekten hinzufügen (über die Dto-Funktionalität). 
+		//und dann die "Kurzform" hier anzeigen.
+		String sVariantShorttext = this.getVariantShorttext();		
+		if(StringZZZ.isEmpty(sVariantShorttext)){
+			String sUniquename = this.getUniquename();
+			sComponentLabelUsed = sUniquename;
+		}else{
+			sComponentLabelUsed = sVariantShorttext;
+		}
+		
+		
 		
 		//Den gefundenen Namen abkürzen 
 		try {
-			sUniquename = StringZZZ.toShorten(sUniquename, StringZZZ.iSHORTEN_METHOD_VOWEL, 0);//Entferne aus dem String die Vokale 
-			sUniquename = StringZZZ.abbreviateDynamic(sUniquename, 8 );//Nach 8 Zeichen soll der Name abgekürzt werden, d.h. abgeschnitten und "..." am Ende, um das Abkürzen zu kennzeichnen..
+			sComponentLabelUsed = StringZZZ.toShorten(sComponentLabelUsed, StringZZZ.iSHORTEN_METHOD_VOWEL, 0);//Entferne aus dem String die Vokale 
+			sComponentLabelUsed = StringZZZ.abbreviateDynamic(sComponentLabelUsed, 8 );//Nach 8 Zeichen soll der Name abgekürzt werden, d.h. abgeschnitten und "..." am Ende, um das Abkürzen zu kennzeichnen..
 		} catch (ExceptionZZZ e) {
 			e.printStackTrace();
 		}
 
-		g.drawString(sUniquename,0,(int)(iTileSideLength/2));
+		g.drawString(sComponentLabelUsed,0,(int)(iTileSideLength/2));
 		
 		setOpaque(false);
 	}
@@ -258,6 +268,13 @@ public class TileTHM extends JPanel implements IMapPositionableTHM, IBackendPers
 		//this.sUniquename=sUniquename;
 		this.getDto().set(ITileDtoAttribute.UNIQUENAME, sUniquename);
 	}
+	
+	public String getVariantShorttext(){
+		return (String) this.getDto().get(ITileDtoAttribute.VARIANT_SHORTTEXT);
+	}
+	protected void setVariantShorttext(String sVariantShorttext){
+		this.getDto().set(ITileDtoAttribute.VARIANT_SHORTTEXT, sVariantShorttext);
+	}
 
 	public GenericDTO<ITileDtoAttribute> getDto() {
 		if(this.objDto==null){
@@ -267,7 +284,7 @@ public class TileTHM extends JPanel implements IMapPositionableTHM, IBackendPers
 //			TileDtoFactory factoryTile = new TileDtoFactory();
 //			GenericDTO dto = factoryTile.createDTO();	
 			
-			//FGL 20171112: Hole die Factory - Klasse generisch per FactoryGenerator, die ls Singleton umgebaut wurde:
+			//FGL 20171112: Hole die Factory - Klasse generisch per FactoryGenerator, die als Singleton umgebaut wurde:
 			try {
 				DtoFactoryGenerator objFactoryGenerator = DtoFactoryGenerator.getInstance();
 				GenericDTO dto = objFactoryGenerator.createDtoForClass(this.getClass());										

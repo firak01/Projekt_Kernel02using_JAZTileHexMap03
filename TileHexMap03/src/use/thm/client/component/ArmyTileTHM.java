@@ -14,6 +14,7 @@ public class ArmyTileTHM extends TroopTileTHM {
 	
 	public ArmyTileTHM(KernelJPanelCascadedZZZ panelMap, TileMoveEventBrokerTHM objEventBroker, GenericDTO<ITileDtoAttribute> objDto, String sAliasX, String sAliasY, int iHexSideLength) {
 		super(panelMap, objEventBroker, objDto, sAliasX, sAliasY, iHexSideLength);
-		this.setName("Armee");
+		//FGL 20180321... aber jetzt kann man den Namen doch eindeutig machen...this.setName("Armee");
+		this.setName(this.getUniquename());
 	}
 }

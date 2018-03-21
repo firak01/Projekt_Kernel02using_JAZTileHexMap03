@@ -27,6 +27,7 @@ import use.thm.persistence.model.AreaCell;
 import use.thm.persistence.model.CellId;
 import use.thm.persistence.model.TroopArmyVariant;
 import basic.persistence.dto.GenericDTO;
+import basic.persistence.dto.IDTOAttributeGroup;
 import basic.zBasic.ExceptionZZZ;
 import basic.zBasic.ReflectCodeZZZ;
 import basic.zBasic.persistence.interfaces.IDtoFactoryZZZ;
@@ -133,22 +134,16 @@ public class GhostDropManagerHexMapPanelTHM extends AbstractGhostDropManager imp
 							JOptionPane.showMessageDialog (this.component, sMessage);//TODO GOON: Eigentlich hier nicht ausgeben, sondern das Ergebnis für irgendwelche Frontend-Klassen zur Verfügung stellen, die dann ggfs. auch eine UI Komponente haben.
 							
 						}else{
-					   
-							//GenericDTO dto = GenericDTO.getInstance(ITileDtoAttribute.class);
-							//FGL 20171011: Ersetzt durch eine Factory - Klasse
-//							TileDtoFactory factoryTile = new TileDtoFactory();
-//							GenericDTO dto = factoryTile.createDTO();			
-							
+
+							//Hole Werte über das DTO-Objekt
 							//FGL 20171112: Hole die Factory - Klasse generisch per FactoryGenerator:
 							DtoFactoryGenerator objFactoryGenerator = DtoFactoryGenerator.getInstance();
 							GenericDTO dto = objFactoryGenerator.createDtoForClass(ArmyTileTHM.class);		
-														
-							dto.set(ITileDtoAttribute.UNIQUENAME, sUniquename);
 							
-							//TODO GOON 20180320: Auch hier die  DTO mit den Werten aus der Variante füllen
-							//objTroopDaoFacade.fillDto(sUniquename, dto);
-							dto.set(ITileDtoAttribute.VARIANT_SHORTTEXT, "DRGTST");
+							//FGL 20180321: Auch hier die  DTO mit den Werten aus der Variante füllen
+							objTroopDaoFacade.fillTroopArmyDto(sUniquename, dto);
 							
+							//Übergib das DTO-Objekt an das Frontend-Objekt. Dieses kann sich dann daraus weiterhin bedienen.
 							objTile = new ArmyTileTHM(objMap.getPanelParent(), objMap.getTileMoveEventBroker(), dto, objCell.getMapX(), objCell.getMapY(), objMap.getSideLength());
 						}
 				   }

@@ -18,6 +18,8 @@ import org.hibernate.engine.spi.SessionImplementor;
 import org.hibernate.event.spi.EventType;
 
 import basic.persistence.daoFacade.GeneralDaoFacadeZZZ;
+import basic.persistence.dto.GenericDTO;
+import basic.persistence.dto.IDTOAttributeGroup;
 import basic.persistence.util.HibernateUtil;
 import basic.zBasic.ExceptionZZZ;
 import basic.zBasic.IConstantZZZ;
@@ -31,6 +33,7 @@ import use.thm.client.event.EventTileCreatedInCellTHM;
 import use.thm.persistence.dao.AreaCellDao;
 import use.thm.persistence.dao.TroopArmyDao;
 import use.thm.persistence.dao.TroopArmyVariantDao;
+import use.thm.persistence.dto.ITileDtoAttribute;
 import use.thm.persistence.event.VetoFlag4ListenerZZZ;
 import use.thm.persistence.hibernate.HibernateContextProviderSingletonTHM;
 import use.thm.persistence.model.AreaCell;
@@ -615,6 +618,50 @@ public class TroopArmyDaoFacade extends TileDaoFacade{
 			bReturn = true;
 		}//end validEntry:
 					
+		}//end main:
+		return bReturn;
+	}
+	
+	public boolean fillTroopArmyDto(String sUniqueName, GenericDTO<IDTOAttributeGroup> dto) throws ExceptionZZZ{
+		boolean bReturn = false;
+		main:{
+			System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": START #### fillTroopArmyDto(sUniqeName)  ####################");
+						
+			//###################
+			//1. Hole die TroopArmy, füge die neue Area der TroopArmy hinzu, damit sie weiss in welchem neuen Feld sie steht.
+			//####################								
+			HibernateContextProviderSingletonTHM objContextHibernate = (HibernateContextProviderSingletonTHM) this.getHibernateContext();
+			TroopArmyDao objTroopArmyDao = new TroopArmyDao(objContextHibernate);
+
+			//HQL verwenden, um die TroopArmy anhand des Uniquename zu bekommen. 
+			TroopArmy objTroopArmy = objTroopArmyDao.searchTroopArmyByUniquename(sUniqueName);
+			if(objTroopArmy == null) break main;
+			
+			bReturn = this.fillTroopArmyDto(objTroopArmy, dto);
+			
+		}//end main:
+		return bReturn;
+	}
+	
+	public boolean fillTroopArmyDto(TroopArmy objTroopArmy, GenericDTO dto) throws ExceptionZZZ{
+		boolean bReturn = false;
+		main:{
+			System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": START #### fillTroopArmyDto(objTroopArmy)  ####################");
+			if(objTroopArmy == null) break main;
+					
+			//FRAGE: FUNKTIONIERT HIERBEI CALL BY REFERENCE? JA. Es werden ja Werte in den Objekten gefüllt.		
+			dto.set(ITileDtoAttribute.UNIQUENAME, objTroopArmy.getUniquename());
+			
+			//TODO GOON 20180321: Modell darum erweitern und diesen Wert beim Erzeugen eines neuen Objekts errechnen und Speichern.
+			//dto.set(ITileDtoAttribute.INSTANCE_UNIQUENUMBER, objTroopArmy.getInstanceUniquenumber());
+			
+			if(objTroopArmy.getTroopArmyVariantObject()!=null){
+				if(objTroopArmy.getTroopArmyVariantObject().getImmutabletextObject()!=null){
+					dto.set(ITileDtoAttribute.VARIANT_SHORTTEXT, objTroopArmy.getTroopArmyVariantObject().getImmutabletextObject().getShorttext());				
+				}
+			}
+			
+			bReturn = true;
 		}//end main:
 		return bReturn;
 	}

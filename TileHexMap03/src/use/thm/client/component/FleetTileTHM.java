@@ -13,6 +13,7 @@ public class FleetTileTHM extends TroopTileTHM {
 //	}	
 	public FleetTileTHM(KernelJPanelCascadedZZZ panelMap, TileMoveEventBrokerTHM objEventBroker,GenericDTO<ITileDtoAttribute> objDto, String sAliasX, String sAliasY, int iHexSideLength) {
 		super(panelMap, objEventBroker, objDto, sAliasX, sAliasY, iHexSideLength);
-		this.setName("Flotte");
+		//this.setName("Flotte");
+		this.setName(this.getUniquename());
 	}
 }

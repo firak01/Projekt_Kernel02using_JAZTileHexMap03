@@ -25,10 +25,8 @@ public class DebugTroopDao {
 		main:{
 			try {				
 				KernelZZZ objKernel = new KernelZZZ(); //Merke: Die Service Klasse selbst kann wohl nicht das KernelObjekt extenden!
-				HibernateContextProviderSingletonTHM objContextHibernate;
-				
-				objContextHibernate = HibernateContextProviderSingletonTHM.getInstance(objKernel);					
-				objContextHibernate.getConfiguration().setProperty("hibernate.hbm2ddl.auto", "update");  //! Jetzt erst wird jede Tabelle über den Anwendungsstart hinaus gespeichert UND auch wiedergeholt.				
+				HibernateContextProviderSingletonTHM objContextHibernate = HibernateContextProviderSingletonTHM.getInstance(objKernel);					
+				//objContextHibernate.getConfiguration().setProperty("hibernate.hbm2ddl.auto", "update");  //! Jetzt erst wird jede Tabelle über den Anwendungsstart hinaus gespeichert UND auch wiedergeholt.				
 								
 				TroopArmyDao daoTroop = new TroopArmyDao(objContextHibernate);
 				
@@ -60,10 +58,8 @@ public class DebugTroopDao {
 		main:{
 			try {				
 				KernelZZZ objKernel = new KernelZZZ(); //Merke: Die Service Klasse selbst kann wohl nicht das KernelObjekt extenden!
-				HibernateContextProviderSingletonTHM objContextHibernate;
-				
-				objContextHibernate = HibernateContextProviderSingletonTHM.getInstance(objKernel);					
-				objContextHibernate.getConfiguration().setProperty("hibernate.hbm2ddl.auto", "update");  //! Jetzt erst wird jede Tabelle über den Anwendungsstart hinaus gespeichert UND auch wiedergeholt.				
+				HibernateContextProviderSingletonTHM objContextHibernate = HibernateContextProviderSingletonTHM.getInstance(objKernel);					
+				//objContextHibernate.getConfiguration().setProperty("hibernate.hbm2ddl.auto", "update");  //! Jetzt erst wird jede Tabelle über den Anwendungsstart hinaus gespeichert UND auch wiedergeholt.				
 								
 				TroopArmyDao daoTroop = new TroopArmyDao(objContextHibernate);
 				
@@ -83,10 +79,8 @@ public class DebugTroopDao {
 		main:{
 			try {				
 				KernelZZZ objKernel = new KernelZZZ(); //Merke: Die Service Klasse selbst kann wohl nicht das KernelObjekt extenden!
-				HibernateContextProviderSingletonTHM objContextHibernate;
-				
-				objContextHibernate = HibernateContextProviderSingletonTHM.getInstance(objKernel);					
-				objContextHibernate.getConfiguration().setProperty("hibernate.hbm2ddl.auto", "update");  //! Jetzt erst wird jede Tabelle über den Anwendungsstart hinaus gespeichert UND auch wiedergeholt.				
+				HibernateContextProviderSingletonTHM objContextHibernate = HibernateContextProviderSingletonTHM.getInstance(objKernel);					
+				//objContextHibernate.getConfiguration().setProperty("hibernate.hbm2ddl.auto", "update");  //! Jetzt erst wird jede Tabelle über den Anwendungsstart hinaus gespeichert UND auch wiedergeholt.				
 								
 				TroopArmyDao daoTroop = new TroopArmyDao(objContextHibernate);
 				

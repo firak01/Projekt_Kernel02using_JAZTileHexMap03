@@ -10,5 +10,7 @@ public interface ITileDtoAttribute extends IDTOAttributeGroup {
     //Werte aus TileImmutableText
     public final static DTOAttribute<ITileDtoAttribute, String> VARIANT_SHORTTEXT = DTOAttribute.getInstance("VARIANT_SHORTTEXT");
     //public final static Attribute<Integer> ID = Attribute.getInstance("CustomerAttributes.Id");
-
+    
+    //Wird per SQL ermittelt. Ist dann die höchste Zahl, der Spielsteinsorte um 1 jeweils erhöht
+   public final static DTOAttribute<ITileDtoAttribute, Integer> INSTANCE_UNIQUENUMBER = DTOAttribute.getInstance("INSTANCE_UNIQUENUMBER");
 }

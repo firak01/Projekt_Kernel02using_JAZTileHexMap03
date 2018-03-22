@@ -188,10 +188,10 @@ public class TileTHM extends JPanel implements IMapPositionableTHM, IBackendPers
 			sComponentLabelUsed = StringZZZ.toShorten(sComponentLabelUsed, StringZZZ.iSHORTEN_METHOD_VOWEL, 1);//Entferne aus dem String die Vokale, offset 1, D.h. Beginnende Vokale werden nicht gekürzt. 
 			sComponentLabelUsed = StringZZZ.abbreviateDynamic(sComponentLabelUsed, 8 );//Nach 8 Zeichen soll der Name abgekürzt werden, d.h. abgeschnitten und "..." am Ende, um das Abkürzen zu kennzeichnen..
 			
-			Integer intInstanceUniquenumber = this.getInstanceUniqueNumber();
+			Integer intInstanceVariantUniquenumber = this.getInstanceVariantUniqueNumber();
 			String sInstanceUniquenumber = null;
-			if(intInstanceUniquenumber!=null){
-				sInstanceUniquenumber = intInstanceUniquenumber.toString();
+			if(intInstanceVariantUniquenumber!=null){
+				sInstanceUniquenumber = intInstanceVariantUniquenumber.toString();
 				sComponentLabelUsed = sComponentLabelUsed + "_" + sInstanceUniquenumber;
 			}
 		} catch (ExceptionZZZ e) {
@@ -281,11 +281,11 @@ public class TileTHM extends JPanel implements IMapPositionableTHM, IBackendPers
 		this.getDto().set(ITileDtoAttribute.VARIANT_SHORTTEXT, sVariantShorttext);
 	}
 	
-	public Integer getInstanceUniqueNumber(){
-		return (Integer) this.getDto().get(ITileDtoAttribute.INSTANCE_UNIQUENUMBER);
+	public Integer getInstanceVariantUniqueNumber(){
+		return (Integer) this.getDto().get(ITileDtoAttribute.INSTANCE_VARIANT_UNIQUENUMBER);
 	}
-	protected void setVariantShorttext(Integer intInstanceUniqueNumber){
-		this.getDto().set(ITileDtoAttribute.INSTANCE_UNIQUENUMBER, intInstanceUniqueNumber);
+	protected void setVariantShorttext(Integer intInstanceVariantUniqueNumber){
+		this.getDto().set(ITileDtoAttribute.INSTANCE_VARIANT_UNIQUENUMBER, intInstanceVariantUniqueNumber);
 	}
 
 	public GenericDTO<ITileDtoAttribute> getDto() {

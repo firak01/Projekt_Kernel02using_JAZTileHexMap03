@@ -76,12 +76,13 @@ public class Tile  implements Serializable, IOptimisticLocking, IModelDateTimest
 	
 	//Variante 2: Realisierung eines Schlüssel über eine eindeutige ID, die per Generator erzeugt wird
 	private int iMyTestSequence;
-
+    	
 	private TileId id;
+	private Integer intInstanceVariant_UniqueNumber=0;//Wird für jeden neuen Spielstein "dieses VariantenTyps" um 1 erhöht und hier abgespeichert. Soll dann Bestandteil des Default Spielsteinnamens sein. 
 	
 	private String sUniquedate; //wird mit einer @Formula zur Laufzeit berechnet. 
 	private String sGeneratedTest; //Test: Hier einen Defaultwert in den Annotationsübergeben.
-	
+		
 	//Aus dem IModelDateTimestampProvider. FGL: 20180220: Versuche dies in eine abstrakte Superklasse zu verschieben und so Vererbung zu nutzen sind mit pur Hibernate gescheitert.
 	private Date dateCreatedThis;
 	private Date dateCreatedThisAt;
@@ -386,6 +387,17 @@ public class Tile  implements Serializable, IOptimisticLocking, IModelDateTimest
 		public void setUniquename(String sValue){
 			this.getTileIdObject().setUniquename(sValue);
 		}
+		
+		//Bestandteil des Defaultnamens. Nummerierunge der Spielsteine eines Variantentyps
+		//Wird beim Setzen eines neuen Spielsteins um +1 erhöht.
+		 public Integer getInstanceVariantUniquenumber(){	
+			return this.intInstanceVariant_UniqueNumber;		
+		    }
+			public void setInstanceVariantUniquenumber(Integer intInstanceVariant_UniqueNumber){
+				this.intInstanceVariant_UniqueNumber = intInstanceVariant_UniqueNumber;
+			}
+		
+		
 		
 		//1:1 Beziehung aufbauen über den FieldAliasName
 		//Siehe Buch "Java Persistence API 2", Seite 90ff.	

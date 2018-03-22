@@ -33,6 +33,7 @@ import use.thm.client.event.EventTileCreatedInCellTHM;
 import use.thm.persistence.dao.AreaCellDao;
 import use.thm.persistence.dao.TroopArmyDao;
 import use.thm.persistence.dao.TroopArmyVariantDao;
+import use.thm.persistence.dao.TroopFleetDao;
 import use.thm.persistence.dto.ITileDtoAttribute;
 import use.thm.persistence.event.VetoFlag4ListenerZZZ;
 import use.thm.persistence.hibernate.HibernateContextProviderSingletonTHM;
@@ -63,6 +64,23 @@ public class TroopArmyDaoFacade extends TileDaoFacade{
 	public boolean insertTroopArmy(String sUniqueName, TroopArmyVariant objTroopArmyVariant, AreaCell objArea) throws ExceptionZZZ{
 		boolean bReturn = false;
 		main:{
+			Integer intVariantUniqueNumberUsed  = null;
+			additionalData:{
+				//Hole die bisher höchste Zahl der Varianten 
+				HibernateContextProviderSingletonTHM objContextHibernate = (HibernateContextProviderSingletonTHM) this.getHibernateContext();
+				TroopArmyDao objTroopDao = new TroopArmyDao(objContextHibernate);
+				
+				///!!! Das reicht aus nicht aus... Intern wird wohl Es muss die ZhisId der Variante als WHERE Teil einbezogen werden.
+				//Merke: .findColumnValueMax("instanceVariantUniquenumber"); macht nur Unterscheidung zwischen Army und Fleet. Feinere Variantenunterscheidung muss scheitern.
+				//TODO GOON 20180322: Integer intVariantUniqueNumber = objTroopDao.findColumnValueMaxForVariant("instanceVariantUniquenumber", intThisIdOfVariantUsed); 
+				Integer intVariantUniqueNumber = objTroopDao.findColumnValueMax("instanceVariantUniquenumber"); 
+				if(intVariantUniqueNumber==null){
+					intVariantUniqueNumberUsed = new Integer(1);
+				}else{
+					int itemp = intVariantUniqueNumber.intValue() + 1;
+					intVariantUniqueNumberUsed = new Integer(itemp);
+				}
+			}
 		
 			validEntry:{
 			boolean bGoon = false;
@@ -80,8 +98,9 @@ public class TroopArmyDaoFacade extends TileDaoFacade{
 			session.update(objArea);//20170703: GROSSE PROBLEME WG. LAZY INITIALISIERUNG DES PERSISTENTBAG in dem area-Objekt. Versuche damit das zu inisiteliesen.
 			objTroopTemp.setHexCell(objArea); //Füge Zelle der Trupppe hinzu, wg. 1:1 Beziehung
 			
-			//FGL TODO GOON 20180311 Füge Variante der Truppe hinzu wg n:1 Beziehung. ABER: Diese muss schon zuvor geholt worden sein, sonst überschneiden sich die Transaktionen.
+			//Füge Variante der Truppe hinzu wg n:1 Beziehung. ABER: Diese muss schon zuvor geholt worden sein, sonst überschneiden sich die Transaktionen.
 			objTroopTemp.setTroopArmyVariantObject(objTroopArmyVariant);
+			objTroopTemp.setInstanceVariantUniquenumber(intVariantUniqueNumberUsed); //die muss zuvor ausgerechnet worden sein.
 						
 			//Merke: EINE TRANSACTION = EINE SESSION ==>  neue session von der SessionFactory holen
 			//FGL: TEST 20180215, Probiere das Setzen eines Datum aus, HIS Style
@@ -651,13 +670,14 @@ public class TroopArmyDaoFacade extends TileDaoFacade{
 					
 			//FRAGE: FUNKTIONIERT HIERBEI CALL BY REFERENCE? JA. Es werden ja Werte in den Objekten gefüllt.		
 			dto.set(ITileDtoAttribute.UNIQUENAME, objTroopArmy.getUniquename());
+			dto.set(ITileDtoAttribute.INSTANCE_VARIANT_UNIQUENUMBER, objTroopArmy.getInstanceVariantUniquenumber());
 			
 			//TODO GOON 20180321: Modell darum erweitern und diesen Wert beim Erzeugen eines neuen Objekts errechnen und Speichern.
 			//dto.set(ITileDtoAttribute.INSTANCE_UNIQUENUMBER, objTroopArmy.getInstanceUniquenumber());
 			
 			if(objTroopArmy.getTroopArmyVariantObject()!=null){
 				if(objTroopArmy.getTroopArmyVariantObject().getImmutabletextObject()!=null){
-					dto.set(ITileDtoAttribute.VARIANT_SHORTTEXT, objTroopArmy.getTroopArmyVariantObject().getImmutabletextObject().getShorttext());				
+					dto.set(ITileDtoAttribute.VARIANT_SHORTTEXT, objTroopArmy.getTroopArmyVariantObject().getImmutabletextObject().getShorttext());						
 				}
 			}
 			

@@ -94,8 +94,8 @@ public class DebugTroopArmyDaoFacade {
 				String sShorttext = (String) dto.get(ITileDtoAttribute.VARIANT_SHORTTEXT);
 				System.out.println("Dto - Shorttext: " + sShorttext);
 				
-				Integer intInstanceUniqueNumber = (Integer) dto.get(ITileDtoAttribute.INSTANCE_UNIQUENUMBER);
-				System.out.println("Dto - Instance_Uniquenubmer: " + intInstanceUniqueNumber.toString());
+				Integer intInstanceUniqueNumber = (Integer) dto.get(ITileDtoAttribute.INSTANCE_VARIANT_UNIQUENUMBER);
+				System.out.println("Dto - Instance_VARIANT_Uniquenumber: " + intInstanceUniqueNumber.toString());
 								
 			} catch (ExceptionZZZ e) {
 				// TODO Auto-generated catch block

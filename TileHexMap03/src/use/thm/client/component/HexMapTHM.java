@@ -1185,15 +1185,13 @@ public class HexMapTHM extends KernelUseObjectZZZ implements ITileEventUserTHM {
 							//FGL 20171011: Ersetzt durch eine Factory - Klasse
 							//TileDtoFactory factoryTile = new TileDtoFactory();
 							
+							//20180320: TODO GOON: 
 							//FGL 20171112: Hole die Factory - Klasse generisch per FactoryGenerator:
 							DtoFactoryGenerator objFactoryGenerator = DtoFactoryGenerator.getInstance();
 							GenericDTO dto = objFactoryGenerator.createDtoForClass(ArmyTileTHM.class);
-
-							dto.set(ITileDtoAttribute.UNIQUENAME, sUniquename);
-							
-							//20180320: TODO GOON: 
-							//objTroopDaoFacade.fillDto(sUniquename, dto);
-							dto.set(ITileDtoAttribute.VARIANT_SHORTTEXT, "NEUTEST");
+							//dto.set(ITileDtoAttribute.UNIQUENAME, sUniquename);
+							//dto.set(ITileDtoAttribute.VARIANT_SHORTTEXT, "NEUTEST");
+							objTroopDaoFacade.fillTroopArmyDto(sUniquename, dto);
 							
 							ArmyTileTHM objArmyTemp = new ArmyTileTHM(panelMap, objTileMoveEventBroker, dto, sX, sY, this.getSideLength());
 							
@@ -1231,8 +1229,8 @@ public class HexMapTHM extends KernelUseObjectZZZ implements ITileEventUserTHM {
 						//FGL 20171112: Hole die Factory - Klasse generisch per FactoryGenerator:
 						DtoFactoryGenerator objFactoryGenerator = DtoFactoryGenerator.getInstance();
 						GenericDTO dto = objFactoryGenerator.createDtoForClass(FleetTileTHM.class);
-						
-						dto.set(ITileDtoAttribute.UNIQUENAME, sUniquename);
+						objFleetDaoFacade.fillTroopFleetDto(sUniquename, dto);
+
 						//FleetTileTHM objFleetTemp = new FleetTileTHM(panelMap, objTileMoveEventBroker, sUniquename, sX, sY, this.getSideLength());
 						FleetTileTHM objFleetTemp = new FleetTileTHM(panelMap, objTileMoveEventBroker, dto, sX, sY, this.getSideLength());
 						

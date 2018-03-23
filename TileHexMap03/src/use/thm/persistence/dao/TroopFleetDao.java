@@ -196,4 +196,28 @@ public class TroopFleetDao<T> extends TroopDao<T> {
 					
 			return listReturn;
 		}
+		
+		public List<TroopFleet> searchTroopFleetsAll(String sMapAlias) throws ExceptionZZZ{ //TODO GOON: Sortierung... , int iSortedDirection, boolean bAscending){
+			List<TroopFleet> listReturn = new ArrayList<TroopFleet>();
+			
+			Session session = this.getSession();
+	
+			Query query = session.createQuery("from TroopFleet as tableTile where tableTile.objHexCell.id.mapAlias = :mapAlias"); // AND tableTile.objHexCell.id.mapX = :mapX AND tableTile.objHexCell.id.mapY = :mapY");
+			
+			query.setString("mapAlias", sMapAlias);
+			//query.setString("mapX", sX);
+			//query.setString("mapY", sY);
+			
+			//Object objResult = query.uniqueResult(); //Das sind aber ggfs. mehrere Werte		
+			listReturn = query.list(); 
+			System.out.println("Ergebnis der Query. Es wurden " + listReturn.size() + " Datensätze gefunden.");
+			
+			//3. Beispiel
+			//TODO: Nicht den statischen HQL Ansatz, sondern über die Criteria API, d.h. die Where - Bedingung zur Laufzeit zusammensetzen
+					
+			//TODO GOON 20171127: Nach dem Update soll mit dem UI weitergearbeitet werden können
+			this.getHibernateContextProvider().closeAll();
+			System.out.println("SessionFactory über den HibernateContextProvider geschlossen.... Nun wieder bearbeitbar im Java Swing Client?");
+			return listReturn;
+		}
 }

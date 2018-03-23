@@ -196,7 +196,7 @@ public class TroopArmyDao<T> extends TroopDao<T> {
 			return listReturn;
 		}
 		
-		public List<TroopArmy> searchTroopArmiesAll(String sMapAlias){ //TODO GOON: Sortierung... , int iSortedDirection, boolean bAscending){
+		public List<TroopArmy> searchTroopArmiesAll(String sMapAlias) throws ExceptionZZZ{ //TODO GOON: Sortierung... , int iSortedDirection, boolean bAscending){
 			List<TroopArmy> listReturn = new ArrayList<TroopArmy>();
 			
 			Session session = this.getSession();
@@ -214,10 +214,8 @@ public class TroopArmyDao<T> extends TroopDao<T> {
 			//3. Beispiel
 			//TODO: Nicht den statischen HQL Ansatz, sondern über die Criteria API, d.h. die Where - Bedingung zur Laufzeit zusammensetzen
 					
-			//TODO GOON 20171127: Nach dem Update soll mit dem UI weitergearbeitet werden können
-			session.clear();
-			session.close();
-			this.getHibernateContextProvider().getSessionFactory().close();
+			//TODO GOON 20171127: Nach dem Update soll mit dem UI weitergearbeitet werden können			
+			this.getHibernateContextProvider().closeAll();
 			System.out.println("SessionFactory über den HibernateContextProvider geschlossen.... Nun wieder bearbeitbar im Java Swing Client?");
 			return listReturn;
 		}

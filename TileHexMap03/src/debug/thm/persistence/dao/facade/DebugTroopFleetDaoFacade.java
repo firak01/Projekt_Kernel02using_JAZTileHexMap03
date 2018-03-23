@@ -5,13 +5,17 @@ import java.util.List;
 
 import debug.thm.persistence.dao.tilevariant.DebugTroopArmyVariantDao;
 import use.thm.client.component.ArmyTileTHM;
+import use.thm.client.component.FleetTileTHM;
 import use.thm.persistence.dao.TileDao;
 import use.thm.persistence.dao.TroopArmyDao;
+import use.thm.persistence.dao.TroopFleetDao;
 import use.thm.persistence.daoFacade.TroopArmyDaoFacade;
+import use.thm.persistence.daoFacade.TroopFleetDaoFacade;
 import use.thm.persistence.dto.DtoFactoryGenerator;
 import use.thm.persistence.dto.ITileDtoAttribute;
 import use.thm.persistence.hibernate.HibernateContextProviderSingletonTHM;
 import use.thm.persistence.model.TroopArmy;
+import use.thm.persistence.model.TroopFleet;
 import use.thm.web.webservice.axis2.pojo.TroopArmyPojo;
 import basic.persistence.dto.GenericDTO;
 import basic.persistence.dto.IDTOAttributeGroup;
@@ -19,7 +23,7 @@ import basic.zBasic.ExceptionZZZ;
 import basic.zBasic.util.math.RandomZZZ;
 import basic.zKernel.KernelZZZ;
 
-public class DebugTroopArmyDaoFacade {
+public class DebugTroopFleetDaoFacade {
 	public static void main(String[] args) {				
 		try {
 			KernelZZZ objKernel = new KernelZZZ();		
@@ -28,7 +32,7 @@ public class DebugTroopArmyDaoFacade {
 			
 			//##################################
 			
-			DebugTroopArmyDaoFacade objDebug = new DebugTroopArmyDaoFacade();				
+			DebugTroopFleetDaoFacade objDebug = new DebugTroopFleetDaoFacade();				
 			objDebug.debugFillDto();
 					
 		} catch (ExceptionZZZ e) {
@@ -36,7 +40,7 @@ public class DebugTroopArmyDaoFacade {
 		} 
 		
 	}
-	public DebugTroopArmyDaoFacade(){		
+	public DebugTroopFleetDaoFacade(){		
 	}
 	public boolean debugFillDto(){
 		boolean bReturn = false;
@@ -46,13 +50,13 @@ public class DebugTroopArmyDaoFacade {
 				KernelZZZ objKernel = new KernelZZZ();		
 				HibernateContextProviderSingletonTHM objContextHibernate = HibernateContextProviderSingletonTHM.getInstance(objKernel);
 				
-				//Hole eine Army für den Test
+				//Hole eine Fleet für den Test
 				String sMap = "EINS";
-				TroopArmy objToFill = null;
+				TroopFleet objToFill = null;
 				String sUniquename = null;
 				
-				TroopArmyDao dao = new TroopArmyDao(objContextHibernate);				
-				List<TroopArmy>listTroop = dao.searchTroopArmiesAll(sMap);			
+				TroopFleetDao dao = new TroopFleetDao(objContextHibernate);				
+				List<TroopFleet>listTroop = dao.searchTroopFleetsAll(sMap);			
 				if(listTroop.size()==0){
 					System.out.println("Es gibt auf der Karte '" + sMap + " keine platzierte Armeen. Beende die Funktion.");				
 					break main;
@@ -82,11 +86,11 @@ public class DebugTroopArmyDaoFacade {
 				
 				
 				DtoFactoryGenerator objFactoryGenerator = DtoFactoryGenerator.getInstance();			 
-				GenericDTO dto = objFactoryGenerator.createDtoForClass(ArmyTileTHM.class);
+				GenericDTO dto = objFactoryGenerator.createDtoForClass(FleetTileTHM.class);
 			
 				
-				TroopArmyDaoFacade objTroopDaoFacade = new TroopArmyDaoFacade(objContextHibernate);
-				bReturn = objTroopDaoFacade.fillTroopArmyDto(sUniquename, dto);
+				TroopFleetDaoFacade objTroopDaoFacade = new TroopFleetDaoFacade(objContextHibernate);
+				bReturn = objTroopDaoFacade.fillTroopFleetDto(sUniquename, dto);
                 
 				//###########################################
 				//### DEBUG AUSGABEN ########################

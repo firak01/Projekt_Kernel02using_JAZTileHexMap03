@@ -91,15 +91,7 @@ public class TroopFleetVariant  extends TroopVariant implements ITroopFleetVaria
 	
 	//für die "thiskey_id"
 	private Long lKey;
-	
-	//Jetzt die verschiedenene Eigenschaften eines Armeetypens hier festlegen.
-	private TileDefaulttext objDefaulttext;
-	private TileImmutabletext objImmutabletext;
-	private String sUniquetext;
-	private String sCategorytext;
-	private Integer intMapMoveRange;
-	private String sImageUrl;
-	
+		
 	//... und weitere Eigenschaften.
 	private Integer intNumberOfTurret;
 	
@@ -118,6 +110,20 @@ public class TroopFleetVariant  extends TroopVariant implements ITroopFleetVaria
 		 
 		 this.setNumberOfTurret(Integer.valueOf(iNumberOfTurret));
 	 }
+	 
+	  //#### Methode aus IKeyProviderZZZ
+		 //#### abstracte Methoden. Trotzdem hier implementiert wg. Fehler:
+		 //Exception in thread "main" org.hibernate.AnnotationException: referencedColumnNames(thiskey_id) of use.thm.persistence.model.TroopArmy.troopArmyVariantObject referencing use.thm.persistence.model.TroopArmyVariant not mapped to a single property
+		 //Nachdem dadurch der Fehler behoben ist, gibt es die Fehlermeldung, dass insert="false" update="false" notwendig ist. Also: , insertable=false, updatable=false, 
+		 @Column(name="thiskey_id",  nullable=false, unique=true, insertable=false, updatable=false, columnDefinition="LONG NOT NULL UNIQUE  DEFAULT 0")	
+		 @Override
+		public Long getThiskey() {
+			 return this.lKey;
+		}
+		@Override
+		public void setThiskey(Long thiskeyId) {
+			this.lKey = thiskeyId;
+		}
 	 
 	//### Variante 2: Verwende auf dieser Ebene einen Generator, zum Erstellen einer ID
 		//ABER NICHT AUF DIESER EBENEN, DA SIE ERBT VON KEY.java
@@ -255,6 +261,7 @@ public class TroopFleetVariant  extends TroopVariant implements ITroopFleetVaria
 		public Long getThiskey() {
 			return this.lKey;
 		}
+
 
 	   //### Folgende Methoden sind zum komfortablen arbeiten gedacht.
 	   public int getPosition() {

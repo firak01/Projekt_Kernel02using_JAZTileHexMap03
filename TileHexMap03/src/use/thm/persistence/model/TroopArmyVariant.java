@@ -90,15 +90,7 @@ public class TroopArmyVariant  extends TroopVariant implements ITroopArmyVariant
 	
 	//für die "thiskey_id"
 	private Long lKey;
-	
-	//Jetzt die verschiedenene Eigenschaften eines Armeetypens hier festlegen.
-	private TileDefaulttext objDefaulttext;
-	private TileImmutabletext objImmutabletext;
-	private String sUniquetext;
-	private String sCategorytext;
-	private Integer intMapMoveRange;
-	private String sImageUrl;
-	
+		
 	//... und weitere Eigenschaften.
 	private Integer intDegreeOfCoverMax;
 	
@@ -117,11 +109,12 @@ public class TroopArmyVariant  extends TroopVariant implements ITroopArmyVariant
 		 
 		 this.setDegreeOfCoverMax(Integer.valueOf(iDegreeOfCover));		 
 	 }
-	 
+	
+	  //#### Methode aus IKeyProviderZZZ
 	 //#### abstracte Methoden. Trotzdem hier implementiert wg. Fehler:
 	 //Exception in thread "main" org.hibernate.AnnotationException: referencedColumnNames(thiskey_id) of use.thm.persistence.model.TroopArmy.troopArmyVariantObject referencing use.thm.persistence.model.TroopArmyVariant not mapped to a single property
 	 //Nachdem dadurch der Fehler behoben ist, gibt es die Fehlermeldung, dass insert="false" update="false" notwendig ist. Also: , insertable=false, updatable=false, 
-	 @Column(name="thiskey_id",  nullable=false, unique=true, insertable=false, updatable=false, columnDefinition="LONG NOT NULL UNIQUE  DEFAULT 1")	
+	 @Column(name="thiskey_id",  nullable=false, unique=true, insertable=false, updatable=false, columnDefinition="LONG NOT NULL UNIQUE  DEFAULT 0")	
 	 @Override
 	public Long getThiskey() {
 		 return this.lKey;

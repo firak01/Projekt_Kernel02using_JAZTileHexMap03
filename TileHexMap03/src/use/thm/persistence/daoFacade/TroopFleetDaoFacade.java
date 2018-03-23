@@ -32,7 +32,9 @@ import use.thm.persistence.model.CellId;
 import use.thm.persistence.model.Tile;
 import use.thm.persistence.model.TileId;
 import use.thm.persistence.model.TroopArmy;
+import use.thm.persistence.model.TroopArmyVariant;
 import use.thm.persistence.model.TroopFleet;
+import use.thm.persistence.model.TroopFleetVariant;
 import use.thm.persistence.model.TroopType;
 import use.thm.rule.facade.TroopArmyRuleFacade;
 import use.thm.rule.facade.TroopFleetRuleFacade;
@@ -220,18 +222,21 @@ public class TroopFleetDaoFacade extends TileDaoFacade{
 			//TODO GOON 20180321: Modell darum erweitern und diesen Wert beim Erzeugen eines neuen Objekts errechnen und Speichern.
 			//dto.set(ITileDtoAttribute.INSTANCE_UNIQUENUMBER, objTroopArmy.getInstanceUniquenumber());
 			
-			//if(objTroop.getTroopArmyVariantObject()!=null){
-			//	if(objTroop.getTroopArmyVariantObject().getImmutabletextObject()!=null){
-					dto.set(ITileDtoAttribute.VARIANT_SHORTTEXT, "NEUFLEET");//TODO GOON: objTroop.getTroopFleetVariantObject().getImmutabletextObject().getShorttext());						
-			//	}
-			//}
+			if(objTroop.getTroopFleetVariantObject()!=null){
+				if(objTroop.getTroopFleetVariantObject().getImmutabletextObject()!=null){
+					//dto.set(ITileDtoAttribute.VARIANT_SHORTTEXT, "NEUFLEET");
+					//TODO GOON: 
+					dto.set(ITileDtoAttribute.VARIANT_SHORTTEXT, objTroop.getTroopFleetVariantObject().getImmutabletextObject().getShorttext());
+					
+				}
+			}
 			
 			bReturn = true;
 		}//end main:
 		return bReturn;
 	}
 		
-	public boolean insertTroopFleet(String sUniqueName, AreaCell objArea) throws ExceptionZZZ{
+	public boolean insertTroopFleet(String sUniqueName, TroopFleetVariant objTroopFleetVariant, AreaCell objArea) throws ExceptionZZZ{
 		boolean bReturn = false;
 		main:{
 			Integer intVariantUniqueNumberUsed  = null;
@@ -269,7 +274,7 @@ public class TroopFleetDaoFacade extends TileDaoFacade{
 			objTroopTemp.setHexCell(objArea); //Füge Zelle der Trupppe hinzu, wg. 1:1 Beziehung
 			
 			//Füge Variante der Truppe hinzu wg n:1 Beziehung. ABER: Diese muss schon zuvor geholt worden sein, sonst überschneiden sich die Transaktionen.
-			//TODO GOO 20180322: objTroopTemp.setTroopArmyVariantObject(objTroopArmyVariant);
+			objTroopTemp.setTroopFleetVariantObject(objTroopFleetVariant);
 			objTroopTemp.setInstanceVariantUniquenumber(intVariantUniqueNumberUsed); //die muss zuvor ausgerechnet worden sein.
 			
 			

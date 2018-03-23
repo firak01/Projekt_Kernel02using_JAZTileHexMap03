@@ -740,10 +740,11 @@ public class HexMapTHM extends KernelUseObjectZZZ implements ITileEventUserTHM {
 				//FGL: 20171012: Nun hole die Factory "generisch"
 				DtoFactoryGenerator objFactoryGenerator = DtoFactoryGenerator.getInstance();
 				GenericDTO dto = objFactoryGenerator.createDtoForClass(ArmyTileTHM.class);
-				dto.set(ITileDtoAttribute.UNIQUENAME, sUniquename);
 				
-				//objTroopDaoFacade.fillDto(sUniquename, dto);
-				dto.set(ITileDtoAttribute.VARIANT_SHORTTEXT, "NEUTEST");
+				TroopArmyDaoFacade objTroopDaoFacade = new TroopArmyDaoFacade(objContextHibernate);
+				objTroopDaoFacade.fillTroopArmyDto((TroopArmy) objTroop, dto);				
+				//dto.set(ITileDtoAttribute.UNIQUENAME, sUniquename);				
+				//dto.set(ITileDtoAttribute.VARIANT_SHORTTEXT, "NEUTEST");
 				
 				ArmyTileTHM objArmyTemp = new ArmyTileTHM(panelMap, objTileMoveEventBroker, dto, sX, sY, this.getSideLength());
 				EventTileCreatedInCellTHM objEventTileCreated = new EventTileCreatedInCellTHM(objArmyTemp, 1, sX, sY);
@@ -772,10 +773,10 @@ public class HexMapTHM extends KernelUseObjectZZZ implements ITileEventUserTHM {
 				//FGL 20171112: Hole die Factory - Klasse generisch per FactoryGenerator:
 				DtoFactoryGenerator objFactoryGenerator = DtoFactoryGenerator.getInstance();
 				GenericDTO dto = objFactoryGenerator.createDtoForClass(FleetTileTHM.class);
-				
-				dto.set(ITileDtoAttribute.UNIQUENAME, sUniquename);
-
-				//objTroopDaoFacade.fillDto(sUniquename, dto);
+							
+				TroopFleetDaoFacade objTroopDaoFacade = new TroopFleetDaoFacade(objContextHibernate);
+				objTroopDaoFacade.fillTroopFleetDto((TroopFleet) objTroop, dto);				
+				//dto.set(ITileDtoAttribute.UNIQUENAME, sUniquename);
 				//dto.set(ITileDtoAttribute.VARIANT_SHORTTEXT, "NEUTEST");
 				
 				FleetTileTHM objFleetTemp = new FleetTileTHM(panelMap, objTileMoveEventBroker, dto, sX, sY, this.getSideLength());
@@ -1113,9 +1114,13 @@ public class HexMapTHM extends KernelUseObjectZZZ implements ITileEventUserTHM {
 			//Hole das passende TroopVariant-Objekt
 			//###################
 		    long lngTroopArmyVariant_Thiskeyid = 11; //"Infanterie". TODO GOON 20180311: Aus dem GhostDropEvent (via GhostpictureAdapter) die im PANEL_WEST ausgewählte Variante holen.			
-			TroopArmyVariantDao daoKey = new TroopArmyVariantDao(objContextHibernate);
-			TroopArmyVariant objTroopArmyVariant = (TroopArmyVariant) daoKey.searchKey("TROOPARMYVARIANT", lngTroopArmyVariant_Thiskeyid );
-			
+			TroopArmyVariantDao daoKeyArmy = new TroopArmyVariantDao(objContextHibernate);
+			TroopArmyVariant objTroopArmyVariant = (TroopArmyVariant) daoKeyArmy.searchKey("TROOPARMYVARIANT", lngTroopArmyVariant_Thiskeyid );
+						
+			 long lngTroopFleetVariant_Thiskeyid = 21; //"Destroyer". TODO GOON 20180311: Aus dem GhostDropEvent (via GhostpictureAdapter) die im PANEL_WEST ausgewählte Variante holen.			
+			TroopFleetVariantDao daoKeyFleet = new TroopFleetVariantDao(objContextHibernate);
+			TroopFleetVariant objTroopFleetVariant = (TroopFleetVariant) daoKeyFleet.searchKey("TROOPFLEETVARIANT", lngTroopFleetVariant_Thiskeyid );
+				
 			
 			//##################
 			//Hole die Areas
@@ -1211,7 +1216,7 @@ public class HexMapTHM extends KernelUseObjectZZZ implements ITileEventUserTHM {
 					TroopFleetDaoFacade objFleetDaoFacade = new TroopFleetDaoFacade(objContextHibernate);
 					//String sUniquename = "FLEET UNIQUE " + sY;//TODO GOON : sY als Uniquename zu verwenden ist nur heuristisch und nicht wirklich UNIQUE
 					String sUniquename = objFleetDaoFacade.computeUniquename();
-					bGoon = objFleetDaoFacade.insertTroopFleet(sUniquename, objCellTemp);
+					bGoon = objFleetDaoFacade.insertTroopFleet(sUniquename, objTroopFleetVariant, objCellTemp);
 					if(bGoon){
 						
 						//20170711: Nimm hier die UniqueId des Backends mit auf....
@@ -1249,7 +1254,7 @@ public class HexMapTHM extends KernelUseObjectZZZ implements ITileEventUserTHM {
 					//20170629: Dies in eine Methode kapseln (DAO Klasse?). Ziel: Dies ohne Redundanz beim Einsetzen eines neuen Spielsteins verwenden.
 					TroopFleetDaoFacade objFleetDaoFacade = new TroopFleetDaoFacade(objContextHibernate);
 					String sUniquename = "FLEET TEST PLACE ON LAND " + sY;//TODO GOON : sY als Uniquename zu verwenden ist nur heuristisch und nicht wirklich UNIQUE
-					bGoon = objFleetDaoFacade.insertTroopFleet(sUniquename, objCellTemp);										
+					bGoon = objFleetDaoFacade.insertTroopFleet(sUniquename, objTroopFleetVariant, objCellTemp);										
 					if(bGoon){
 						//TEST: DIESER CODE DARF NICHT AUSGEFÜHRT WERDEN, DER onPreInsert-Listener muss das verhindert haben und zurückgeliefert haben.
 						String sMessage = "FALSCHES TESTERGEBNIS: HIER DARF NIX ERZEUGT WERDEN, WG. PASSENDES GEBIET REGEL.";			

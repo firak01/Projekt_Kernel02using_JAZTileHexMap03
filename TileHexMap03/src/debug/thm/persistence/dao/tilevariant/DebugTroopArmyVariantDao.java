@@ -421,11 +421,11 @@ public class DebugTroopArmyVariantDao {
 				KernelZZZ objKernel = new KernelZZZ(); //Merke: Die Service Klasse selbst kann wohl nicht das KernelObjekt extenden!
 				HibernateContextProviderSingletonTHM objContextHibernate = HibernateContextProviderSingletonTHM.getInstance(objKernel);
 				
-				TroopArmyVariantDao daoTroopArmyVariant = new TroopArmyVariantDao(objContextHibernate);
+				TroopArmyVariantDao daoTroopVariant = new TroopArmyVariantDao(objContextHibernate);
 				String sKeytype = new String("");
 				
 				sKeytype = "TROOPARMYVARIANT";
-				TroopArmyVariant objKey02 = (TroopArmyVariant) daoTroopArmyVariant.searchKey(sKeytype, lngThiskey );
+				TroopArmyVariant objKey02 = (TroopArmyVariant) daoTroopVariant.searchKey(sKeytype, lngThiskey );
 				if(objKey02==null){
 					System.out.println("2. Abfrage: UNERWARTETES ERGEBNIS. Kein Key mit dem KeyType '" + sKeytype + "' und dem Thiskey '" + lngThiskey.toString() + "' gefunden.");
 				}else{
@@ -451,18 +451,12 @@ public class DebugTroopArmyVariantDao {
 				
 				objContextHibernate = HibernateContextProviderSingletonTHM.getInstance(objKernel);					
 				objContextHibernate.getConfiguration().setProperty("hibernate.hbm2ddl.auto", "update");  //! Jetzt erst wird jede Tabelle über den Anwendungsstart hinaus gespeichert UND auch wiedergeholt.				
-				TroopArmyVariantDao daoTroopArmyVariant = new TroopArmyVariantDao(objContextHibernate);
+				TroopArmyVariantDao daoTroopVariant = new TroopArmyVariantDao(objContextHibernate);
 				String sKeytype = new String("TROOPARMYVARIANT");
 				Long lngThiskey = new Long(1);
-
-//				Defaulttext objKey02 = (Defaulttext) daoTroopArmyVariant.searchKey(sKeytype, lngThiskey );
-//				if(objKey02==null){
-//					System.out.println("2. Abfrage: UNERWARTETES ERGEBNIS. Kein Key mit dem KeyType '" + sKeytype + "' und dem Thiskey '" + lngThiskey.toString() + "' gefunden.");
-//				}else{
-//					System.out.println("2. Abfrage: Erwartetes Ergebnis. Key mit dem KeyType '" + sKeytype + "' und dem Thiskey '" + lngThiskey.toString() + "' gefunden.");			
-					
+			
 					//Nun alle holen
-					ArrayList<TroopArmyVariant> listaEntity = (ArrayList<TroopArmyVariant>) daoTroopArmyVariant.findLazyAll();
+					ArrayList<TroopArmyVariant> listaEntity = (ArrayList<TroopArmyVariant>) daoTroopVariant.findLazyAll();
 					for(TroopArmyVariant objEntity : listaEntity){
 						System.out.println("TroopArmyVariant.toString(): " + objEntity.toString());
 

@@ -12,8 +12,10 @@ import java.util.ArrayList;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 
+import basic.persistence.dto.GenericDTO;
 import basic.zBasic.ExceptionZZZ;
 import basic.zBasic.ReflectCodeZZZ;
+import basic.zBasic.util.datatype.string.StringZZZ;
 import basic.zKernel.KernelZZZ;
 import basic.zKernelUI.component.KernelJPanelCascadedZZZ;
 import use.thm.client.component.HexCellTHM;
@@ -27,6 +29,7 @@ import use.thm.persistence.dao.AreaCellDao;
 import use.thm.persistence.dao.TileDao;
 import use.thm.persistence.daoFacade.TroopArmyDaoFacade;
 import use.thm.persistence.daoFacade.TroopFleetDaoFacade;
+import use.thm.persistence.dto.ITileDtoAttribute;
 import use.thm.persistence.hibernate.HibernateContextProviderSingletonTHM;
 import use.thm.persistence.model.AreaCell;
 import use.thm.persistence.model.CellId;
@@ -36,9 +39,9 @@ import use.thm.persistence.model.Troop;
 import use.thm.persistence.model.TroopType;
 
 /** Mit dieser Klasse werden alle Maus-Ereignisse für die Spielsteine zusammengfasst
- * Dadurch k�nnen gemeinsam genutzte Eigenschaften (z.B. Die Start-Zelle einer DragDrop-Bewegung oder der Spielstein selbst) einfacher verwendet werden.
+ * Dadurch können gemeinsam genutzte Eigenschaften (z.B. Die Start-Zelle einer DragDrop-Bewegung oder der Spielstein selbst) einfacher verwendet werden.
  * 
- * Das Interface ITileMoveEventBroker erm�glicht es an die an den EventBroker registrierten Komponenten eine Event zu schicken (Zelle wurde betreten, Zelle wurde verlassen) 
+ * Das Interface ITileMoveEventBroker ermöglicht es an die an den EventBroker registrierten Komponenten eine Event zu schicken (Zelle wurde betreten, Zelle wurde verlassen) 
  * @author lindhauer
  *
  */
@@ -46,8 +49,8 @@ public class TileMouseMotionHandlerTHM extends MouseAdapter implements MouseMoti
 	private TileTHM objTile;
 	private HexCellTHM objCellStart;
 	
-	private ArrayList alCellValidEntered = new ArrayList();  //ArrayListe der in diesem DragDrop betretenen Zellen
-	private HexCellTHM objCellValidLast;                         //Die zuletzt betretene, g�ltige Zelle
+	private ArrayList alCellValidEntered = new ArrayList();  	 //ArrayListe der in diesem DragDrop betretenen Zellen
+	private HexCellTHM objCellValidLast;                         //Die zuletzt betretene, gültige Zelle
 	private HexCellTHM objCellCurrent;							 //Die zuletzt betretene Zelle, die aber auch nicht g�ltig zu sein braucht
 	
 	private TileMoveEventBrokerTHM objTileMoveEventBroker; //Der EventBroker, an den sich alle Zellen registrieren. Wird eine Zelle verlassen/betreten, dann feuert er den entsprechenden Event ab.
@@ -281,7 +284,8 @@ public class TileMouseMotionHandlerTHM extends MouseAdapter implements MouseMoti
 		
 		//TODO: Vom objTile aus kann man auf den TileStore zugreifen.
 		//             Daraus können dann Informationen entnommen werden, Truppenstärke, etc.
-		
+		main:{
+		try{
 		//Momentan beim Doppelclick nur die Position anzeigen lassen
 		int iCount =arg0.getClickCount();
 		int iErg = 0; 
@@ -290,18 +294,34 @@ public class TileMouseMotionHandlerTHM extends MouseAdapter implements MouseMoti
 			break;
 		case 2:
 			//TODO: Dies als eigene Dialogbox mit einem Customizbaren Panel, in dem z.B. eine Aktion "Auflösen" eingebaut wird.
+			//TODO GOON 20180324: Das wird immer aktueller, zumal jetzt aus dem DTO weitere Angaben aus der Datenbank geholte werden können.
 			/*
 			// +++ Nicht einfach Löschen, sondern mal abfragen
 			iErg = JOptionPane.showConfirmDialog(this.getTile(), "Would you realy like to remove this square ?", "Remove square ?", JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE);
 			if(iErg == JOptionPane.YES_OPTION){
-				// L�schen
+				// Löschen
 				panelCurrent.removeSquare(objRect2D);
 			}
 			*/
+			String sMessage = new String();
 			
+			//Hole weitere Informationen aus dem DTO:
+			GenericDTO<ITileDtoAttribute> objDto = this.getTile().getDto();
+			String sShorttext = objDto.get(ITileDtoAttribute.VARIANT_SHORTTEXT);
+			Integer intVariantUniquenumber = objDto.get(ITileDtoAttribute.INSTANCE_VARIANT_UNIQUENUMBER);
+			sMessage = sShorttext + "_" + intVariantUniquenumber.toString(); 
+			
+								
 			//Anzeige der Koordinaten
 			Point p = arg0.getPoint();
-			String sMessage = "X=" + this.getTile().getMapX() + "; Y=" + this.getTile().getMapY()  + " (" + p.getX() + "/" + p.getY() + ")";
+			String sCoordinates = "X=" + this.getTile().getMapX() + "; Y=" + this.getTile().getMapY()  + " (" + p.getX() + "/" + p.getY() + ")";
+			sMessage = sMessage + StringZZZ.crlf() + sCoordinates;
+			
+			//Trennzeile
+			sMessage = sMessage + StringZZZ.crlf();
+			
+			String sUniquename = objDto.get(ITileDtoAttribute.UNIQUENAME);
+			sMessage = sMessage + StringZZZ.crlf() + sUniquename;
 			JOptionPane.showMessageDialog(this.getTile(), sMessage, "Detailangaben....", JOptionPane.INFORMATION_MESSAGE, null);
 			
 			break;
@@ -316,6 +336,11 @@ public class TileMouseMotionHandlerTHM extends MouseAdapter implements MouseMoti
 		
 		}
 			*/
+		}catch(ExceptionZZZ ez){
+			ez.printStackTrace();
+		}
+		}//End main:
+		
 	}
 
 	public void mouseEntered(MouseEvent arg0) {
@@ -378,15 +403,19 @@ public class TileMouseMotionHandlerTHM extends MouseAdapter implements MouseMoti
 			
 			String sComponentDetail = "Keine Komponente an der Stelle gefunden.";
 			if(objMapItem!=null){
-				sComponentDetail = "Klasse: " + objMapItem.getClass().getName();
-				//if(objMapItem.getClass().getName().equals(HexCellTHM.class.getName())){
+				sComponentDetail = "Klasse: " + objMapItem.getClass().getName();				
 				if(!(objMapItem  instanceof HexCellTHM)){
 					//+++ Falls es sich um keine Zelle handelt (z.B. den Spielfeldrand)
 					sComponentDetail = "KEIN GÜLTIGES ZIEL (UI).";
+					System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": " + sComponentDetail);
 				}else{
 					//+++ Fall: Es handelt sich um eine Zelle, ist sie aber auch für den Spielstein gültig ?
 					HexCellTHM objCellCur = this.getCellCurrent();
-					
+					if(objCellCur==null){
+						//+++ Theoretisch möglich und tatsächlich hat es schon mal an der Stelle ein NULLPointer Exception gegeben.
+						sComponentDetail = "KEINE GÜLTIGE STARTPOSITION (UI).";	
+						System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": " + sComponentDetail);
+					}else{
 					//Merke: 
 					//Hier wird eine Backend-Validierung vorgeschaltet. Dadurch würde verhindert, dass alle registrierten Zellen durchlaufen werden.
 					//Die Frontend-Validierung bleibt zunächst bestehen (20170730). Sie soll an Inkonsitenzen zwischen UI und Backen erinnern.
@@ -518,6 +547,7 @@ public class TileMouseMotionHandlerTHM extends MouseAdapter implements MouseMoti
 							// TODO Auto-generated catch block
 							e.printStackTrace();
 						}
+					}//end if objCellCur==null
 				} //end if objMapItem instanceof HexCellTHM
 			}//end if objMapItem!=null
 			

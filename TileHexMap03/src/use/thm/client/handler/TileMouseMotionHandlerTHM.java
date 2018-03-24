@@ -398,11 +398,12 @@ public class TileMouseMotionHandlerTHM extends MouseAdapter implements MouseMoti
 			//JOptionPane.showMessageDialog(this.getTile(), sMessage4OptionPane2, "Detailangaben....", JOptionPane.INFORMATION_MESSAGE, null);
 			
 			//Nun weiterarbeiten mit umgerechneten Koordinaten
-			Component objMapItem = panelMap.getComponentAt(pointCursorCurrent);
-		
-			
-			String sComponentDetail = "Keine Komponente an der Stelle gefunden.";
-			if(objMapItem!=null){
+			Component objMapItem = panelMap.getComponentAt(pointCursorCurrent);					
+			String sComponentDetail = "ComponentDetail. Dieser Wert wird überschrieben...";
+			if(objMapItem==null){
+				sComponentDetail = "Keine Komponente an der Stelle gefunden.";
+				System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": " + sComponentDetail);
+			}else{				
 				sComponentDetail = "Klasse: " + objMapItem.getClass().getName();				
 				if(!(objMapItem  instanceof HexCellTHM)){
 					//+++ Falls es sich um keine Zelle handelt (z.B. den Spielfeldrand)
@@ -548,7 +549,7 @@ public class TileMouseMotionHandlerTHM extends MouseAdapter implements MouseMoti
 							e.printStackTrace();
 						}
 					}//end if objCellCur==null
-				} //end if objMapItem instanceof HexCellTHM
+				} //end if objMapItem instanceof HexCellTHM			
 			}//end if objMapItem!=null
 			
 //			### Pfad der Felder, die überquert worden sind löschen (d.h. wählt man ein ungültiges Ziel aus, so ist auch die ganze Bewegung hinfällig)

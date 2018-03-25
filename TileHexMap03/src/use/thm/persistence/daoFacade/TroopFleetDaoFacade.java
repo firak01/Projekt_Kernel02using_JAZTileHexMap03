@@ -1,6 +1,9 @@
 package use.thm.persistence.daoFacade;
 
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Collection;
+import java.util.Date;
 
 import javax.swing.JOptionPane;
 
@@ -15,6 +18,7 @@ import basic.persistence.dto.IDTOAttributeGroup;
 import basic.persistence.util.HibernateUtil;
 import basic.zBasic.ExceptionZZZ;
 import basic.zBasic.ReflectCodeZZZ;
+import basic.zBasic.persistence.hibernate.DateMapping;
 import basic.zBasic.persistence.hibernate.HibernateContextProviderZZZ;
 import basic.zBasic.util.abstractList.VectorExtendedZZZ;
 import use.thm.client.component.ArmyTileTHM;
@@ -268,7 +272,7 @@ public class TroopFleetDaoFacade extends TileDaoFacade{
 			if(session == null) break main;			
 			session.getTransaction().begin();//Ein zu persistierendes Objekt - eine Transaction, auch wenn mehrere in einer Transaction abzuhandeln wären, aber besser um Fehler abfangen zu können.
 			
-			//+++ Datenbankoperationen
+			//+++ DAS ENTITY UND VERBUNDENEN OBJEKTE
 			TroopFleet objTroopTemp = new TroopFleet(new TileId("EINS", "1", sUniqueName));//TODO GOON : sY als Uniquename zu verwenden ist nur heuristisch und nicht wirklich UNIQUE						
 			session.update(objArea);//20170703: GROSSE PROBLEME WG. LAZY INITIALISIERUNG DES PERSISTENTBAG in dem area-Objekt. Versuche damit das zu inisiteliesen.			
 			objTroopTemp.setHexCell(objArea); //Füge Zelle der Trupppe hinzu, wg. 1:1 Beziehung
@@ -277,7 +281,8 @@ public class TroopFleetDaoFacade extends TileDaoFacade{
 			objTroopTemp.setTroopFleetVariantObject(objTroopFleetVariant);
 			objTroopTemp.setInstanceVariantUniquenumber(intVariantUniqueNumberUsed); //die muss zuvor ausgerechnet worden sein.
 			
-			
+			//+++ DAS ERSTELLDATUM ++++++++++++++++++++++++++++++++++++
+			this.makeCreatedDates(objTroopTemp);
 			
 			//Merke: EINE TRANSACTION = EINE SESSION ==>  neue session von der SessionFactory holen
 			session.save(objTroopTemp); //Hibernate Interceptor wird aufgerufen																				

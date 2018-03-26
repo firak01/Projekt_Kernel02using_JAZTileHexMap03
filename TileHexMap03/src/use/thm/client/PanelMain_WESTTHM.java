@@ -5,39 +5,51 @@ package use.thm.client;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Container;
+import java.awt.LayoutManager;
 import java.io.File;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map.Entry;
+import java.util.Set;
 
 import javax.swing.Box;
+import javax.swing.BoxLayout;
 import javax.swing.JLabel;
 import javax.swing.border.EmptyBorder;
 
+import use.thm.IVariantCatalogUserTHM;
 import use.thm.client.component.HexCellTHM;
 import use.thm.client.component.HexMapTHM;
 import use.thm.client.component.HexagonalLayoutTHM;
+import use.thm.client.component.VariantCatalogTHM;
 import use.thm.client.dragDropTranslucent.GhostDropManagerHexMapPanelTHM;
 import basic.zBasic.ExceptionZZZ;
 import basic.zBasic.util.abstractList.HashMapMultiZZZ;
 import basic.zBasic.util.log.ReportLogZZZ;
-
 import basic.zBasicUI.component.UIHelper;
+import basic.zBasicUI.glassPane.dragDropTranslucent.GhostDropEvent;
 import basic.zBasicUI.glassPane.dragDropTranslucent.GhostDropListener;
 import basic.zBasicUI.glassPane.dragDropTranslucent.GhostGlassPane;
 import basic.zBasicUI.glassPane.dragDropTranslucent.GhostMotionAdapter;
 import basic.zBasicUI.glassPane.dragDropTranslucent.GhostPictureAdapter;
 import basic.zBasicUI.glassPane.dragDropTranslucent.IGhostGlassPaneFrame;
 import basic.zBasicUI.glassPane.dragDropTranslucent.IGhostGlassPanePanel;
-
 import basic.zKernel.KernelZZZ;
 import basic.zKernelUI.component.KernelJPanelCascadedZZZ;
 
-public class PanelMain_WESTTHM extends KernelJPanelCascadedZZZ implements IGhostGlassPanePanel{
+public class PanelMain_WESTTHM extends KernelJPanelCascadedZZZ implements IGhostGlassPanePanel, IVariantCatalogUserTHM{
 	//GhostDragDrop Interface
 		private GhostGlassPane glassPane; //etwas, das per Drag/Drop bewegt wird, wird dorthin als Bild kopiert.
-
+		
+	//IVariantCatalogTHM Interface
+		private VariantCatalogTHM objCatalog=null;
+		
+		
 	//Default Konstruktor, damit die Klasse per Refelction einfachmit newInstance erzeugt werden kann.
 	public PanelMain_WESTTHM(){		
 	}	
-	public PanelMain_WESTTHM(KernelZZZ objKernel, KernelJPanelCascadedZZZ panelParent, GhostPictureAdapter pictureAdapter) throws ExceptionZZZ  {
+	//public PanelMain_WESTTHM(KernelZZZ objKernel, KernelJPanelCascadedZZZ panelParent, GhostPictureAdapter pictureAdapter) throws ExceptionZZZ  {
+	public PanelMain_WESTTHM(KernelZZZ objKernel, KernelJPanelCascadedZZZ panelParent, GhostDropListener listenerForDropToHexMap) throws ExceptionZZZ  {
 		super(objKernel, panelParent);
 		this.enableGhostGlassPane((FrmMapSingletonTHM)this.getFrameParent());
 		try{	
@@ -47,30 +59,27 @@ public class PanelMain_WESTTHM extends KernelJPanelCascadedZZZ implements IGhost
 			if(glassPane==null) throw new ExceptionZZZ("Kein GhostGlassPane im FrameParent vorhanden");
 		     
 			this.setJComponentContentDraggable(false); //Nur die einzelnen Labels ziehbar machen
-			
-			JLabel label;
-		     Box box = Box.createVerticalBox();
-		     box.setBorder(new EmptyBorder(0, 0, 0, 20));
-		     
-		   //Eclipse Workspace
-			File f = new File("");
-		    String sPathEclipse = f.getAbsolutePath();
-		    ReportLogZZZ.write(ReportLogZZZ.DEBUG, "Eclipse absolut path: " + sPathEclipse);
-	        //String sPathParent = sPathEclipse.substring(0, sPathEclipse.lastIndexOf(System.getProperty("file.separator")));
-	        String sBaseDirectory = sPathEclipse + File.separator + "images";
-	        String sFile = sBaseDirectory + File.separator + "new_sale.png";
-		     
-		     //Ein Label hinzuf�gen mit dem entsprechenden Bild
-		     box.add(label = UIHelper.createLabelWithIcon("Test Drag", sFile));
-		     //++++++++++++++++++++++++++++++++++++++
-		     		     
-		     //wird nun von au�en übergeben, muss der gleiche sein, der den DROP-Event abf�ngt.		     GhostPictureAdapter pictureAdapter = new GhostPictureAdapter(glassPane, "new_sale", sFile); //Das wird immer und �berall redundant gemacht, da es ja mehrere Pictures gibt. Es wird auch redundant gemacht beim DROPP-EVENT abfangen.
-		     label.addMouseListener(pictureAdapter); //Beim Clicken wird das Bild vom pictureAdapter an die passende Stelle im glassPane gesetzt.
+									
+		     //++++++++++++++++++++++++++++++++++++++		     
+		    //Es muss das pictureAdapter-Objekt der gleich sein, der das DRAGGEN bereitstellt, wie auch das DROPPEN!!!!
+			//TODO GOON 20180336:
+	        //Angedacht war dafür früher:
+	        //           Diese pictureAdapter-Objekte in einer HashMap verwalten, so dass über ein Schlüsselwort der korrekte Picture Adapter
+			//           sowohl für die zu DRAGGENDE Komponente als auch für die den DROP empfangende Komponente 
+			//           geholt werden kann.
+            //20180336: Mit dem Datenbankbackend gilt: 
+	        //          Das Bild (den Namen) aus der jeweiligen Variante holen.
+	     
+	        //TODO GOON 20180326:
+	        //Der übergebene String wird beim Drop-Event ausgewertet.
+	        //Nur darüber kann dem Backend mitgeteilt werden von welcher "Variante" das neu zu erstellende Entity sein soll.
+		    //Das passiert in: GhostDropManagerHexMapPanelTHM.ghostDropped(GhostDropEvent e)
 
-		     //Das DRAGGEN 
-		     label.addMouseMotionListener(new GhostMotionAdapter(glassPane));
-		     
-		     
+			//NEU 20180326: Die Box-Objekte im Konstruktor der VariantCatalog-Klasse erzeugen.
+			VariantCatalogTHM objCatalog = new VariantCatalogTHM(objKernel, panelParent, glassPane, listenerForDropToHexMap);
+			this.setVariantCatalog(objCatalog);
+             
+			
 		     /* FGL 20130627: Nach Einführen des JScrollPanes funktioniert das Droppen nicht mehr 100%ig wenn gescrollt wurde.
 		      * Daher versuchen den JScrollPane als Dropp-Ziel einzubinden, was in PanelFrmMapSingletonTHM passiert
 		      *
@@ -83,8 +92,54 @@ public class PanelMain_WESTTHM extends KernelJPanelCascadedZZZ implements IGhost
 		     */
 
 		     //+++++++++++++++++++++++++++++++++++++++
-		     this.setLayout(new BorderLayout());
-			 this.add(BorderLayout.CENTER, box);
+		     //this.setLayout(new BorderLayout());
+			this.setLayout((LayoutManager) new BoxLayout( this, BoxLayout.Y_AXIS ) );
+			//this.setLayout(new BoxLayout(BoxLayout.Y_AXIS ) );
+		     
+		     
+		     //TODO GOON: Nun die HashMapMultiZZZ durchgehen und die Box-Elemente auslesen und hier mit .add(...,box) hinzufügen
+		     HashMapMultiZZZ hmCatalog = this.getVariantCatalog().getMapCatalog();
+		    
+		     //TODO GOON 20180326: Diese Multi Hashmap muss man leichter durchlaufen können. So kommt ein Fehler:
+//		FEHLER     Exception in thread "main" java.lang.ClassCastException: java.util.HashMap$Entry cannot be cast to java.util.HashMap		     
+//		     Set<HashMap<?, ?>> setVariant = hmCatalog.entrySet();
+//		     //Set<HashMap> setVariant = hmType.entrySet();
+//		     for (Iterator<HashMap<?, ?>> iteratorVariantType = setVariant.iterator(); iteratorVariantType.hasNext();) {
+//		    	    HashMap<?,?>hmVariantType = iteratorVariantType.next();
+//		    	    
+//		    	    for(Iterator<?> iteratorVariant = hmVariantType.entrySet().iterator();iteratorVariant.hasNext();){
+//		    	    	Entry<String, Box> variant = (Entry<String, Box>) iteratorVariant.next();
+//		    	    	String sString = variant.getKey();
+//		    	    	Box boxTemp = variant.getValue();
+//		    	    	String sNameBoxTemp = boxTemp.getName();
+//		    	    	System.out.println("String: '" + sString + "' | '" + sNameBoxTemp + "'");
+//		    	    	
+//		    	    	this.add(BorderLayout.CENTER, boxTemp);
+//		    	    }
+//		    	    
+//		    	}
+		     
+		     
+		     //IDEE: Set<String> setS_OUT = hmCatalog.getStringKeySetOuter();
+		     //IDEE: Set<String> setS_In = hmCatalog.getStringKeySetInner(String sKeyOuter);
+		     
+		     HashMap hmVariantTypes = hmCatalog.getHashMap();
+		     Set<String> setVariantTypes = hmVariantTypes.keySet();
+		     for (Iterator<String> iteratorVariantTypes = setVariantTypes.iterator(); iteratorVariantTypes.hasNext();) {
+		    	 String sVariantType = (String) iteratorVariantTypes.next();
+		    	 System.out.println("XXXXXXXXXXXXXXXXXXXXXXXXXX String: '" + sVariantType + "'");
+		    	 
+		    	 HashMap hmVariant = (HashMap) hmVariantTypes.get(sVariantType);
+		    	 Set<String> setVariant = hmVariant.keySet();
+		    	 for (Iterator<String> iteratorVariant = setVariant.iterator(); iteratorVariant.hasNext();) {
+		    		 String sVariant = (String) iteratorVariant.next();
+		    		 System.out.println("XXXXXXXXXXXXXXXXXXXXXXXXXX String: '" + sVariant + "'");
+		    		 Box boxTemp = (Box) hmVariant.get(sVariant);
+		    		 
+		    		 //Box boxTemp = (Box) hmCatalog.get("ARMY","new_sale");		     
+				     this.add(BorderLayout.CENTER, boxTemp);				    
+		    	 }		    	 		    	
+		     }
 		        
 			
 		} catch (ExceptionZZZ ez) {				
@@ -108,4 +163,16 @@ public class PanelMain_WESTTHM extends KernelJPanelCascadedZZZ implements IGhost
 			this.setGhostGlassPane(glassPane);
 			return true;
 		}
+		
+		
+		@Override
+		public VariantCatalogTHM getVariantCatalog() {
+			return this.objCatalog;
+		}
+
+		@Override
+		public void setVariantCatalog(VariantCatalogTHM objCatalog) {
+			this.objCatalog = objCatalog;
+		}
+
 }

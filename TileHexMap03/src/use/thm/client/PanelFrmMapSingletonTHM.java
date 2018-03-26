@@ -61,25 +61,14 @@ public class PanelFrmMapSingletonTHM  extends KernelJPanelCascadedZZZ implements
 		//FGL 20130627: Als Drop Ziel nun den JScrollPane. Das Panel als Drop Ziel funktioniert nicht immer, wenn gescrollt wurde.
 		//GhostDropListener listener = new GhostDropManagerHexMapPanelTHM(objPanelCenter); //Funktioniert nicht, wenn mit den ScrollBars gescrollt worden ist.
 		//Probleme bei zu großen Hexes GhostDropListener listener = new GhostDropManagerHexMapPanelTHM(this.getKernelObject(), scrollPaneCenter, objPanelCenter.getHexMap());  
-		GhostDropListener listener = new GhostDropManagerHexMapPanelTHM(this.getKernelObject(), scrollPaneCenter, objPanelCenter.getHexMap());		
+		GhostDropListener listenerForDropToHexMap = new GhostDropManagerHexMapPanelTHM(this.getKernelObject(), scrollPaneCenter, objPanelCenter.getHexMap());		
 		
 		//### PANEL WEST - FÜLLEN				
-			    //Es muss das pictureAdapter-Objekt der gleich sein, der das DRAGGEN bereitstellt, wie auch das DROPPEN!!!!
-				//TODO GOON: Diese pictureAdapter-Objekte in einer HashMap verwalten, so dass über ein Schlüsselwort der korrekte Picture Adapter
-				//           sowohl für die zu DRAGGENDE Komponente als auch für die den DROP empfangende Komponente 
-				//           geholt werden kann.
-				 //Eclipse Worspace
-				 File f = new File("");
-				 String sPathEclipse = f.getAbsolutePath();
-				 String sBaseDirectory = sPathEclipse + File.separator + "images";
-				 String sFile = sBaseDirectory + File.separator + "new_sale.png";
-				 GhostPictureAdapter pictureAdapter = new GhostPictureAdapter(glassPane, "new_sale", sFile);
-			     pictureAdapter.addGhostDropListener(listener);
-								
-			    //Es muss das pictureAdapter-Objekt der gleich sein, der das DRAGGEN bereitstellt, wie auch das DROPPEN!!!!
-				PanelMain_WESTTHM objPanelWest = new PanelMain_WESTTHM(objKernel, this, pictureAdapter);				
-				this.setPanelSub("WEST", objPanelWest);       //Backend Hashtable hinzuf�gen
-				this.add(objPanelWest, BorderLayout.WEST); //Frontend hinzuf�gen
+		//20180326 den Listener an die PictureAdapter der "Box"-Objekte übergeben
+		//PanelMain_WESTTHM objPanelWest = new PanelMain_WESTTHM(objKernel, this, pictureAdapter);				
+		PanelMain_WESTTHM objPanelWest = new PanelMain_WESTTHM(objKernel, this, listenerForDropToHexMap);
+		this.setPanelSub("WEST", objPanelWest);       //Backend Hashtable hinzuf�gen
+		this.add(objPanelWest, BorderLayout.WEST); //Frontend hinzuf�gen
 		
 	}
 	

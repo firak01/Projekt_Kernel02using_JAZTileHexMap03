@@ -43,7 +43,7 @@ public class PanelMain_CENTERTHM extends KernelJPanelCascadedZZZ implements IHex
 	public PanelMain_CENTERTHM(KernelZZZ objKernel, KernelJPanelCascadedZZZ panelParent, HashMap<String, Boolean>hmFlag) throws ExceptionZZZ{
 		super(objKernel, panelParent, hmFlag);
 		try{		
-			this.setJComponentContentDraggable(false); //Nur die einzelnen Sechsecke ziehbar machen
+			this.setJComponentContentDraggable(false); //Nur die einzelnen Spielsteine ziehbar machen
 			
 			//Werte für die Kartengröße auslesen			
 			String sModuleAlias = this.getModuleName();
@@ -64,7 +64,7 @@ public class PanelMain_CENTERTHM extends KernelJPanelCascadedZZZ implements IHex
 			this.setHexMap(objMap);
 			
 			//+++ Das Ziel ist, beim Fallenlassen eines Objekts aus dem glassPane, reagieren zu können
-			//ABER: HexMap ist keine JComponent, sondern ein KernelUseObject. Nur die einzelnen Zellen sind JPanels (und damit JComponents) und k�nnen direkter als Drop-Ziel verwendet werden.
+			//ABER: HexMap ist keine JComponent, sondern ein KernelUseObject. Nur die einzelnen Zellen sind JPanels (und damit JComponents) und können direkter als Drop-Ziel verwendet werden.
 			//GhostDropListener listener = new GhostDropManagerHexMapTHM(objMap);
 		
 			//##########################

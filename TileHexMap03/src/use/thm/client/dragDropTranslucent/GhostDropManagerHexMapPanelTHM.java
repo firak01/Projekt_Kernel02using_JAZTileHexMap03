@@ -9,6 +9,7 @@ import javax.swing.JViewport;
 import custom.zKernel.LogZZZ;
 import use.thm.IHexMapUserTHM;
 import use.thm.client.component.ArmyTileTHM;
+import use.thm.client.component.FleetTileTHM;
 import use.thm.client.component.HexCellTHM;
 import use.thm.client.component.HexMapTHM;
 import use.thm.client.component.TileTHM;
@@ -18,7 +19,9 @@ import use.thm.client.event.TileMetaEventBrokerTHM;
 import use.thm.client.event.TileMoveEventBrokerTHM;
 import use.thm.persistence.dao.AreaCellDao;
 import use.thm.persistence.dao.TroopArmyVariantDao;
+import use.thm.persistence.dao.TroopFleetVariantDao;
 import use.thm.persistence.daoFacade.TroopArmyDaoFacade;
+import use.thm.persistence.daoFacade.TroopFleetDaoFacade;
 import use.thm.persistence.dto.DtoFactoryGenerator;
 import use.thm.persistence.dto.ITileDtoAttribute;
 import use.thm.persistence.dto.TileDtoFactory;
@@ -26,6 +29,7 @@ import use.thm.persistence.hibernate.HibernateContextProviderSingletonTHM;
 import use.thm.persistence.model.AreaCell;
 import use.thm.persistence.model.CellId;
 import use.thm.persistence.model.TroopArmyVariant;
+import use.thm.persistence.model.TroopFleetVariant;
 import basic.persistence.dto.GenericDTO;
 import basic.persistence.dto.IDTOAttributeGroup;
 import basic.zBasic.ExceptionZZZ;
@@ -146,7 +150,57 @@ public class GhostDropManagerHexMapPanelTHM extends AbstractGhostDropManager imp
 							//Übergib das DTO-Objekt an das Frontend-Objekt. Dieses kann sich dann daraus weiterhin bedienen.
 							objTile = new ArmyTileTHM(objMap.getPanelParent(), objMap.getTileMoveEventBroker(), dto, objCell.getMapX(), objCell.getMapY(), objMap.getSideLength());
 						}
-				   }
+				   }//new_sale
+				   
+				   //################# TODO GOON 20180326: DAS DYNAMISCH MACHEN ################
+				   if(sAction.equalsIgnoreCase("new_sale02")){
+					   //FGL: 20170703 - Hier erst einmal im Backend prüfen, ob eine neue Army hier überhaupt erstellt werden darf.
+					   boolean bGoon = false;	
+					 //###################
+						//Hole das passende Area-Objekt
+						//###################
+						//Die in eine Methode gekapselte (DAO Klasse) Vorgehensweise verwenden. //Der Code stammt aus HexMapTH.fillMap_createNewTiles(...)
+					   //Allerdings müssen erst einmal alle Voraussetzungen erfüllt werden. HibernateContext,..., PrimaryKey..., AreaCell Objekt...,
+					    HibernateContextProviderSingletonTHM objContextHibernate = HibernateContextProviderSingletonTHM.getInstance(this.getKernelObject());
+					    AreaCellDao objAreaDao = new AreaCellDao(objContextHibernate);
+					    
+					    String sXDropped = objCell.getMapX();
+						String sYDropped = objCell.getMapY();
+					    CellId primaryKeyCell = new CellId("EINS", sXDropped, sYDropped);
+					    
+					    AreaCell objCellTemp = objAreaDao.findByKey(primaryKeyCell);//Spannend. Eine Transaction = Eine Session, d.h. es müsste dann wieder eine neue Session gemacht werden, beim zweiten DAO Aufruf.
+					    
+						//###################
+						//Hole das passende TroopVariant-Objekt
+						//###################
+					    long lngTroopFleetVariant_Thiskeyid = 21; //"Infanterie". TODO GOON 20180311: Aus dem GhostDropEvent (via GhostpictureAdapter) die im PANEL_WEST ausgewählte Variante holen.			
+						TroopFleetVariantDao daoKey = new TroopFleetVariantDao(objContextHibernate);
+						TroopFleetVariant objTroopFleetVariant = (TroopFleetVariant) daoKey.searchKey("TROOPFLEETVARIANT", lngTroopFleetVariant_Thiskeyid );
+											    
+						TroopFleetDaoFacade objTroopDaoFacade = new TroopFleetDaoFacade(objContextHibernate);
+						String sUniquename = objTroopDaoFacade.computeUniquename();						
+						bGoon = objTroopDaoFacade.insertTroopFleet(sUniquename, objTroopFleetVariant, objCellTemp);//Falls das aus irgendwelchen Gründen nicht erlaubt ist, ein Veto einlegen.
+						if(!bGoon){
+							//0170703: Hole auch irgendwie einen Grund ab, warum an dieser Stelle nix eingefügt werden darf.//Dies muss aus TroopArmyDaoFacade abgeholt werden.							
+							String sMessage = objTroopDaoFacade.getFacadeResult().getMessage(); //Hole die Meldung ab.
+							
+							//Mache nun eine Ausgabe, wie sonst in AreaCellTHM.onTileCreated(EventTileCreatedInCellTHM) 				
+							JOptionPane.showMessageDialog (this.component, sMessage);//TODO GOON: Eigentlich hier nicht ausgeben, sondern das Ergebnis für irgendwelche Frontend-Klassen zur Verfügung stellen, die dann ggfs. auch eine UI Komponente haben.
+							
+						}else{
+
+							//Hole Werte über das DTO-Objekt
+							//FGL 20171112: Hole die Factory - Klasse generisch per FactoryGenerator:
+							DtoFactoryGenerator objFactoryGenerator = DtoFactoryGenerator.getInstance();
+							GenericDTO dto = objFactoryGenerator.createDtoForClass(ArmyTileTHM.class);		
+							
+							//FGL 20180321: Auch hier die  DTO mit den Werten aus der Variante füllen
+							objTroopDaoFacade.fillTroopFleetDto(sUniquename, dto);
+							
+							//Übergib das DTO-Objekt an das Frontend-Objekt. Dieses kann sich dann daraus weiterhin bedienen.
+							objTile = new FleetTileTHM(objMap.getPanelParent(), objMap.getTileMoveEventBroker(), dto, objCell.getMapX(), objCell.getMapY(), objMap.getSideLength());
+						}					   
+				   }//new_sale02
 			   }
 			   if(objTile!=null){
 				  /* Merke EventTileDroppedToCellTHM wäre der FALSCHER EVENT !!! */

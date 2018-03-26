@@ -41,7 +41,7 @@ public class PanelMain_WESTTHM extends KernelJPanelCascadedZZZ implements IGhost
 		super(objKernel, panelParent);
 		this.enableGhostGlassPane((FrmMapSingletonTHM)this.getFrameParent());
 		try{	
-			//Das Draggen als Bild �ber den GlassPane
+			//Das Draggen als Bild über den GlassPane
 		    //GhostGlassPane glassPane = ((FrmMapSingletonTHM)this.getFrameParent()).getGhostGlassPane();
 			GhostGlassPane glassPane = this.getGhostGlassPane();
 			if(glassPane==null) throw new ExceptionZZZ("Kein GhostGlassPane im FrameParent vorhanden");
@@ -72,7 +72,7 @@ public class PanelMain_WESTTHM extends KernelJPanelCascadedZZZ implements IGhost
 		     
 		     
 		     /* FGL 20130627: Nach Einführen des JScrollPanes funktioniert das Droppen nicht mehr 100%ig wenn gescrollt wurde.
-		      * Daher versuchen den JScrollPane als Dropp-Ziel einzubinden, was in PanelFrmMap�SingletonTHM passiert
+		      * Daher versuchen den JScrollPane als Dropp-Ziel einzubinden, was in PanelFrmMapSingletonTHM passiert
 		      *
 		     //!!! Das DROPPEN wird NICHT in dem darübergeordneten Panel definiert, da der pictureAdapter nur hier an das Label.addMouseListener() übergeben werden kann.
 		     //Das DROPPEN: Merke Die TileHexMap ist keine JComponent. Das sind nur die einzelnen Zellen. 

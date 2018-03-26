@@ -47,12 +47,12 @@ public class PanelFrmMapSingletonTHM  extends KernelJPanelCascadedZZZ implements
 				
 											
 		//### PANEL CENTER
-		//Merke: Das Panel Center muss erst definiert werden, da das Panel West dies anschliessend schon als DROP-Ziel verwendet.
+		//Merke: Das Panel Center muss erst definiert werden, damit das Panel West dies anschliessend schon als DROP-Ziel verwenden kann.
 		HashMap<String, Boolean> hmFlag = new HashMap<String, Boolean>();
 		//hmFlag.put("isKernelProgram", true); //2013-07-08: Damit wird angezeigt, das es in der Kernel .ini - Konfigurationsdatei einen entsprechenden Abschnitt gibt, in dem Parameter hierf�r hinterlegt sind.
 		hmFlag.put(FLAGZ.COMPONENT_KERNEL_PROGRAM.name(), true);
 		PanelMain_CENTERTHM objPanelCenter = new PanelMain_CENTERTHM(objKernel, this, hmFlag);  
-		this.setPanelSub("CENTER", objPanelCenter);//Backend Hashtable hinzuf�gen
+		this.setPanelSub("CENTER", objPanelCenter);//Backend Hashtable hinzufügen
 		
 		//FGL 20130627: Das Panel nicht mehr direkt, sondern über den JScrollPane einbinden this.add(objPanelCenter, BorderLayout.CENTER); //Frontend hinzuf�gen
 		JScrollPane scrollPaneCenter = new JScrollPane(objPanelCenter); //Frontend hinzufügen
@@ -60,7 +60,7 @@ public class PanelFrmMapSingletonTHM  extends KernelJPanelCascadedZZZ implements
 		
 		//FGL 20130627: Als Drop Ziel nun den JScrollPane. Das Panel als Drop Ziel funktioniert nicht immer, wenn gescrollt wurde.
 		//GhostDropListener listener = new GhostDropManagerHexMapPanelTHM(objPanelCenter); //Funktioniert nicht, wenn mit den ScrollBars gescrollt worden ist.
-		//Probleme bei zu gro�en Hexes GhostDropListener listener = new GhostDropManagerHexMapPanelTHM(this.getKernelObject(), scrollPaneCenter, objPanelCenter.getHexMap());  
+		//Probleme bei zu großen Hexes GhostDropListener listener = new GhostDropManagerHexMapPanelTHM(this.getKernelObject(), scrollPaneCenter, objPanelCenter.getHexMap());  
 		GhostDropListener listener = new GhostDropManagerHexMapPanelTHM(this.getKernelObject(), scrollPaneCenter, objPanelCenter.getHexMap());		
 		
 		//### PANEL WEST - FÜLLEN				

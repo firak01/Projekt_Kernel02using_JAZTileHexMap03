@@ -131,61 +131,61 @@ public class FrmMapSingletonTHM  extends KernelJFrameCascadedZZZ implements IGho
 	
 
 	
-	//###################################################
-	/** TODO What the method does.
-	 * @param args
-	 * 
-	 * lindhaueradmin; 10.09.2008 14:31:05
-	 */
-	public static void main(String[] args) {
-		try{
-		//NEIN, nur im frmMain:   ConfigZZZ objConfig = new ConfigZZZ(saArg);
-		
-		//---- Nun das eigentliche KernelObjekt initiieren. Dabei können z.B. Debug-Einstellungen ausgwählt worden sein.
-		//KernelZZZ objKernel = new KernelZZZ(sApplicationKey, sSystemNr, sDir, sFile,(String)null);
-		//20170413 ERSETZE DIESE ZENTRALE STELLE DURCH EIN SINGELTON... KernelZZZ objKernel = new KernelZZZ("THM", "01", "", "ZKernelConfigTileHexMap02Client.ini", (String[]) null);
-		KernelSingletonTHM objKernel = KernelSingletonTHM.getInstance("THM", "01", "", "ZKernelConfigTileHexMap02Client.ini", (String[]) null);
-		
-		//Lösung: Singleton, damit man nur eine Dialogbox öffnen kann 
-		FrmMapSingletonTHM frameInfo = FrmMapSingletonTHM.getInstance(objKernel, null);
-				
-		//---- Bereite das Reporten über Log4J vor...
-		//KernelReportContextProviderZZZ objContext = new KernelReportContextProviderZZZ(objKernel, frmMain.getClass().getName(), frmMain.getClass().getName());					
-		KernelReportContextProviderZZZ objContext = new KernelReportContextProviderZZZ(objKernel, frameInfo.getClass().getName());  //Damit ist das ein Context Provider, der die Informationen auf "Modulebene" sucht.
-		ReportLogZZZ.loadKernelContext(objContext, true);  //Mit dem true bewirkt man, dass das file immer neu aus dem ConfigurationsPattern erzeugt wird.
-		ReportLogZZZ.write(ReportLogZZZ.DEBUG, "Start of main-frame");				
-		
-		//---- Bereite Hibernate und die SQLite Datenbank vor.
-		//Die eigentliche Session und Configuration wird in der Klasse use.thm.client.hibernate.HibernateContextProviderTHM gemacht.
-		//Hier könnten dann noch vorgelagerte Dinge gemacht werden.
-		
-		//---- Starte den Frame
-		boolean bLaunched = frameInfo.launch(objKernel.getApplicationKey() + " - Client (Map)");
-		if(bLaunched == true){
-			ReportLogZZZ.write(ReportLogZZZ.DEBUG, "Performing action: Launch 'TileHexMap', was successfull");
-			
-			boolean bCentered = frameInfo.centerOnParent();
-			if(bCentered==true){
-				ReportLogZZZ.write(ReportLogZZZ.DEBUG, "Performing action: CenterOnParent 'TileHexMap', was successfull");					
-			}else{
-				ReportLogZZZ.write(ReportLogZZZ.ERROR, "Performing action: CenterOnParent 'TileHexMap', was NOT successfull");	
-			}
-			
-		}
-		
-		/*Merke: Dieser Code wird vor dem Fensterstart ausgef�hrt. Nur m�glich, weil der EventDispatcher-Code nebenl�ufig ausgef�hrt.... wird.
-		//            Und das ist nur m�glich, wenn das der "Erste Frame/ der Hauptframe" der Applikation ist.
-		try{			
-			for(int icount = 0; icount <= 10; icount++){
-				ReportLogZZZ.write(ReportLogZZZ.DEBUG, "main - thread (actionPerformed): " + icount + ". doing something....");
-				Thread.sleep(10);
-			}
-		}catch(InterruptedException ie){			
-		} */
-		} catch (ExceptionZZZ ez) {				
-			ReportLogZZZ.write(ReportLogZZZ.ERROR, ez.getDetailAllLast());
-		}
-	}
+//	//###################################################
+//	/** TODO What the method does.
+//	 * @param args
+//	 * 
+//	 * lindhaueradmin; 10.09.2008 14:31:05
+//	 */
+//	public static void main(String[] args) {
+//		try{
+//		//NEIN, nur im frmMain:   ConfigZZZ objConfig = new ConfigZZZ(saArg);
+//		
+//		//---- Nun das eigentliche KernelObjekt initiieren. Dabei können z.B. Debug-Einstellungen ausgwählt worden sein.
+//		//KernelZZZ objKernel = new KernelZZZ(sApplicationKey, sSystemNr, sDir, sFile,(String)null);
+//		//20170413 ERSETZE DIESE ZENTRALE STELLE DURCH EIN SINGELTON... KernelZZZ objKernel = new KernelZZZ("THM", "01", "", "ZKernelConfigTileHexMap02Client.ini", (String[]) null);
+//		KernelSingletonTHM objKernel = KernelSingletonTHM.getInstance("THM", "01", "", "ZKernelConfigTileHexMap02Client.ini", (String[]) null);
+//		
+//		//Lösung: Singleton, damit man nur eine Dialogbox öffnen kann 
+//		FrmMapSingletonTHM frameInfo = FrmMapSingletonTHM.getInstance(objKernel, null);
+//				
+//		//---- Bereite das Reporten über Log4J vor...
+//		//KernelReportContextProviderZZZ objContext = new KernelReportContextProviderZZZ(objKernel, frmMain.getClass().getName(), frmMain.getClass().getName());					
+//		KernelReportContextProviderZZZ objContext = new KernelReportContextProviderZZZ(objKernel, frameInfo.getClass().getName());  //Damit ist das ein Context Provider, der die Informationen auf "Modulebene" sucht.
+//		ReportLogZZZ.loadKernelContext(objContext, true);  //Mit dem true bewirkt man, dass das file immer neu aus dem ConfigurationsPattern erzeugt wird.
+//		ReportLogZZZ.write(ReportLogZZZ.DEBUG, "Start of main-frame");				
+//		
+//		//---- Bereite Hibernate und die SQLite Datenbank vor.
+//		//Die eigentliche Session und Configuration wird in der Klasse use.thm.client.hibernate.HibernateContextProviderTHM gemacht.
+//		//Hier könnten dann noch vorgelagerte Dinge gemacht werden.
+//		
+//		//---- Starte den Frame
+//		boolean bLaunched = frameInfo.launch(objKernel.getApplicationKey() + " - Client (Map)");
+//		if(bLaunched == true){
+//			ReportLogZZZ.write(ReportLogZZZ.DEBUG, "Performing action: Launch 'TileHexMap', was successfull");
+//			
+//			boolean bCentered = frameInfo.centerOnParent();
+//			if(bCentered==true){
+//				ReportLogZZZ.write(ReportLogZZZ.DEBUG, "Performing action: CenterOnParent 'TileHexMap', was successfull");					
+//			}else{
+//				ReportLogZZZ.write(ReportLogZZZ.ERROR, "Performing action: CenterOnParent 'TileHexMap', was NOT successfull");	
+//			}
+//			
+//		}
+//		
+//		/*Merke: Dieser Code wird vor dem Fensterstart ausgef�hrt. Nur m�glich, weil der EventDispatcher-Code nebenl�ufig ausgef�hrt.... wird.
+//		//            Und das ist nur m�glich, wenn das der "Erste Frame/ der Hauptframe" der Applikation ist.
+//		try{			
+//			for(int icount = 0; icount <= 10; icount++){
+//				ReportLogZZZ.write(ReportLogZZZ.DEBUG, "main - thread (actionPerformed): " + icount + ". doing something....");
+//				Thread.sleep(10);
+//			}
+//		}catch(InterruptedException ie){			
+//		} */
+//		} catch (ExceptionZZZ ez) {				
+//			ReportLogZZZ.write(ReportLogZZZ.ERROR, ez.getDetailAllLast());
+//		}
+//	}
 
 	@Override
 	public boolean setSizeDefault() throws ExceptionZZZ {

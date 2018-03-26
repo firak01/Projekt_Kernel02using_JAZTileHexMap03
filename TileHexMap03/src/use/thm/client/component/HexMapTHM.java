@@ -15,6 +15,8 @@ import org.hibernate.Hibernate;
 import org.hibernate.Session;
 import org.hibernate.internal.SessionFactoryImpl;
 
+import use.thm.ApplicationSingletonTHM;
+import use.thm.ApplicationTHM;
 import use.thm.ITileEventUserTHM;
 import use.thm.client.event.EventTileCreatedInCellTHM;
 import use.thm.client.event.TileMetaEventBrokerTHM;
@@ -106,80 +108,16 @@ public class HexMapTHM extends KernelUseObjectZZZ implements ITileEventUserTHM {
 		this.iSideLength = iSideLength;
 		this.setPanelParent(panelParent);
 		
-				
-		//### THEMA PERSISTIERUNG IN EINER DATENBANK
-		//TODO GOON 20180111: Nun werden weitere Informationen in die Datenbank gefüllt und nicht nur die Karte gefüllt.
-		//Daher schon an dieser Stelle prüfen, ob die Datenbank existiert. Die entsprechenden Methoden dann mit einem neuen Parameter (bDatabaseNew) versehen.
-		//IDEE: Das Füllen der Schlüsselwerttabellen (Default- / Immutabletexte /Troopvarianten) sogar noch eher machen,
-		//      weil ggfs. die Datensätze daraus zum Aufbau auch anderer(!) Panels (Buttontexte, zur Verfügung stehende Truppen, ...) benötigt werden.
-		//
-		//Den Namen der Datenbank/des Schemas aus der Kernelkonfiguration holen.
-		//HibernateContextProviderSingletonTHM objContextHibernate = new HibernateContextProviderSingletonTHM(this.getKernelObject());
-		HibernateContextProviderSingletonTHM objContextHibernate = HibernateContextProviderSingletonTHM.getInstance(this.getKernelObject());
-								
-		//Prüfe die Existenz der Datenbank ab. Ohne die erstellte Datenbank und die Erstellte Datenbanktabelle kommt es hier zu einem Fehler.			
-		boolean bDbExists = SQLiteUtilZZZ.databaseFileExists(objContextHibernate);	
-		if(bDbExists){			
-			System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": Datenbank existiert schon.");										
-		}else{
-			System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": Datenbank existiert noch nicht.");
-		}
-		//objContextHibernate.getConfiguration().setProperty("hibernate.hbm2ddl.auto", "create");  //! Damit wird die Datenbank und sogar die Tabellen darin automatisch erstellt, aber: Sie wird am Anwendungsende geleert.
-		objContextHibernate.getConfiguration().setProperty("hibernate.hbm2ddl.auto", "update");  //! Jetzt erst wird jede Tabelle über den Anwendungsstart hinaus gepseichert.
-		
-		boolean bSuccessDefaulttext = fillDefaulttextAll(bDbExists);
-		boolean bSuccessImmutabletext = fillImmutabletextAll(bDbExists);
-		boolean bSuccessTroopArmyVariant = fillTroopArmyVariantAll(bDbExists);
-		boolean bSuccessTroopFleetVariant = fillTroopFleetVariantAll(bDbExists);
+		//20180326	
+		//THEMA : Persistierung in einer Datenbank. Falls die Datenbank neu ist, müssen ggfs. noch die GEBIETE und die DEFAULTTRUPPEN erstellt werden.
+		//             Die anderen Tabellen (Defaulttexte, ImmutableTexte, Army und Fleetvarianten) wurden schon auf Applikationsebene erstellt.
+		//FGL: Nachdem die Überprüfung, ob die Datenbank existiert Aufgabe des Application-Objekt gewerden ist, hier das entsprechende Flag auslesen
+		boolean bDbExists = !ApplicationSingletonTHM.getInstance().getFlag(ApplicationTHM.FLAGZ.DATABASE_NEW.name());
 		
 		
 		//Die MapInformationen und die Informationen für Hexfelder sollen aus einer SQL Tabelle kommen. Das legt dann auch die Größe der Karte fest fest....
 		//Wenn es schon Mapinformationen gibt (ggf. neu "Map Alias" beachten) dann soll die Karten nicht neu aufgebaut, sondern aus der SQL Datenbank ausgelesen werden.
-		boolean bSuccessMap = fillMap(bDbExists);
-		
-		//########################
-		//TEST TESTE
-		System.out.println(ReflectCodeZZZ.getPositionCurrent() + "##############################################");
-		System.out.println(ReflectCodeZZZ.getPositionCurrent() + "#### TESTE ABSCHLIESSEND #####################");
-		System.out.println(ReflectCodeZZZ.getPositionCurrent() + "##############################################");
-			
-		//HibernateContextProviderSingletonTHM objContextHibernate = new HibernateContextProviderSingletonTHM(this.getKernelObject());
-		//HibernateContextProviderSingletonTHM objContextHibernate = HibernateContextProviderSingletonTHM.getInstance(this.getKernelObject());
-		objContextHibernate.getConfiguration().setProperty("hibernate.hbm2ddl.auto", "update");  //! Jetzt erst wird jede Tabelle über den Anwendungsstart hinaus gespeichert UND auch wiedergeholt.				
-			
-		TroopArmyDao daoTroop = new TroopArmyDao(objContextHibernate);
-		int iTroopCounted = daoTroop.count();
-		System.out.println("Es gibt platzierte Armeen: " + iTroopCounted);
-		
-		Integer primaryKey = new Integer(2);
-		TroopArmy objTroopTemp = (TroopArmy) daoTroop.findById(primaryKey.intValue());		
-		if(objTroopTemp==null){
-		System.out.println("Es gibt keine Troop mit der ID= "+primaryKey.intValue());	
-		}else{
-			System.out.println("Troop mit der ID = " + primaryKey.intValue() + " hat als Uniquename()= "+objTroopTemp.getUniquename());
-			System.out.println(".... wurde erstellt:" + objTroopTemp.getCreatedThisAt());
-			System.out.println(".... wurde erstellt (als String):" + objTroopTemp.getCreatedThisAtString());
-					
-			System.out.println(".... wurde erstellt (null Übergabe):" + objTroopTemp.getCreatedThis());
-			System.out.println(".... wurde erstellt (als String mit null Übergabe):" + objTroopTemp.getCreatedThisString());				
-			System.out.println(".... wurde erstellt (als String mit Kommentar):" + objTroopTemp.getCreatedThisStringComment());
-			System.out.println(".... wurde erstellt (als String mit validierter Übergabe):" + objTroopTemp.getCreatedThisAtStringValid());
-			
-			System.out.println(".... wurde aktualisiert:" + objTroopTemp.getUpdated());
-			
-			HexCell objHexCell = objTroopTemp.getHexCell();
-		if(objHexCell==null){
-			System.out.println("Es gibt keine HexCell für diese Troop");	
-		}else{
-			System.out.println("HexCell für diese Troop ist: " + objHexCell.getFieldAlias());
-		}
-		}
-		
-		//### PROBLEM: Nach dem Einlesen der Datenbank bleibt diese "loaded",
-		//                        Das wirft entsprechenden Fehler wenn man danach mit einer Debug Dao-Klasse z.B. Texte einlesen will (DebugKeyTable_Version_TileDefaulttextTHM.java).
-		//+++ Lösungsansatz 20180309: Schliesse alles im objContextSingleton Objekt.
-		//objContextHibernate.closeAll();
-		//ABER: Anschliessend gilt die Database als "locked"??? Wenn man hier weiterarbeitet.
+		boolean bSuccessMap = fillMap(bDbExists);			
 	}
 	
 	/** Anzahl der Hexes in einer Zeile. 
@@ -248,239 +186,7 @@ public class HexMapTHM extends KernelUseObjectZZZ implements ITileEventUserTHM {
 		return this.hmCell;
 	}
 	
-	//### DEFAULTTEXTE ###########################################################
-	public boolean fillDefaulttextAll() throws ExceptionZZZ{
-		return this.fillDefaulttextAll(false);
-	}
 	
-	public boolean fillDefaulttextAll(boolean bDbExists) throws ExceptionZZZ{
-		boolean bReturn = false;
-		main:{
-			boolean bFillDatabaseNew = true;
-			
-			//Kernel Objekt
-			KernelZZZ objKernel = this.getKernelObject();
-						
-			//Der HibernateContext ist ein Singleton Objekt, darum braucht man ihn nicht als Parameter im Methodenaufruf weitergeben.
-			HibernateContextProviderSingletonTHM objContextHibernate = HibernateContextProviderSingletonTHM.getInstance(this.getKernelObject());			
-			if(bDbExists){
-				System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": Datenbank existiert schon.");
-				
-				//Momentan passiert noch nichts mit den Defaulttexten, also kein Auslesen und ggfs. irgendwoanders hineinfüllen...
-				bFillDatabaseNew = false;
-			}else{
-				//Fall: Datenbank existiert noch nicht
-				System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": Datenbank existiert noch nicht.");						
-				bFillDatabaseNew=true;
-			}//end if bDbExists
-			
-			if(bFillDatabaseNew){
-				if(bDbExists){
-					System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": Datenbank existiert zwar, es hat aber Probleme beim Einlesen gegeben.");
-					System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": Datenbank sollte gelöscht werden, damit der Neuaufbau keine Probleme bekommt.");
-					//	TODO ggfs. zur Sicherheit die gesamte Datenbankdatei löschen, was aber nur geht, wenn z.B. kein anderer Client darauf zugreift. Vor dem endgültigen Löschen immer ein Backup machen.
-					
-				}
-				
-				//Erzeuge neuen Datenbankinhalte:				
-				//Per Hibernate & Session 
-				int iTileDefaultTextCreated = fillTileDefaulttext_createNew(objContextHibernate);
-				
-				//Per EntityManager, aber das hat Probleme, zumindest mit SQLITE und den @TableGenerator Annotations zum automatischen Erstellen von IDs  
-				//bReturn = fillMap_createNew_ENTITYMANAGER_EXAMPLE(objContextHibernate, panelMap);
-			}else{
-				bReturn = true;
-			}
-		}//end main:		
-		return bReturn;
-	}
-	
-	private int fillTileDefaulttext_createNew(HibernateContextProviderSingletonTHM objContextHibernate) throws ExceptionZZZ{
-		int iReturn = 0;
-		main:{								
-			TileDefaulttextDao daoTileText = new TileDefaulttextDao(objContextHibernate);	
-			iReturn = daoTileText.createEntriesAll();
-			System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": Erstellte TileDefaultTexte: " + iReturn);
-
-			System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": ENDE ##############");						
-		}//end main:
-		return iReturn;	
-	}
-	
-	//### IMMUTABLETEXTE #############################################################################
-	public boolean fillImmutabletextAll() throws ExceptionZZZ{
-		return this.fillImmutabletextAll(false);
-	}
-	public boolean fillImmutabletextAll(boolean bDbExists) throws ExceptionZZZ{
-		boolean bReturn = false;
-		main:{
-			boolean bFillDatabaseNew = true;
-			
-			//Kernel Objekt
-			KernelZZZ objKernel = this.getKernelObject();
-						
-			//Der HibernateContext ist ein Singleton Objekt, darum braucht man ihn nicht als Parameter im Methodenaufruf weitergeben.
-			HibernateContextProviderSingletonTHM objContextHibernate = HibernateContextProviderSingletonTHM.getInstance(this.getKernelObject());			
-			if(bDbExists){
-				System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": Datenbank existiert schon.");
-				
-				//Momentan passiert noch nichts mit den Defaulttexten, also kein Auslesen und ggfs. irgendwoanders hineinfüllen...
-				bFillDatabaseNew = false;
-			}else{
-				//Fall: Datenbank existiert noch nicht
-				System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": Datenbank existiert noch nicht.");						
-				bFillDatabaseNew=true;
-			}//end if bDbExists
-			
-			if(bFillDatabaseNew){
-				if(bDbExists){
-					System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": Datenbank existiert zwar, es hat aber Probleme beim Einlesen gegeben.");
-					System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": Datenbank sollte gelöscht werden, damit der Neuaufbau keine Probleme bekommt.");
-					//	TODO ggfs. zur Sicherheit die gesamte Datenbankdatei löschen, was aber nur geht, wenn z.B. kein anderer Client darauf zugreift. Vor dem endgültigen Löschen immer ein Backup machen.
-					
-				}
-				
-				//Erzeuge neuen Datenbankinhalte:				
-				//Per Hibernate & Session 
-				int iTileImmutbleTextCreated = fillTileImmutabletext_createNew(objContextHibernate);
-				
-				//Per EntityManager, aber das hat Probleme, zumindest mit SQLITE und den @TableGenerator Annotations zum automatischen Erstellen von IDs  
-				//bReturn = fillMap_createNew_ENTITYMANAGER_EXAMPLE(objContextHibernate, panelMap);
-			}else{
-				bReturn = true;
-			}
-		}//end main:		
-		return bReturn;
-	}
-			
-	private int fillTileImmutabletext_createNew(HibernateContextProviderSingletonTHM objContextHibernate) throws ExceptionZZZ{
-		int iReturn = 0;
-		main:{							
-			TileImmutabletextDao daoTileText = new TileImmutabletextDao(objContextHibernate);	
-			iReturn = daoTileText.createEntriesAll();
-			System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": Erstellte TileImmutableTexte: " + iReturn);
-
-			System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": ENDE ##############");						
-		}//end main:
-		return iReturn;	
-	}
-
-	//### TROOPARMYVARIANT #############################################################################
-		public boolean fillTroopArmyVariantAll() throws ExceptionZZZ{
-			return this.fillTroopArmyVariantAll(false);
-		}
-		public boolean fillTroopArmyVariantAll(boolean bDbExists) throws ExceptionZZZ{
-			boolean bReturn = false;
-			main:{
-				boolean bFillDatabaseNew = true;
-				
-				//Kernel Objekt
-				KernelZZZ objKernel = this.getKernelObject();
-							
-				//Der HibernateContext ist ein Singleton Objekt, darum braucht man ihn nicht als Parameter im Methodenaufruf weitergeben.
-				HibernateContextProviderSingletonTHM objContextHibernate = HibernateContextProviderSingletonTHM.getInstance(this.getKernelObject());			
-				if(bDbExists){
-					System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": Datenbank existiert schon.");
-					
-					//Momentan passiert noch nichts mit den Defaulttexten, also kein Auslesen und ggfs. irgendwoanders hineinfüllen...
-					bFillDatabaseNew = false;
-				}else{
-					//Fall: Datenbank existiert noch nicht
-					System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": Datenbank existiert noch nicht.");						
-					bFillDatabaseNew=true;
-				}//end if bDbExists
-				
-				if(bFillDatabaseNew){
-					if(bDbExists){
-						System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": Datenbank existiert zwar, es hat aber Probleme beim Einlesen gegeben.");
-						System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": Datenbank sollte gelöscht werden, damit der Neuaufbau keine Probleme bekommt.");
-						//	TODO ggfs. zur Sicherheit die gesamte Datenbankdatei löschen, was aber nur geht, wenn z.B. kein anderer Client darauf zugreift. Vor dem endgültigen Löschen immer ein Backup machen.
-						
-					}
-					
-					//Erzeuge neuen Datenbankinhalte:					
-					//Per Hibernate & Session 
-					int iTroopArmyVariantCreated = fillTroopArmyVariant_createNew(objContextHibernate);
-					
-					//Per EntityManager, aber das hat Probleme, zumindest mit SQLITE und den @TableGenerator Annotations zum automatischen Erstellen von IDs  
-					//bReturn = fillMap_createNew_ENTITYMANAGER_EXAMPLE(objContextHibernate, panelMap);
-				}else{
-					bReturn = true;
-				}
-			}//end main:		
-			return bReturn;
-		}
-		
-		private int fillTroopArmyVariant_createNew(HibernateContextProviderSingletonTHM objContextHibernate) throws ExceptionZZZ{
-			int iReturn = 0;
-			main:{																											
-				TroopArmyVariantDao daoTroopArmy = new TroopArmyVariantDao(objContextHibernate);	
-				iReturn = daoTroopArmy.createEntriesAll();
-				System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": Erstellte TroopArmyVarianten: " + iReturn);
-	
-				System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": ENDE ##############");								
-			}//end main:
-			return iReturn;	
-		}
-		
-		
-		
-		//### TROOFLEETVARIANT #############################################################################
-		public boolean fillTroopFleetVariantAll() throws ExceptionZZZ{
-			return this.fillTroopFleetVariantAll(false);
-		}
-		public boolean fillTroopFleetVariantAll(boolean bDbExists) throws ExceptionZZZ{
-			boolean bReturn = false;
-			main:{
-				boolean bFillDatabaseNew = true;
-				
-				//Kernel Objekt
-				KernelZZZ objKernel = this.getKernelObject();
-							
-				//Der HibernateContext ist ein Singleton Objekt, darum braucht man ihn nicht als Parameter im Methodenaufruf weitergeben.
-				HibernateContextProviderSingletonTHM objContextHibernate = HibernateContextProviderSingletonTHM.getInstance(this.getKernelObject());			
-				if(bDbExists){
-					System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": Datenbank existiert schon.");
-					
-					//Momentan passiert noch nichts mit den Defaulttexten, also kein Auslesen und ggfs. irgendwoanders hineinfüllen...
-					bFillDatabaseNew = false;
-				}else{
-					//Fall: Datenbank existiert noch nicht
-					System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": Datenbank existiert noch nicht.");						
-					bFillDatabaseNew=true;
-				}//end if bDbExists
-				
-				if(bFillDatabaseNew){
-					if(bDbExists){
-						System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": Datenbank existiert zwar, es hat aber Probleme beim Einlesen gegeben.");
-						System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": Datenbank sollte gelöscht werden, damit der Neuaufbau keine Probleme bekommt.");
-						//	TODO ggfs. zur Sicherheit die gesamte Datenbankdatei löschen, was aber nur geht, wenn z.B. kein anderer Client darauf zugreift. Vor dem endgültigen Löschen immer ein Backup machen.
-						
-					}
-					
-					//Erzeuge neuen Datenbankinhalte:					
-					//Per Hibernate & Session 
-					int iTroopFleetVariantCreated = fillTroopFleetVariant_createNew(objContextHibernate);
-					
-					//Per EntityManager, aber das hat Probleme, zumindest mit SQLITE und den @TableGenerator Annotations zum automatischen Erstellen von IDs  
-					//bReturn = fillMap_createNew_ENTITYMANAGER_EXAMPLE(objContextHibernate, panelMap);
-				}else{
-					bReturn = true;
-				}
-			}//end main:		
-			return bReturn;
-		}
-		private int fillTroopFleetVariant_createNew(HibernateContextProviderSingletonTHM objContextHibernate) throws ExceptionZZZ{
-			int iReturn = 0;
-			main:{																
-				TroopFleetVariantDao daoTroopFleet = new TroopFleetVariantDao(objContextHibernate);	
-				iReturn = daoTroopFleet.createEntriesAll();
-				System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": Erstellte TroopFleetVarianten: " + iReturn);
-
-				System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": ENDE ##############");								
-		}//end main:
-		return iReturn;	
-	}
 		
 //#########################################
 

@@ -63,7 +63,7 @@ public class VariantCatalogTHM  extends KernelUseObjectZZZ{
        String sFile = sBaseDirectory + File.separator + "new_sale.png";
 	     
 	    //Ein Label hinzufügen mit dem entsprechenden Bild
-       JLabel label = UIHelper.createLabelWithIcon("Test Drag", sFile); 
+       JLabel label = UIHelper.createLabelWithIcon("NEW ARMY", sFile); 
 	    box.add(label);
 		
 		GhostPictureAdapter pictureAdapter = new GhostPictureAdapter(glassPane, "new_sale", sFile);
@@ -101,7 +101,7 @@ public class VariantCatalogTHM  extends KernelUseObjectZZZ{
 	     String sFile02 = sBaseDirectory + File.separator + "new_sale.png";
 	     
 	    //Ein Label hinzufügen mit dem entsprechenden Bild
-	     JLabel label02 = UIHelper.createLabelWithIcon("Test  02", sFile); 
+	     JLabel label02 = UIHelper.createLabelWithIcon("NEW FLEET", sFile); 
 	    box02.add(label02);
 		
 		GhostPictureAdapter pictureAdapter02 = new GhostPictureAdapter(glassPane, "new_sale02", sFile);

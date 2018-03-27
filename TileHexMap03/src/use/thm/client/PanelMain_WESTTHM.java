@@ -97,46 +97,19 @@ public class PanelMain_WESTTHM extends KernelJPanelCascadedZZZ implements IGhost
 			//this.setLayout(new BoxLayout(BoxLayout.Y_AXIS ) );
 		     
 		     
-		     //TODO GOON: Nun die HashMapMultiZZZ durchgehen und die Box-Elemente auslesen und hier mit .add(...,box) hinzufügen
+		     //Nun die HashMapMultiZZZ durchgehen und die Box-Elemente auslesen und hier mit .add(...,box) hinzufügen
 		     HashMapMultiZZZ hmCatalog = this.getVariantCatalog().getMapCatalog();
-		    
-		     //TODO GOON 20180326: Diese Multi Hashmap muss man leichter durchlaufen können. So kommt ein Fehler:
-//		FEHLER     Exception in thread "main" java.lang.ClassCastException: java.util.HashMap$Entry cannot be cast to java.util.HashMap		     
-//		     Set<HashMap<?, ?>> setVariant = hmCatalog.entrySet();
-//		     //Set<HashMap> setVariant = hmType.entrySet();
-//		     for (Iterator<HashMap<?, ?>> iteratorVariantType = setVariant.iterator(); iteratorVariantType.hasNext();) {
-//		    	    HashMap<?,?>hmVariantType = iteratorVariantType.next();
-//		    	    
-//		    	    for(Iterator<?> iteratorVariant = hmVariantType.entrySet().iterator();iteratorVariant.hasNext();){
-//		    	    	Entry<String, Box> variant = (Entry<String, Box>) iteratorVariant.next();
-//		    	    	String sString = variant.getKey();
-//		    	    	Box boxTemp = variant.getValue();
-//		    	    	String sNameBoxTemp = boxTemp.getName();
-//		    	    	System.out.println("String: '" + sString + "' | '" + sNameBoxTemp + "'");
-//		    	    	
-//		    	    	this.add(BorderLayout.CENTER, boxTemp);
-//		    	    }
-//		    	    
-//		    	}
-		     
-		     
-		     //IDEE: Set<String> setS_OUT = hmCatalog.getStringKeySetOuter();
-		     //IDEE: Set<String> setS_In = hmCatalog.getStringKeySetInner(String sKeyOuter);
-		     
-		     HashMap hmVariantTypes = hmCatalog.getHashMap();
-		     Set<String> setVariantTypes = hmVariantTypes.keySet();
-		     for (Iterator<String> iteratorVariantTypes = setVariantTypes.iterator(); iteratorVariantTypes.hasNext();) {
+		     for (Iterator<String> iteratorVariantTypes = hmCatalog.getOuterKeySetIterator(); iteratorVariantTypes.hasNext();) {
 		    	 String sVariantType = (String) iteratorVariantTypes.next();
 		    	 System.out.println("XXXXXXXXXXXXXXXXXXXXXXXXXX String: '" + sVariantType + "'");
-		    	 
-		    	 HashMap hmVariant = (HashMap) hmVariantTypes.get(sVariantType);
-		    	 Set<String> setVariant = hmVariant.keySet();
-		    	 for (Iterator<String> iteratorVariant = setVariant.iterator(); iteratorVariant.hasNext();) {
+
+		    	 //Set<String> setVariant = (Set<String>) hmCatalog.getInnerKeySet(sVariantType);
+		    	 //for (Iterator<String> iteratorVariant = setVariant.iterator(); iteratorVariant.hasNext();) {
+		    	 for (Iterator<String> iteratorVariant = hmCatalog.getInnerKeySetIterator(sVariantType); iteratorVariant.hasNext();) {
 		    		 String sVariant = (String) iteratorVariant.next();
 		    		 System.out.println("XXXXXXXXXXXXXXXXXXXXXXXXXX String: '" + sVariant + "'");
-		    		 Box boxTemp = (Box) hmVariant.get(sVariant);
-		    		 
-		    		 //Box boxTemp = (Box) hmCatalog.get("ARMY","new_sale");		     
+
+		    		 Box boxTemp = (Box) hmCatalog.get(sVariantType, sVariant);//z.B.: Box boxTemp = (Box) hmCatalog.get("ARMY","new_sale");		    		 		    		 		     
 				     this.add(BorderLayout.CENTER, boxTemp);				    
 		    	 }		    	 		    	
 		     }

@@ -14,12 +14,12 @@ import basic.zBasicUI.glassPane.dragDropTranslucent.GhostGlassPane;
 import basic.zBasicUI.glassPane.dragDropTranslucent.GhostPictureAdapter;
 import basic.zBasicUI.glassPane.dragDropTranslucent.IGhostGlassPaneFrame;
 import basic.zBasicUI.glassPane.dragDropTranslucent.IGhostGlassPanePanel;
-
+import basic.zBasicUI.glassPane.dragDropTranslucent.IGhostGlassPanePanelUser;
 import basic.zKernel.KernelZZZ;
 import basic.zKernelUI.component.KernelJFrameCascadedZZZ;
 import basic.zKernelUI.component.KernelJPanelCascadedZZZ;
 
-public class PanelFrmMapSingletonTHM  extends KernelJPanelCascadedZZZ implements IGhostGlassPanePanel{
+public class PanelFrmMapSingletonTHM  extends KernelJPanelCascadedZZZ implements IGhostGlassPanePanel, IGhostGlassPanePanelUser{
 	//GhostDragDrop Interface
 	private GhostGlassPane glassPane; //etwas, das per Drag/Drop bewegt wird, wird dorthin als Bild kopiert.
 
@@ -62,7 +62,7 @@ public class PanelFrmMapSingletonTHM  extends KernelJPanelCascadedZZZ implements
 		//GhostDropListener listener = new GhostDropManagerHexMapPanelTHM(objPanelCenter); //Funktioniert nicht, wenn mit den ScrollBars gescrollt worden ist.
 		//Probleme bei zu großen Hexes GhostDropListener listener = new GhostDropManagerHexMapPanelTHM(this.getKernelObject(), scrollPaneCenter, objPanelCenter.getHexMap());  
 		GhostDropListener listenerForDropToHexMap = new GhostDropManagerHexMapPanelTHM(this.getKernelObject(), scrollPaneCenter, objPanelCenter.getHexMap());		
-		
+
 		//### PANEL WEST - FÜLLEN				
 		//20180326 den Listener an die PictureAdapter der "Box"-Objekte übergeben
 		//PanelMain_WESTTHM objPanelWest = new PanelMain_WESTTHM(objKernel, this, pictureAdapter);				

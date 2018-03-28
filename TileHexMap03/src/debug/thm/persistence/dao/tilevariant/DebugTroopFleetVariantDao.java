@@ -448,13 +448,9 @@ public class DebugTroopFleetVariantDao {
 		main:{
 			try {				
 				KernelZZZ objKernel = new KernelZZZ(); //Merke: Die Service Klasse selbst kann wohl nicht das KernelObjekt extenden!
-				HibernateContextProviderSingletonTHM objContextHibernate;
-				
-				objContextHibernate = HibernateContextProviderSingletonTHM.getInstance(objKernel);					
+				HibernateContextProviderSingletonTHM objContextHibernate = HibernateContextProviderSingletonTHM.getInstance(objKernel);					
 				///Diese Methode hat hierüber nicht zu entscheiden .... objContextHibernate.getConfiguration().setProperty("hibernate.hbm2ddl.auto", "update");  //! Jetzt erst wird jede Tabelle über den Anwendungsstart hinaus gespeichert UND auch wiedergeholt.				
 				TroopFleetVariantDao daoTroopVariant = new TroopFleetVariantDao(objContextHibernate);
-				String sKeytype = new String("TROOPFLEETVARIANT");		
-				Long lngThiskey = new Long(1);
 				
 					//Nun alle holen
 					ArrayList<TroopFleetVariant> listaEntity = (ArrayList<TroopFleetVariant>) daoTroopVariant.findLazyAll();

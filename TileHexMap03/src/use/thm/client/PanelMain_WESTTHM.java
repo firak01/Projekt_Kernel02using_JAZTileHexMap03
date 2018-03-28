@@ -51,13 +51,8 @@ public class PanelMain_WESTTHM extends KernelJPanelCascadedZZZ implements IGhost
 	//public PanelMain_WESTTHM(KernelZZZ objKernel, KernelJPanelCascadedZZZ panelParent, GhostPictureAdapter pictureAdapter) throws ExceptionZZZ  {
 	public PanelMain_WESTTHM(KernelZZZ objKernel, KernelJPanelCascadedZZZ panelParent, GhostDropListener listenerForDropToHexMap) throws ExceptionZZZ  {
 		super(objKernel, panelParent);
-		this.enableGhostGlassPane((FrmMapSingletonTHM)this.getFrameParent());
-		try{	
-			//Das Draggen als Bild über den GlassPane
-		    //GhostGlassPane glassPane = ((FrmMapSingletonTHM)this.getFrameParent()).getGhostGlassPane();
-			GhostGlassPane glassPane = this.getGhostGlassPane();
-			if(glassPane==null) throw new ExceptionZZZ("Kein GhostGlassPane im FrameParent vorhanden");
-		     
+		this.enableGhostGlassPane((FrmMapSingletonTHM)this.getFrameParent()); //Das Draggen als Bild über den GlassPane. Der wird dann bei der BOX-ERSTELLUNG gebraucht.
+		try{				
 			this.setJComponentContentDraggable(false); //Nur die einzelnen Labels ziehbar machen
 									
 		     //++++++++++++++++++++++++++++++++++++++		     

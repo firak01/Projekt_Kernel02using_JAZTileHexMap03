@@ -101,9 +101,10 @@ public class GhostDropManagerHexMapPanelTHM extends AbstractGhostDropManager imp
 			  
 			   TileMetaEventBrokerTHM objTileMetaEventBroker = objMap.getTileMetaEventBroker();//new TileMoveEventBrokerTHM(this.getKernelObject());
 		      // JOptionPane.showMessageDialog(this.component, ReflectCodeZZZ.getMethodCurrentName() + "### Action: '" + action + "'");
-			   if(!StringZZZ.isEmpty(sAction)){
-				   if(sAction.equalsIgnoreCase("new_sale")){
-					   
+			   if(!StringZZZ.isEmpty(sAction)){				   
+					   //################# TODO GOON 20180326: DAS DYNAMISCH MACHEN ################
+					   if(sAction.equalsIgnoreCase("new_11") || sAction.equalsIgnoreCase("new_12")){ //Das sind die thisIds der Variante "ARMY"
+						  						   
 					   //FGL: 20170703 - Hier erst einmal im Backend prüfen, ob eine neue Army hier überhaupt erstellt werden darf.
 					   boolean bGoon = false;	
 					 //###################
@@ -123,7 +124,9 @@ public class GhostDropManagerHexMapPanelTHM extends AbstractGhostDropManager imp
 						//###################
 						//Hole das passende TroopVariant-Objekt
 						//###################
-					    long lngTroopArmyVariant_Thiskeyid = 11; //"Infanterie". TODO GOON 20180311: Aus dem GhostDropEvent (via GhostpictureAdapter) die im PANEL_WEST ausgewählte Variante holen.			
+					    String sVariantThiskeyId = sAction.substring(4);//Aus dem GhostDropEvent (via GhostpictureAdapter) die im PANEL_WEST ausgewählte Variante holen. Der String wird da übergeben in der BOX-ERSTELLUNG.
+						   Long lngTroopFleetVariant_Thiskeyid = new Long(sVariantThiskeyId);
+						   long lngTroopArmyVariant_Thiskeyid = lngTroopFleetVariant_Thiskeyid.longValue(); 					  		
 						TroopArmyVariantDao daoKey = new TroopArmyVariantDao(objContextHibernate);
 						TroopArmyVariant objTroopArmyVariant = (TroopArmyVariant) daoKey.searchKey("TROOPARMYVARIANT", lngTroopArmyVariant_Thiskeyid );
 											    
@@ -153,8 +156,8 @@ public class GhostDropManagerHexMapPanelTHM extends AbstractGhostDropManager imp
 				   }//new_sale
 				   
 				   //################# TODO GOON 20180326: DAS DYNAMISCH MACHEN ################
-				   if(sAction.equalsIgnoreCase("new_sale02")){
-					   //FGL: 20170703 - Hier erst einmal im Backend prüfen, ob eine neue Army hier überhaupt erstellt werden darf.
+				   if(sAction.equalsIgnoreCase("new_21") || sAction.equalsIgnoreCase("new_22")){ //Das sind die thisIds der Variante "FLEET"
+					   //FGL: 20170703 - Hier erst einmal im Backend prüfen, ob eine neue Fleet hier überhaupt erstellt werden darf.
 					   boolean bGoon = false;	
 					 //###################
 						//Hole das passende Area-Objekt
@@ -173,7 +176,9 @@ public class GhostDropManagerHexMapPanelTHM extends AbstractGhostDropManager imp
 						//###################
 						//Hole das passende TroopVariant-Objekt
 						//###################
-					    long lngTroopFleetVariant_Thiskeyid = 21; //"Infanterie". TODO GOON 20180311: Aus dem GhostDropEvent (via GhostpictureAdapter) die im PANEL_WEST ausgewählte Variante holen.			
+					    String sVariantThiskeyId = sAction.substring(4);//Aus dem GhostDropEvent (via GhostpictureAdapter) die im PANEL_WEST ausgewählte Variante holen. Der String wird da übergeben in der BOX-ERSTELLUNG.
+					    Long lngTroopFleetVariant_Thiskeyid = new Long(sVariantThiskeyId);
+					    long lTroopFleetVariant_Thiskeyid = lngTroopFleetVariant_Thiskeyid.longValue(); 			
 						TroopFleetVariantDao daoKey = new TroopFleetVariantDao(objContextHibernate);
 						TroopFleetVariant objTroopFleetVariant = (TroopFleetVariant) daoKey.searchKey("TROOPFLEETVARIANT", lngTroopFleetVariant_Thiskeyid );
 											    

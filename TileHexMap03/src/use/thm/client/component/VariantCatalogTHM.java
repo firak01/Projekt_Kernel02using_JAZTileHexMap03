@@ -27,8 +27,11 @@ import use.thm.persistence.hibernate.HibernateContextProviderSingletonTHM;
 import use.thm.persistence.model.AreaCell;
 import use.thm.persistence.model.AreaCellLand;
 import use.thm.persistence.model.AreaCellOcean;
+import use.thm.persistence.model.Defaulttext;
+import use.thm.persistence.model.Immutabletext;
 import use.thm.persistence.model.Troop;
 import use.thm.persistence.model.TroopArmy;
+import use.thm.persistence.model.TroopArmyVariant;
 import use.thm.persistence.model.TroopFleet;
 import use.thm.persistence.model.TroopFleetVariant;
 import use.thm.util.datatype.enums.EnumSetTroopVariantUtilTHM;
@@ -38,6 +41,7 @@ import basic.zBasic.ReflectCodeZZZ;
 import basic.zBasic.util.abstractList.HashMapMultiZZZ;
 import basic.zBasic.util.datatype.enums.EnumSetInnerUtilZZZ;
 import basic.zBasic.util.datatype.enums.EnumSetInnerUtilZZZ.ThiskeyEnumMappingExceptionZZZ;
+import basic.zBasic.util.datatype.string.StringZZZ;
 import basic.zBasic.util.log.ReportLogZZZ;
 import basic.zBasicUI.component.UIHelper;
 import basic.zBasicUI.glassPane.dragDropTranslucent.GhostDropListener;
@@ -55,6 +59,7 @@ public class VariantCatalogTHM  extends KernelUseObjectZZZ implements IGhostGlas
 	
 	private KernelJPanelCascadedZZZ panelParent;
 	private int iNrOfEntries=0;
+	private String sBaseDirectory = null; //Das Verzeichnis, in dem die ganzen Icons der Katalogeinträge liegen
 	
 	//GhostDragDrop Interface
 	private GhostGlassPane glassPane; //etwas, das per Drag/Drop bewegt wird, wird dorthin als Bild kopiert.
@@ -77,18 +82,17 @@ public class VariantCatalogTHM  extends KernelUseObjectZZZ implements IGhostGlas
 		this.setPanelParent(panelParent);
 		this.setGhostGlassPane(glassPane);
 		this.setGhostDropListener(listenerForDropToHexMap);
-		
-		 		
+								 	
 		//20180326	
 		//THEMA : Persistierung in einer Datenbank. Falls die Datenbank neu ist, müssen ggfs. noch die GEBIETE und die DEFAULTTRUPPEN erstellt werden.
 		//             Die anderen Tabellen (Defaulttexte, ImmutableTexte, Army und Fleetvarianten) wurden schon auf Applikationsebene erstellt.
 		//FGL: Nachdem die Überprüfung, ob die Datenbank existiert Aufgabe des Application-Objekt gewerden ist, hier das entsprechende Flag auslesen
-		boolean bDbExists = !ApplicationSingletonTHM.getInstance().getFlag(ApplicationTHM.FLAGZ.DATABASE_NEW.name());
+		//boolean bDbIsNew = !ApplicationSingletonTHM.getInstance().getFlag(ApplicationTHM.FLAGZ.DATABASE_NEW.name());
 		
 	    //Also: Die Varianten-Objekte werden schon vorher auf Applikationsebene erzeugt.
-		//Hier also alle auslesen....... TODO GOON 20180326
+		//Hier also alle nur auslesen....... 
 		HibernateContextProviderSingletonTHM objContextHibernate= HibernateContextProviderSingletonTHM.getInstance(objKernel);
-		boolean bFleetReadSuccessful = this.fillCatalog_(bDbExists);
+		boolean bFleetReadSuccessful = this.fillCatalog_(true);
 		
 		
 	}
@@ -181,114 +185,39 @@ public class VariantCatalogTHM  extends KernelUseObjectZZZ implements IGhostGlas
 		boolean bReturn = false;
 		main:{
 			boolean bReadFleetVariant = fillCatalog_readCreatedFleet(objContextHibernate, panelMap);
-			//boolean bReadArmyVariant = fillCatalog_readCreatedArmy(objContextHibernate, panelMap);
+			boolean bReadArmyVariant = fillCatalog_readCreatedArmy(objContextHibernate, panelMap);
 			bReturn = true;
 		}//main:
 		return bReturn;
 	}
 	
-	private boolean fillCatalog_readCreatedFleet(HibernateContextProviderSingletonTHM objContextHibernate, KernelJPanelCascadedZZZ panelMap) throws ExceptionZZZ{
+	private boolean fillCatalog_readCreatedArmy(HibernateContextProviderSingletonTHM objContextHibernate, KernelJPanelCascadedZZZ panelMap) throws ExceptionZZZ{
 		boolean bReturn = false;
 		main:{
 			int iNrOfEntriesHere = 0;  //Die Gesamtzahl der HIER erstellten Einträge. Wird hochgezählt beim Füllen.
+			String sVariantId = "ARMY";
+			//Merke: Der im GhostrDropManager verwendete Searchkey ist "TROOPARMYVARIANT"
 			
 		//Steuerung über DAO - Klassen
-		TroopFleetVariantDao daoTroopVariant = new TroopFleetVariantDao(objContextHibernate);
-		String sKeytype = new String("TROOPFLEETVARIANT");		
+		TroopArmyVariantDao daoTroopVariant = new TroopArmyVariantDao(objContextHibernate);
 		
 		//Es soll performanter sein erst die ganze Liste zu holen (wg. Lazy), statt Über die ID jede Zelle einzeln.
-		ArrayList<TroopFleetVariant>listaVariant = (ArrayList<TroopFleetVariant>) daoTroopVariant.findLazyAll(0, -1);
-		System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": Anzahl gefundener FleetVarianten = " + listaVariant.size());
-		
-		//Tja und dann müssen daraus "Box"-Objekte erstellt werden, die in die HashMapMultiZZZ abgelegt werden.
-				//!!! nicht die Entities direkt irgendwo abspeichern.
-				//
-				
-				//TODO GOON 20180326: Solche Box-Objekte im Konstruktor des VariantCatalogTHM-Objekts erzeugen.
-			     Box box = Box.createVerticalBox();
-			     box.setBorder(new EmptyBorder(0, 0, 0, 20));
-			     
-			   //Eclipse Workspace
-				File f = new File("");
-			    String sPathEclipse = f.getAbsolutePath();
-			    ReportLogZZZ.write(ReportLogZZZ.DEBUG, "Eclipse absolut path: " + sPathEclipse);
-		       //String sPathParent = sPathEclipse.substring(0, sPathEclipse.lastIndexOf(System.getProperty("file.separator")));
-		       String sBaseDirectory = sPathEclipse + File.separator + "images";
-		       String sFile = sBaseDirectory + File.separator + "new_sale.png";
-			     
-			    //Ein Label hinzufügen mit dem entsprechenden Bild
-		       JLabel label = UIHelper.createLabelWithIcon("NEW ARMY", sFile); 
-			    box.add(label);
-				
-			     //Das Draggen als Bild über den GlassPane
-			    //GhostGlassPane glassPane = ((FrmMapSingletonTHM)this.getFrameParent()).getGhostGlassPane();
-				//GhostGlassPane glassPane = this.getPanelParent().getGhostGlassPane();
-			    GhostGlassPane glassPane = this.getGhostGlassPane();
-				if(glassPane==null) throw new ExceptionZZZ("Kein GhostGlassPane im FrameParent vorhanden");
-			     
-				GhostPictureAdapter pictureAdapter = new GhostPictureAdapter(glassPane, "new_sale", sFile);
-				GhostDropListener listenerForDropToHexMap = this.getGhostDropListener();
-			    pictureAdapter.addGhostDropListener(listenerForDropToHexMap);
+		ArrayList<TroopArmyVariant>listaVariant = (ArrayList<TroopArmyVariant>) daoTroopVariant.findLazyAll(0, -1);
+		System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": Anzahl gefundener ArmyVarianten = " + listaVariant.size());
 								
-			    //Es muss das pictureAdapter-Objekt der gleich sein, der das DRAGGEN bereitstellt, wie auch das DROPPEN!!!!
-		    
-			     
-			     //wird nun von außen übergeben, muss der gleiche sein, der den DROP-Event abfängt.		     GhostPictureAdapter pictureAdapter = new GhostPictureAdapter(glassPane, "new_sale", sFile); //Das wird immer und �berall redundant gemacht, da es ja mehrere Pictures gibt. Es wird auch redundant gemacht beim DROPP-EVENT abfangen.
-			     label.addMouseListener(pictureAdapter); //Beim Clicken wird das Bild vom pictureAdapter an die passende Stelle im glassPane gesetzt.
-
-			     //Das DRAGGEN 
-			     label.addMouseMotionListener(new GhostMotionAdapter(glassPane));
-			     
-			     
-			     //Nun diese Box-Objekte wegsichern...
-//			     HashMap<String, Box> hmBox = new HashMap<String, Box>();
-//			     hmBox.put("new_sale", box);
-			     
-			     
-//			     
-			     this.getMapCatalog().put("ARMY", "new_sale", box);
-			     
-			     
-			     
-			     //############################################################
-			   //TODO GOON 20180326: Solche Box-Objekte im Konstruktor des VariantCatalogTHM-Objekts erzeugen.
-			     //ABER: NUN GIBT ES PROBLEME, WEIL DIE PERSISTIERUNG SCHEINBAR IMMER 2x AUSGEFÜHRT WIRD.
-			     //      DANACH GIBT ES NÄMLICHE DEN FEHLER, DASS SCHON EIN TILE IM FELD IST.....
-			     
-			     
-			     Box box02 = Box.createVerticalBox();
-			     box02.setBorder(new EmptyBorder(0, 0, 0, 20));
-			     
-			     String sFile02 = sBaseDirectory + File.separator + "new_sale.png";
-			     
-			    //Ein Label hinzufügen mit dem entsprechenden Bild
-			     JLabel label02 = UIHelper.createLabelWithIcon("NEW FLEET", sFile); 
-			    box02.add(label02);
-				
-				GhostPictureAdapter pictureAdapter02 = new GhostPictureAdapter(glassPane, "new_sale02", sFile);
-			    pictureAdapter02.addGhostDropListener(listenerForDropToHexMap);
-			    //Merke: Verwendet man hier den bisherigen Picture Adapter und hängt noch einen weitern dropListener an, 
-			    //       dann wird 2x ein drop durchgeführt. D.h. es wird 2x ein Entity erzeugt. Beim 2. Mal gibt es dann die Fehlermeldung:
-			    //       'Maximale Anzahl der Amreen / Flotten im Feld erreicht'. Darum ist es wichtig hier immer einen NEUEN picture Adapter zu erzeugen, pro Variante.
-			    
-			    				
-			    //Es muss das pictureAdapter-Objekt der gleich sein, der das DRAGGEN bereitstellt, wie auch das DROPPEN!!!!
-		    
-			     
-			     //wird nun von außen übergeben, muss der gleiche sein, der den DROP-Event abfängt.		     GhostPictureAdapter pictureAdapter = new GhostPictureAdapter(glassPane, "new_sale", sFile); //Das wird immer und �berall redundant gemacht, da es ja mehrere Pictures gibt. Es wird auch redundant gemacht beim DROPP-EVENT abfangen.
-			     label02.addMouseListener(pictureAdapter02); //Beim Clicken wird das Bild vom pictureAdapter an die passende Stelle im glassPane gesetzt.
-
-			     //Das DRAGGEN 
-			     label02.addMouseMotionListener(new GhostMotionAdapter(glassPane));
-			     
-			     
-			     
-			     this.getMapCatalog().put("FLEET", "new_sale02", box02);
+		String sTileIconName = null;
+		String sTileLabel  = null;
+		String sCatalogVariantEntryId = null;
+		Box boxCreated = null;
 		
-		//TODO GOON 20180328: HIER DANN WIRKLICH DYNAMISCH DIE BOXEN ERZEUGEN
-		for(TroopFleetVariant objEntity : listaVariant){
+		//Aus den Daten müssen die "Box"-Objekte erstellt werden, die in die HashMapMultiZZZ abgelegt werden.
+		//!!! nicht die Entities direkt irgendwo abspeichern.
+			
+		//HIER DANN WIRKLICH DYNAMISCH DIE BOXEN ERZEUGEN
+		for(TroopArmyVariant objEntity : listaVariant){
 			System.out.println("TroopFleetVariant.toString(): " + objEntity.toString());
 
+			
 			/* DAS IST NOCH NICHT WICHTIG
 			//Vergleich des gespeicherten Textes mit dem Defaulttext
 			Long lngThiskeyTemp = objEntity.getThiskey();
@@ -316,7 +245,34 @@ public class VariantCatalogTHM  extends KernelUseObjectZZZ implements IGhostGlas
 			}
 			*/
 			
-			//iNrOfEntriesHere++; //Zelle zur Summe hinzufügen
+			
+			//Hole die Immutable Texte für die Variante im Katalog
+			//0. Die ThiskeyId ist dier eindeutige Kennezichnung der Variante, für das Erstellen aus dem Katalog
+			//1. Die Kategory ist ggfs. für eine Sortierung wichtig (TODO) UND ist Bestandteil einer 
+			Long lngThiskeyTemp = objEntity.getThiskey();
+			
+			////1. Die Kategory ist ggfs. für eine Sortierung wichtig (TODO) 
+			String sCategorytextStored = objEntity.getCategorytext();
+			System.out.println("Categorytext (gespeichert): " + sCategorytextStored);
+			
+			//2. Immutabletexte: Merke: Theoretisch kann ein Text in mehreren Varianten verwendet werden.
+			Immutabletext objImmutabletextTemp = objEntity.getImmutabletextObject();
+			String sShorttextImmutable = objImmutabletextTemp.getShorttext();
+			
+			Defaulttext objDefaulttextTemp = objEntity.getDefaulttextObject();
+			String sShorttextDefault = objDefaulttextTemp.getShorttext();
+			sTileLabel = sShorttextImmutable + " - " + sShorttextDefault;
+//		    sTileLabel = "NEW ARMY";
+			
+			//sTileIconName = objEntity.getImageUrlString();			
+			  sTileIconName = "new_sale.png";
+			 
+			  sCatalogVariantEntryId = "new_" + objEntity.getThiskey();
+//			     sCatalogVariantEntryId = "new_sale";
+			  
+			  boxCreated = this.createBoxObject(sCatalogVariantEntryId, sTileLabel, sTileIconName);			     
+			  this.getMapCatalog().put(sVariantId, sCatalogVariantEntryId, boxCreated);
+			 iNrOfEntriesHere++; //Zelle zur Summe hinzufügen
 		} //end for ... Variant
 		
 
@@ -329,6 +285,139 @@ public class VariantCatalogTHM  extends KernelUseObjectZZZ implements IGhostGlas
 	}//main:
 	return bReturn;
 }
+	
+	private boolean fillCatalog_readCreatedFleet(HibernateContextProviderSingletonTHM objContextHibernate, KernelJPanelCascadedZZZ panelMap) throws ExceptionZZZ{
+		boolean bReturn = false;
+		main:{
+			int iNrOfEntriesHere = 0;  //Die Gesamtzahl der HIER erstellten Einträge. Wird hochgezählt beim Füllen.
+			String sVariantId = "FLEET";
+			//Merke: Der im GhostrDropManager verwendete Searchkey ist "TROOPFLEETVARIANT"
+			
+		//Steuerung über DAO - Klassen
+		TroopFleetVariantDao daoTroopVariant = new TroopFleetVariantDao(objContextHibernate);
+			
+		
+		//Es soll performanter sein erst die ganze Liste zu holen (wg. Lazy), statt Über die ID jede Zelle einzeln.
+		ArrayList<TroopFleetVariant>listaVariant = (ArrayList<TroopFleetVariant>) daoTroopVariant.findLazyAll(0, -1);
+		System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": Anzahl gefundener FleetVarianten = " + listaVariant.size());
+								
+		String sTileIconName = null;
+		String sTileLabel  = null;
+		String sCatalogVariantEntryId = null;
+		Box boxCreated = null;
+		
+		//Aus den Daten müssen die "Box"-Objekte erstellt werden, die in die HashMapMultiZZZ abgelegt werden.
+		//!!! nicht die Entities direkt irgendwo abspeichern.
+				
+		//HIER DANN WIRKLICH DYNAMISCH DIE BOXEN ERZEUGEN
+		for(TroopFleetVariant objEntity : listaVariant){
+			System.out.println("TroopFleetVariant.toString(): " + objEntity.toString());
+
+			
+			/* DAS IST NOCH NICHT WICHTIG
+			//Vergleich des gespeicherten Textes mit dem Defaulttext
+			Long lngThiskeyTemp = objEntity.getThiskey();
+			String sCategorytextStored = objEntity.getCategorytext();
+			System.out.println("Categorytext (gespeichert): " + sCategorytextStored);
+			
+			String sUniquetext = objEntity.getUniquetext();
+			System.out.println("Uniquetext (gespeichert): " + sUniquetext);
+			String sCategorytextDefault = null; 
+			try {
+				String sType = EnumSetInnerUtilZZZ.getThiskeyEnum(objEntity.getThiskeyEnumClass(), lngThiskeyTemp).name();							
+				System.out.println("Typ: " + sType);
+				
+				sCategorytextDefault = EnumSetTroopVariantUtilTHM.readEnumConstant_CategorytextValue(objEntity.getThiskeyEnumClass(), sType);
+				System.out.println("Categorytext (Default): " + sCategorytextDefault);
+			} catch (ThiskeyEnumMappingExceptionZZZ e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
+			if(sCategorytextDefault.equals(sCategorytextStored)){
+				System.out.println("Wert ist unverändert");							
+			}else{
+				System.out.println("WERT WURDE VERÄNDERT");
+			}
+			*/
+			
+			
+			//Hole die Immutable Texte für die Variante im Katalog
+			//0. Die ThiskeyId ist dier eindeutige Kennezichnung der Variante, für das Erstellen aus dem Katalog
+			//1. Die Kategory ist ggfs. für eine Sortierung wichtig (TODO) UND ist Bestandteil einer 
+			Long lngThiskeyTemp = objEntity.getThiskey();
+			
+			////1. Die Kategory ist ggfs. für eine Sortierung wichtig (TODO) 
+			String sCategorytextStored = objEntity.getCategorytext();
+			System.out.println("Categorytext (gespeichert): " + sCategorytextStored);
+			
+			//2. Immutabletexte: Merke: Theoretisch kann ein Text in mehreren Varianten verwendet werden.
+			Immutabletext objImmutabletextTemp = objEntity.getImmutabletextObject();
+			String sShorttextImmutable = objImmutabletextTemp.getShorttext();
+			
+			Defaulttext objDefaulttextTemp = objEntity.getDefaulttextObject();
+			String sShorttextDefault = objDefaulttextTemp.getShorttext();
+			sTileLabel = sShorttextImmutable + " - " + sShorttextDefault;
+//		    sTileLabel = "NEW ARMY";
+			
+			//sTileIconName = objEntity.getImageUrlString();			
+			  sTileIconName = "new_sale.png";
+			 
+			  sCatalogVariantEntryId = "new_" + objEntity.getThiskey();
+//			     sCatalogVariantEntryId = "new_sale";
+			  
+			  boxCreated = this.createBoxObject(sCatalogVariantEntryId, sTileLabel, sTileIconName);			     
+			  this.getMapCatalog().put(sVariantId, sCatalogVariantEntryId, boxCreated);
+			iNrOfEntriesHere++; //Zelle zur Summe hinzufügen
+		} //end for ... Variant
+		
+
+		//################################################################################################
+		if(iNrOfEntriesHere<=0){
+			bReturn = false;// ist ja noch nix ausgelesen worden, warum auch immer a) Datenbank existiert ohne Inhalt, b) Keine Objekte für den Schlüssel gefunden.
+		}else{
+			bReturn = true;
+		}
+	}//main:
+	return bReturn;
+}
+	
+	public Box createBoxObject(String sCatalogVariantEntryId, String sTileLabel, String sTileIconName) throws ExceptionZZZ{
+	     Box objBoxReturn = Box.createVerticalBox();
+	     main:{
+	    	 objBoxReturn.setBorder(new EmptyBorder(0, 0, 0, 20));
+	    	 
+	    	 String sBaseDirectory = this.getBaseDirectoryForCatalogIcon();
+	    	 String sFile = sBaseDirectory + File.separator + sTileIconName;
+	    	 
+	    	 //Ein Label hinzufügen mit dem entsprechenden Titel und dem Bild
+		     JLabel label = UIHelper.createLabelWithIcon(sTileLabel, sFile); 
+		     objBoxReturn.add(label);
+		     
+		     //### Funktionalität DRAG & DROP
+		     //Merke: Verwendet man hier den bisherigen Picture Adapter und hängt noch einen weitern dropListener an, 
+			  //       dann wird 2x ein drop durchgeführt. D.h. es wird 2x ein Entity erzeugt. Beim 2. Mal gibt es dann die Fehlermeldung:
+			  //       'Maximale Anzahl der Amreen / Flotten im Feld erreicht'. Darum ist es wichtig hier immer einen NEUEN picture Adapter zu erzeugen, pro Variante.			    			    			
+			 //Es muss also das pictureAdapter-Objekt der gleich sein, der das DRAGGEN bereitstellt, wie auch das DROPPEN!!!!
+		   
+		     //Das Bild beim Ziehen über den Glaspane weiterverwenden. Anhand der sCatalogEntryId wird dann beim Fallenlassen entschieden um welches Entity es sich überhaupt handelt		     
+			    //GhostGlassPane glassPane = ((FrmMapSingletonTHM)this.getFrameParent()).getGhostGlassPane();
+				//GhostGlassPane glassPane = this.getPanelParent().getGhostGlassPane();
+			    GhostGlassPane glassPane = this.getGhostGlassPane();
+			    if(glassPane==null) throw new ExceptionZZZ("Kein GhostGlassPane im FrameParent vorhanden");
+			    		     
+		     GhostPictureAdapter pictureAdapter = new GhostPictureAdapter(glassPane, sCatalogVariantEntryId, sFile);
+		     
+		     GhostDropListener listenerForDropToHexMap = this.getGhostDropListener(); //.. und hier entscheidet sich  wie beim Fallenlassen gehandelt wird.
+			 pictureAdapter.addGhostDropListener(listenerForDropToHexMap);
+			 
+			 //Das DRAGGEN, ausgehend vom Label 			
+		     label.addMouseListener(pictureAdapter); //Beim Clicken wird das Bild vom pictureAdapter an die passende Stelle im glassPane gesetzt.
+		     label.addMouseMotionListener(new GhostMotionAdapter(glassPane));
+			 
+	     }//end main:
+	     return objBoxReturn;
+	}
 		
 		//#### GETTER / SETTER
 		public void setPanelParent(KernelJPanelCascadedZZZ panelParent){
@@ -364,5 +453,24 @@ public class VariantCatalogTHM  extends KernelUseObjectZZZ implements IGhostGlas
 		public void setGhostDropListener(
 				GhostDropListener listenerForDropToTarget) {
 			this.listenerForDropToTarget = listenerForDropToTarget;
-		}		
+		}	
+		
+		
+		public String getBaseDirectoryForCatalogIcon(){
+			if(StringZZZ.isEmpty(this.sBaseDirectory)){
+				
+				//Eclipse Workspace 
+				File f = new File("");
+			    String sPathEclipse = f.getAbsolutePath();
+			    ReportLogZZZ.write(ReportLogZZZ.DEBUG, "Eclipse absolut path: " + sPathEclipse);
+		       //String sPathParent = sPathEclipse.substring(0, sPathEclipse.lastIndexOf(System.getProperty("file.separator")));
+			    
+		       String sBaseDirectory = sPathEclipse + File.separator + "images";
+		       this.setBaseDirectoryForCatalogIcon(sBaseDirectory);		       
+			}
+			return this.sBaseDirectory;
+		}
+		public void setBaseDirectoryForCatalogIcon(String sBaseDirectory){
+			this.sBaseDirectory = sBaseDirectory;
+		}
 }

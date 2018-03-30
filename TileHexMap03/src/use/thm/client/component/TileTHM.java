@@ -5,17 +5,27 @@ import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.Image;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 
+import javax.imageio.ImageIO;
+import javax.swing.ImageIcon;
 import javax.swing.JPanel;
 
 import basic.persistence.dto.GenericDTO;
 import basic.zBasic.ExceptionZZZ;
+import basic.zBasic.ReflectCodeZZZ;
 import basic.zBasic.persistence.interfaces.IBackendPersistenceUser4UiZZZ;
 import basic.zBasic.persistence.interfaces.IDtoFactoryZZZ;
 import basic.zBasic.util.datatype.string.StringZZZ;
 import basic.zBasic.util.log.ReportLogZZZ;
 import basic.zBasic.util.math.MathZZZ;
+import basic.zBasicUI.component.UIHelper;
 import basic.zKernel.IKernelUserZZZ;
+import basic.zKernel.KernelZZZ;
 import basic.zKernelUI.component.KernelJPanelCascadedZZZ;
 import use.thm.IMapPositionableTHM;
 import use.thm.client.event.TileMoveEventBrokerTHM;
@@ -150,6 +160,64 @@ public class TileTHM extends JPanel implements IMapPositionableTHM, IBackendPers
 
 	public void paintComponent(Graphics g){
 		//super.paintComponent(g);
+		
+		//TODO GOON: Irgendwie ein Bild des Spielsteins zeichnen
+		//  ALSO g.drawImage(......)
+		
+		
+		/* Merke: So wird das Bild z.B. beim Ziehen geholt:
+		 //Modullnamen und Programnamen für die Position in der KernelKonfiguation  	 
+	    	 	KernelZZZ objKernel = this.getKernelObject();
+				String sModuleAlias =  this.getModuleUsed();// this.getModuleName();
+				String sProgramAlias = this.getProgramUsed(); //this.getProgramAlias(); //				
+				System.out.println(ReflectCodeZZZ.getMethodCurrentName() + ": Suche Modul: '" + sModuleAlias +"'/ Program: '" + sProgramAlias + "'/ Parameter: 'IconWidth'");
+				
+		   //++++++++++
+				 //Die Größe der Icons aus der KernelKonfiguration auslesen
+				String sIconWidth = this.getKernelObject().getParameterByProgramAlias(sModuleAlias, sProgramAlias, "IconWidth" );
+				int iIconWidth = Integer.parseInt(sIconWidth);				
+				String sIconHeight = this.getKernelObject().getParameterByProgramAlias(sModuleAlias, sProgramAlias, "IconHeight" );
+				int iIconHeight = Integer.parseInt(sIconHeight);
+	    	 //+++++++++	  
+	    	  * 
+	    	  *  DANN WIRD SO EIN IMAGE BAHNDELT 
+	    	  *   	 
+	    	     public static ImageIcon readImageIconResized(String sFilename, int iNewWidth, int iNewHeight){
+    	ImageIcon objImageIconReturn = null;
+    	try {
+    	 File objFile = new File(sFilename);		   
+		 BufferedImage objBufferdImageTemp = ImageIO.read(objFile);
+		
+		   
+		 //Die Größe verändern
+		   BufferedImage objBufferedImageResized = UIHelper.resizeImage(objBufferdImageTemp, iNewWidth, iNewHeight);
+
+		   objImageIconReturn = new ImageIcon(objBufferedImageResized);
+    	} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+    	return objImageIconReturn;
+    }
+    
+    public static BufferedImage resizeImage(BufferedImage objImageToResize, int iNewWidth, int iNewHeight){
+    	BufferedImage objBufferedImageReturn=null;
+    	main:{
+    		//Erst ein Größenverändetes Image aus dem BufferedImage machen
+    		 Image objImageTemp = objImageToResize.getScaledInstance(iNewWidth, iNewHeight, Image.SCALE_SMOOTH);
+   		  
+    		  //... und wieder zu einem BufferedImage machen
+    		objBufferedImageReturn = new BufferedImage(iNewWidth, iNewHeight, BufferedImage.TYPE_INT_ARGB);
+    		Graphics2D g2d = objBufferedImageReturn.createGraphics();
+  		   	g2d.drawImage(objImageTemp, 0, 0, null);//FGL: Hierdurch wird wohl das Image wieder in das neue, zurückzugebend BufferedImage gepackt.
+  		   	g2d.dispose();
+  		   	
+    	}
+    	return objBufferedImageReturn;
+    }
+    
+		 */
+		
 
 		//Der Hintergrund des Spielsteins
 		int iTileSideLength = this.getTileSideLength();	

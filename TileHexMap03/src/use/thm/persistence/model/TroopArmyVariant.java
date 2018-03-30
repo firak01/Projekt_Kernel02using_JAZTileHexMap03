@@ -174,10 +174,10 @@ public class TroopArmyVariant  extends TroopVariant implements ITroopArmyVariant
 			//Speziell für TROOP; 
 			//iDegreeOfCoverMax
 	   	 @IFieldDescription(description = "DARMYVARIANT01") 
-	   	T01(11,"DARMY01","Infantery",2,"url01",110,10,90),
+	   	T01(11,"DARMY01","Infantery",2,"ARMY\\US - M1 Garand Rifle.png",110,10,90),
 	   	
 	   	 @IFieldDescription(description = "DARMYVARIANT02") 
-	   	T02(12,"DTANKARMY02","Tank",3,"url02",120,11,20);
+	   	T02(12,"DTANKARMY02","Tank",3,"ARMY\\US - M4A1 Sherman.png",120,11,20);
 	   	   	
 	   private Long lKey;
 	   private String sUniquetext, sCategorytext;

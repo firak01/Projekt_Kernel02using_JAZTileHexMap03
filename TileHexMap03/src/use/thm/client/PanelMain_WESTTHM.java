@@ -48,7 +48,6 @@ public class PanelMain_WESTTHM extends KernelJPanelCascadedZZZ implements IGhost
 	//Default Konstruktor, damit die Klasse per Refelction einfachmit newInstance erzeugt werden kann.
 	public PanelMain_WESTTHM(){		
 	}	
-	//public PanelMain_WESTTHM(KernelZZZ objKernel, KernelJPanelCascadedZZZ panelParent, GhostPictureAdapter pictureAdapter) throws ExceptionZZZ  {
 	public PanelMain_WESTTHM(KernelZZZ objKernel, KernelJPanelCascadedZZZ panelParent, GhostDropListener listenerForDropToHexMap) throws ExceptionZZZ  {
 		super(objKernel, panelParent);
 		this.enableGhostGlassPane((FrmMapSingletonTHM)this.getFrameParent()); //Das Draggen als Bild über den GlassPane. Der wird dann bei der BOX-ERSTELLUNG gebraucht.
@@ -57,13 +56,11 @@ public class PanelMain_WESTTHM extends KernelJPanelCascadedZZZ implements IGhost
 									
 		     //++++++++++++++++++++++++++++++++++++++		     
 		    //Es muss das pictureAdapter-Objekt der gleich sein, der das DRAGGEN bereitstellt, wie auch das DROPPEN!!!!
-			//TODO GOON 20180336:
 	        //Angedacht war dafür früher:
 	        //           Diese pictureAdapter-Objekte in einer HashMap verwalten, so dass über ein Schlüsselwort der korrekte Picture Adapter
 			//           sowohl für die zu DRAGGENDE Komponente als auch für die den DROP empfangende Komponente 
 			//           geholt werden kann.
-            //20180336: Mit dem Datenbankbackend gilt: 
-	        //          Das Bild (den Namen) aus der jeweiligen Variante holen.
+            //20180336: Mit dem Datenbankbackend gilt: Das Bild (den Pfad\\Namen) aus der jeweiligen Variante holen.
 	     
 	        //TODO GOON 20180326:
 	        //Der übergebene String wird beim Drop-Event ausgewertet.
@@ -87,10 +84,7 @@ public class PanelMain_WESTTHM extends KernelJPanelCascadedZZZ implements IGhost
 		     */
 
 		     //+++++++++++++++++++++++++++++++++++++++
-		     //this.setLayout(new BorderLayout());
 			this.setLayout((LayoutManager) new BoxLayout( this, BoxLayout.Y_AXIS ) );
-			//this.setLayout(new BoxLayout(BoxLayout.Y_AXIS ) );
-		     
 		     
 		     //Nun die HashMapMultiZZZ durchgehen und die Box-Elemente auslesen und hier mit .add(...,box) hinzufügen
 		     HashMapMultiZZZ hmCatalog = this.getVariantCatalog().getMapCatalog();
@@ -98,14 +92,13 @@ public class PanelMain_WESTTHM extends KernelJPanelCascadedZZZ implements IGhost
 		    	 String sVariantType = (String) iteratorVariantTypes.next();
 		    	 System.out.println("XXXXXXXXXXXXXXXXXXXXXXXXXX String: '" + sVariantType + "'");
 
-		    	 //Set<String> setVariant = (Set<String>) hmCatalog.getInnerKeySet(sVariantType);
-		    	 //for (Iterator<String> iteratorVariant = setVariant.iterator(); iteratorVariant.hasNext();) {
 		    	 for (Iterator<String> iteratorVariant = hmCatalog.getInnerKeySetIterator(sVariantType); iteratorVariant.hasNext();) {
 		    		 String sVariant = (String) iteratorVariant.next();
 		    		 System.out.println("XXXXXXXXXXXXXXXXXXXXXXXXXX String: '" + sVariant + "'");
 
 		    		 Box boxTemp = (Box) hmCatalog.get(sVariantType, sVariant);//z.B.: Box boxTemp = (Box) hmCatalog.get("ARMY","new_sale");		    		 		    		 		     
-				     this.add(BorderLayout.CENTER, boxTemp);				    
+				     //this.add(BorderLayout.CENTER, boxTemp);				    
+		    		 this.add(boxTemp);
 		    	 }		    	 		    	
 		     }
 		        

@@ -174,10 +174,10 @@ public class TroopFleetVariant  extends TroopVariant implements ITroopFleetVaria
 		//Speziell für FLEET:
 		//iNumberOfTurret
 	   	 @IFieldDescription(description = "DFLEETVARIANT01") 
-	   	T01(21,"DFLEET01","Destroyer",5,"url01",210,20,7),
+	   	T01(21,"DFLEET01","Destroyer",5,"FLEET\\USS Fletcher (DD 445).png",210,20,7),
 	   	
 	   	 @IFieldDescription(description = "DFLEETVARIANT02") 
-	   	T02(22,"DFLEET02","Destroyer",3,"url02",220,20,3);
+	   	T02(22,"DFLEET02","Destroyer",3,"FLEET\\USS Samuel B Roberts (DE 413).png",220,20,3);
 	   	   	
 	   private Long lKey;
 	   private String sUniquetext, sCategorytext;

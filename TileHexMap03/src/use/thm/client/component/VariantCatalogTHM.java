@@ -37,6 +37,7 @@ import use.thm.persistence.model.TroopFleetVariant;
 import use.thm.util.datatype.enums.EnumSetTroopVariantUtilTHM;
 import basic.persistence.dto.GenericDTO;
 import basic.zBasic.ExceptionZZZ;
+import basic.zBasic.KernelSingletonTHM;
 import basic.zBasic.ReflectCodeZZZ;
 import basic.zBasic.util.abstractList.HashMapMultiZZZ;
 import basic.zBasic.util.datatype.enums.EnumSetInnerUtilZZZ;
@@ -264,8 +265,8 @@ public class VariantCatalogTHM  extends KernelUseObjectZZZ implements IGhostGlas
 			sTileLabel = sShorttextImmutable + " - " + sShorttextDefault;
 //		    sTileLabel = "NEW ARMY";
 			
-			//sTileIconName = objEntity.getImageUrlString();			
-			  sTileIconName = "new_sale.png";
+			sTileIconName = objEntity.getImageUrlString();			
+			//sTileIconName = "new_sale.png";
 			 
 			  sCatalogVariantEntryId = "new_" + objEntity.getThiskey();
 //			     sCatalogVariantEntryId = "new_sale";
@@ -360,8 +361,8 @@ public class VariantCatalogTHM  extends KernelUseObjectZZZ implements IGhostGlas
 			sTileLabel = sShorttextImmutable + " - " + sShorttextDefault;
 //		    sTileLabel = "NEW ARMY";
 			
-			//sTileIconName = objEntity.getImageUrlString();			
-			  sTileIconName = "new_sale.png";
+			sTileIconName = objEntity.getImageUrlString();			
+			//  sTileIconName = "new_sale.png";
 			 
 			  sCatalogVariantEntryId = "new_" + objEntity.getThiskey();
 //			     sCatalogVariantEntryId = "new_sale";
@@ -391,24 +392,44 @@ public class VariantCatalogTHM  extends KernelUseObjectZZZ implements IGhostGlas
 	    	 String sFile = sBaseDirectory + File.separator + sTileIconName;
 	    	 
 	    	 //Ein Label hinzufügen mit dem entsprechenden Titel und dem Bild
-		     JLabel label = UIHelper.createLabelWithIcon(sTileLabel, sFile); 
+	    	 
+
+	    		//Modullnamen und Programnamen für die Position in der KernelKonfiguation  	 
+	    	 	KernelZZZ objKernel = this.getKernelObject();
+				String sModuleAlias =  this.getModuleUsed();// this.getModuleName();
+				String sProgramAlias = this.getProgramUsed(); //this.getProgramAlias(); //				
+				System.out.println(ReflectCodeZZZ.getMethodCurrentName() + ": Suche Modul: '" + sModuleAlias +"'/ Program: '" + sProgramAlias + "'/ Parameter: 'IconWidth'");
+				
+		   //++++++++++
+				 //Die Größe der Icons aus der KernelKonfiguration auslesen
+				String sIconWidth = this.getKernelObject().getParameterByProgramAlias(sModuleAlias, sProgramAlias, "IconWidth" );
+				int iIconWidth = Integer.parseInt(sIconWidth);				
+				String sIconHeight = this.getKernelObject().getParameterByProgramAlias(sModuleAlias, sProgramAlias, "IconHeight" );
+				int iIconHeight = Integer.parseInt(sIconHeight);
+	    	 //+++++++++	    	 
+		     JLabel label = UIHelper.createLabelWithIconResized(sTileLabel, sFile, iIconWidth,iIconHeight); 
 		     objBoxReturn.add(label);
 		     
 		     //### Funktionalität DRAG & DROP
 		     //Merke: Verwendet man hier den bisherigen Picture Adapter und hängt noch einen weitern dropListener an, 
-			  //       dann wird 2x ein drop durchgeführt. D.h. es wird 2x ein Entity erzeugt. Beim 2. Mal gibt es dann die Fehlermeldung:
-			  //       'Maximale Anzahl der Amreen / Flotten im Feld erreicht'. Darum ist es wichtig hier immer einen NEUEN picture Adapter zu erzeugen, pro Variante.			    			    			
+			 //       dann wird 2x ein drop durchgeführt. D.h. es wird 2x ein Entity erzeugt. Beim 2. Mal gibt es dann die Fehlermeldung:
+			 //       'Maximale Anzahl der Amreen / Flotten im Feld erreicht'. Darum ist es wichtig hier immer einen NEUEN picture Adapter zu erzeugen, pro Variante.			    			    			
 			 //Es muss also das pictureAdapter-Objekt der gleich sein, der das DRAGGEN bereitstellt, wie auch das DROPPEN!!!!
 		   
 		     //Das Bild beim Ziehen über den Glaspane weiterverwenden. Anhand der sCatalogEntryId wird dann beim Fallenlassen entschieden um welches Entity es sich überhaupt handelt		     
-			    //GhostGlassPane glassPane = ((FrmMapSingletonTHM)this.getFrameParent()).getGhostGlassPane();
-				//GhostGlassPane glassPane = this.getPanelParent().getGhostGlassPane();
 			    GhostGlassPane glassPane = this.getGhostGlassPane();
 			    if(glassPane==null) throw new ExceptionZZZ("Kein GhostGlassPane im FrameParent vorhanden");
-			    		     
-		     GhostPictureAdapter pictureAdapter = new GhostPictureAdapter(glassPane, sCatalogVariantEntryId, sFile);
-		     
+			    		      
 		     GhostDropListener listenerForDropToHexMap = this.getGhostDropListener(); //.. und hier entscheidet sich  wie beim Fallenlassen gehandelt wird.
+		     
+		     //++++++++++
+	    	 //Die Größe der Icons beim Ziehen aus der KernelKonfiguration auslesen	    	 					
+				String sIconWidthOnDrag = this.getKernelObject().getParameterByProgramAlias(sModuleAlias, sProgramAlias, "IconWidthOnDrag" );
+				int iIconWidthOnDrag = Integer.parseInt(sIconWidthOnDrag);					
+				String sIconHeightOnDrag = this.getKernelObject().getParameterByProgramAlias(sModuleAlias, sProgramAlias, "IconHeightOnDrag" );
+				int iIconHeightOnDrag = Integer.parseInt(sIconHeightOnDrag);
+	    	 //+++++++++	  		    
+		     GhostPictureAdapter pictureAdapter = new GhostPictureAdapter(glassPane, sCatalogVariantEntryId, sFile, iIconWidthOnDrag, iIconHeightOnDrag);
 			 pictureAdapter.addGhostDropListener(listenerForDropToHexMap);
 			 
 			 //Das DRAGGEN, ausgehend vom Label 			

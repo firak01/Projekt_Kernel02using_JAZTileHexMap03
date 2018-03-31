@@ -47,7 +47,7 @@ public class PanelMain_CENTERTHM extends KernelJPanelCascadedZZZ implements IHex
 			
 			//Werte für die Kartengröße auslesen			
 			String sModuleAlias = this.getModuleName();
-			String sProgramAlias = this.getProgramAlias(); //
+			String sProgramAlias = this.getProgramAlias();
 			
 			System.out.println("Suche Modul: '" + sModuleAlias +"'/ Program: '" + sProgramAlias + "'/ Parameter: 'NumberOfColumn'");
 			String sNumberOfColumn = this.getKernelObject().getParameterByProgramAlias(sModuleAlias, sProgramAlias, "NumberOfColumn" );

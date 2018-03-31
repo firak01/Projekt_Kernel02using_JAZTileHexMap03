@@ -51,7 +51,7 @@ public class PanelFrmMapSingletonTHM  extends KernelJPanelCascadedZZZ implements
 		HashMap<String, Boolean> hmFlag = new HashMap<String, Boolean>();
 		//hmFlag.put("isKernelProgram", true); //2013-07-08: Damit wird angezeigt, das es in der Kernel .ini - Konfigurationsdatei einen entsprechenden Abschnitt gibt, in dem Parameter hierf�r hinterlegt sind.
 		hmFlag.put(FLAGZ.COMPONENT_KERNEL_PROGRAM.name(), true);
-		PanelMain_CENTERTHM objPanelCenter = new PanelMain_CENTERTHM(objKernel, this, hmFlag);  
+		PanelMain_CENTERTHM objPanelCenter = new PanelMain_CENTERTHM(objKernel, this, hmFlag);  		
 		this.setPanelSub("CENTER", objPanelCenter);//Backend Hashtable hinzufügen
 		
 		//FGL 20130627: Das Panel nicht mehr direkt, sondern über den JScrollPane einbinden this.add(objPanelCenter, BorderLayout.CENTER); //Frontend hinzuf�gen
@@ -63,12 +63,14 @@ public class PanelFrmMapSingletonTHM  extends KernelJPanelCascadedZZZ implements
 		//Probleme bei zu großen Hexes GhostDropListener listener = new GhostDropManagerHexMapPanelTHM(this.getKernelObject(), scrollPaneCenter, objPanelCenter.getHexMap());  
 		GhostDropListener listenerForDropToHexMap = new GhostDropManagerHexMapPanelTHM(this.getKernelObject(), scrollPaneCenter, objPanelCenter.getHexMap());		
 
-		//### PANEL WEST - FÜLLEN				
+		//### PANEL WEST - FÜLLEN							
+		HashMap<String, Boolean> hmFlagPanelWEST = new HashMap<String, Boolean>();
+		hmFlagPanelWEST.put(FLAGZ.COMPONENT_KERNEL_PROGRAM.name(), true);//Damit wird angezeigt, das es in der Kernel .ini - Konfigurationsdatei einen entsprechenden Abschnitt gibt, in dem Parameter hierfür hinterlegt sind.
+		
 		//20180326 den Listener an die PictureAdapter der "Box"-Objekte übergeben
-		//PanelMain_WESTTHM objPanelWest = new PanelMain_WESTTHM(objKernel, this, pictureAdapter);				
-		PanelMain_WESTTHM objPanelWest = new PanelMain_WESTTHM(objKernel, this, listenerForDropToHexMap);
-		this.setPanelSub("WEST", objPanelWest);       //Backend Hashtable hinzuf�gen
-		this.add(objPanelWest, BorderLayout.WEST); //Frontend hinzuf�gen
+		PanelMain_WESTTHM objPanelWest = new PanelMain_WESTTHM(objKernel, this, listenerForDropToHexMap,hmFlagPanelWEST);
+		this.setPanelSub("WEST", objPanelWest);       //Backend Hashtable hinzufügen
+		this.add(objPanelWest, BorderLayout.WEST); //Frontend hinzufügen
 		
 	}
 	

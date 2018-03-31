@@ -1,5 +1,6 @@
 package use.thm;
 
+import java.io.File;
 import java.util.HashMap;
 
 import basic.zBasic.ExceptionZZZ;
@@ -21,6 +22,8 @@ import use.thm.persistence.model.HexCell;
 import use.thm.persistence.model.TroopArmy;
 
 public class ApplicationTHM extends KernelUseObjectZZZ{
+	private String sBaseDirectoryImages = null;
+	
 	public ApplicationTHM(KernelZZZ objKernel) throws ExceptionZZZ{
 		super(objKernel);
 	}
@@ -152,6 +155,24 @@ public class ApplicationTHM extends KernelUseObjectZZZ{
 		return true;
 	}
 	
+	//#### METHODEN FÜR PFADE
+	public String getBaseDirectoryStringForImages(){
+		if(StringZZZ.isEmpty(this.sBaseDirectoryImages)){
+			
+			//Eclipse Workspace 
+			File f = new File("");
+		    String sPathEclipse = f.getAbsolutePath();
+		    ReportLogZZZ.write(ReportLogZZZ.DEBUG, "Eclipse absolut path: " + sPathEclipse);
+	       //String sPathParent = sPathEclipse.substring(0, sPathEclipse.lastIndexOf(System.getProperty("file.separator")));
+		    
+	       String sBaseDirectory = sPathEclipse + File.separator + "images";
+	       this.setBaseDirectoryStringForImages(sBaseDirectory);		       
+		}
+		return this.sBaseDirectoryImages;
+	}
+	public void setBaseDirectoryStringForImages(String sBaseDirectory){
+		this.sBaseDirectoryImages = sBaseDirectory;
+	}
 	
 	//#### METHODEN DER DATENBANKINITIALISIERUNG
 	//### DEFAULTTEXTE ###########################################################

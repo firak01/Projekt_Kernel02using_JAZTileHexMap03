@@ -17,6 +17,7 @@ import javax.swing.JPanel;
 
 import basic.persistence.dto.GenericDTO;
 import basic.zBasic.ExceptionZZZ;
+import basic.zBasic.KernelSingletonTHM;
 import basic.zBasic.ReflectCodeZZZ;
 import basic.zBasic.persistence.interfaces.IBackendPersistenceUser4UiZZZ;
 import basic.zBasic.persistence.interfaces.IDtoFactoryZZZ;
@@ -27,6 +28,7 @@ import basic.zBasicUI.component.UIHelper;
 import basic.zKernel.IKernelUserZZZ;
 import basic.zKernel.KernelZZZ;
 import basic.zKernelUI.component.KernelJPanelCascadedZZZ;
+import use.thm.ApplicationSingletonTHM;
 import use.thm.IMapPositionableTHM;
 import use.thm.client.event.TileMoveEventBrokerTHM;
 import use.thm.client.handler.TileMouseMotionHandlerTHM;
@@ -161,64 +163,35 @@ public class TileTHM extends JPanel implements IMapPositionableTHM, IBackendPers
 	public void paintComponent(Graphics g){
 		//super.paintComponent(g);
 		
+		try{
 		//TODO GOON: Irgendwie ein Bild des Spielsteins zeichnen
 		//  ALSO g.drawImage(......)
-		
-		
-		/* Merke: So wird das Bild z.B. beim Ziehen geholt:
-		 //Modullnamen und Programnamen für die Position in der KernelKonfiguation  	 
-	    	 	KernelZZZ objKernel = this.getKernelObject();
-				String sModuleAlias =  this.getModuleUsed();// this.getModuleName();
-				String sProgramAlias = this.getProgramUsed(); //this.getProgramAlias(); //				
-				System.out.println(ReflectCodeZZZ.getMethodCurrentName() + ": Suche Modul: '" + sModuleAlias +"'/ Program: '" + sProgramAlias + "'/ Parameter: 'IconWidth'");
 				
 		   //++++++++++
-				 //Die Größe der Icons aus der KernelKonfiguration auslesen
-				String sIconWidth = this.getKernelObject().getParameterByProgramAlias(sModuleAlias, sProgramAlias, "IconWidth" );
-				int iIconWidth = Integer.parseInt(sIconWidth);				
-				String sIconHeight = this.getKernelObject().getParameterByProgramAlias(sModuleAlias, sProgramAlias, "IconHeight" );
-				int iIconHeight = Integer.parseInt(sIconHeight);
-	    	 //+++++++++	  
-	    	  * 
-	    	  *  DANN WIRD SO EIN IMAGE BAHNDELT 
-	    	  *   	 
-	    	     public static ImageIcon readImageIconResized(String sFilename, int iNewWidth, int iNewHeight){
-    	ImageIcon objImageIconReturn = null;
-    	try {
-    	 File objFile = new File(sFilename);		   
-		 BufferedImage objBufferdImageTemp = ImageIO.read(objFile);
-		
-		   
-		 //Die Größe verändern
-		   BufferedImage objBufferedImageResized = UIHelper.resizeImage(objBufferdImageTemp, iNewWidth, iNewHeight);
+		    //Die Größe der Icons aus der KernelKonfiguration auslesen
+			KernelSingletonTHM objKernel = KernelSingletonTHM.getInstance();	
+			String sModuleAlias = this.getMapPanel().getModuleName();
+			String sProgramAlias = this.getMapPanel().getProgramAlias();				
+			System.out.println(ReflectCodeZZZ.getMethodCurrentName() + ": Suche Modul: '" + sModuleAlias +"'/ Program: '" + sProgramAlias + "'/ Parameter: 'IconWidth'");
+			
+			
+			String sIconWidth = objKernel.getParameterByProgramAlias(sModuleAlias, sProgramAlias, "IconWidth" );
+			int iIconWidth = Integer.parseInt(sIconWidth);				
+			String sIconHeight = objKernel.getParameterByProgramAlias(sModuleAlias, sProgramAlias, "IconHeight" );
+			int iIconHeight = Integer.parseInt(sIconHeight);
+		  //+++++++++	  	
+				
+			String sTileIconName = this.getVariantImageUrlString();			
+			 String sBaseDirectory = ApplicationSingletonTHM.getInstance().getBaseDirectoryStringForImages();//WICHTIG: NUN Noch den Basispfad davorhängen!
+	    	 String sFilename = sBaseDirectory + File.separator + sTileIconName;
+			File objFile = new File(sFilename);		   
+			BufferedImage objBufferdImageTemp = ImageIO.read(objFile);
+			BufferedImage objBufferdImageResized = UIHelper.resizeImage(objBufferdImageTemp, iIconWidth, iIconHeight);			
+			g.drawImage(objBufferdImageResized, 0, 0, null);//FGL: Hierdurch wird wohl das Image wieder in das neue, zurückzugebend BufferedImage gepackt.
+			
 
-		   objImageIconReturn = new ImageIcon(objBufferedImageResized);
-    	} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-    	return objImageIconReturn;
-    }
-    
-    public static BufferedImage resizeImage(BufferedImage objImageToResize, int iNewWidth, int iNewHeight){
-    	BufferedImage objBufferedImageReturn=null;
-    	main:{
-    		//Erst ein Größenverändetes Image aus dem BufferedImage machen
-    		 Image objImageTemp = objImageToResize.getScaledInstance(iNewWidth, iNewHeight, Image.SCALE_SMOOTH);
-   		  
-    		  //... und wieder zu einem BufferedImage machen
-    		objBufferedImageReturn = new BufferedImage(iNewWidth, iNewHeight, BufferedImage.TYPE_INT_ARGB);
-    		Graphics2D g2d = objBufferedImageReturn.createGraphics();
-  		   	g2d.drawImage(objImageTemp, 0, 0, null);//FGL: Hierdurch wird wohl das Image wieder in das neue, zurückzugebend BufferedImage gepackt.
-  		   	g2d.dispose();
-  		   	
-    	}
-    	return objBufferedImageReturn;
-    }
-    
-		 */
 		
-
+/*
 		//Der Hintergrund des Spielsteins
 		int iTileSideLength = this.getTileSideLength();	
 		g.setColor(Color.red);
@@ -252,7 +225,6 @@ public class TileTHM extends JPanel implements IMapPositionableTHM, IBackendPers
 		}
 					
 		//Den gefundenen Namen abkürzen 
-		try {
 			sComponentLabelUsed = StringZZZ.toShorten(sComponentLabelUsed, StringZZZ.iSHORTEN_METHOD_VOWEL, 1);//Entferne aus dem String die Vokale, offset 1, D.h. Beginnende Vokale werden nicht gekürzt. 
 			sComponentLabelUsed = StringZZZ.abbreviateDynamic(sComponentLabelUsed, 8 );//Nach 8 Zeichen soll der Name abgekürzt werden, d.h. abgeschnitten und "..." am Ende, um das Abkürzen zu kennzeichnen..
 			
@@ -262,13 +234,19 @@ public class TileTHM extends JPanel implements IMapPositionableTHM, IBackendPers
 				sInstanceUniquenumber = intInstanceVariantUniquenumber.toString();
 				sComponentLabelUsed = sComponentLabelUsed + "_" + sInstanceUniquenumber;
 			}
+		
+		g.drawString(sComponentLabelUsed,0,(int)(iTileSideLength/2));
+		*/
+			
+		setOpaque(false);
 		} catch (ExceptionZZZ e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
-		g.drawString(sComponentLabelUsed,0,(int)(iTileSideLength/2));
 		
-		setOpaque(false);
 	}
 	
 	public void setDragModeStarted(boolean bStarted){
@@ -334,11 +312,9 @@ public class TileTHM extends JPanel implements IMapPositionableTHM, IBackendPers
 	}
 
 	public String getUniquename() {
-		//return this.sUniquename;
 		return (String) this.getDto().get(ITileDtoAttribute.UNIQUENAME);
 	}
 	protected void setUniquename(String sUniquename) {
-		//this.sUniquename=sUniquename;
 		this.getDto().set(ITileDtoAttribute.UNIQUENAME, sUniquename);
 	}
 	
@@ -347,6 +323,13 @@ public class TileTHM extends JPanel implements IMapPositionableTHM, IBackendPers
 	}
 	protected void setVariantShorttext(String sVariantShorttext){
 		this.getDto().set(ITileDtoAttribute.VARIANT_SHORTTEXT, sVariantShorttext);
+	}
+	
+	public String getVariantImageUrlString(){
+		return (String) this.getDto().get(ITileDtoAttribute.VARIANT_IMAGE_URL_STRING);
+	}
+	protected void setVariantImageUrlString(String sVariantImageUrlString){
+		this.getDto().set(ITileDtoAttribute.VARIANT_IMAGE_URL_STRING, sVariantImageUrlString);
 	}
 	
 	public Integer getInstanceVariantUniqueNumber(){

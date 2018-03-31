@@ -48,8 +48,8 @@ public class PanelMain_WESTTHM extends KernelJPanelCascadedZZZ implements IGhost
 	//Default Konstruktor, damit die Klasse per Refelction einfachmit newInstance erzeugt werden kann.
 	public PanelMain_WESTTHM(){		
 	}	
-	public PanelMain_WESTTHM(KernelZZZ objKernel, KernelJPanelCascadedZZZ panelParent, GhostDropListener listenerForDropToHexMap) throws ExceptionZZZ  {
-		super(objKernel, panelParent);
+	public PanelMain_WESTTHM(KernelZZZ objKernel, KernelJPanelCascadedZZZ panelParent, GhostDropListener listenerForDropToHexMap,HashMap<String, Boolean>hmFlag) throws ExceptionZZZ  {
+		super(objKernel, panelParent,hmFlag);
 		this.enableGhostGlassPane((FrmMapSingletonTHM)this.getFrameParent()); //Das Draggen als Bild über den GlassPane. Der wird dann bei der BOX-ERSTELLUNG gebraucht.
 		try{				
 			this.setJComponentContentDraggable(false); //Nur die einzelnen Labels ziehbar machen

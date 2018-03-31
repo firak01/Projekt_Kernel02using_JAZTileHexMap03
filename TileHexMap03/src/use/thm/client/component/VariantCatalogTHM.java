@@ -60,7 +60,6 @@ public class VariantCatalogTHM  extends KernelUseObjectZZZ implements IGhostGlas
 	
 	private KernelJPanelCascadedZZZ panelParent;
 	private int iNrOfEntries=0;
-	private String sBaseDirectory = null; //Das Verzeichnis, in dem die ganzen Icons der Katalogeinträge liegen
 	
 	//GhostDragDrop Interface
 	private GhostGlassPane glassPane; //etwas, das per Drag/Drop bewegt wird, wird dorthin als Bild kopiert.
@@ -475,23 +474,9 @@ public class VariantCatalogTHM  extends KernelUseObjectZZZ implements IGhostGlas
 				GhostDropListener listenerForDropToTarget) {
 			this.listenerForDropToTarget = listenerForDropToTarget;
 		}	
-		
-		
-		public String getBaseDirectoryForCatalogIcon(){
-			if(StringZZZ.isEmpty(this.sBaseDirectory)){
 				
-				//Eclipse Workspace 
-				File f = new File("");
-			    String sPathEclipse = f.getAbsolutePath();
-			    ReportLogZZZ.write(ReportLogZZZ.DEBUG, "Eclipse absolut path: " + sPathEclipse);
-		       //String sPathParent = sPathEclipse.substring(0, sPathEclipse.lastIndexOf(System.getProperty("file.separator")));
-			    
-		       String sBaseDirectory = sPathEclipse + File.separator + "images";
-		       this.setBaseDirectoryForCatalogIcon(sBaseDirectory);		       
-			}
-			return this.sBaseDirectory;
-		}
-		public void setBaseDirectoryForCatalogIcon(String sBaseDirectory){
-			this.sBaseDirectory = sBaseDirectory;
+		//Das Verzeichnis, in dem die ganzen Icons der Katalogeinträge liegen
+		public String getBaseDirectoryForCatalogIcon(){		
+			return ApplicationSingletonTHM.getInstance().getBaseDirectoryStringForImages();
 		}
 }

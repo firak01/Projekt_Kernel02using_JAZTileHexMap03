@@ -222,14 +222,11 @@ public class TroopFleetDaoFacade extends TileDaoFacade{
 			//FRAGE: FUNKTIONIERT HIERBEI CALL BY REFERENCE? JA. Es werden ja Werte in den Objekten gefüllt.		
 			dto.set(ITileDtoAttribute.UNIQUENAME, objTroop.getUniquename());
 			dto.set(ITileDtoAttribute.INSTANCE_VARIANT_UNIQUENUMBER, objTroop.getInstanceVariantUniquenumber());
-			
-			//TODO GOON 20180321: Modell darum erweitern und diesen Wert beim Erzeugen eines neuen Objekts errechnen und Speichern.
-			//dto.set(ITileDtoAttribute.INSTANCE_UNIQUENUMBER, objTroopArmy.getInstanceUniquenumber());
-			
+						
 			if(objTroop.getTroopFleetVariantObject()!=null){
+				dto.set(ITileDtoAttribute.VARIANT_IMAGE_URL_STRING,objTroop.getTroopFleetVariantObject().getImageUrlString());
+								
 				if(objTroop.getTroopFleetVariantObject().getImmutabletextObject()!=null){
-					//dto.set(ITileDtoAttribute.VARIANT_SHORTTEXT, "NEUFLEET");
-					//TODO GOON: 
 					dto.set(ITileDtoAttribute.VARIANT_SHORTTEXT, objTroop.getTroopFleetVariantObject().getImmutabletextObject().getShorttext());
 					
 				}

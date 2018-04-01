@@ -221,6 +221,8 @@ public class TroopFleetDaoFacade extends TileDaoFacade{
 					
 			//FRAGE: FUNKTIONIERT HIERBEI CALL BY REFERENCE? JA. Es werden ja Werte in den Objekten gefüllt.		
 			dto.set(ITileDtoAttribute.UNIQUENAME, objTroop.getUniquename());
+			dto.set(ITileDtoAttribute.SUBTYPE,objTroop.getTroopType());
+			
 			dto.set(ITileDtoAttribute.INSTANCE_VARIANT_UNIQUENUMBER, objTroop.getInstanceVariantUniquenumber());
 						
 			if(objTroop.getTroopFleetVariantObject()!=null){

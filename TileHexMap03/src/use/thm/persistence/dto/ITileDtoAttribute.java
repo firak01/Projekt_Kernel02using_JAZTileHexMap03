@@ -6,6 +6,7 @@ import basic.persistence.dto.IDTOAttributeGroup;
 public interface ITileDtoAttribute extends IDTOAttributeGroup {
 
     public final static DTOAttribute<ITileDtoAttribute, String> UNIQUENAME = DTOAttribute.getInstance("UNIQUENAME");
+    public final static DTOAttribute<ITileDtoAttribute, String> SUBTYPE = DTOAttribute.getInstance("SUBTYPE");
     
     public final static DTOAttribute<ITileDtoAttribute, String> VARIANT_IMAGE_URL_STRING = DTOAttribute.getInstance("VARIANT_IMAGE_URL_STRING");
     

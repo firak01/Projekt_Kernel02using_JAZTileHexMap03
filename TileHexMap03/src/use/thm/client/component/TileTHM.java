@@ -41,12 +41,16 @@ public class TileTHM extends JPanel implements IMapPositionableTHM, IBackendPers
 	private String sAliasX; //Die Koordinaten auf der Karte
 	private String sAliasY;
 	private int iHexSideLength=0; //= RadiusOuter
-	private int iTileSideLength=0;
+	private int iTileSideLength=0; //= RadiusOuter / 4
+	private int iTileSideHeight=0; //= RadiusOuter / 4
+	private int iTileSideWidth=0; //= RadiusOuter / 2
+	private int iTileLabelHeight=0; 
+	private int iTileLabelWidth=0; 
 	
 	private KernelJPanelCascadedZZZ panelMap;
 	private  TileMouseMotionHandlerTHM objTileMouseMotionHandler;
 	
-	private boolean bDragModeStarted = false; //Hiermit erkennt man, ob �ber der Componente eine Maustaste "einmal" gedr�ckt worden ist.
+	private boolean bDragModeStarted = false; //Hiermit erkennt man, ob über der Componente eine Maustaste "einmal" gedrückt worden ist.
 	
 	private GenericDTO<ITileDtoAttribute>objDto = null;
 	
@@ -163,82 +167,85 @@ public class TileTHM extends JPanel implements IMapPositionableTHM, IBackendPers
 	public void paintComponent(Graphics g){
 		//super.paintComponent(g);
 		
-		try{
-		//TODO GOON: Irgendwie ein Bild des Spielsteins zeichnen
-		//  ALSO g.drawImage(......)
-				
-		   //++++++++++
+		try{			
+			int iFontOffset = 3;//Irgenwie die Fontgröße justieren
+			
+			//1.  Der Hintergrund des Spielsteins: Das Bild...  Merke. Zeichne das zuerst. Dann kann man ggfs. etwas Text darübergeschrieben tollerieren.
+			//++++++++++
 		    //Die Größe der Icons aus der KernelKonfiguration auslesen
 			KernelSingletonTHM objKernel = KernelSingletonTHM.getInstance();	
 			String sModuleAlias = this.getMapPanel().getModuleName();
 			String sProgramAlias = this.getMapPanel().getProgramAlias();				
 			System.out.println(ReflectCodeZZZ.getMethodCurrentName() + ": Suche Modul: '" + sModuleAlias +"'/ Program: '" + sProgramAlias + "'/ Parameter: 'IconWidth'");
-			
-			
 			String sIconWidth = objKernel.getParameterByProgramAlias(sModuleAlias, sProgramAlias, "IconWidth" );
 			int iIconWidth = Integer.parseInt(sIconWidth);				
 			String sIconHeight = objKernel.getParameterByProgramAlias(sModuleAlias, sProgramAlias, "IconHeight" );
 			int iIconHeight = Integer.parseInt(sIconHeight);
-		  //+++++++++	  	
-				
+			
+		    //+++++++++	
+			
 			String sTileIconName = this.getVariantImageUrlString();			
 			 String sBaseDirectory = ApplicationSingletonTHM.getInstance().getBaseDirectoryStringForImages();//WICHTIG: NUN Noch den Basispfad davorhängen!
 	    	 String sFilename = sBaseDirectory + File.separator + sTileIconName;
 			File objFile = new File(sFilename);		   
 			BufferedImage objBufferdImageTemp = ImageIO.read(objFile);
-			BufferedImage objBufferdImageResized = UIHelper.resizeImage(objBufferdImageTemp, iIconWidth, iIconHeight);			
-			g.drawImage(objBufferdImageResized, 0, 0, null);//FGL: Hierdurch wird wohl das Image wieder in das neue, zurückzugebend BufferedImage gepackt.
 			
-
-		
-/*
-		//Der Hintergrund des Spielsteins
-		int iTileSideLength = this.getTileSideLength();	
-		g.setColor(Color.red);
-		//g.fillRect(0,0, 30,30);
-		g.fillRect(0,0, iTileSideLength,iTileSideLength);
-		
-		
-		//Die Beschriftung des Spielsteins
-		g.setColor(Color.green);
-		//g.drawString("test",0,15);
-		//g.drawString("test",0,(int)(iTileSideLength/2));
-		
-		//Die Schriftgöße ändern, hier des aktuellen Fonts
-		Font font = g.getFont().deriveFont( 8.0f );
-		
-		//Die Schriftgröße ändern, hier einen bestimmten Font setzen
-		// Font f = new Font("Comic Sans MS", Font.BOLD, 20);
-		
-		g.setFont( font );
-		
-		String sComponentLabelUsed = null;
-		
-		//Einen Namen (Kurz, nomal, lang) als Eigenschaft den Objekten hinzufügen (über die Dto-Funktionalität). 
-		//und dann die "Kurzform" hier anzeigen.
-		String sVariantShorttext = this.getVariantShorttext();		
-		if(StringZZZ.isEmpty(sVariantShorttext)){
-			String sUniquename = this.getUniquename();
-			sComponentLabelUsed = sUniquename;
-		}else{
-			sComponentLabelUsed = sVariantShorttext;
-		}
-					
-		//Den gefundenen Namen abkürzen 
-			sComponentLabelUsed = StringZZZ.toShorten(sComponentLabelUsed, StringZZZ.iSHORTEN_METHOD_VOWEL, 1);//Entferne aus dem String die Vokale, offset 1, D.h. Beginnende Vokale werden nicht gekürzt. 
-			sComponentLabelUsed = StringZZZ.abbreviateDynamic(sComponentLabelUsed, 8 );//Nach 8 Zeichen soll der Name abgekürzt werden, d.h. abgeschnitten und "..." am Ende, um das Abkürzen zu kennzeichnen..
+			 
+			BufferedImage objBufferdImageResized = null;
 			
-			Integer intInstanceVariantUniquenumber = this.getInstanceVariantUniqueNumber();
-			String sInstanceUniquenumber = null;
-			if(intInstanceVariantUniquenumber!=null){
-				sInstanceUniquenumber = intInstanceVariantUniquenumber.toString();
-				sComponentLabelUsed = sComponentLabelUsed + "_" + sInstanceUniquenumber;
+			//!!! Wenn es Army Bilder sind, dann diese noch weiter verkleinern
+			String sSubtype = this.getSubtype(); //Army oder Fleet
+			if(sSubtype.equalsIgnoreCase("AR")){
+				objBufferdImageResized = UIHelper.cropImageByPoints(objBufferdImageTemp, 0,50,60,10);	//Schneide das Bild erst aus dem Rahmen aus.
+				objBufferdImageResized = UIHelper.resizeImage(objBufferdImageResized, iIconWidth, iIconHeight);
+			}else{
+				objBufferdImageResized = UIHelper.resizeImage(objBufferdImageTemp, iIconWidth, iIconHeight);		
 			}
-		
-		g.drawString(sComponentLabelUsed,0,(int)(iTileSideLength/2));
-		*/
+			int iTileSideLength = this.getTileSideLength();
+			int iHexSideHeight = this.getHexSideHeight();
+			int iTileLabelHeight = this.getTileLabelHeight();
+			//int iPositionIconInHeight = (iTileSideLength - iTileLabelHeight - iIconHeight); //Darüber kommt noch die Schrift
+			//int iPositionIconInHeight = (iTileSideLength - iTileLabelHeight); // - iIconHeight); //Darüber kommt noch die Schrift
+			int iPositionIconInHeight = (iTileSideLength - iIconHeight-iFontOffset); //Darüber kommt noch die Schrift
+			g.drawImage(objBufferdImageResized, 0,iPositionIconInHeight, null);//FGL: Hierdurch wird wohl das Image wieder in das neue, zurückzugebend BufferedImage gepackt.
 			
-		setOpaque(false);
+			//####################
+			//2. Der Hintergrund des Spielsteins: Der Labelkasten (über das Bild, darum erst nach dem Bild malen!!!)
+			int iTileLabelWidth = this.getTileLabelWidth();
+			int iTileLabelInHexWidth = this.getHexSideLength() - this.getTileLabelWidth(); //Also 0 wäre ganz links und dies ist dann ganz rechts.
+			g.setColor(Color.red);
+			g.fillRect(0,0, iTileLabelWidth,iTileLabelHeight);
+			
+			
+			//Die Beschriftung des Spielsteins
+			g.setColor(Color.green);												//Schriftfarbe
+			// Font f = new Font("Comic Sans MS", Font.BOLD, 20); //Die Schriftgröße ändern, hier einen bestimmten Font setzen
+			Font font = g.getFont().deriveFont( 8.0f );					//Die Schriftgöße ändern, hier des aktuellen Fonts						
+			g.setFont( font );
+			
+			String sComponentLabelUsed = null;//Einen Namen (Kurz, nomal, lang) als Eigenschaft den Objekten hinzufügen (über die Dto-Funktionalität) und dann die "Kurzform" hier anzeigen.
+			String sVariantShorttext = this.getVariantShorttext();		
+			if(StringZZZ.isEmpty(sVariantShorttext)){
+				String sUniquename = this.getUniquename();
+				sComponentLabelUsed = sUniquename;
+			}else{
+				sComponentLabelUsed = sVariantShorttext;
+			}
+						
+			//Den gefundenen Namen abkürzen 
+				sComponentLabelUsed = StringZZZ.toShorten(sComponentLabelUsed, StringZZZ.iSHORTEN_METHOD_VOWEL, 1);//Entferne aus dem String die Vokale, offset 1, D.h. Beginnende Vokale werden nicht gekürzt. 
+				sComponentLabelUsed = StringZZZ.abbreviateDynamic(sComponentLabelUsed, 8 );//Nach 8 Zeichen soll der Name abgekürzt werden, d.h. abgeschnitten und "..." am Ende, um das Abkürzen zu kennzeichnen..
+				
+				Integer intInstanceVariantUniquenumber = this.getInstanceVariantUniqueNumber();
+				String sInstanceUniquenumber = null;
+				if(intInstanceVariantUniquenumber!=null){
+					sInstanceUniquenumber = intInstanceVariantUniquenumber.toString();
+					sComponentLabelUsed = sComponentLabelUsed + "_" + sInstanceUniquenumber;
+				}						
+				//g.drawString(sComponentLabelUsed,0,(int)(this.getTileLabelHeight()));//Unter dem Bild
+				g.drawString(sComponentLabelUsed,0,(int)this.getTileLabelHeight()-iFontOffset);//über dem Bild. -3 ist ein Offset, so dass der Text in der Höhe zentriert in den Labelkasten reinpasst. Bei 0 wird ein Teil nach unten verschwinden.
+			
+				setOpaque(false);				
 		} catch (ExceptionZZZ e) {
 			e.printStackTrace();
 		} catch (IOException e) {
@@ -286,12 +293,17 @@ public class TileTHM extends JPanel implements IMapPositionableTHM, IBackendPers
 	}
 	public TileMouseMotionHandlerTHM getMouseMotionHandler(){
 		return this.objTileMouseMotionHandler;
-	}
-	
+	}		
 	private void setHexSideLength(int iHexSideLength){
 		this.iHexSideLength = iHexSideLength;
 	}
 	public int getHexSideLength(){
+		return this.iHexSideLength;
+	}	
+	public int getHexSideHeight(){
+		return this.iHexSideLength;
+	}
+	public int getHexSideWidth(){
 		return this.iHexSideLength;
 	}
 	
@@ -299,23 +311,59 @@ public class TileTHM extends JPanel implements IMapPositionableTHM, IBackendPers
 		return iHexSideLength * ( MathZZZ.square2(3));
 	}
 	
-	private int computeTileSideLength(int iHexSideLength){
+	private int computeTileSideLength(int iHexSideLength, int iDivisor){
 		double dRadiusInner = this.computeRadiusInner(iHexSideLength);
-		return (int) dRadiusInner / 2;
+		return (int) dRadiusInner / iDivisor;
 	}
 	
 	private int getTileSideLength(){
 		if(this.iTileSideLength==0){
-			this.iTileSideLength = this.computeTileSideLength(this.getHexSideLength());
+			this.iTileSideLength = this.computeTileSideLength(this.getHexSideLength(), 2); // 2 wäre der halbe Platz, 1 ist der ganze Platz
 		}
 		return this.iTileSideLength;
 	}
+	
+	private int getTileLabelHeight(){
+		if(this.iTileLabelHeight==0){
+			this.iTileLabelHeight = this.computeTileSideLength(this.getHexSideLength(),6); // 2 wäre der halbe Platz, 1 ist der ganze Platz
+		}
+		return this.iTileLabelHeight;
+	}
+	private int getTileLabelWidth(){
+		if(this.iTileLabelWidth==0){
+			this.iTileLabelWidth = this.computeTileSideLength(this.getHexSideLength(), 2); // 2 wäre der halbe Platz, 1 ist der ganze Platz
+		}
+		return this.iTileLabelWidth;
+	}
+	
+	private int getTileSideHeight(){
+		if(this.iTileSideHeight==0){
+			this.iTileSideHeight = this.computeTileSideLength(this.getHexSideLength(), 1); // 2 wäre der halbe Platz, 1 ist der ganze Platz
+		}
+		return this.iTileSideHeight;
+	}
+	
+	private int getTileSideWidth(){
+		if(this.iTileSideHeight==0){
+			this.iTileSideHeight = this.computeTileSideLength(this.getHexSideLength(), 2); // 2 wäre der halbe Platz, 1 ist der ganze Platz
+		}
+		return this.iTileSideHeight;
+	}
+	
+	
 
 	public String getUniquename() {
 		return (String) this.getDto().get(ITileDtoAttribute.UNIQUENAME);
 	}
 	protected void setUniquename(String sUniquename) {
 		this.getDto().set(ITileDtoAttribute.UNIQUENAME, sUniquename);
+	}
+	
+	public String getSubtype() {
+		return (String) this.getDto().get(ITileDtoAttribute.SUBTYPE);
+	}
+	protected void setSubtype(String sSubtype) {
+		this.getDto().set(ITileDtoAttribute.SUBTYPE, sSubtype);
 	}
 	
 	public String getVariantShorttext(){

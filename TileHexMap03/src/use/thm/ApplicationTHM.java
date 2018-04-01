@@ -9,6 +9,7 @@ import basic.zBasic.persistence.SQLiteUtilZZZ;
 import basic.zBasic.util.datatype.string.StringZZZ;
 import basic.zBasic.util.log.KernelReportContextProviderZZZ;
 import basic.zBasic.util.log.ReportLogZZZ;
+import basic.zBasicUI.glassPane.dragDropTranslucent.GhostGlassPane;
 import basic.zKernel.KernelUseObjectZZZ;
 import basic.zKernel.KernelZZZ;
 import use.thm.client.FrmMapSingletonTHM;

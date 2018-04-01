@@ -39,7 +39,6 @@ import basic.zKernelUI.util.JFrameHelperZZZ;
 
 public class ApplicationSingletonTHM  extends ApplicationTHM{
 	private static ApplicationSingletonTHM objApplicationSingleton = null;  //muss static sein, wg. getInstance()!!!
-	private GhostGlassPane glassPane; //damit etwas, das per Drag/Drop bewegt wird dorthin als Bild kopiert wird.
 	
 	/**Konstruktor ist private, wg. Singleton
 	 * @param objKernel

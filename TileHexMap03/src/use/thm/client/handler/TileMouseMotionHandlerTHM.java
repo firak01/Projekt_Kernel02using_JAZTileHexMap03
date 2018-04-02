@@ -3,21 +3,33 @@ package use.thm.client.handler;
 import java.awt.Component;
 import java.awt.Container;
 import java.awt.Cursor;
+import java.awt.Image;
 import java.awt.Point;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionListener;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 
+import javax.imageio.ImageIO;
+import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 
+import custom.zKernel.LogZZZ;
 import basic.persistence.dto.GenericDTO;
 import basic.zBasic.ExceptionZZZ;
+import basic.zBasic.KernelSingletonTHM;
 import basic.zBasic.ReflectCodeZZZ;
 import basic.zBasic.util.datatype.string.StringZZZ;
+import basic.zBasicUI.component.UIHelper;
+import basic.zKernel.IKernelModuleUserZZZ;
 import basic.zKernel.KernelZZZ;
+import basic.zKernelUI.KernelUIZZZ;
 import basic.zKernelUI.component.KernelJPanelCascadedZZZ;
+import use.thm.ApplicationSingletonTHM;
 import use.thm.client.component.HexCellTHM;
 import use.thm.client.component.TileTHM;
 import use.thm.client.event.EventCellEnteredTHM;
@@ -45,7 +57,7 @@ import use.thm.persistence.model.TroopType;
  * @author lindhauer
  *
  */
-public class TileMouseMotionHandlerTHM extends MouseAdapter implements MouseMotionListener, ITileMoveEventBrokerUserTHM {
+public class TileMouseMotionHandlerTHM extends MouseAdapter implements MouseMotionListener, ITileMoveEventBrokerUserTHM,IKernelModuleUserZZZ {
 	private TileTHM objTile;
 	private HexCellTHM objCellStart;
 	
@@ -303,6 +315,9 @@ public class TileMouseMotionHandlerTHM extends MouseAdapter implements MouseMoti
 				panelCurrent.removeSquare(objRect2D);
 			}
 			*/
+			
+			
+			//++++++++++++++++++++++++++++++++++++++++++++++++++++
 			String sMessage = new String();
 			
 			//Hole weitere Informationen aus dem DTO:
@@ -319,10 +334,47 @@ public class TileMouseMotionHandlerTHM extends MouseAdapter implements MouseMoti
 			
 			//Trennzeile
 			sMessage = sMessage + StringZZZ.crlf();
-			
+						
 			String sUniquename = objDto.get(ITileDtoAttribute.UNIQUENAME);
 			sMessage = sMessage + StringZZZ.crlf() + sUniquename;
-			JOptionPane.showMessageDialog(this.getTile(), sMessage, "Detailangaben....", JOptionPane.INFORMATION_MESSAGE, null);
+			
+			
+			//+++++++++++++++++++++++++++++
+			//Das ICON
+			//+++++++++++++++++++++++++++++
+		    //Die Größe der Icons aus der KernelKonfiguration auslesen
+			KernelSingletonTHM objKernel = KernelSingletonTHM.getInstance();
+
+			//FALLS GILT: GENUTZT WERDEN SOLL DAS MODUL FÜR DIE GRÖSSENANGABEN AUF DER KARTE
+			//String sModuleAlias = this.getTile().getMapPanel().getModuleName();
+			//String sProgramAlias = this.getTile().getMapPanel().getProgramAlias();			
+			
+			//FALLS GILT: GENUTZT WERDEN SOLL DAS MODUL FÜR DIE GRÖSSENANGABEN AUF DEM CATALOG
+			//		KernelJPanelCascadedZZZ objPanelToSearch = this.getTile().getMapPanel().getPanelNeighbour("WEST");			
+			//		String sModuleAlias = objPanelToSearch.getModuleName();
+			//		String sProgramAlias = objPanelToSearch.getProgramName();
+					
+			String sModuleAlias = this.getModuleName();
+			String sProgramAlias = this.getProgramName();			
+			System.out.println(ReflectCodeZZZ.getMethodCurrentName() + ": Suche Modul: '" + sModuleAlias +"'/ Program: '" + sProgramAlias + "'/ Parameter: 'IconWidth'");
+			
+			String sIconWidth = objKernel.getParameterByProgramAlias(sModuleAlias, sProgramAlias, "IconWidth" );
+			int iIconWidth = Integer.parseInt(sIconWidth);				
+			String sIconHeight = objKernel.getParameterByProgramAlias(sModuleAlias, sProgramAlias, "IconHeight" );
+			int iIconHeight = Integer.parseInt(sIconHeight);			
+		    //+++++++++		
+			String sTileIconName = this.getTile().getVariantImageUrlString();			
+			String sBaseDirectory = ApplicationSingletonTHM.getInstance().getBaseDirectoryStringForImages();//WICHTIG: NUN Noch den Basispfad davorhängen!
+	    	String sFilename = sBaseDirectory + File.separator + sTileIconName;
+			File objFile = new File(sFilename);		   
+			BufferedImage objBufferdImageTemp = ImageIO.read(objFile);
+			BufferedImage objBufferdImageResized = objBufferdImageResized = UIHelper.resizeImage(objBufferdImageTemp, iIconWidth, iIconHeight);		
+				
+			//Erst jetzt ein größenverändetes ImageIcon aus dem BufferedImage machen. Merke: Ein Image oder ein BufferedImage funktioniert in der JOptionPane nicht
+			ImageIcon objImageIcon = new ImageIcon(objBufferdImageResized);
+   		 					
+			//+++ AUSGABE +++++++++++++++++++++
+			JOptionPane.showMessageDialog(this.getTile(), sMessage, "Detailangaben....", JOptionPane.INFORMATION_MESSAGE, objImageIcon);
 			
 			break;
 		} //END Switch
@@ -337,7 +389,11 @@ public class TileMouseMotionHandlerTHM extends MouseAdapter implements MouseMoti
 		}
 			*/
 		}catch(ExceptionZZZ ez){
+			System.out.println("ExceptionZZZ Detail: " + ez.getDetailAllLast());
 			ez.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 		}//End main:
 		
@@ -613,6 +669,32 @@ return c;
 
 	public void setSenderUsed(TileMoveEventBrokerTHM objEventSender) {
 		this.objTileMoveEventBroker = objEventSender;
+	}
+
+	//### Interface IKernelModuleUser
+	@Override
+	public String getModuleName() {
+		//return KernelUIZZZ.getModuleName(this);
+		
+		String sReturn=null;
+		try {
+			KernelJPanelCascadedZZZ objPanelToSearch = this.getTile().getMapPanel().getPanelNeighbour("WEST");
+			String sModuleName = objPanelToSearch.getModuleName();
+			sReturn = sModuleName;
+		} catch (ExceptionZZZ e) {			
+			e.printStackTrace();
+		}
+		return sReturn;
+	}
+
+	@Override
+	public String getProgramName() throws ExceptionZZZ {
+		return KernelUIZZZ.getProgramName(this);
+	}
+
+	@Override
+	public String getProgramAlias() throws ExceptionZZZ {
+		return KernelUIZZZ.getProgramAlias(this);
 	}
 	
 	//##########################################

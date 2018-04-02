@@ -25,6 +25,7 @@ import basic.zBasic.util.datatype.string.StringZZZ;
 import basic.zBasic.util.log.ReportLogZZZ;
 import basic.zBasic.util.math.MathZZZ;
 import basic.zBasicUI.component.UIHelper;
+import basic.zBasicUI.component.UITransparencyHelper;
 import basic.zKernel.IKernelUserZZZ;
 import basic.zKernel.KernelZZZ;
 import basic.zKernelUI.component.KernelJPanelCascadedZZZ;
@@ -189,30 +190,31 @@ public class TileTHM extends JPanel implements IMapPositionableTHM, IBackendPers
 	    	 String sFilename = sBaseDirectory + File.separator + sTileIconName;
 			File objFile = new File(sFilename);		   
 			BufferedImage objBufferdImageTemp = ImageIO.read(objFile);
-			
-			 
-			BufferedImage objBufferdImageResized = null;
-			
+					 			
 			//!!! Wenn es Army Bilder sind, dann diese noch weiter verkleinern
+			BufferedImage objBufferedImageResized = null;			
 			String sSubtype = this.getSubtype(); //Army oder Fleet
 			if(sSubtype.equalsIgnoreCase("AR")){
-				objBufferdImageResized = UIHelper.cropImageByPoints(objBufferdImageTemp, 0,50,60,10);	//Schneide das Bild erst aus dem Rahmen aus.
-				objBufferdImageResized = UIHelper.resizeImage(objBufferdImageResized, iIconWidth, iIconHeight);
+				objBufferedImageResized = UIHelper.cropImageByPoints(objBufferdImageTemp, 0,50,60,10);	//Schneide das Bild erst aus dem Rahmen aus. Sehr viel vom unteren Rand weg, sehr viel vom linken Rand weg.
+				objBufferedImageResized = UIHelper.resizeImage(objBufferedImageResized, iIconWidth, iIconHeight);
 			}else{
-				objBufferdImageResized = UIHelper.resizeImage(objBufferdImageTemp, iIconWidth, iIconHeight);		
+				objBufferedImageResized = UIHelper.resizeImage(objBufferdImageTemp, iIconWidth, iIconHeight);		
 			}
+			
+			//+++++++++ Merke: Anders als beim ImageIcon ist das Image nicht transparent. Das muss extra noch gemacht werden.
+			Image imageResizedAndTransparent = UITransparencyHelper.makeColorTransparent(objBufferedImageResized, Color.WHITE);
+			//ABER: So richtig schick ist diese Lösung nicht... nur leicht besser, als wenn der Weisse Rand in ein anderes HEX-Feld reinragt.
+			
+			//+++++++++ Das Bild an der errechneten Postion (unterhalb des Labels) zeichnen.
 			int iTileSideLength = this.getTileSideLength();
-			int iHexSideHeight = this.getHexSideHeight();
-			int iTileLabelHeight = this.getTileLabelHeight();
-			//int iPositionIconInHeight = (iTileSideLength - iTileLabelHeight - iIconHeight); //Darüber kommt noch die Schrift
-			//int iPositionIconInHeight = (iTileSideLength - iTileLabelHeight); // - iIconHeight); //Darüber kommt noch die Schrift
-			int iPositionIconInHeight = (iTileSideLength - iIconHeight-iFontOffset); //Darüber kommt noch die Schrift
-			g.drawImage(objBufferdImageResized, 0,iPositionIconInHeight, null);//FGL: Hierdurch wird wohl das Image wieder in das neue, zurückzugebend BufferedImage gepackt.
+			int iPositionIconInHeight = (iTileSideLength - iIconHeight - iFontOffset); //Darüber kommt noch die Schrift
+			//g.drawImage(objBufferedImageResized, 0,iPositionIconInHeight, null);//Hierdurch wird wohl das Image wieder in das neue, zurückzugebend BufferedImage gepackt.	
+			g.drawImage(imageResizedAndTransparent, 0,iPositionIconInHeight, null);//Hierdurch wird wohl das Image wieder in das neue, zurückzugebend BufferedImage gepackt.
 			
 			//####################
 			//2. Der Hintergrund des Spielsteins: Der Labelkasten (über das Bild, darum erst nach dem Bild malen!!!)
 			int iTileLabelWidth = this.getTileLabelWidth();
-			int iTileLabelInHexWidth = this.getHexSideLength() - this.getTileLabelWidth(); //Also 0 wäre ganz links und dies ist dann ganz rechts.
+			int iTileLabelHeight = this.getTileLabelHeight();
 			g.setColor(Color.red);
 			g.fillRect(0,0, iTileLabelWidth,iTileLabelHeight);
 			

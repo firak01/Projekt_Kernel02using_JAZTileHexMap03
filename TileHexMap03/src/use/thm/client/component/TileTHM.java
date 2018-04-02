@@ -204,6 +204,9 @@ public class TileTHM extends JPanel implements IMapPositionableTHM, IBackendPers
 			//+++++++++ Merke: Anders als beim ImageIcon ist das Image nicht transparent. Das muss extra noch gemacht werden.
 			Image imageResizedAndTransparent = UITransparencyHelper.makeColorTransparent(objBufferedImageResized, Color.WHITE);
 			//ABER: So richtig schick ist diese Lösung nicht... nur leicht besser, als wenn der Weisse Rand in ein anderes HEX-Feld reinragt.
+			//Vielleicht ist das Beser: 
+			//https://stackoverflow.com/questions/12020597/java-convert-image-to-icon-imageicon
+			//https://tips4java.wordpress.com/2010/08/22/alpha-icons/
 			
 			//+++++++++ Das Bild an der errechneten Postion (unterhalb des Labels) zeichnen.
 			int iTileSideLength = this.getTileSideLength();

@@ -41,7 +41,7 @@ public class AreaCellTHM  extends HexCellTHM implements IListenerTileMetaTHM{
 		EFFECT_REACHABLE, EFFECT_REACHABLE_NEXT;
 	}
 	
-	/** Default Konsturktor um per Refelction API - objClass.newInstance() machen zu k�nnen.
+	/** Default Konsturktor um per Reflection API - objClass.newInstance() machen zu k�nnen.
 	 * 
 	 * lindhaueradmin, 23.07.2013
 	 */

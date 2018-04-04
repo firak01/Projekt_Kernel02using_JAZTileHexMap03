@@ -28,7 +28,9 @@ import basic.zBasic.util.math.MathZZZ;
 import basic.zBasicUI.component.UIHelper;
 import basic.zBasicUI.component.UIHelperAlphaIcon;
 import basic.zBasicUI.component.UIHelperAlphaImageIcon;
+import basic.zBasicUI.component.UIHelperAnalyseImage;
 import basic.zBasicUI.component.UIHelperTransparency;
+import basic.zBasicUI.component.UIHelperTransparencyRange;
 import basic.zKernel.IKernelUserZZZ;
 import basic.zKernel.KernelZZZ;
 import basic.zKernelUI.component.KernelJPanelCascadedZZZ;
@@ -189,135 +191,20 @@ public class TileTHM extends JPanel implements IMapPositionableTHM, IBackendPers
 			int iIconHeight = Integer.parseInt(sIconHeight);
 			
 		    //+++++++++	
-			
+			//TODO GOON 20180404: Hier dann mittelfristig auf das BLOB-Objekt der DTO zugreifen!!! Welches aus der Variante stammt.
+			//Der Pfad zum lokal im Dateisystem abgelegten Bild
 			String sTileIconName = this.getVariantImageUrlString();			
 			 String sBaseDirectory = ApplicationSingletonTHM.getInstance().getBaseDirectoryStringForImages();//WICHTIG: NUN Noch den Basispfad davorhängen!
 	    	 String sFilename = sBaseDirectory + File.separator + sTileIconName;
 			File objFile = new File(sFilename);		   
-			BufferedImage objBufferedImageTemp = ImageIO.read(objFile);
-			
-			
-			
-			
-			
-			
-			
-			//0. Versuche das Bild zu vergrößern, um vielleicht mehr WEISSE Pixel zu erwischen...
-//			int iIconWidthOrg = objBufferedImageTemp.getWidth();
-//			int iIconHeightOrg = objBufferedImageTemp.getHeight();
-//			int iIconWidth0 = 1500;
-//			int iIconHeight0 = 600;
-//			BufferedImage objBufferedImage0 = UIHelper.resizeImage(objBufferedImageTemp, iIconWidth0, iIconHeight0);
-//			Image imageTransparent0 = UIHelperTransparency.makeColorTransparent(objBufferedImage0, Color.WHITE);
-//			BufferedImage objBufferedImageTransparent0 = UIHelper.toBufferedImage(imageTransparent0);			
-//			objBufferedImageTemp = UIHelper.resizeImage(objBufferedImageTransparent0, iIconWidthOrg, iIconHeightOrg); 
+			BufferedImage objBufferedImageTemp = ImageIO.read(objFile);		
 			
 			//1. Versuche das Bild mit einem transparenten Hintergrund auszustatten:
-			//+++++++++ Merke: Anders als beim ImageIcon ist das Image nicht transparent. Das muss extra noch gemacht werden.
-			Color color01 = new Color(255,255,255);//weiss
-
-			//Image imageTransparent = UIHelperTransparency.makeColorTransparent(objBufferedImageTemp, color01);			
-			//ABER: So richtig schick ist diese Lösung nicht... nur leicht besser, als wenn der Weisse Rand in ein anderes HEX-Feld reinragt.
-			//Vielleicht ist das Besser: 
-			//https://stackoverflow.com/questions/12020597/java-convert-image-to-icon-imageicon
-			//https://tips4java.wordpress.com/2010/08/22/alpha-icons/
-			
-			Image imageTransparent = UIHelperTransparency.transformColorToTransparency(objBufferedImageTemp, color01, color01);
-			
-			BufferedImage objBufferedImageTransparent02 = UIHelper.toBufferedImage(imageTransparent);			
-			Color color02 = new Color(254,253,254);
-			Image imageTransparent02 = UIHelperTransparency.transformColorToTransparency(objBufferedImageTransparent02, color02,color01);
-			
-			BufferedImage objBufferedImageTransparent03 = UIHelper.toBufferedImage(imageTransparent02);			
-			Color color03 = new Color(251,254,250);
-			Image imageTransparent03 = UIHelperTransparency.transformColorToTransparency(objBufferedImageTransparent03, color03,color01);
-			
-			BufferedImage objBufferedImageTransparent04 = UIHelper.toBufferedImage(imageTransparent03);			
-			Color color04 = new Color(251,252,252);
-			Image imageTransparent04 = UIHelperTransparency.transformColorToTransparency(objBufferedImageTransparent04, color04,color01);
-			
-			BufferedImage objBufferedImageTransparent05 = UIHelper.toBufferedImage(imageTransparent04);			
-			Color color05 = new Color(254,253,252);
-			Image imageTransparent05 = UIHelperTransparency.transformColorToTransparency(objBufferedImageTransparent05, color05,color01);
-			
-			BufferedImage objBufferedImageTransparent06 = UIHelper.toBufferedImage(imageTransparent05);			
-			Color color06 = new Color(254,253,252);
-			Image imageTransparent06 = UIHelperTransparency.transformColorToTransparency(objBufferedImageTransparent06, color06,color01);
-			
-			BufferedImage objBufferedImageTransparent07 = UIHelper.toBufferedImage(imageTransparent06);			
-			Color color07 = new Color(252,254,251);
-			Image imageTransparent07 = UIHelperTransparency.transformColorToTransparency(objBufferedImageTransparent07, color07,color01);
-			
-			BufferedImage objBufferedImageTransparent08 = UIHelper.toBufferedImage(imageTransparent07);			
-			Color color08 = new Color(253,254,251);
-			Image imageTransparent08 = UIHelperTransparency.transformColorToTransparency(objBufferedImageTransparent08, color08,color01);
-			
-			BufferedImage objBufferedImageTransparent09 = UIHelper.toBufferedImage(imageTransparent08);			
-			Color color09 = new Color(255,252,252);
-			Image imageTransparent09 = UIHelperTransparency.transformColorToTransparency(objBufferedImageTransparent09, color09,color01);
-			
-			BufferedImage objBufferedImageTransparent10 = UIHelper.toBufferedImage(imageTransparent09);			
-			Color color10 = new Color(255,255,251);
-			Image imageTransparent10 = UIHelperTransparency.transformColorToTransparency(objBufferedImageTransparent10, color10,color01);
-			
-			
-//			BufferedImage objBufferedImageTransparent02 = UIHelper.toBufferedImage(imageTransparent);
-			//Image imageTransparent02 = UIHelperTransparency.transformGrayToTransparency(objBufferedImageTransparent02);
-//			Image imageTransparent02 = UIHelperTransparency.transformWhiteToTransparency(objBufferedImageTemp);
-//			
-			//BufferedImage objBufferedImageTransparent = objBufferedImageTemp;
-			//BufferedImage objBufferedImageTransparent = objBufferedImageTransparent0;
-//			BufferedImage objBufferedImageTransparent = UIHelper.toBufferedImage(imageTransparent);
-//			BufferedImage objBufferedImageTransparent = UIHelper.toBufferedImage(imageTransparent02);
-//			BufferedImage objBufferedImageTransparent = UIHelper.toBufferedImage(imageTransparent04);
-			BufferedImage objBufferedImageTransparent = UIHelper.toBufferedImage(imageTransparent10);
-					 			
-			//!!! Wenn es Army Bilder sind, dann diese noch weiter verkleinern
-			BufferedImage objBufferedImageTransparentAndResized = null;			
-			String sSubtype = this.getSubtype(); //Army oder Fleet
-		
-			if(sSubtype.equalsIgnoreCase("AR")){
-				objBufferedImageTransparentAndResized = UIHelper.cropImageByPoints(objBufferedImageTransparent, 0,50,60,10);	//Schneide das Bild erst aus dem Rahmen aus. Sehr viel vom unteren Rand weg, sehr viel vom linken Rand weg.
-				objBufferedImageTransparentAndResized = UIHelper.resizeImage(objBufferedImageTransparentAndResized, iIconWidth, iIconHeight);
-				
-				
-				//-1. Analyse des verkleinerten und "um weiss entfernten" Bildes. Ziel ist es dies NOCH transparenter zu machen.
-				//    Es sind noch andere Farben, die stören
-//				String sX = this.getMapX();
-//				String sY = this.getMapY();
-//				BufferedImage objBufferedImage2analyse = objBufferedImageTransparentAndResized;
-//				 int[][] pixelData = new int[objBufferedImage2analyse.getHeight() * objBufferedImage2analyse.getWidth()][4];//4 weil jetz noch der ALPHA Wert für die Transparenz dazugekommen ist.
-//			        int[] rgb;
-//
-//			        System.out.println("Klasse " + this.getClass().getName());
-//			        System.out.println(("AAAA "  + sSubtype + " an Position X/Y: " + sX + "/" +sY ));
-//			        int counter = 0;
-//			        for(int i = 0; i < objBufferedImage2analyse.getHeight(); i++){
-//			            for(int j = 0; j < objBufferedImage2analyse.getWidth(); j++){
-//			            	System.out.println("Höhe " + objBufferedImage2analyse.getHeight() + " | Breite "  + objBufferedImage2analyse.getWidth() + "( X = " + i + " | y= " + j +  ")");
-//			                rgb = getPixelData(objBufferedImage2analyse, j, i);
-//
-//			                for(int k = 0; k < rgb.length; k++){
-//			                    pixelData[counter][k] = rgb[k];
-//			                }
-//
-//			                counter++;
-//			            }
-//			        }
-//				System.out.println(("ZZZZ "  + sSubtype + " an Position X/Y: " + sX + "/" +sY ));
-//				
-				
-				
-			}else{
-				objBufferedImageTransparentAndResized = UIHelper.resizeImage(objBufferedImageTransparent, iIconWidth, iIconHeight);		
-			}
 			
 			
 			
-			
-			
-			
-			//2. Versuch: Ein ImageIcon zeichnen
+			//Beispielsansatz das Bild mit einem Transparenten Hintergund hinzubekommen:
+			//Ein ImageIcon zeichnen
 //			Icon icon = new ImageIcon(objBufferedImageTransparentAndResized);
 //			int x = 0;
 //			int y = 0;
@@ -327,6 +214,47 @@ public class TileTHM extends JPanel implements IMapPositionableTHM, IBackendPers
 //			//UIHelperAlphaImageIcon iconTransparent = new UIHelperAlphaImageIcon(icon, alpha);
 //			iconTransparent.paintIcon(this, g, x, y);
 			
+			
+			
+			//Realisierter Ansatz
+			Color color01 = new Color(255,255,255);//weiss
+						
+			//Image imageTransparent = UIHelperTransparency.makeColorTransparent(objBufferedImageTemp, color01);			
+			//ABER: So richtig schick ist diese Lösung nicht... nur leicht besser, als wenn der Weisse Rand in ein anderes HEX-Feld reinragt.
+			//Grund dafür war, dass das Bild noch weitaus mehr untransparente Farben hatte, die "annähernd" weiss waren. 
+			//Lösungsansatz: Ersetze nun einen Bereich 			
+			Image imageTransparent = UIHelperTransparencyRange.transformColorRangeToTransparency(objBufferedImageTemp, color01, 6, 0, color01);
+			BufferedImage objBufferedImageTransparent = UIHelper.toBufferedImage(imageTransparent);
+			
+			//TODO GOON 20180404: Das hat zwar funktioniert. (Die Bildqualität ist besser auf der Karte)
+			//Aber die Performance leidet darunter.
+			//Lösungsansatz: Speicher das einmal ersetzte Bild als BLOB in der Datenbank (unter der Variante), packe das Bild in das DTO-Objekt
+			//               und rufe hier dann immer nur das optimierte, größenmäßig unveränderte Bild auf.
+		 			
+			
+			//!!! Wenn es Army Bilder sind, dann diese noch weiter verkleinern
+			BufferedImage objBufferedImageTransparentAndResized = null;			
+			String sSubtype = this.getSubtype(); //Army oder Fleet
+		
+			if(sSubtype.equalsIgnoreCase("AR")){
+				objBufferedImageTransparentAndResized = UIHelper.cropImageByPoints(objBufferedImageTransparent, 0,50,60,10);	//Schneide das Bild erst aus dem Rahmen aus. Sehr viel vom unteren Rand weg, sehr viel vom linken Rand weg.
+				objBufferedImageTransparentAndResized = UIHelper.resizeImage(objBufferedImageTransparentAndResized, iIconWidth, iIconHeight);
+							
+				//-1. Analyse des verkleinerten und "um weiss entfernten" Bildes. Ziel ist es dies NOCH transparenter zu machen.
+				//    Es sind noch andere Farben, die stören....
+//				String sX = this.getMapX();
+//				String sY = this.getMapY();
+//				BufferedImage objBufferedImage2analyse = objBufferedImageTransparentAndResized;
+//								
+//			    System.out.println("Klasse " + this.getClass().getName());
+//			    System.out.println(("AAAA "  + sSubtype + " an Position X/Y: " + sX + "/" +sY ));
+//			    UIHelperAnalyseImage.debugPrintImagePixelData(objBufferedImage2analyse, true);			        
+//				System.out.println(("ZZZZ "  + sSubtype + " an Position X/Y: " + sX + "/" +sY ));
+
+			}else{
+				objBufferedImageTransparentAndResized = UIHelper.resizeImage(objBufferedImageTransparent, iIconWidth, iIconHeight);		
+			}
+						
 			//+++++++++ Das Bild an der errechneten Postion (unterhalb des Labels) zeichnen.
 			int iTileSideLength = this.getTileSideLength();
 			int iPositionIconInHeight = (iTileSideLength - iIconHeight - iFontOffset); //Darüber kommt noch die Schrift
@@ -539,27 +467,4 @@ public class TileTHM extends JPanel implements IMapPositionableTHM, IBackendPers
 	public void setDto(GenericDTO objDto) {
 		this.objDto = objDto;
 	}
-
-
-	private static int[] getPixelData(BufferedImage img, int x, int y) {
-		int argb = img.getRGB(x, y);
-
-//		int rgb[] = new int[] {
-//		    (argb >> 16) & 0xff, //red
-//		    (argb >>  8) & 0xff, //green
-//		    (argb      ) & 0xff  //blue
-//		};
-		
-		int rgb[] = new int[] {
-				(argb >> 32) & 0xFF,//alpha (d.h. für die Transparenz)
-			    (argb >> 16) & 0xff, //red
-			    (argb >>  8) & 0xff, //green
-			    (argb      ) & 0xff  //blue			     			   
-			};
-
-		String sT = StringZZZ.right("00" + rgb[0],3);		
-		System.out.println(" Transparenz: " + sT + " | rgb: " + rgb[1] + " " + rgb[2] + " " + rgb[3]);
-		return rgb;
-		}
-	
 }

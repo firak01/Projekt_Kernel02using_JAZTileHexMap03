@@ -253,18 +253,17 @@ public class HexCellTHM extends KernelJPanelCascadedZZZ implements IMapFixedTHM,
 	 }
 	
 	public void paintComponent(Graphics g){
-		Polygon po = DrawHex(g);
-		fillDetail(g, po);
-	 
-		
 		setVisible(true);
-		setOpaque(false);
+		setOpaque(false); //also doch auf false!! // Dies auf true gesetzt "opaque heisst 'undurchsichtig' ").
+		
+		Polygon po = DrawHex(g);
+		fillDetail(g, po);	 				
 	}
 	
-	/** F�lle Details in die Zelle, 
+	/** Fülle Details in die Zelle, 
 	 *   dies wird beim paintComponent() aufgerufen.
 	 *   
-	 *   F�r Drag/Drop Effecte werden dann andere Farben verwendet
+	 *   Für Drag/Drop Effecte werden dann andere Farben verwendet
 	* @param g
 	* @param po
 	* 

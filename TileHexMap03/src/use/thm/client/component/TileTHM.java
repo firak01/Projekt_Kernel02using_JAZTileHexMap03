@@ -12,6 +12,7 @@ import java.io.File;
 import java.io.IOException;
 
 import javax.imageio.ImageIO;
+import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JPanel;
 
@@ -25,7 +26,11 @@ import basic.zBasic.util.datatype.string.StringZZZ;
 import basic.zBasic.util.log.ReportLogZZZ;
 import basic.zBasic.util.math.MathZZZ;
 import basic.zBasicUI.component.UIHelper;
-import basic.zBasicUI.component.UITransparencyHelper;
+import basic.zBasicUI.component.UIHelperAlphaIcon;
+import basic.zBasicUI.component.UIHelperAlphaImageIcon;
+import basic.zBasicUI.component.UIHelperAnalyseImage;
+import basic.zBasicUI.component.UIHelperTransparency;
+import basic.zBasicUI.component.UIHelperTransparencyRange;
 import basic.zKernel.IKernelUserZZZ;
 import basic.zKernel.KernelZZZ;
 import basic.zKernelUI.component.KernelJPanelCascadedZZZ;
@@ -169,6 +174,8 @@ public class TileTHM extends JPanel implements IMapPositionableTHM, IBackendPers
 		//super.paintComponent(g);
 		
 		try{			
+			setOpaque(true);//Schaltet den default Hintergrund aus (normalerweise grau). // Dies auf false gesetzt "opaque heisst 'undurchsichtig' ").
+			
 			int iFontOffset = 3;//Irgenwie die Fontgröße justieren
 			
 			//1.  Der Hintergrund des Spielsteins: Das Bild...  Merke. Zeichne das zuerst. Dann kann man ggfs. etwas Text darübergeschrieben tollerieren.
@@ -184,35 +191,74 @@ public class TileTHM extends JPanel implements IMapPositionableTHM, IBackendPers
 			int iIconHeight = Integer.parseInt(sIconHeight);
 			
 		    //+++++++++	
-			
+			//TODO GOON 20180404: Hier dann mittelfristig auf das BLOB-Objekt der DTO zugreifen!!! Welches aus der Variante stammt.
+			//Der Pfad zum lokal im Dateisystem abgelegten Bild
 			String sTileIconName = this.getVariantImageUrlString();			
 			 String sBaseDirectory = ApplicationSingletonTHM.getInstance().getBaseDirectoryStringForImages();//WICHTIG: NUN Noch den Basispfad davorhängen!
 	    	 String sFilename = sBaseDirectory + File.separator + sTileIconName;
 			File objFile = new File(sFilename);		   
-			BufferedImage objBufferdImageTemp = ImageIO.read(objFile);
-					 			
-			//!!! Wenn es Army Bilder sind, dann diese noch weiter verkleinern
-			BufferedImage objBufferedImageResized = null;			
-			String sSubtype = this.getSubtype(); //Army oder Fleet
-			if(sSubtype.equalsIgnoreCase("AR")){
-				objBufferedImageResized = UIHelper.cropImageByPoints(objBufferdImageTemp, 0,50,60,10);	//Schneide das Bild erst aus dem Rahmen aus. Sehr viel vom unteren Rand weg, sehr viel vom linken Rand weg.
-				objBufferedImageResized = UIHelper.resizeImage(objBufferedImageResized, iIconWidth, iIconHeight);
-			}else{
-				objBufferedImageResized = UIHelper.resizeImage(objBufferdImageTemp, iIconWidth, iIconHeight);		
-			}
+			BufferedImage objBufferedImageTemp = ImageIO.read(objFile);		
 			
-			//+++++++++ Merke: Anders als beim ImageIcon ist das Image nicht transparent. Das muss extra noch gemacht werden.
-			Image imageResizedAndTransparent = UITransparencyHelper.makeColorTransparent(objBufferedImageResized, Color.WHITE);
+			//1. Versuche das Bild mit einem transparenten Hintergrund auszustatten:
+			
+			
+			
+			//Beispielsansatz das Bild mit einem Transparenten Hintergund hinzubekommen:
+			//Ein ImageIcon zeichnen
+//			Icon icon = new ImageIcon(objBufferedImageTransparentAndResized);
+//			int x = 0;
+//			int y = 0;
+//			//DAS IST DANN NOCH NICHT TRANSPARENT .... icon.paintIcon(this, g, x, y);
+//			float alpha = 0.0F; //1.0F; ist untransparent //0.0F ist voll transparent
+//			UIHelperAlphaIcon iconTransparent = new UIHelperAlphaIcon(icon, alpha);
+//			//UIHelperAlphaImageIcon iconTransparent = new UIHelperAlphaImageIcon(icon, alpha);
+//			iconTransparent.paintIcon(this, g, x, y);
+			
+			
+			
+			//Realisierter Ansatz
+			Color color01 = new Color(255,255,255);//weiss
+						
+			//Image imageTransparent = UIHelperTransparency.makeColorTransparent(objBufferedImageTemp, color01);			
 			//ABER: So richtig schick ist diese Lösung nicht... nur leicht besser, als wenn der Weisse Rand in ein anderes HEX-Feld reinragt.
-			//Vielleicht ist das Beser: 
-			//https://stackoverflow.com/questions/12020597/java-convert-image-to-icon-imageicon
-			//https://tips4java.wordpress.com/2010/08/22/alpha-icons/
+			//Grund dafür war, dass das Bild noch weitaus mehr untransparente Farben hatte, die "annähernd" weiss waren. 
+			//Lösungsansatz: Ersetze nun einen Bereich 			
+			Image imageTransparent = UIHelperTransparencyRange.transformColorRangeToTransparency(objBufferedImageTemp, color01, 6, 0, color01);
+			BufferedImage objBufferedImageTransparent = UIHelper.toBufferedImage(imageTransparent);
 			
+			//TODO GOON 20180404: Das hat zwar funktioniert. (Die Bildqualität ist besser auf der Karte)
+			//Aber die Performance leidet darunter.
+			//Lösungsansatz: Speicher das einmal ersetzte Bild als BLOB in der Datenbank (unter der Variante), packe das Bild in das DTO-Objekt
+			//               und rufe hier dann immer nur das optimierte, größenmäßig unveränderte Bild auf.
+		 			
+			
+			//!!! Wenn es Army Bilder sind, dann diese noch weiter verkleinern
+			BufferedImage objBufferedImageTransparentAndResized = null;			
+			String sSubtype = this.getSubtype(); //Army oder Fleet
+		
+			if(sSubtype.equalsIgnoreCase("AR")){
+				objBufferedImageTransparentAndResized = UIHelper.cropImageByPoints(objBufferedImageTransparent, 0,50,60,10);	//Schneide das Bild erst aus dem Rahmen aus. Sehr viel vom unteren Rand weg, sehr viel vom linken Rand weg.
+				objBufferedImageTransparentAndResized = UIHelper.resizeImage(objBufferedImageTransparentAndResized, iIconWidth, iIconHeight);
+							
+				//-1. Analyse des verkleinerten und "um weiss entfernten" Bildes. Ziel ist es dies NOCH transparenter zu machen.
+				//    Es sind noch andere Farben, die stören....
+//				String sX = this.getMapX();
+//				String sY = this.getMapY();
+//				BufferedImage objBufferedImage2analyse = objBufferedImageTransparentAndResized;
+//								
+//			    System.out.println("Klasse " + this.getClass().getName());
+//			    System.out.println(("AAAA "  + sSubtype + " an Position X/Y: " + sX + "/" +sY ));
+//			    UIHelperAnalyseImage.debugPrintImagePixelData(objBufferedImage2analyse, true);			        
+//				System.out.println(("ZZZZ "  + sSubtype + " an Position X/Y: " + sX + "/" +sY ));
+
+			}else{
+				objBufferedImageTransparentAndResized = UIHelper.resizeImage(objBufferedImageTransparent, iIconWidth, iIconHeight);		
+			}
+						
 			//+++++++++ Das Bild an der errechneten Postion (unterhalb des Labels) zeichnen.
 			int iTileSideLength = this.getTileSideLength();
 			int iPositionIconInHeight = (iTileSideLength - iIconHeight - iFontOffset); //Darüber kommt noch die Schrift
-			//g.drawImage(objBufferedImageResized, 0,iPositionIconInHeight, null);//Hierdurch wird wohl das Image wieder in das neue, zurückzugebend BufferedImage gepackt.	
-			g.drawImage(imageResizedAndTransparent, 0,iPositionIconInHeight, null);//Hierdurch wird wohl das Image wieder in das neue, zurückzugebend BufferedImage gepackt.
+			g.drawImage(objBufferedImageTransparentAndResized, 0,iPositionIconInHeight, null);//Hierdurch wird wohl das Image wieder in das neue, zurückzugebend BufferedImage gepackt.
 			
 			//####################
 			//2. Der Hintergrund des Spielsteins: Der Labelkasten (über das Bild, darum erst nach dem Bild malen!!!)
@@ -248,9 +294,7 @@ public class TileTHM extends JPanel implements IMapPositionableTHM, IBackendPers
 					sComponentLabelUsed = sComponentLabelUsed + "_" + sInstanceUniquenumber;
 				}						
 				//g.drawString(sComponentLabelUsed,0,(int)(this.getTileLabelHeight()));//Unter dem Bild
-				g.drawString(sComponentLabelUsed,0,(int)this.getTileLabelHeight()-iFontOffset);//über dem Bild. -3 ist ein Offset, so dass der Text in der Höhe zentriert in den Labelkasten reinpasst. Bei 0 wird ein Teil nach unten verschwinden.
-			
-				setOpaque(false);				
+				g.drawString(sComponentLabelUsed,0,(int)this.getTileLabelHeight()-iFontOffset);//über dem Bild. -3 ist ein Offset, so dass der Text in der Höhe zentriert in den Labelkasten reinpasst. Bei 0 wird ein Teil nach unten verschwinden.									
 		} catch (ExceptionZZZ e) {
 			e.printStackTrace();
 		} catch (IOException e) {
@@ -423,8 +467,4 @@ public class TileTHM extends JPanel implements IMapPositionableTHM, IBackendPers
 	public void setDto(GenericDTO objDto) {
 		this.objDto = objDto;
 	}
-
-
-
-	
 }

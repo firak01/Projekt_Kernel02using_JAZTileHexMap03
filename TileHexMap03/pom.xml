@@ -36,12 +36,31 @@
 			<artifactId>hibernate-entitymanager</artifactId>
 			<version>4.2.4.Final</version>
 		</dependency>
+<!-- 		<dependency> -->
+<!-- 			<groupId>org.xerial</groupId> -->
+<!-- 			<artifactId>sqlite-jdbc</artifactId> -->
+<!-- 			<version>3.7.2</version> -->
+<!-- 			<scope>provided</scope>FGL 20171115. Merke: Laut Doku muss für eine Web Applikation das sqlite-jdbc-(version).jar in das Verzeichnis (TOMCAT_HOME)/lib gelegt werden (, um JNDI -also 'java naming und directory" - nutzen zu können). Da bei 'JNI' -also 'java native ...'- keine Applikation mehr als 1x vorhanden sein darf bekommt man ohne die "provided" Angabe die Fehlermeldung 'no SQLite library found'. -->
+<!-- 		</dependency> -->
+		<!-- Einbinden einer aktulleren Version -->
 		<dependency>
 			<groupId>org.xerial</groupId>
 			<artifactId>sqlite-jdbc</artifactId>
-			<version>3.7.2</version>
-			<scope>provided</scope><!-- FGL 20171115. Merke: Laut Doku muss für eine Web Applikation das sqlite-jdbc-(version).jar in das Verzeichnis (TOMCAT_HOME)/lib gelegt werden (, um JNDI -also 'java naming und directory" - nutzen zu können). Da bei 'JNI' -also 'java native ...'- keine Applikation mehr als 1x vorhanden sein darf bekommt man ohne die "provided" Angabe die Fehlermeldung 'no SQLite library found'. -->
+			<version>3.23.1</version>
 		</dependency>
+		
+		<!-- Einen anderen Hibernate Dialekt einbinden für Hibernate 4... -->
+		<!-- Diesen dann bekanntmachen unter dem Namen:  
+		a) Set the dialect property hibernate.dialect to the class name com.enigmabridge.hibernate.dialect.SQLiteDialect
+		b) hibernate.properties
+		   hibernate.dialect = com.enigmabridge.hibernate.dialect.SQLiteDialect	 	   
+		-->
+		<dependency>
+		  <groupId>com.enigmabridge</groupId>
+		  <artifactId>hibernate4-sqlite-dialect</artifactId>
+		  <version>0.1.2</version>
+		</dependency>
+		
 		
 		<!-- https://mvnrepository.com/artifact/commons-logging/commons-logging -->
 		<dependency>

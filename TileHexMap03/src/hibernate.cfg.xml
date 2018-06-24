@@ -17,8 +17,9 @@
 		<property name="format_sql">true</property>
 
 		<!-- <property name="dialect">org.hibernate.dialect.SQLiteDialect</property> -->
-		<property name="dialect">basic.persistence.hibernate.SQLiteDialect</property><!-- Eine einfache Version aus dem Netz -->
-
+		<!-- <property name="dialect">basic.persistence.hibernate.SQLiteDialect</property> --><!-- Eine einfache Version aus dem Netz -->
+		<property name="dialect">com.enigmabridge.hibernate.dialect.SQLiteDialect</property><!-- Per Maven einbundene 'neuerer' Dialekt: https://github.com/EnigmaBridge/hibernate4-sqlite-dialect -->
+		
 		<!-- Database Connection settings -->
 		<property name="connection.driver_class">org.sqlite.JDBC</property>
 <!-- 		20171207: Es soll auf die reine Konfiguration verlassen werden, auch auf context.xml für JNDI ZUgriff -->        

@@ -1,8 +1,12 @@
 package use.thm.persistence.model;
 
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 import java.io.Serializable;
 import java.util.EnumSet;
 
+import javax.imageio.ImageIO;
 import javax.persistence.Access;
 import javax.persistence.AccessType;
 import javax.persistence.Column;
@@ -22,7 +26,9 @@ import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.TableGenerator;
 import javax.persistence.Transient;
+import javax.swing.ImageIcon;
 
+import use.thm.ApplicationSingletonTHM;
 import use.thm.persistence.interfaces.ITroopArmyVariantTHM;
 import use.thm.persistence.interfaces.ITroopVariantTHM;
 import use.thm.persistence.interfaces.enums.IEnumSetTextTHM;
@@ -31,10 +37,14 @@ import use.thm.persistence.interfaces.enums.IEnumSetTroopFleetVariantTHM;
 import use.thm.persistence.model.Immutabletext.EnumImmutabletext;
 import basic.persistence.model.IFieldDescription;
 import basic.persistence.model.IOptimisticLocking;
+import basic.zBasic.ExceptionZZZ;
+import basic.zBasic.KernelSingletonTHM;
 import basic.zBasic.ReflectCodeZZZ;
 import basic.zBasic.persistence.interfaces.enums.ICategoryProviderZZZ;
 import basic.zBasic.persistence.interfaces.enums.IThiskeyProviderZZZ;
 import basic.zBasic.util.datatype.string.StringZZZ;
+import basic.zBasicUI.component.UIHelper;
+import basic.zKernel.KernelZZZ;
 
 /**Klasse für die Werte der TroopVarianten - SO NICHT persistierbar.
  * Erst die Kindklassen sind per JPA Persistierbar. 
@@ -102,6 +112,17 @@ public class TroopVariant  extends KeyImmutable implements ITroopVariantTHM, ICa
 	private Integer intMapMoveRange;
 	private String sImageUrl;
 	
+	//Das Bild der Spielsteinvariatne (, was ggfs. vorher angepasst wurde)
+	//Alternativer Lösungsversuch, aber nur als Byte-Array
+	@Transient
+	private byte[] imageBlob01;
+	
+	@Transient
+	private String sImageBlob01;
+	
+	@Transient
+	private Long lngImageBlob01;
+	
 	//... und weitere Eigenschaften.
 	
 	//Der Default Contruktor wird für JPA - Abfragen wohl benötigt
@@ -124,6 +145,45 @@ public class TroopVariant  extends KeyImmutable implements ITroopVariantTHM, ICa
 		 this.setDefaulttextObject(objDefaulttext);
 		 this.setImmutabletextObject(objImmutabletext);
 		 this.setImageUrlString(sImageUrl);
+		 
+		 //Hole ein byte[], welches dann mit weiteren Informationen im Entity als Bild gespeichert werden kann.
+				 
+		 //Das Bild wird zuvor noch bearbeitet.
+		 //... noch weitere Infos
+		 try{
+			 KernelZZZ objKernel = ApplicationSingletonTHM.getInstance().getKernelObject();
+		 		 
+			 String sModuleAlias = "THM";//this.getModuleName();
+			 String sProgramAlias = "EntityTroopVariant"; //this.getProgramName();			
+			 System.out.println(ReflectCodeZZZ.getMethodCurrentName() + ": Suche Modul: '" + sModuleAlias +"'/ Program: '" + sProgramAlias + "'/ Parameter: 'IconWidth'");
+					
+			String sIconWidth = objKernel.getParameterByProgramAlias(sModuleAlias, sProgramAlias, "IconWidth" );			
+			int iIconWidth = Integer.parseInt(sIconWidth);				
+			String sIconHeight = objKernel.getParameterByProgramAlias(sModuleAlias, sProgramAlias, "IconHeight" );
+			int iIconHeight = Integer.parseInt(sIconHeight);
+		 
+		 
+			//... Bildbearbeitung
+			String sTileIconName =  sImageUrl;	//so holt man es aus dem DTO Objekt, wenn man im UI ist... this.getTile().getVariantImageUrlString();			
+			String sBaseDirectory = ApplicationSingletonTHM.getInstance().getBaseDirectoryStringForImages();//WICHTIG: NUN Noch den Basispfad davorhängen!
+	    	String sFilename = sBaseDirectory + File.separator + sTileIconName;
+			File objFile = new File(sFilename);		   
+			BufferedImage objBufferdImageTemp = ImageIO.read(objFile);
+			BufferedImage objBufferdImageResized = objBufferdImageResized = UIHelper.resizeImage(objBufferdImageTemp, iIconWidth, iIconHeight);		
+				
+			//Erst jetzt ein größenverändetes ImageIcon aus dem BufferedImage machen. Merke: Ein Image oder ein BufferedImage funktioniert in der JOptionPane nicht
+			ImageIcon objImageIcon = new ImageIcon(objBufferdImageResized);
+			
+			
+			
+			} catch (ExceptionZZZ e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		 
 	 }
 	 
 	//### Variante 2: Verwende auf dieser Ebene einen Generator, zum Erstellen einer ID
@@ -235,6 +295,37 @@ public class TroopVariant  extends KeyImmutable implements ITroopVariantTHM, ICa
 	 protected void setImageUrlString(String sImageUrl){
 		 this.sImageUrl = sImageUrl;			 
 	 }
+	 
+
+	 	//### DAS BILD SELBST IN DER DATENBANK ABSPEICHERN. EIN BILD IST PFLICHT !
+	 	@Access(AccessType.PROPERTY)
+		//ABER SQLite: Probleme beim Holen der Daten per HQL. ... @Lob auch ohne dies Annotation wird ein blob in der Datenbank angelegt... UND Nur so kann dann per HQL wieder auf diese Zelle zugegriffen werden. 
+		//Merke: dependent on the hibernate version, the Lob annotation could have no type parameter. quote from here: @Lob no longer has attributes, the lob type (CLOB, BLOB) is guessed. If the underlying type is a String or an array of character then CLOB are used. Othersise BLOB are used.		
+		@Column(name="image01", nullable=false)	
+		public  byte[] getImage01() {
+			return this.imageBlob01;
+		}		
+		public void setImage01(byte[] imageBlob) {
+			this.imageBlob01 = imageBlob;
+		}
+		
+		@Access(AccessType.PROPERTY)
+		@Column(name="image01name", nullable=false)
+		public String getImage01Name() {
+			return this.sImageBlob01;
+		}
+		public void setImage01Name(String sFileName) {
+			this.sImageBlob01 = sFileName;
+		}
+		
+		@Access(AccessType.PROPERTY)
+		@Column(name="image01length", nullable=false)
+		public long getImage01Length() {
+			return this.lngImageBlob01;
+		}
+		public void setImage01Length(long lngFileSize) {
+			this.lngImageBlob01 = lngFileSize;
+		}
 	 
 	 //#### abstracte Methoden
 	 //20171106 KÄME DAS ETWA DRUCH VERERBUNG AUS DER KLASSE "KEY" ???

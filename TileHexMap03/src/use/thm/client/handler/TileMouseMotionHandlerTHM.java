@@ -363,7 +363,9 @@ public class TileMouseMotionHandlerTHM extends MouseAdapter implements MouseMoti
 			String sIconHeight = objKernel.getParameterByProgramAlias(sModuleAlias, sProgramAlias, "IconHeight" );
 			int iIconHeight = Integer.parseInt(sIconHeight);			
 		    //+++++++++		
-			String sTileIconName = this.getTile().getVariantImageUrlString();			
+			//TODO GOON 20180627: Diese Bildgenerierung wird nur einmal bei Erstellung des Entities in dessen Konstruktor gemacht. 
+			//Hier soll man dann auf das so erstellte byte[] zugreifen können, um ein Bild daraus zu erzeugen. Man spart sich die Berechnung des Bildes.
+			String sTileIconName =  this.getTile().getVariantImageUrlString();	//so holt man es aus dem DTO Objekt, wenn man im UI ist... this.getTile().getVariantImageUrlString();			
 			String sBaseDirectory = ApplicationSingletonTHM.getInstance().getBaseDirectoryStringForImages();//WICHTIG: NUN Noch den Basispfad davorhängen!
 	    	String sFilename = sBaseDirectory + File.separator + sTileIconName;
 			File objFile = new File(sFilename);		   

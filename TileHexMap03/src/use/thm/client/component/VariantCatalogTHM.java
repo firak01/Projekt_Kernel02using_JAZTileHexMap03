@@ -476,7 +476,7 @@ public class VariantCatalogTHM  extends KernelUseObjectZZZ implements IGhostGlas
 		}	
 				
 		//Das Verzeichnis, in dem die ganzen Icons der Katalogeinträge liegen
-		public String getBaseDirectoryForCatalogIcon(){		
+		public String getBaseDirectoryForCatalogIcon() throws ExceptionZZZ{		
 			return ApplicationSingletonTHM.getInstance().getBaseDirectoryStringForImages();
 		}
 }

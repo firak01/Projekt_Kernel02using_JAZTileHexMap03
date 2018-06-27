@@ -52,9 +52,13 @@ public class ApplicationSingletonTHM  extends ApplicationTHM{
 		super(); 
 	}
 	
-	public static ApplicationSingletonTHM getInstance(){
+	public static ApplicationSingletonTHM getInstance() throws ExceptionZZZ{
 		if(objApplicationSingleton==null){
 			objApplicationSingleton = new ApplicationSingletonTHM();
+			
+			//!!! Das Singleton Kernel Objekt holen und setzen !!!
+			KernelSingletonTHM objKernel = KernelSingletonTHM.getInstance();
+			objApplicationSingleton.setKernelObject(objKernel);			
 		}
 		return objApplicationSingleton;		
 	}
@@ -82,7 +86,7 @@ public class ApplicationSingletonTHM  extends ApplicationTHM{
 		//---- Nun das eigentliche KernelObjekt initiieren. Dabei können z.B. Debug-Einstellungen ausgwählt worden sein.
 		//KernelZZZ objKernel = new KernelZZZ(sApplicationKey, sSystemNr, sDir, sFile,(String)null);
 		//20170413 ERSETZE DIESE ZENTRALE STELLE DURCH EIN SINGELTON... KernelZZZ objKernel = new KernelZZZ("THM", "01", "", "ZKernelConfigTileHexMap02Client.ini", (String[]) null);
-		KernelSingletonTHM objKernel = KernelSingletonTHM.getInstance("THM", "01", "", "ZKernelConfigTileHexMap02Client.ini", (String[]) null);
+		KernelSingletonTHM objKernel = KernelSingletonTHM.getInstance( "01", "", "ZKernelConfigTileHexMap02Client.ini", (String[]) null);
 		
 		ApplicationSingletonTHM objApplication = ApplicationSingletonTHM.getInstance(objKernel);
 		objApplication.launchIt();

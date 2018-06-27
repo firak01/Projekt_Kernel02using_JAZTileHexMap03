@@ -47,7 +47,8 @@ public class HibernateConfigurationProviderTHM extends HibernateConfigurationPro
  		//		 Darum muss z.B. hibernate.hbm2ddl.auto in der Konfigurationdatei auskommentiert werden, sonst ziehen hier die Änderungen nicht.
 		this.getConfiguration().setProperty("hiberate.show_sql", "true");
 		this.getConfiguration().setProperty("hiberate.format_sql", "true");
-		//Einfacher Dialtekt this.getConfiguration().setProperty("hibernate.dialect","basic.persistence.hibernate.SQLiteDialect" );
+		
+		//Einfacher Dialekt this.getConfiguration().setProperty("hibernate.dialect","basic.persistence.hibernate.SQLiteDialect" );
 		this.getConfiguration().setProperty("hibernate.dialect","basic.persistence.hibernate.SQLiteDialect" );//Per Maven eingbundener Dialekt:			
 		this.getConfiguration().setProperty("hibernate.connection.username", "");
 		this.getConfiguration().setProperty("hibernate.connection.password", "");

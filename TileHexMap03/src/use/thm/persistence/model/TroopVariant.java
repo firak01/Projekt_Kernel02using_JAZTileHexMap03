@@ -1,6 +1,7 @@
 package use.thm.persistence.model;
 
 import java.awt.image.BufferedImage;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.Serializable;
@@ -171,9 +172,43 @@ public class TroopVariant  extends KeyImmutable implements ITroopVariantTHM, ICa
 			BufferedImage objBufferdImageTemp = ImageIO.read(objFile);
 			BufferedImage objBufferdImageResized = objBufferdImageResized = UIHelper.resizeImage(objBufferdImageTemp, iIconWidth, iIconHeight);		
 				
+			
+			
+			/* Nun ein byte[] machen, das man wegspeichern kann. Nicht den direkt im UI verwendeten Code ausführen 
 			//Erst jetzt ein größenverändetes ImageIcon aus dem BufferedImage machen. Merke: Ein Image oder ein BufferedImage funktioniert in der JOptionPane nicht
 			ImageIcon objImageIcon = new ImageIcon(objBufferdImageResized);
+			*/
 			
+			/* Da wäre der Ansatz das Bild direkt von Platte zu lesen. Wir haben aber schon ein BufferedImage 
+			//++++++++++++++
+			// Hole erst einmal das Bild				
+			String sTileIconName = saFile[iImageIndex];
+			String sFilename = sBaseDirectory + File.separator + sTileIconName;
+			File objFile = new File(sFilename);
+			
+			
+			
+			//+++++++++++++++
+			//Wir schreiben die Bytes weg
+			byte[] imageBytes = this.getByteArrayFromFile(sFilename);
+			
+			//... zum Zurückholen brauchen wir wahrscheinlich die Dateigröße
+			long lngFileLength = objFile.length();
+			*/
+			
+			/*Ansatz, direkt aus dem BufferedImage eine byte[] machen...*/
+			//BufferedImage originalImage = ImageIO.read(new File("c:\\image\\mypic.jpg"));
+			ByteArrayOutputStream baos = new ByteArrayOutputStream();
+			ImageIO.write(objBufferdImageResized, "png", baos );
+			baos.flush();
+			byte[] imageInByte = baos.toByteArray();
+			baos.close();
+			
+			this.setImage01(imageInByte);
+			
+			long lngFileSize = imageInByte.length; //Diese Infos braucht man, um das Bild wieder auszulesen. Oder?
+			this.setImage01Length(lngFileSize);
+			this.setImage01Name(sTileIconName);
 			
 			
 			} catch (ExceptionZZZ e) {

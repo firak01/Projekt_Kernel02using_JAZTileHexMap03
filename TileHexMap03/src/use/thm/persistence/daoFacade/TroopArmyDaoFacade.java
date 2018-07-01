@@ -601,7 +601,14 @@ public class TroopArmyDaoFacade extends TileDaoFacade{
 						
 			if(objTroopArmy.getTroopArmyVariantObject()!=null){
 				dto.set(ITileDtoAttribute.VARIANT_IMAGE_URL_STRING,objTroopArmy.getTroopArmyVariantObject().getImageUrlString());
-								
+				
+				//20180630: Nun das Bild ausch direkt als byte[] gespeichert aus der Datenbank holen.
+				dto.set(ITileDtoAttribute.VARIANT_IMAGE_IN_BYTE,objTroopArmy.getTroopArmyVariantObject().getImage01());
+				dto.set(ITileDtoAttribute.VARIANT_IMAGEDIALOG_IN_BYTE,objTroopArmy.getTroopArmyVariantObject().getImage01Dialog());
+				dto.set(ITileDtoAttribute.VARIANT_IMAGECATALOG_IN_BYTE,objTroopArmy.getTroopArmyVariantObject().getImage01Catalog());
+				dto.set(ITileDtoAttribute.VARIANT_IMAGEDRAG_IN_BYTE,objTroopArmy.getTroopArmyVariantObject().getImage01Drag());
+				dto.set(ITileDtoAttribute.VARIANT_IMAGEHEXMAP_IN_BYTE,objTroopArmy.getTroopArmyVariantObject().getImage01Hexmap());
+											
 				if(objTroopArmy.getTroopArmyVariantObject().getImmutabletextObject()!=null){
 					dto.set(ITileDtoAttribute.VARIANT_SHORTTEXT, objTroopArmy.getTroopArmyVariantObject().getImmutabletextObject().getShorttext());	
 				}

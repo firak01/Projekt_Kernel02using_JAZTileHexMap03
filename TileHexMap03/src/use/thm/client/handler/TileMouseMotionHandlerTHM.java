@@ -342,38 +342,11 @@ public class TileMouseMotionHandlerTHM extends MouseAdapter implements MouseMoti
 			//+++++++++++++++++++++++++++++
 			//Das ICON
 			//+++++++++++++++++++++++++++++
-		    //Die Größe der Icons aus der KernelKonfiguration auslesen
-			KernelSingletonTHM objKernel = KernelSingletonTHM.getInstance();
-
-			//FALLS GILT: GENUTZT WERDEN SOLL DAS MODUL FÜR DIE GRÖSSENANGABEN AUF DER KARTE
-			//String sModuleAlias = this.getTile().getMapPanel().getModuleName();
-			//String sProgramAlias = this.getTile().getMapPanel().getProgramAlias();			
+			byte[] imageInByte = (byte[]) objDto.get(ITileDtoAttribute.VARIANT_IMAGEDIALOG_IN_BYTE); //Das unveränderte Bild aus der Datenbank, wird hier angezeigt.
+			BufferedImage objBufferedImage = UIHelper.toBufferedImage(imageInByte);
 			
-			//FALLS GILT: GENUTZT WERDEN SOLL DAS MODUL FÜR DIE GRÖSSENANGABEN AUF DEM CATALOG
-			//		KernelJPanelCascadedZZZ objPanelToSearch = this.getTile().getMapPanel().getPanelNeighbour("WEST");			
-			//		String sModuleAlias = objPanelToSearch.getModuleName();
-			//		String sProgramAlias = objPanelToSearch.getProgramName();
-					
-			String sModuleAlias = this.getModuleName();
-			String sProgramAlias = this.getProgramName();			
-			System.out.println(ReflectCodeZZZ.getMethodCurrentName() + ": Suche Modul: '" + sModuleAlias +"'/ Program: '" + sProgramAlias + "'/ Parameter: 'IconWidth'");
-			
-			String sIconWidth = objKernel.getParameterByProgramAlias(sModuleAlias, sProgramAlias, "IconWidth" );
-			int iIconWidth = Integer.parseInt(sIconWidth);				
-			String sIconHeight = objKernel.getParameterByProgramAlias(sModuleAlias, sProgramAlias, "IconHeight" );
-			int iIconHeight = Integer.parseInt(sIconHeight);			
-		    //+++++++++		
-			//TODO GOON 20180627: Diese Bildgenerierung wird nur einmal bei Erstellung des Entities in dessen Konstruktor gemacht. 
-			//Hier soll man dann auf das so erstellte byte[] zugreifen können, um ein Bild daraus zu erzeugen. Man spart sich die Berechnung des Bildes.
-			String sTileIconName =  this.getTile().getVariantImageUrlString();	//so holt man es aus dem DTO Objekt, wenn man im UI ist... this.getTile().getVariantImageUrlString();			
-			String sBaseDirectory = ApplicationSingletonTHM.getInstance().getBaseDirectoryStringForImages();//WICHTIG: NUN Noch den Basispfad davorhängen!
-	    	String sFilename = sBaseDirectory + File.separator + sTileIconName;
-			File objFile = new File(sFilename);		   
-			BufferedImage objBufferdImageTemp = ImageIO.read(objFile);
-			BufferedImage objBufferdImageResized = objBufferdImageResized = UIHelper.resizeImage(objBufferdImageTemp, iIconWidth, iIconHeight);		
-				
 			//Erst jetzt ein größenverändetes ImageIcon aus dem BufferedImage machen. Merke: Ein Image oder ein BufferedImage funktioniert in der JOptionPane nicht
-			ImageIcon objImageIcon = new ImageIcon(objBufferdImageResized);
+			ImageIcon objImageIcon = new ImageIcon(objBufferedImage);
    		 					
 			//+++ AUSGABE +++++++++++++++++++++
 			JOptionPane.showMessageDialog(this.getTile(), sMessage, "Detailangaben....", JOptionPane.INFORMATION_MESSAGE, objImageIcon);

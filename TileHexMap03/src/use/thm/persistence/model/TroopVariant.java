@@ -1,5 +1,7 @@
 package use.thm.persistence.model;
 
+import java.awt.Color;
+import java.awt.Image;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -45,6 +47,7 @@ import basic.zBasic.persistence.interfaces.enums.ICategoryProviderZZZ;
 import basic.zBasic.persistence.interfaces.enums.IThiskeyProviderZZZ;
 import basic.zBasic.util.datatype.string.StringZZZ;
 import basic.zBasicUI.component.UIHelper;
+import basic.zBasicUI.component.UIHelperTransparencyRange;
 import basic.zKernel.KernelZZZ;
 
 /**Klasse für die Werte der TroopVarianten - SO NICHT persistierbar.
@@ -75,7 +78,7 @@ import basic.zKernel.KernelZZZ;
 //@DiscriminatorColumn(name="Entityclass", discriminatorType = DiscriminatorType.STRING) 
 //
 @Table(name="troopvariant")
-public class TroopVariant  extends KeyImmutable implements ITroopVariantTHM, ICategoryProviderZZZ, Serializable, IOptimisticLocking{
+public abstract class TroopVariant  extends KeyImmutable implements ITroopVariantTHM, ICategoryProviderZZZ, Serializable, IOptimisticLocking{
 	private static final long serialVersionUID = 1113434456411176970L;
 	
 	//Variante 2: Realisierung eines Schlüssel über eine eindeutige ID, die per Generator erzeugt wird
@@ -113,17 +116,58 @@ public class TroopVariant  extends KeyImmutable implements ITroopVariantTHM, ICa
 	private Integer intMapMoveRange;
 	private String sImageUrl;
 	
-	//Das Bild der Spielsteinvariatne (, was ggfs. vorher angepasst wurde)
-	//Alternativer Lösungsversuch, aber nur als Byte-Array
+	//Blob selbst funtkioniert nicht bei dieser SQLIte Datenbank. Alternativer Lösungsversuch Speicherung als Byte-Array
+	//Das Bild der Spielsteinvariante (, noch nicht angepasst)
 	@Transient
-	private byte[] imageBlob01;
+	private byte[] imageInByte01;
 	
 	@Transient
-	private String sImageBlob01;
+	private String sImageInByte01;
 	
 	@Transient
-	private Long lngImageBlob01;
+	private Long lngImageInByte01;
 	
+	//Das Bild der Spielsteinvariante für Katalog (, entsprechend angepasst)
+	@Transient
+	private byte[] imageInByte01Catalog;
+	
+	@Transient
+	private String sImageInByte01Catalog;
+	
+	@Transient
+	private Long lngImageInByte01Catalog;
+	
+	//Das Bild der Spielsteinvariante für die Darstellung in der HexMap - Karte (, entsprechend angepasst)
+			@Transient
+			private byte[] imageInByte01Hexmap;
+			
+			@Transient
+			private String sImageInByte01Hexmap;
+			
+			@Transient
+			private Long lngImageInByte01Hexmap;
+	
+	//Das Bild der Spielsteinvariante für die Darstellung im Dialog (, entsprechend angepasst)
+		@Transient
+		private byte[] imageInByte01Dialog;
+		
+		@Transient
+		private String sImageInByte01Dialog;
+		
+		@Transient
+		private Long lngImageInByte01Dialog;
+	
+		
+		//Das Bild der Spielsteinvariante für die Darstellung beim Ziehen über die HEXMAP (, entsprechend angepasst)
+				@Transient
+				private byte[] imageInByte01Drag;
+				
+				@Transient
+				private String sImageInByte01Drag;
+				
+				@Transient
+				private Long lngImageInByte01Drag;
+				
 	//... und weitere Eigenschaften.
 	
 	//Der Default Contruktor wird für JPA - Abfragen wohl benötigt
@@ -147,68 +191,196 @@ public class TroopVariant  extends KeyImmutable implements ITroopVariantTHM, ICa
 		 this.setImmutabletextObject(objImmutabletext);
 		 this.setImageUrlString(sImageUrl);
 		 
-		 //Hole ein byte[], welches dann mit weiteren Informationen im Entity als Bild gespeichert werden kann.
-				 
+		 //+++++++++++++++++++++++++++++++
+		//Problem: Man kann zwar jedes mal das Bild neu aus dem Dateisystem holen und dann für den entsprechenden Einsatz verglößern/verkleiner, etc. Aber die Performance leidet darunter.
+		//Lösungsansatz: Speicher das einmal ersetzte Bild als BLOB in der Datenbank (unter der Variante), packe das Bild in das DTO-Objekt
+		//               und rufe hier dann immer nur das optimierte, größenmäßig unveränderte Bild auf.
+		 
+		 //Hole ein byte[], welches dann mit weiteren Informationen im Entity als Bild gespeichert werden kann.				 
 		 //Das Bild wird zuvor noch bearbeitet.
 		 //... noch weitere Infos
 		 try{
 			 KernelZZZ objKernel = ApplicationSingletonTHM.getInstance().getKernelObject();
-		 		 
+		 	
+			 //+++++++++++++++++++++++++++++++
+			 //1. Bild als Grundlage, unverändert....
 			 String sModuleAlias = "THM";//this.getModuleName();
 			 String sProgramAlias = "EntityTroopVariant"; //this.getProgramName();			
 			 System.out.println(ReflectCodeZZZ.getMethodCurrentName() + ": Suche Modul: '" + sModuleAlias +"'/ Program: '" + sProgramAlias + "'/ Parameter: 'IconWidth'");
-					
-			String sIconWidth = objKernel.getParameterByProgramAlias(sModuleAlias, sProgramAlias, "IconWidth" );			
-			int iIconWidth = Integer.parseInt(sIconWidth);				
-			String sIconHeight = objKernel.getParameterByProgramAlias(sModuleAlias, sProgramAlias, "IconHeight" );
-			int iIconHeight = Integer.parseInt(sIconHeight);
-		 
-		 
-			//... Bildbearbeitung
+					 
 			String sTileIconName =  sImageUrl;	//so holt man es aus dem DTO Objekt, wenn man im UI ist... this.getTile().getVariantImageUrlString();			
 			String sBaseDirectory = ApplicationSingletonTHM.getInstance().getBaseDirectoryStringForImages();//WICHTIG: NUN Noch den Basispfad davorhängen!
 	    	String sFilename = sBaseDirectory + File.separator + sTileIconName;
 			File objFile = new File(sFilename);		   
-			BufferedImage objBufferdImageTemp = ImageIO.read(objFile);
-			BufferedImage objBufferdImageResized = objBufferdImageResized = UIHelper.resizeImage(objBufferdImageTemp, iIconWidth, iIconHeight);		
-				
-			
-			
-			/* Nun ein byte[] machen, das man wegspeichern kann. Nicht den direkt im UI verwendeten Code ausführen 
-			//Erst jetzt ein größenverändetes ImageIcon aus dem BufferedImage machen. Merke: Ein Image oder ein BufferedImage funktioniert in der JOptionPane nicht
-			ImageIcon objImageIcon = new ImageIcon(objBufferdImageResized);
-			*/
-			
+			BufferedImage objBufferedImageOriginal = ImageIO.read(objFile);					
+						
 			/* Da wäre der Ansatz das Bild direkt von Platte zu lesen. Wir haben aber schon ein BufferedImage 
-			//++++++++++++++
 			// Hole erst einmal das Bild				
 			String sTileIconName = saFile[iImageIndex];
 			String sFilename = sBaseDirectory + File.separator + sTileIconName;
 			File objFile = new File(sFilename);
 			
-			
-			
-			//+++++++++++++++
 			//Wir schreiben die Bytes weg
-			byte[] imageBytes = this.getByteArrayFromFile(sFilename);
-			
-			//... zum Zurückholen brauchen wir wahrscheinlich die Dateigröße
+			byte[] imageBytes = this.getByteArrayFromFile(sFilename);		
 			long lngFileLength = objFile.length();
 			*/
 			
-			/*Ansatz, direkt aus dem BufferedImage eine byte[] machen...*/
-			//BufferedImage originalImage = ImageIO.read(new File("c:\\image\\mypic.jpg"));
-			ByteArrayOutputStream baos = new ByteArrayOutputStream();
-			ImageIO.write(objBufferdImageResized, "png", baos );
-			baos.flush();
-			byte[] imageInByte = baos.toByteArray();
-			baos.close();
-			
-			this.setImage01(imageInByte);
-			
+			/*Ansatz, direkt aus dem BufferedImage eine byte[] machen...*/				
+			byte[] imageInByte = UIHelper.getByteArrayFromBufferedImage(objBufferedImageOriginal,"png");			
+			this.setImage01(imageInByte);			
 			long lngFileSize = imageInByte.length; //Diese Infos braucht man, um das Bild wieder auszulesen. Oder?
 			this.setImage01Length(lngFileSize);
 			this.setImage01Name(sTileIconName);
+			
+			//++++++++++++++++++++++++++++++++++++++++
+			//2. Bild als Katalogeintrag
+			sModuleAlias = "THM";//this.getModuleName();
+			sProgramAlias = "CatalogPanel"; //this.getProgramName();			
+			System.out.println(ReflectCodeZZZ.getMethodCurrentName() + ": Suche Modul: '" + sModuleAlias +"'/ Program: '" + sProgramAlias + "'/ Parameter: 'IconWidth'");
+						 
+			//... Größen holen aus der Kernelkonfiguration
+			String sIconWidth = objKernel.getParameterByProgramAlias(sModuleAlias, sProgramAlias, "IconWidth" );			
+			int iIconWidth = Integer.parseInt(sIconWidth);				
+			String sIconHeight = objKernel.getParameterByProgramAlias(sModuleAlias, sProgramAlias, "IconHeight" );
+			int iIconHeight = Integer.parseInt(sIconHeight);
+			
+			//... Bild bearbeitet als Katalogeintrag
+			BufferedImage objBufferdImageResized = UIHelper.resizeImage(objBufferedImageOriginal, iIconWidth, iIconHeight);
+			byte[] imageInByteCatalog = UIHelper.getByteArrayFromBufferedImage(objBufferdImageResized,"png");			
+			this.setImage01Catalog(imageInByteCatalog);			
+			long lngFileSizeCatalog = imageInByteCatalog.length;
+			this.setImage01LengthCatalog(lngFileSizeCatalog);
+			this.setImage01NameCatalog(sTileIconName);
+					
+			
+			//+++++++++++++++++++++++++
+			//3. ... Bild bearbeitet für die Darstellung in der Karte (wurde ohne diese Abspeicherung zuvor jedesmal in TileTHM.paintComponent() gemacht. Das "jedes Mal" Berechnen spart man sich nun.
+			//Hier wird versucht den weissen Rand zu entfernen und es wird ggfs. noch gesondert ausgeschnitten (crop).
+			sModuleAlias = "THM";//this.getModuleName();
+			sProgramAlias = "HexMapCentral"; //this.getProgramName();			
+			System.out.println(ReflectCodeZZZ.getMethodCurrentName() + ": Suche Modul: '" + sModuleAlias +"'/ Program: '" + sProgramAlias + "'/ Parameter: 'IconWidth'");
+				
+			//... Größen holen aus der Kernelkonfiguration
+			sIconWidth = objKernel.getParameterByProgramAlias(sModuleAlias, sProgramAlias, "IconWidth" );			
+			iIconWidth = Integer.parseInt(sIconWidth);				
+			sIconHeight = objKernel.getParameterByProgramAlias(sModuleAlias, sProgramAlias, "IconHeight" );
+			iIconHeight = Integer.parseInt(sIconHeight);
+			
+			//1. Versuche das Bild mit einem transparenten Hintergrund auszustatten:
+			//Beispielsansatz das Bild mit einem Transparenten Hintergund hinzubekommen:
+			//Ein ImageIcon zeichnen
+//			Icon icon = new ImageIcon(objBufferedImageTransparentAndResized);
+//			int x = 0;
+//			int y = 0;
+//			//DAS IST DANN NOCH NICHT TRANSPARENT .... icon.paintIcon(this, g, x, y);
+//			float alpha = 0.0F; //1.0F; ist untransparent //0.0F ist voll transparent
+//			UIHelperAlphaIcon iconTransparent = new UIHelperAlphaIcon(icon, alpha);
+//			//UIHelperAlphaImageIcon iconTransparent = new UIHelperAlphaImageIcon(icon, alpha);
+//			iconTransparent.paintIcon(this, g, x, y);
+			
+			
+			//Realisierter Ansatz
+			Color color01 = new Color(255,255,255);//weiss
+						
+			//Image imageTransparent = UIHelperTransparency.makeColorTransparent(objBufferedImageTemp, color01);			
+			//ABER: So richtig schick ist diese Lösung nicht... nur leicht besser, als wenn der Weisse Rand in ein anderes HEX-Feld reinragt.
+			//Grund dafür war, dass das Bild noch weitaus mehr untransparente Farben hatte, die "annähernd" weiss waren. 
+			//Lösungsansatz: Ersetze nun einen Bereich 			
+			Image imageTransparent = UIHelperTransparencyRange.transformColorRangeToTransparency(objBufferedImageOriginal, color01, 6, 0, color01);
+			BufferedImage objBufferedImageTransparent = UIHelper.toBufferedImage(imageTransparent);
+			//!!! Wenn es Army Bilder sind, dann diese noch weiter verkleinern
+			BufferedImage objBufferedImageTransparentAndResized = null;			
+			//String sSubtype = this.getSubtype(); //Army oder Fleet. Das steht aber nur zur Verfügung in TileTHM.paintComponent() und kommt aus dem DTO. 
+			//Hierher verlagert, muss man entweder den SubType "simulieren" oder auf alle möglichen Catagorietexte abprüfen. Es wird also in den Unterklassen der SubType "simuliert".
+			
+			String sSubtype = this.getSubtype();
+			System.out.println(ReflectCodeZZZ.getClassCurrentName() +": Erzeuge Bilder für einen Subtype: '" + sSubtype + "'");
+			if(sSubtype.equalsIgnoreCase("AR")){
+				if(this.getCategorytext().equalsIgnoreCase("Infantery")){
+					objBufferedImageTransparentAndResized = UIHelper.cropImageByPoints(objBufferedImageTransparent, 0,50,60,10);	//Schneide das Bild erst aus dem Rahmen aus. Sehr viel vom unteren Rand weg, sehr viel vom linken Rand weg.
+					objBufferedImageTransparentAndResized = UIHelper.resizeImage(objBufferedImageTransparentAndResized, iIconWidth, iIconHeight);
+				}else{
+					objBufferedImageTransparentAndResized = UIHelper.resizeImage(objBufferedImageTransparent, iIconWidth-10, iIconHeight-5);
+				}
+				
+							
+				//-1. Analyse des verkleinerten und "um weiss entfernten" Bildes. Ziel ist es dies NOCH transparenter zu machen.
+				//    Es sind noch andere Farben, die stören....
+//				String sX = this.getMapX();
+//				String sY = this.getMapY();
+//				BufferedImage objBufferedImage2analyse = objBufferedImageTransparentAndResized;
+//								
+//			    System.out.println("Klasse " + this.getClass().getName());
+//			    System.out.println(("AAAA "  + sSubtype + " an Position X/Y: " + sX + "/" +sY ));
+//			    UIHelperAnalyseImage.debugPrintImagePixelData(objBufferedImage2analyse, true);			        
+//				System.out.println(("ZZZZ "  + sSubtype + " an Position X/Y: " + sX + "/" +sY ));
+
+			}else{
+				objBufferedImageTransparentAndResized = UIHelper.resizeImage(objBufferedImageTransparent, iIconWidth, iIconHeight);		
+			}
+								
+			byte[] imageInByteHexmap = UIHelper.getByteArrayFromBufferedImage(objBufferedImageTransparentAndResized,"png");			
+			this.setImage01Hexmap(imageInByteHexmap);			
+			long lngFileSizeHexmap = imageInByteHexmap.length; //Diese Infos braucht man, um das Bild wieder auszulesen. Oder?
+			this.setImage01LengthHexmap(lngFileSizeHexmap);
+			this.setImage01NameHexmap(sTileIconName);
+			
+			//4. Bild für das Öffnen der Detailangaben in einer Dialogbox
+			sModuleAlias = "THM";
+			sProgramAlias = "TileDetailDialog"	;
+			System.out.println(ReflectCodeZZZ.getMethodCurrentName() + ": Suche Modul: '" + sModuleAlias +"'/ Program: '" + sProgramAlias + "'/ Parameter: 'IconWidth'");
+			
+			//FALLS GILT: GENUTZT WERDEN SOLL DAS MODUL FÜR DIE GRÖSSENANGABEN AUF DER KARTE. Code stand ursprünglich in TileMouseMotionHandlerTHM.mouseClicked(..)
+			//String sModuleAlias = this.getTile().getMapPanel().getModuleName();
+			//String sProgramAlias = this.getTile().getMapPanel().getProgramAlias();			
+			
+			//FALLS GILT: GENUTZT WERDEN SOLL DAS MODUL FÜR DIE GRÖSSENANGABEN AUF DEM CATALOG
+			//		KernelJPanelCascadedZZZ objPanelToSearch = this.getTile().getMapPanel().getPanelNeighbour("WEST");			
+			//		String sModuleAlias = objPanelToSearch.getModuleName();
+			//		String sProgramAlias = objPanelToSearch.getProgramName();
+			
+			//... Größen holen aus der Kernelkonfiguration
+			sIconWidth = objKernel.getParameterByProgramAlias(sModuleAlias, sProgramAlias, "IconWidth" );			
+			iIconWidth = Integer.parseInt(sIconWidth);				
+			sIconHeight = objKernel.getParameterByProgramAlias(sModuleAlias, sProgramAlias, "IconHeight" );
+			iIconHeight = Integer.parseInt(sIconHeight);
+			
+			//... Bild bearbeitet als Dialogeintrag
+			BufferedImage objBufferdImage4DialogResized = UIHelper.resizeImage(objBufferedImageOriginal, iIconWidth, iIconHeight);
+			byte[] imageInByteDialog = UIHelper.getByteArrayFromBufferedImage(objBufferdImage4DialogResized,"png");			
+			this.setImage01Dialog(imageInByteDialog);			
+			long lngFileSizeDialog = imageInByteDialog.length;
+			this.setImage01LengthDialog(lngFileSizeDialog);
+			this.setImage01NameDialog(sTileIconName);
+			
+			
+			//5. Bild für das Ziehen über die Karte (im Glasspane, per GhostPictureAdapter, der bei der Erstellung der Katalogboxen erzeugt wird.)
+			sModuleAlias = "THM";
+			sProgramAlias = "CatalogPanel"	;
+			System.out.println(ReflectCodeZZZ.getMethodCurrentName() + ": Suche Modul: '" + sModuleAlias +"'/ Program: '" + sProgramAlias + "'/ Parameter: 'IconWidth'");
+			
+			//FALLS GILT: GENUTZT WERDEN SOLL DAS MODUL FÜR DIE GRÖSSENANGABEN AUF DER KARTE. Code stand ursprünglich in TileMouseMotionHandlerTHM.mouseClicked(..)
+			//String sModuleAlias = this.getTile().getMapPanel().getModuleName();
+			//String sProgramAlias = this.getTile().getMapPanel().getProgramAlias();			
+			
+			//FALLS GILT: GENUTZT WERDEN SOLL DAS MODUL FÜR DIE GRÖSSENANGABEN AUF DEM CATALOG
+			//		KernelJPanelCascadedZZZ objPanelToSearch = this.getTile().getMapPanel().getPanelNeighbour("WEST");			
+			//		String sModuleAlias = objPanelToSearch.getModuleName();
+			//		String sProgramAlias = objPanelToSearch.getProgramName();
+			
+			//... Größen holen aus der Kernelkonfiguration
+			sIconWidth = objKernel.getParameterByProgramAlias(sModuleAlias, sProgramAlias, "IconWidthOnDrag" );			
+			iIconWidth = Integer.parseInt(sIconWidth);				
+			sIconHeight = objKernel.getParameterByProgramAlias(sModuleAlias, sProgramAlias, "IconHeightOnDrag" );
+			iIconHeight = Integer.parseInt(sIconHeight);
+			
+			//... Bild bearbeitet als "Ziehen über das HEXFeld"
+			BufferedImage objBufferdImage4DragResized = UIHelper.resizeImage(objBufferedImageOriginal, iIconWidth, iIconHeight);
+			byte[] imageInByteDrag = UIHelper.getByteArrayFromBufferedImage(objBufferdImage4DragResized,"png");			
+			this.setImage01Drag(imageInByteDrag);			
+			long lngFileSizeDrag = imageInByteDrag.length;
+			this.setImage01LengthDrag(lngFileSizeDrag);
+			this.setImage01NameDrag(sTileIconName);
 			
 			
 			} catch (ExceptionZZZ e) {
@@ -289,7 +461,7 @@ public class TroopVariant  extends KeyImmutable implements ITroopVariantTHM, ICa
 	 
 	 
 	 //### getter / setter
-	 	//### Aus ITroopArmyVariant
+	//### Aus ITroopArmyVariant
 	//1:1 Beziehung aufbauen
 		//Siehe Buch "Java Persistence API 2", Seite 90ff.	
 		//Variante 1) mit einer gemeinsamen Spalte
@@ -338,28 +510,149 @@ public class TroopVariant  extends KeyImmutable implements ITroopVariantTHM, ICa
 		//Merke: dependent on the hibernate version, the Lob annotation could have no type parameter. quote from here: @Lob no longer has attributes, the lob type (CLOB, BLOB) is guessed. If the underlying type is a String or an array of character then CLOB are used. Othersise BLOB are used.		
 		@Column(name="image01", nullable=false)	
 		public  byte[] getImage01() {
-			return this.imageBlob01;
+			return this.imageInByte01;
 		}		
 		public void setImage01(byte[] imageBlob) {
-			this.imageBlob01 = imageBlob;
+			this.imageInByte01 = imageBlob;
 		}
 		
 		@Access(AccessType.PROPERTY)
 		@Column(name="image01name", nullable=false)
 		public String getImage01Name() {
-			return this.sImageBlob01;
+			return this.sImageInByte01;
 		}
 		public void setImage01Name(String sFileName) {
-			this.sImageBlob01 = sFileName;
+			this.sImageInByte01 = sFileName;
 		}
 		
 		@Access(AccessType.PROPERTY)
 		@Column(name="image01length", nullable=false)
 		public long getImage01Length() {
-			return this.lngImageBlob01;
+			return this.lngImageInByte01;
 		}
 		public void setImage01Length(long lngFileSize) {
-			this.lngImageBlob01 = lngFileSize;
+			this.lngImageInByte01 = lngFileSize;
+		}
+		
+		
+		//### DAS BILD FÜR DIE KATLOGAUSWAHL IN DER DATENBANK ABSPEICHERN. EIN BILD IST PFLICHT !
+	 	@Access(AccessType.PROPERTY)
+		//ABER SQLite: Probleme beim Holen der Daten per HQL. ... @Lob auch ohne dies Annotation wird ein blob in der Datenbank angelegt... UND Nur so kann dann per HQL wieder auf diese Zelle zugegriffen werden. 
+		//Merke: dependent on the hibernate version, the Lob annotation could have no type parameter. quote from here: @Lob no longer has attributes, the lob type (CLOB, BLOB) is guessed. If the underlying type is a String or an array of character then CLOB are used. Othersise BLOB are used.		
+		@Column(name="CatalogImage01", nullable=false)	
+		public  byte[] getImage01Catalog() {
+			return this.imageInByte01Catalog;
+		}		
+		public void setImage01Catalog(byte[] imageInByte) {
+			this.imageInByte01Catalog = imageInByte;
+		}
+		
+		@Access(AccessType.PROPERTY)
+		@Column(name="CatalogImage01name", nullable=false)
+		public String getImage01NameCatalog() {
+			return this.sImageInByte01Catalog;
+		}
+		public void setImage01NameCatalog(String sFileName) {
+			this.sImageInByte01Catalog = sFileName;
+		}
+		
+		@Access(AccessType.PROPERTY)
+		@Column(name="CatalogImage01length", nullable=false)
+		public long getImage01LengthCatalog() {
+			return this.lngImageInByte01Catalog;
+		}
+		public void setImage01LengthCatalog(long lngFileSize) {
+			this.lngImageInByte01Catalog = lngFileSize;
+		}
+		
+		//### DAS BILD FÜR DIE DARSTELLUNG IN DER KARTE IN DER DATENBANK ABSPEICHERN. EIN BILD IST PFLICHT !
+	 	@Access(AccessType.PROPERTY)
+		//ABER SQLite: Probleme beim Holen der Daten per HQL. ... @Lob auch ohne dies Annotation wird ein blob in der Datenbank angelegt... UND Nur so kann dann per HQL wieder auf diese Zelle zugegriffen werden. 
+		//Merke: dependent on the hibernate version, the Lob annotation could have no type parameter. quote from here: @Lob no longer has attributes, the lob type (CLOB, BLOB) is guessed. If the underlying type is a String or an array of character then CLOB are used. Othersise BLOB are used.		
+		@Column(name="HexmapImage01", nullable=false)	
+		public  byte[] getImage01Hexmap() {
+			return this.imageInByte01Hexmap;
+		}		
+		public void setImage01Hexmap(byte[] imageInByte) {
+			this.imageInByte01Hexmap = imageInByte;
+		}
+		
+		@Access(AccessType.PROPERTY)
+		@Column(name="HexmapImage01name", nullable=false)
+		public String getImage01NameHexmap() {
+			return this.sImageInByte01Hexmap;
+		}
+		public void setImage01NameHexmap(String sFileName) {
+			this.sImageInByte01Hexmap = sFileName;
+		}
+		
+		@Access(AccessType.PROPERTY)
+		@Column(name="HexmapImage01length", nullable=false)
+		public long getImage01LengthHexmap() {
+			return this.lngImageInByte01Hexmap;
+		}
+		public void setImage01LengthHexmap(long lngFileSize) {
+			this.lngImageInByte01Hexmap = lngFileSize;
+		}
+		
+		//### DAS BILD FÜR DIE DARSTELLUNG IM DIALOG IN DER DATENBANK ABSPEICHERN. EIN BILD IST PFLICHT !
+	 	@Access(AccessType.PROPERTY)
+		//ABER SQLite: Probleme beim Holen der Daten per HQL. ... @Lob auch ohne dies Annotation wird ein blob in der Datenbank angelegt... UND Nur so kann dann per HQL wieder auf diese Zelle zugegriffen werden. 
+		//Merke: dependent on the hibernate version, the Lob annotation could have no type parameter. quote from here: @Lob no longer has attributes, the lob type (CLOB, BLOB) is guessed. If the underlying type is a String or an array of character then CLOB are used. Othersise BLOB are used.		
+		@Column(name="DialogImage01", nullable=false)	
+		public  byte[] getImage01Dialog() {
+			return this.imageInByte01Dialog;
+		}		
+		public void setImage01Dialog(byte[] imageInByte) {
+			this.imageInByte01Dialog = imageInByte;
+		}
+		
+		@Access(AccessType.PROPERTY)
+		@Column(name="DialogImage01name", nullable=false)
+		public String getImage01NameDialog() {
+			return this.sImageInByte01Dialog;
+		}
+		public void setImage01NameDialog(String sFileName) {
+			this.sImageInByte01Dialog = sFileName;
+		}
+		
+		@Access(AccessType.PROPERTY)
+		@Column(name="DialogImage01length", nullable=false)
+		public long getImage01LengthDialog() {
+			return this.lngImageInByte01Dialog;
+		}
+		public void setImage01LengthDialog(long lngFileSize) {
+			this.lngImageInByte01Dialog = lngFileSize;
+		}
+		
+		//### DAS BILD FÜR DIE DARSTELLUNG BEIM ZIEHEN ÜBER DIE HEXKARTE. EIN BILD IST PFLICHT !
+	 	@Access(AccessType.PROPERTY)
+		//ABER SQLite: Probleme beim Holen der Daten per HQL. ... @Lob auch ohne dies Annotation wird ein blob in der Datenbank angelegt... UND Nur so kann dann per HQL wieder auf diese Zelle zugegriffen werden. 
+		//Merke: dependent on the hibernate version, the Lob annotation could have no type parameter. quote from here: @Lob no longer has attributes, the lob type (CLOB, BLOB) is guessed. If the underlying type is a String or an array of character then CLOB are used. Othersise BLOB are used.		
+		@Column(name="DragImage01", nullable=false)	
+		public  byte[] getImage01Drag() {
+			return this.imageInByte01Drag;
+		}		
+		public void setImage01Drag(byte[] imageInByte) {
+			this.imageInByte01Drag = imageInByte;
+		}
+		
+		@Access(AccessType.PROPERTY)
+		@Column(name="DragImage01name", nullable=false)
+		public String getImage01NameDrag() {
+			return this.sImageInByte01Drag;
+		}
+		public void setImage01NameDrag(String sFileName) {
+			this.sImageInByte01Drag = sFileName;
+		}
+		
+		@Access(AccessType.PROPERTY)
+		@Column(name="DragImage01length", nullable=false)
+		public long getImage01LengthDrag() {
+			return this.lngImageInByte01Drag;
+		}
+		public void setImage01LengthDrag(long lngFileSize) {
+			this.lngImageInByte01Drag = lngFileSize;
 		}
 	 
 	 //#### abstracte Methoden
@@ -376,8 +669,13 @@ public class TroopVariant  extends KeyImmutable implements ITroopVariantTHM, ICa
 	public Long getThiskey() {
 		 return this.lKey;
 	}
+	 
 	@Override
 	public void setThiskey(Long thiskeyId) {
 		this.lKey = thiskeyId;
 	}
+
+	@Transient
+	@Override
+	public abstract String getSubtype();
 }

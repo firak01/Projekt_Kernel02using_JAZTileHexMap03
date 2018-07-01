@@ -215,7 +215,7 @@ public class VariantCatalogTHM  extends KernelUseObjectZZZ implements IGhostGlas
 			
 		//HIER DANN WIRKLICH DYNAMISCH DIE BOXEN ERZEUGEN
 		for(TroopArmyVariant objEntity : listaVariant){
-			System.out.println("TroopFleetVariant.toString(): " + objEntity.toString());
+			System.out.println("TroopArmyVariant.toString(): " + objEntity.toString());
 
 			
 			/* DAS IST NOCH NICHT WICHTIG
@@ -262,16 +262,18 @@ public class VariantCatalogTHM  extends KernelUseObjectZZZ implements IGhostGlas
 			Defaulttext objDefaulttextTemp = objEntity.getDefaulttextObject();
 			String sShorttextDefault = objDefaulttextTemp.getShorttext();
 			sTileLabel = sShorttextImmutable + " - " + sShorttextDefault;
-//		    sTileLabel = "NEW ARMY";
+			sCatalogVariantEntryId = "new_" + objEntity.getThiskey();
 			
+		    //20180630: Lies nicht mehr ein Bild von der Platte, sondern aus dem Entity direkt	
+			/*
 			sTileIconName = objEntity.getImageUrlString();			
-			//sTileIconName = "new_sale.png";
-			 
-			  sCatalogVariantEntryId = "new_" + objEntity.getThiskey();
-//			     sCatalogVariantEntryId = "new_sale";
-			  
-			  boxCreated = this.createBoxObject(sCatalogVariantEntryId, sTileLabel, sTileIconName);			     
-			  this.getMapCatalog().put(sVariantId, sCatalogVariantEntryId, boxCreated);
+			  boxCreated = this.createBoxObject(sCatalogVariantEntryId, sTileLabel, sTileIconName);
+			*/
+			
+			byte[] imageInByte = objEntity.getImage01Catalog(); //Diese Catalog Bilder sind in der Größe reduziert.
+					
+			boxCreated = this.createBoxObject(sCatalogVariantEntryId, sTileLabel, imageInByte);
+			this.getMapCatalog().put(sVariantId, sCatalogVariantEntryId, boxCreated);
 			 iNrOfEntriesHere++; //Zelle zur Summe hinzufügen
 		} //end for ... Variant
 		
@@ -358,15 +360,17 @@ public class VariantCatalogTHM  extends KernelUseObjectZZZ implements IGhostGlas
 			Defaulttext objDefaulttextTemp = objEntity.getDefaulttextObject();
 			String sShorttextDefault = objDefaulttextTemp.getShorttext();
 			sTileLabel = sShorttextImmutable + " - " + sShorttextDefault;
-//		    sTileLabel = "NEW ARMY";
+			sCatalogVariantEntryId = "new_" + objEntity.getThiskey();
 			
-			sTileIconName = objEntity.getImageUrlString();			
-			//  sTileIconName = "new_sale.png";
-			 
-			  sCatalogVariantEntryId = "new_" + objEntity.getThiskey();
-//			     sCatalogVariantEntryId = "new_sale";
-			  
-			  boxCreated = this.createBoxObject(sCatalogVariantEntryId, sTileLabel, sTileIconName);			     
+			   //20180630: Lies nicht mehr ein Bild von der Platte, sondern aus dem Entity direkt	
+				/*
+				sTileIconName = objEntity.getImageUrlString();			
+				  boxCreated = this.createBoxObject(sCatalogVariantEntryId, sTileLabel, sTileIconName);
+				*/
+				
+				byte[] imageInByte = objEntity.getImage01Catalog(); //Diese Catalog Bilder sind in der Größe reduziert.
+						
+				boxCreated = this.createBoxObject(sCatalogVariantEntryId, sTileLabel, imageInByte);
 			  this.getMapCatalog().put(sVariantId, sCatalogVariantEntryId, boxCreated);
 			iNrOfEntriesHere++; //Zelle zur Summe hinzufügen
 		} //end for ... Variant
@@ -429,6 +433,68 @@ public class VariantCatalogTHM  extends KernelUseObjectZZZ implements IGhostGlas
 				int iIconHeightOnDrag = Integer.parseInt(sIconHeightOnDrag);
 	    	 //+++++++++	  		    
 		     GhostPictureAdapter pictureAdapter = new GhostPictureAdapter(glassPane, sCatalogVariantEntryId, sFile, iIconWidthOnDrag, iIconHeightOnDrag);
+			 pictureAdapter.addGhostDropListener(listenerForDropToHexMap);
+			 
+			 //Das DRAGGEN, ausgehend vom Label 			
+		     label.addMouseListener(pictureAdapter); //Beim Clicken wird das Bild vom pictureAdapter an die passende Stelle im glassPane gesetzt.
+		     label.addMouseMotionListener(new GhostMotionAdapter(glassPane));
+			 
+	     }//end main:
+	     return objBoxReturn;
+	}
+	
+	
+	public Box createBoxObject(String sCatalogVariantEntryId, String sTileLabel, byte[] imageInByte) throws ExceptionZZZ{
+	     Box objBoxReturn = Box.createVerticalBox();
+	     main:{
+	    	 objBoxReturn.setBorder(new EmptyBorder(0, 0, 0, 20));
+	    	 	    	
+	    	 //Ein Label hinzufügen mit dem entsprechenden Titel und dem Bild
+	    	 
+	    	//Modullnamen und Programnamen für die Position in der KernelKonfiguation  	 
+	    	 	KernelZZZ objKernel = this.getKernelObject();
+			
+		   //++++++++++
+				 //Die Größe der Icons aus der KernelKonfiguration auslesen
+				//DAS IST IN DER ERSTELLUNG DES ENTITIES AUSGELAGERT UND WIRD EXTRA GESPEICHERT
+//				String sIconWidth = this.getKernelObject().getParameterByProgramAlias(sModuleAlias, sProgramAlias, "IconWidth" );
+//				int iIconWidth = Integer.parseInt(sIconWidth);				
+//				String sIconHeight = this.getKernelObject().getParameterByProgramAlias(sModuleAlias, sProgramAlias, "IconHeight" );
+//				int iIconHeight = Integer.parseInt(sIconHeight);
+	    	 //+++++++++	    	 
+		     
+				
+				
+			// JLabel label = UIHelper.createLabelWithIconResized(sTileLabel, imageInByte, iIconWidth,iIconHeight);
+			JLabel label = UIHelper.createLabelWithIcon(sTileLabel,  imageInByte);
+		    objBoxReturn.add(label);
+		     
+
+		     //### Funktionalität DRAG & DROP
+		     //Merke: Verwendet man hier den bisherigen Picture Adapter und hängt noch einen weitern dropListener an, 
+			 //       dann wird 2x ein drop durchgeführt. D.h. es wird 2x ein Entity erzeugt. Beim 2. Mal gibt es dann die Fehlermeldung:
+			 //       'Maximale Anzahl der Amreen / Flotten im Feld erreicht'. Darum ist es wichtig hier immer einen NEUEN picture Adapter zu erzeugen, pro Variante.			    			    			
+			 //Es muss also das pictureAdapter-Objekt der gleich sein, der das DRAGGEN bereitstellt, wie auch das DROPPEN!!!!
+		   
+		     //Das Bild beim Ziehen über den Glaspane weiterverwenden. Anhand der sCatalogEntryId wird dann beim Fallenlassen entschieden um welches Entity es sich überhaupt handelt		     
+			    GhostGlassPane glassPane = this.getGhostGlassPane();
+			    if(glassPane==null) throw new ExceptionZZZ("Kein GhostGlassPane im FrameParent vorhanden");
+			    		      
+		     GhostDropListener listenerForDropToHexMap = this.getGhostDropListener(); //.. und hier entscheidet sich  wie beim Fallenlassen gehandelt wird.
+		     
+		     //++++++++++
+	    	 //Die Größe der Icons beim Ziehen aus der KernelKonfiguration auslesen	  
+				String sModuleAlias =  this.getModuleUsed();// this.getModuleName();
+				String sProgramAlias = this.getProgramUsed(); //this.getProgramAlias(); //				
+				System.out.println(ReflectCodeZZZ.getMethodCurrentName() + ": Suche Modul: '" + sModuleAlias +"'/ Program: '" + sProgramAlias + "'/ Parameter: 'IconWidth'");
+	
+				//TODO GOON FGL 20180630
+				String sIconWidthOnDrag = this.getKernelObject().getParameterByProgramAlias(sModuleAlias, sProgramAlias, "IconWidthOnDrag" );
+				int iIconWidthOnDrag = Integer.parseInt(sIconWidthOnDrag);					
+				String sIconHeightOnDrag = this.getKernelObject().getParameterByProgramAlias(sModuleAlias, sProgramAlias, "IconHeightOnDrag" );
+				int iIconHeightOnDrag = Integer.parseInt(sIconHeightOnDrag);
+	    	 //+++++++++	  		    
+			 GhostPictureAdapter pictureAdapter = new GhostPictureAdapter(glassPane, sCatalogVariantEntryId, imageInByte, iIconWidthOnDrag, iIconHeightOnDrag);
 			 pictureAdapter.addGhostDropListener(listenerForDropToHexMap);
 			 
 			 //Das DRAGGEN, ausgehend vom Label 			

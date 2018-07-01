@@ -314,4 +314,12 @@ public class TroopArmyVariant  extends TroopVariant implements ITroopArmyVariant
 	   	  return set;
 	   	}	
 	   }//End inner class
+
+		@Override
+		@Transient
+		public String getSubtype() {
+			return "AR";
+		}
+		protected void setSubtype(){			
+		}
 }

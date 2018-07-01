@@ -191,29 +191,20 @@ public class TileTHM extends JPanel implements IMapPositionableTHM, IBackendPers
 			int iIconHeight = Integer.parseInt(sIconHeight);
 			
 		    //+++++++++	
-			//TODO GOON 20180404: Hier dann mittelfristig auf das BLOB-Objekt der DTO zugreifen!!! Welches aus der Variante stammt.
+			//20180630: Hier dann mittelfristig auf das BLOB-Objekt der DTO zugreifen!!! Welches aus der Variante stammt.
 			//Der Pfad zum lokal im Dateisystem abgelegten Bild
-			String sTileIconName = this.getVariantImageUrlString();			
-			 String sBaseDirectory = ApplicationSingletonTHM.getInstance().getBaseDirectoryStringForImages();//WICHTIG: NUN Noch den Basispfad davorhängen!
-	    	 String sFilename = sBaseDirectory + File.separator + sTileIconName;
-			File objFile = new File(sFilename);		   
-			BufferedImage objBufferedImageTemp = ImageIO.read(objFile);		
+//			String sTileIconName = this.getVariantImageUrlString();			
+//			 String sBaseDirectory = ApplicationSingletonTHM.getInstance().getBaseDirectoryStringForImages();//WICHTIG: NUN Noch den Basispfad davorhängen!
+//	    	 String sFilename = sBaseDirectory + File.separator + sTileIconName;
+//			File objFile = new File(sFilename);		   
+//			BufferedImage objBufferedImageTemp = ImageIO.read(objFile);		
 			
-			//1. Versuche das Bild mit einem transparenten Hintergrund auszustatten:
+			//Das Bild aus dem in der Datenbank hinterlegten byte[] beziehen. Transportiert wird das über DTO-Objekt.
+			byte[] imageInByte = this.getVariantImageUsedInByte();
+			BufferedImage objBufferedImageTransparentAndResized = UIHelper.toBufferedImage(imageInByte);
 			
-			
-			
-			//Beispielsansatz das Bild mit einem Transparenten Hintergund hinzubekommen:
-			//Ein ImageIcon zeichnen
-//			Icon icon = new ImageIcon(objBufferedImageTransparentAndResized);
-//			int x = 0;
-//			int y = 0;
-//			//DAS IST DANN NOCH NICHT TRANSPARENT .... icon.paintIcon(this, g, x, y);
-//			float alpha = 0.0F; //1.0F; ist untransparent //0.0F ist voll transparent
-//			UIHelperAlphaIcon iconTransparent = new UIHelperAlphaIcon(icon, alpha);
-//			//UIHelperAlphaImageIcon iconTransparent = new UIHelperAlphaImageIcon(icon, alpha);
-//			iconTransparent.paintIcon(this, g, x, y);
-			
+/*			
+			BufferedImage objBufferedImageTemp = UIHelper.toBufferedImage(imageInByte);
 			
 			
 			//Realisierter Ansatz
@@ -254,6 +245,7 @@ public class TileTHM extends JPanel implements IMapPositionableTHM, IBackendPers
 			}else{
 				objBufferedImageTransparentAndResized = UIHelper.resizeImage(objBufferedImageTransparent, iIconWidth, iIconHeight);		
 			}
+		*/
 						
 			//+++++++++ Das Bild an der errechneten Postion (unterhalb des Labels) zeichnen.
 			int iTileSideLength = this.getTileSideLength();
@@ -429,10 +421,21 @@ public class TileTHM extends JPanel implements IMapPositionableTHM, IBackendPers
 		this.getDto().set(ITileDtoAttribute.VARIANT_IMAGE_URL_STRING, sVariantImageUrlString);
 	}
 	
+	public byte[] getVariantImageUsedInByte(){
+		//das wäre das Bild in normaler Größe return (byte[]) this.getDto().get(ITileDtoAttribute.VARIANT_IMAGE_IN_BYTE); //es müsste kliner gerechnet werden
+		//das kleiner und transparent gerechnete Bild
+		return (byte[]) this.getDto().get(ITileDtoAttribute.VARIANT_IMAGEHEXMAP_IN_BYTE);
+		//return (byte[]) this.getDto().get(ITileDtoAttribute.VARIANT_IMAGE_IN_BYTE);
+	}
+	protected void setVariantImageUsedInByte(byte[] imageInByte){
+		//das wäre das Bild in normaler Größe   this.getDto().set(ITileDtoAttribute.VARIANT_IMAGE_IN_BYTE, imageInByte); //es müsste kliner gerechnet werden
+		this.getDto().set(ITileDtoAttribute.VARIANT_IMAGEHEXMAP_IN_BYTE, imageInByte);
+	}
+	
 	public Integer getInstanceVariantUniqueNumber(){
 		return (Integer) this.getDto().get(ITileDtoAttribute.INSTANCE_VARIANT_UNIQUENUMBER);
 	}
-	protected void setVariantShorttext(Integer intInstanceVariantUniqueNumber){
+	protected void setInstanceVariantUniqueNumber(Integer intInstanceVariantUniqueNumber){
 		this.getDto().set(ITileDtoAttribute.INSTANCE_VARIANT_UNIQUENUMBER, intInstanceVariantUniqueNumber);
 	}
 

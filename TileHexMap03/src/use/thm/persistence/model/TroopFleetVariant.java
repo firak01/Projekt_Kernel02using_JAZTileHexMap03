@@ -315,4 +315,13 @@ public class TroopFleetVariant  extends TroopVariant implements ITroopFleetVaria
 	   	  return set;
 	   	}
 	   }//End inner class
+
+		@Override
+		@Transient
+		public String getSubtype() {
+			return "FL";
+		}
+		protected void setSubtype(){
+			
+		}
 }

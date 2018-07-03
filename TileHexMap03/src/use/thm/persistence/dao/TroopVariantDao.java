@@ -48,7 +48,7 @@ import basic.zKernel.KernelZZZ;
  *
  * @param <T>
  */
-public class TroopVariantDao<T> extends AbstractKeyImmutableDao<T> {
+public abstract class TroopVariantDao<T> extends AbstractKeyImmutableDao<T> {
 	private static final long serialVersionUID = 1L;
 
 	/* Constructor
@@ -98,7 +98,9 @@ public class TroopVariantDao<T> extends AbstractKeyImmutableDao<T> {
 */
 //Da Java nur ein CALL_BY_VALUE machen kann, weden hier für die eingefüllten Werte Referenz-Objekte verwendet.
 //Erst die normalen Enum-Werte, dann ... sUniquetext / sCategorytext / iMoveRange / sImageUrl / iThisKeyDefaulttext / iThiskeyImmutabletext;
-protected <T> void _fillValueImmutable(ITroopVariantTHM objValue,String sEnumAlias, ReferenceZZZ<Long> objlngThiskey, 
+	//
+	//Merke: objValue - Klasse ist ein Dummy Objekt, damit man auf die als Innere Klasse deklarierte Enumeration kommt.
+protected <T> void _fillValueImmutableByEnumAlias(ITroopVariantTHM objValue,String sEnumAlias, ReferenceZZZ<Long> objlngThiskey, 
 	ReferenceZZZ<String> objsName, ReferenceZZZ<String> objsUniquetext, ReferenceZZZ<String> objsCategorytext, 
 	ReferenceZZZ<Integer> objintMoveRange, ReferenceZZZ<String> objsImageUrl,ReferenceZZZ<Long> objlngThisidTextDefault, ReferenceZZZ<Long> objlngThisidTextImmutable
 	){
@@ -144,5 +146,8 @@ protected <T> void _fillValueImmutable(ITroopVariantTHM objValue,String sEnumAli
 public String getKeyTypeUsed() {
 	return "TROOPVARIANT";
 }
+
+public abstract boolean isVariantValid(long lngThisIdKey);
+public abstract boolean isVariantStandard(long lngThisIdKey);
 			
 }//end class

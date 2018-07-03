@@ -20,6 +20,7 @@ import use.thm.persistence.dao.AreaCellDao;
 import use.thm.persistence.dao.TroopArmyVariantDao;
 import use.thm.persistence.dao.TroopDao;
 import use.thm.persistence.dao.TroopFleetVariantDao;
+import use.thm.persistence.dao.TroopVariantDao;
 import use.thm.persistence.daoFacade.TroopArmyDaoFacade;
 import use.thm.persistence.daoFacade.TroopFleetDaoFacade;
 import use.thm.persistence.dto.DtoFactoryGenerator;
@@ -45,6 +46,7 @@ import basic.zBasic.util.datatype.enums.EnumSetInnerUtilZZZ.ThiskeyEnumMappingEx
 import basic.zBasic.util.datatype.string.StringZZZ;
 import basic.zBasic.util.log.ReportLogZZZ;
 import basic.zBasicUI.component.UIHelper;
+import basic.zBasicUI.glassPane.dragDropTranslucent.GhostDropEvent;
 import basic.zBasicUI.glassPane.dragDropTranslucent.GhostDropListener;
 import basic.zBasicUI.glassPane.dragDropTranslucent.GhostGlassPane;
 import basic.zBasicUI.glassPane.dragDropTranslucent.GhostMotionAdapter;
@@ -386,6 +388,54 @@ public class VariantCatalogTHM  extends KernelUseObjectZZZ implements IGhostGlas
 	return bReturn;
 }
 	
+	/*
+	 * Mit der Methode wird in GhostDropManagerHexMapPanelTHM.ghostDropped(GhostDropEvent e) 
+	 * geprüft, welche DAO - Klasse letztendlich verwendet werden soll. 
+	 */
+	public static boolean isEntryToCreate_Fleet(String sCatalogVariantThisKeyId) throws ExceptionZZZ{
+		boolean bReturn = false;
+		main:{
+			ApplicationTHM objApplication = ApplicationSingletonTHM.getInstance();
+			KernelSingletonTHM objKernel = (KernelSingletonTHM) objApplication.getKernelObject();			
+			HibernateContextProviderSingletonTHM objContextHibernate = HibernateContextProviderSingletonTHM.getInstance(objKernel);
+			
+			//++++++++++++++
+			TroopFleetVariantDao objDao = new TroopFleetVariantDao(objContextHibernate);
+			Long lngThisKeyId = new Long(sCatalogVariantThisKeyId);
+			long lThisKeyId = lngThisKeyId.longValue();
+			bReturn = objDao.isVariantStandard(lThisKeyId);
+			
+			//Merke: Später dann  
+			//bReturn = objDao.isVariantValid(lThisKeyId);
+		}
+		return bReturn;
+	}
+	
+	/*
+	 * Mit der Methode wird in GhostDropManagerHexMapPanelTHM.ghostDropped(GhostDropEvent e) 
+	 * geprüft, welche DAO - Klasse letztendlich verwendet werden soll. 
+	 */
+	public static boolean isEntryToCreate_Army(String sCatalogVariantThisKeyId) throws ExceptionZZZ{
+		boolean bReturn = false;
+		main:{
+			ApplicationTHM objApplication = ApplicationSingletonTHM.getInstance();
+			KernelSingletonTHM objKernel = (KernelSingletonTHM) objApplication.getKernelObject();			
+			HibernateContextProviderSingletonTHM objContextHibernate = HibernateContextProviderSingletonTHM.getInstance(objKernel);
+			
+			//++++++++++++++
+			TroopArmyVariantDao objDao = new TroopArmyVariantDao(objContextHibernate);
+			Long lngThisKeyId = new Long(sCatalogVariantThisKeyId);
+			long lThisKeyId = lngThisKeyId.longValue();
+			bReturn = objDao.isVariantStandard(lThisKeyId);
+			
+			//Merke: Später dann  
+			//bReturn = objDao.isVariantValid(lThisKeyId);
+		}
+		return bReturn;
+	}
+	
+	
+	
 	public Box createBoxObject(String sCatalogVariantEntryId, String sTileLabel, String sTileIconName) throws ExceptionZZZ{
 	     Box objBoxReturn = Box.createVerticalBox();
 	     main:{
@@ -462,13 +512,10 @@ public class VariantCatalogTHM  extends KernelUseObjectZZZ implements IGhostGlas
 //				String sIconHeight = this.getKernelObject().getParameterByProgramAlias(sModuleAlias, sProgramAlias, "IconHeight" );
 //				int iIconHeight = Integer.parseInt(sIconHeight);
 	    	 //+++++++++	    	 
-		     
-				
-				
+
 			// JLabel label = UIHelper.createLabelWithIconResized(sTileLabel, imageInByte, iIconWidth,iIconHeight);
 			JLabel label = UIHelper.createLabelWithIcon(sTileLabel,  imageInByte);
 		    objBoxReturn.add(label);
-		     
 
 		     //### Funktionalität DRAG & DROP
 		     //Merke: Verwendet man hier den bisherigen Picture Adapter und hängt noch einen weitern dropListener an, 

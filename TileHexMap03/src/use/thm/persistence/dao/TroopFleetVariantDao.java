@@ -112,6 +112,7 @@ public class TroopFleetVariantDao<T> extends TroopVariantDao<T> {
 			Session session = objContextHibernate.getSession(); //kürzer: session=this.getSession()
 			if(session == null) break main;	
 			
+			//Alle Enumerations hier einlesen.
 			TroopFleetVariant objValueTemp = new TroopFleetVariant();//Quasi als Dummy, aus dem die Enumeration (angelegt als innere Klasse) ausgelesen werden kann.
 
 			//DAS GEHT NICHT, DA JAVA IMMER EIN PASS_BY_VALUE MACHT.
@@ -134,7 +135,7 @@ public class TroopFleetVariantDao<T> extends TroopVariantDao<T> {
 			
 			//Speziell für FLEET:
 			ReferenceZZZ<Integer> iNumberOfTurret = new ReferenceZZZ("");
-			this._fillValueImmutable(objValueTemp, sEnumAlias, lngThisValue, sName, sUniquetext, sCategorytext, iMoveRange, sImageUrl, lngThisidDefaulttext, lngThisidImmutabletext, iNumberOfTurret);
+			this._fillValueImmutableByEnumAlias(objValueTemp, sEnumAlias, lngThisValue, sName, sUniquetext, sCategorytext, iMoveRange, sImageUrl, lngThisidDefaulttext, lngThisidImmutabletext, iNumberOfTurret);
 			
 			//TODO .... nicht vergessen nun basierend auf den Thiskey-Einträgen für den Defaulttext und Immutabletext das jeweilige Objekt zu suchen.
 			//          Falls das Objekt nicht gefunden wird, muss es per TileDefaulttextDAO oder TileImmutabletextDAO erzeugt werden.
@@ -333,7 +334,9 @@ public boolean delete(TroopFleetVariant objFleetVariant) {
  */
 //Da Java nur ein CALL_BY_VALUE machen kann, weden hier für die eingefüllten Werte Referenz-Objekte verwendet.
 //Erst die normalen Enum-Werte, dann ... sUniquetext / sCategorytext / iMoveRange / sImageUrl / iThisKeyDefaulttext / iThiskeyImmutabletext;
-protected <T> void _fillValueImmutable(ITroopFleetVariantTHM objValue,String sEnumAlias, ReferenceZZZ<Long> objlngThiskey, 
+//
+//Merke objValue ist ein Dummy, damit man an die Enumeration, die als innere Klasse realisiert ist, kommt.
+protected <T> void _fillValueImmutableByEnumAlias(ITroopFleetVariantTHM objValue,String sEnumAlias, ReferenceZZZ<Long> objlngThiskey, 
 		ReferenceZZZ<String> objsName, ReferenceZZZ<String> objsUniquetext, ReferenceZZZ<String> objsCategorytext, 
 		ReferenceZZZ<Integer> objintMoveRange, ReferenceZZZ<String> objsImageUrl,
 		ReferenceZZZ<Long> objlngThisidTextDefault, ReferenceZZZ<Long> objlngThisidTextImmutable,
@@ -342,12 +345,13 @@ protected <T> void _fillValueImmutable(ITroopFleetVariantTHM objValue,String sEn
 	//Merke: Direktes Reinschreiben geht wieder nicht wg. "bound exception"
 	//EnumSetDefaulttextUtilZZZ.getEnumConstant_DescriptionValue(EnumSetDefaulttextTestTypeTHM.class, sEnumAlias);
 	
-	super._fillValueImmutable(objValue, sEnumAlias, objlngThiskey, objsName, objsUniquetext, objsCategorytext, objintMoveRange, objsImageUrl, objlngThisidTextDefault, objlngThisidTextImmutable);
+	//Einlesen der Werte, die über alle Entities gleich sind:
+	super._fillValueImmutableByEnumAlias(objValue, sEnumAlias, objlngThiskey, objsName, objsUniquetext, objsCategorytext, objintMoveRange, objsImageUrl, objlngThisidTextDefault, objlngThisidTextImmutable);
 	
 	//Also: Klasse holen und danach CASTEN.
 	Class<?> objClass = ((KeyImmutable) objValue).getThiskeyEnumClass();
 
-	//Speziell für FLEET
+	//Einlesen Spezieller Werte für FLEET: 
 	Integer intNumberOfTurret = EnumSetTroopFleetVariantUtilTHM.readEnumConstant_NumberOfTurretValue((Class<IEnumSetTroopFleetVariantTHM>)objClass, sEnumAlias);
 	System.out.println("Gefundene NumberOfTurret: " + intNumberOfTurret);	
 	objintNumberOfTurret.set(intNumberOfTurret); //Damit wird CALL_BY_VALUE quasi gemacht....
@@ -356,6 +360,73 @@ protected <T> void _fillValueImmutable(ITroopFleetVariantTHM objValue,String sEn
 @Override
 public String getKeyTypeUsed() {
 	return "TROOPFLEETVARIANT";
+}
+@Override
+public boolean isVariantValid(long lngThisIdKey) {
+	// TODO Auto-generated method stub
+	return false;
+}
+@Override
+public boolean isVariantStandard(long lngThisIdKey) {
+	System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": START ##############");			
+	boolean bReturn = false;
+	main:{
+		try {				
+			KernelZZZ objKernel = new KernelZZZ(); //Merke: Die Service Klasse selbst kann wohl nicht das KernelObjekt extenden!
+			HibernateContextProviderSingletonTHM objContextHibernate = HibernateContextProviderSingletonTHM.getInstance(objKernel);					
+			
+			//###################
+			//1. Ermittle Daten der TroopFleetVarianten
+			//####################					
+			//Session session = this.getSession();	//Vesuch eine neue Session zu bekommen. Merke: Die Session wird hier nicht gespeichert! Wg. 1 Transaktion ==> 1 Session
+			Session session = objContextHibernate.getSession();
+			if(session == null) break main;			
+			
+			
+			//Alle Enumerations hier einlesen.
+			TroopFleetVariant objValueTemp = new TroopFleetVariant();//Quasi als Dummy, aus dem die Enumeration (angelegt als innere Klasse) ausgelesen werden kann.
+						
+			//Anders als bei der _fillValue(...) Lösung können hier nur die Variablen gefüllt werden. Die Zuweisung muss im Konstruktor des immutable Entity-Objekts passieren, das dies keine Setter-Methodne hat.				
+			Collection<String> colsEnumAlias = EnumZZZ.getNames(TroopFleetVariant.getThiskeyEnumClassStatic());
+			for(String sEnumAlias : colsEnumAlias){
+				
+				//DAS GEHT NICHT, DA JAVA IMMER EIN PASS_BY_VALUE MACHT.
+				//Long lngThisValue = new Long(0);
+				//String sName = new String("");
+				//String sShorttext = new String("");
+				//String sLongtext = new String("");
+				//String sDescription = new String("");
+				//this._fillValueImmutable(objValueTemp, sEnumAlias, lngThisValue, sName, sShorttext, sLongtext, sDescription); 
+
+				//Hier der Workaround mit Referenz-Objekten, aus denen dann der Wert geholt werden kann. Also PASS_BY_REFERENCE durch auslesen der Properties der Objekte.  
+				ReferenceZZZ<Long> lngThisValue = new ReferenceZZZ(4);
+				ReferenceZZZ<String> sName = new ReferenceZZZ("");
+				ReferenceZZZ<String> sUniquetext = new ReferenceZZZ("");
+				ReferenceZZZ<String> sCategorytext = new ReferenceZZZ("");
+				ReferenceZZZ<Integer> iMoveRange = new ReferenceZZZ("");
+				ReferenceZZZ<String> sImageUrl = new ReferenceZZZ("");
+				ReferenceZZZ<Long> lngThisidDefaulttext = new ReferenceZZZ("");
+				ReferenceZZZ<Long> lngThisidImmutabletext = new ReferenceZZZ("");
+				
+				//Speziell für FLEET:
+				ReferenceZZZ<Integer> iNumberOfTurret = new ReferenceZZZ("");
+				this._fillValueImmutableByEnumAlias(objValueTemp, sEnumAlias, lngThisValue, sName, sUniquetext, sCategorytext, iMoveRange, sImageUrl, lngThisidDefaulttext, lngThisidImmutabletext, iNumberOfTurret);
+				
+				if(lngThisValue.get().longValue() == lngThisIdKey ){
+					bReturn = true;
+					break main;
+				}						
+			}//end for
+			
+			
+		} catch (ExceptionZZZ e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": ENDE ##############");			
+					
+	}//end main:
+	return bReturn;
 }
 			
 }//end class

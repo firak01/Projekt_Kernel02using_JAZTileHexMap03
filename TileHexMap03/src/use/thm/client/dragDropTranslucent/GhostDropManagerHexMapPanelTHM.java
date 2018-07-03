@@ -13,6 +13,7 @@ import use.thm.client.component.FleetTileTHM;
 import use.thm.client.component.HexCellTHM;
 import use.thm.client.component.HexMapTHM;
 import use.thm.client.component.TileTHM;
+import use.thm.client.component.VariantCatalogTHM;
 import use.thm.client.event.EventTileCreatedInCellTHM;
 import use.thm.client.event.EventTileDroppedToCellTHM;
 import use.thm.client.event.TileMetaEventBrokerTHM;
@@ -97,13 +98,32 @@ public class GhostDropManagerHexMapPanelTHM extends AbstractGhostDropManager imp
 			   String sAction = e.getAction();
 			   TileTHM objTile = null; //wird gleich konkret gefüllt, falls der Action-Key passt.
 			   
-			  //MoveEventBroker für die Bewegung von einer Zelle zur anderen
-			  
+			 //################# TODO GOON 20180326: DAS DYNAMISCH MACHEN ################
+			   //20180702: Hole erst einmal den key aus z.B. new_21 heraus. Der String wird so erstellt:
+			   //	              GhostDropEvent.mouseRelease() - CataalogTHM.createBoxObject()
+			   String sCatalogVariantThisKeyId = StringZZZ.right(sAction, "_");
+			   
+			  //MoveEventBroker für die Bewegung von einer Zelle zur anderen			  
 			   TileMetaEventBrokerTHM objTileMetaEventBroker = objMap.getTileMetaEventBroker();//new TileMoveEventBrokerTHM(this.getKernelObject());
 		      // JOptionPane.showMessageDialog(this.component, ReflectCodeZZZ.getMethodCurrentName() + "### Action: '" + action + "'");
-			   if(!StringZZZ.isEmpty(sAction)){				   
-					   //################# TODO GOON 20180326: DAS DYNAMISCH MACHEN ################
-					   if(sAction.equalsIgnoreCase("new_11") || sAction.equalsIgnoreCase("new_12")){ //Das sind die thisIds der Variante "ARMY"
+			   if(!StringZZZ.isEmpty(sCatalogVariantThisKeyId)){				   
+					   
+				   //################# TODO GOON 20180326: DAS DYNAMISCH MACHEN ################
+				   boolean bFleet = VariantCatalogTHM.isEntryToCreate_Fleet(sCatalogVariantThisKeyId);
+				   boolean bArmy = VariantCatalogTHM.isEntryToCreate_Army(sCatalogVariantThisKeyId);
+				   
+				   //dann neue Methoden: .isFleetCatalogEntryToCreate(lng key)
+				   //darin aufrufen: TroopFleetVariantDao.isVariantValid(lng key)
+				   //dito mit isArmyCatalogEntryToCreate(lng key)
+				   //darin aufrufen: TroopArmyVariantDao.isVariantValid(lng key)
+				   //TODO: Mache dann in den Dao-Klassen auch .isVariantStandard(lng key), wobei nur auf die in den Enumerations definierten Werte zugegriffen wird. 
+				   //IDEE: So könnte man ggfs. den Spieler neue Varianten "erfinden" lassen und in das System einfügen lassen.
+				   
+				   					   
+				
+				   
+					   //if(sAction.equalsIgnoreCase("new_11") || sAction.equalsIgnoreCase("new_12")){ //Das sind die thisIds der Variante "ARMY"
+				   	if(bArmy){
 						  						   
 					   //FGL: 20170703 - Hier erst einmal im Backend prüfen, ob eine neue Army hier überhaupt erstellt werden darf.
 					   boolean bGoon = false;	
@@ -155,8 +175,9 @@ public class GhostDropManagerHexMapPanelTHM extends AbstractGhostDropManager imp
 						}
 				   }//new_sale
 				   
-				   //################# TODO GOON 20180326: DAS DYNAMISCH MACHEN ################
-				   if(sAction.equalsIgnoreCase("new_21") || sAction.equalsIgnoreCase("new_22")){ //Das sind die thisIds der Variante "FLEET"
+				
+				  // if(sAction.equalsIgnoreCase("new_21") || sAction.equalsIgnoreCase("new_22")){ //Das sind die thisIds der Variante "FLEET"
+				   	if(bFleet){
 					   //FGL: 20170703 - Hier erst einmal im Backend prüfen, ob eine neue Fleet hier überhaupt erstellt werden darf.
 					   boolean bGoon = false;	
 					 //###################

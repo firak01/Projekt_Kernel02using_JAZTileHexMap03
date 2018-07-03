@@ -25,6 +25,7 @@ import use.thm.persistence.model.TileDefaulttext;
 import use.thm.persistence.model.TileImmutabletext;
 import use.thm.persistence.model.Troop;
 import use.thm.persistence.model.TroopArmy;
+import use.thm.persistence.model.TroopArmyVariant;
 import use.thm.persistence.model.TroopFleetVariant;
 import use.thm.util.datatype.enums.EnumSetTroopArmyVariantUtilTHM;
 import use.thm.util.datatype.enums.EnumSetTroopFleetVariantUtilTHM;
@@ -363,8 +364,24 @@ public String getKeyTypeUsed() {
 }
 @Override
 public boolean isVariantValid(long lngThisIdKey) {
-	// TODO Auto-generated method stub
-	return false;
+	System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": START ##############");			
+	boolean bReturn = false;
+	main:{
+
+	String sKeytype = "TROOPFLEETVARIANT";
+	TroopFleetVariant objKey02 = (TroopFleetVariant)this.searchKey(sKeytype, lngThisIdKey );
+	if(objKey02==null){
+		System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": Abfrage: UNERWARTETES ERGEBNIS. Kein Key mit dem KeyType '" + sKeytype + "' und dem Thiskey '" + lngThisIdKey + "' gefunden.");
+		bReturn=false;
+	}else{
+		System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": Abfrage: Erwartetes Ergebnis. Key mit dem KeyType '" + sKeytype + "' und dem Thiskey '" + lngThisIdKey + "' gefunden.");	
+		bReturn=true;
+	}			
+
+	System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": ENDE ##############");			
+				
+}//end main:
+return bReturn;
 }
 @Override
 public boolean isVariantStandard(long lngThisIdKey) {

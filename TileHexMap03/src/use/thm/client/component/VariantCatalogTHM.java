@@ -403,10 +403,9 @@ public class VariantCatalogTHM  extends KernelUseObjectZZZ implements IGhostGlas
 			TroopFleetVariantDao objDao = new TroopFleetVariantDao(objContextHibernate);
 			Long lngThisKeyId = new Long(sCatalogVariantThisKeyId);
 			long lThisKeyId = lngThisKeyId.longValue();
-			bReturn = objDao.isVariantStandard(lThisKeyId);
-			
-			//Merke: Später dann  
-			//bReturn = objDao.isVariantValid(lThisKeyId);
+			//Das sind die Daten aus den als Standard mitgegebenen Enumrations bReturn = objDao.isVariantStandard(lThisKeyId);
+            //Das basiert auf eine Abfrage (HQL) in der entsprechenden Variantentabelle		  
+			bReturn = objDao.isVariantValid(lThisKeyId);
 		}
 		return bReturn;
 	}
@@ -426,10 +425,9 @@ public class VariantCatalogTHM  extends KernelUseObjectZZZ implements IGhostGlas
 			TroopArmyVariantDao objDao = new TroopArmyVariantDao(objContextHibernate);
 			Long lngThisKeyId = new Long(sCatalogVariantThisKeyId);
 			long lThisKeyId = lngThisKeyId.longValue();
-			bReturn = objDao.isVariantStandard(lThisKeyId);
-			
-			//Merke: Später dann  
-			//bReturn = objDao.isVariantValid(lThisKeyId);
+			//Das sind die Daten aus den als Standard mitgegebenen Enumrations bReturn = objDao.isVariantStandard(lThisKeyId);
+			//Das basiert auf eine Abfrage (HQL) in der entsprechenden Variantentabelle		  
+			bReturn = objDao.isVariantValid(lThisKeyId);
 		}
 		return bReturn;
 	}

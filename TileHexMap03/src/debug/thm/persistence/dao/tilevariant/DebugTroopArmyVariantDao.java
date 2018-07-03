@@ -422,9 +422,7 @@ public class DebugTroopArmyVariantDao {
 				HibernateContextProviderSingletonTHM objContextHibernate = HibernateContextProviderSingletonTHM.getInstance(objKernel);
 				
 				TroopArmyVariantDao daoTroopVariant = new TroopArmyVariantDao(objContextHibernate);
-				String sKeytype = new String("");
-				
-				sKeytype = "TROOPARMYVARIANT";
+				String sKeytype = "TROOPARMYVARIANT";
 				TroopArmyVariant objKey02 = (TroopArmyVariant) daoTroopVariant.searchKey(sKeytype, lngThiskey );
 				if(objKey02==null){
 					System.out.println("2. Abfrage: UNERWARTETES ERGEBNIS. Kein Key mit dem KeyType '" + sKeytype + "' und dem Thiskey '" + lngThiskey.toString() + "' gefunden.");

@@ -24,4 +24,5 @@ public interface ITileDtoAttribute extends IDTOAttributeGroup {
     
     //Wird per SQL ermittelt. Ist dann die höchste Zahl, der Spielsteinsorte um 1 jeweils erhöht
    public final static DTOAttribute<ITileDtoAttribute, Integer> INSTANCE_VARIANT_UNIQUENUMBER = DTOAttribute.getInstance("INSTANCE_VARIANT_UNIQUENUMBER");
+   public final static DTOAttribute<ITileDtoAttribute, Integer> INSTANCE_SUBTYPE_UNIQUENUMBER = DTOAttribute.getInstance("INSTANCE_SUBTYPE_UNIQUENUMBER");
 }

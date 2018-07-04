@@ -168,16 +168,19 @@ public class TroopArmyVariant  extends TroopVariant implements ITroopArmyVariant
 		//### int Key, String shorttext, String longtext, String description
 		//#######################################################
 		public enum EnumTroopArmyVariant implements IEnumSetTroopArmyVariantTHM,  ICategoryProviderZZZ, IThiskeyProviderZZZ<Long>{//Folgendes geht nicht, da alle Enums schon von einer Java BasisKlasse erben... extends EnumSetMappedBaseZZZ{
-			
-			//lKey / sUniquetext / sCategorytext / iMoveRange / sImageUrl / 
-			//iThisKeyDefaulttext / iThiskeyImmutabletext
+			//Werte für alle Spielsteine:
+			//lKey / sUniquetext / sCategorytext (Merke: "Land Unit" wird als hart verdrahteter Wert  im Konstruktor von TroopVariant verwendet, zur Steuerung der Bildverarbeitung)
+			                                                       //TODO GOON 20180703: Hier soll kein String mehr rein (z.B. 'Infantry Unit', sondern die ThisKey-Id einer entsprechenden CategoryText Tabelle.
+			//			/ iMoveRange / sImageUrl / 
+			//iThisKeyDefaulttext / iThiskeyImmutabletext (Der Shorttext hiervon wird als Default, abgekürzt in der HexMap angezeigt)
+			//
 			//Speziell für TROOP; 
 			//iDegreeOfCoverMax
 	   	 @IFieldDescription(description = "DARMYVARIANT01") 
-	   	T01(11,"DARMY01","Infantery",2,"ARMY\\US - M1 Garand Rifle.png",110,10,90),
+	   	T01(11,"DARMY01","Infantry Unit",2,"ARMY\\US - M1 Garand Rifle.png",110,10,90),
 	   	
 	   	 @IFieldDescription(description = "DARMYVARIANT02") 
-	   	T02(12,"DTANKARMY02","Tank",3,"ARMY\\US - M4A1 Sherman.png",120,11,20);
+	   	T02(12,"DTANKARMY02","Tank Unit",3,"ARMY\\US - M4A1 Sherman.png",120,11,20);
 	   	   	
 	   private Long lKey;
 	   private String sUniquetext, sCategorytext;

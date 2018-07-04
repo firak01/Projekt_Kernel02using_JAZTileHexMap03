@@ -66,8 +66,8 @@ public class TroopArmyDaoFacade extends TileDaoFacade{
 	public boolean insertTroopArmy(String sUniqueName, TroopArmyVariant objTroopArmyVariant, AreaCell objArea) throws ExceptionZZZ{
 		boolean bReturn = false;
 		main:{
-			Integer intVariantUniqueNumberUsed  = null;
-			Integer intCategoryUniqueNumberUsed  = null;
+			Integer intSubtypeUniqueNumberUsed  = null;
+			Integer intVariantUniqueNumberUsed  = null;			
 			additionalData:{
 				//Hole die bisher höchste Zahl der Varianten 
 				HibernateContextProviderSingletonTHM objContextHibernate = (HibernateContextProviderSingletonTHM) this.getHibernateContext();
@@ -76,17 +76,16 @@ public class TroopArmyDaoFacade extends TileDaoFacade{
 				///!!! Das reicht aus nicht aus... Intern wird wohl Es muss die ZhisId der Variante als WHERE Teil einbezogen werden.
 				//Merke: .findColumnValueMax("instanceVariantUniquenumber"); macht nur Unterscheidung zwischen Army und Fleet. Feinere Variantenunterscheidung muss scheitern.
 				//TODO GOON 20180322: Integer intVariantUniqueNumber = objTroopDao.findColumnValueMaxForVariant("instanceVariantUniquenumber", intThisIdOfVariantUsed); 
-				Integer intVariantUniqueNumber = objTroopDao.findColumnValueMax("instanceVariantUniquenumber"); 
-				if(intVariantUniqueNumber==null){
-					intVariantUniqueNumberUsed = new Integer(1);
+				Integer intSubtypeUniqueNumber = objTroopDao.findColumnValueMax("instanceSubtypeUniquenumber"); 
+				if(intSubtypeUniqueNumber==null){
+					intSubtypeUniqueNumberUsed = new Integer(1);
 				}else{
-					int itemp = intVariantUniqueNumber.intValue() + 1;
-					intVariantUniqueNumberUsed = new Integer(itemp);
+					int itemp = intSubtypeUniqueNumber.intValue() + 1;
+					intSubtypeUniqueNumberUsed = new Integer(itemp);
 				}
 				
-				
-				//TODO GOON 20170703
-				try{
+
+//				try{
 				Map<String, Object> whereBy = new HashMap<String, Object>();
 				
 				//########### FEHLER: could not resolve property: trooparmyvariant_thiskey_id of: use.thm.persistence.model.TroopArmy [select max(instanceVariantUniquenumber) from use.thm.persistence.model.TroopArmy g where g.trooparmyvariant_thiskey_id = :trooparmyvariant_thiskey_id]
@@ -97,16 +96,16 @@ public class TroopArmyDaoFacade extends TileDaoFacade{
 				whereBy.put("troopArmyVariantObject",objTroopArmyVariantSearchedFor);
 				Integer intCategoryUniqueNumber = objTroopDao.findColumnValueMax("instanceVariantUniquenumber",whereBy); 
 				if(intCategoryUniqueNumber==null){ //Merke: Wenn es noch keine Variante der Truppe auf der KArte gibt, dann ist der ermittelte Wert 'null'
-					intCategoryUniqueNumberUsed = new Integer(1);
+					intVariantUniqueNumberUsed = new Integer(1);
 				}else{
 					int itemp = intCategoryUniqueNumber.intValue() + 1;
-					intCategoryUniqueNumberUsed = new Integer(itemp);
+					intVariantUniqueNumberUsed = new Integer(itemp);
 				}
-				System.out.println("############ Errechneter neuer max der übergebenen Troopvariant  ist: " + intCategoryUniqueNumberUsed);
+				System.out.println("############ Errechneter neuer max der übergebenen Troopvariant  ist: " + intVariantUniqueNumberUsed);
 				
-				}catch(Exception e){
-					System.out.println("########### FEHLER: " + e.getMessage());
-				}
+//				}catch(Exception e){
+//					System.out.println("########### FEHLER: " + e.getMessage());
+//				}
 				
 			}
 		
@@ -129,6 +128,7 @@ public class TroopArmyDaoFacade extends TileDaoFacade{
 			//Füge Variante der Truppe hinzu wg n:1 Beziehung. ABER: Diese muss schon zuvor geholt worden sein, sonst überschneiden sich die Transaktionen.
 			objTroopTemp.setTroopArmyVariantObject(objTroopArmyVariant);
 			objTroopTemp.setInstanceVariantUniquenumber(intVariantUniqueNumberUsed); //die muss zuvor ausgerechnet worden sein.
+			objTroopTemp.setInstanceSubtypeUniquenumber(intSubtypeUniqueNumberUsed); //die muss zuvor ausgerechnet worden sein.
 			
 			//+++ DAS ERSTELLDATUM ++++++++++++++++++++++++++++++++++++
 			this.makeCreatedDates(objTroopTemp);

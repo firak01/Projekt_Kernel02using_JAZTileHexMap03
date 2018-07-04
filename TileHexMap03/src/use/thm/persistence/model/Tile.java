@@ -78,7 +78,10 @@ public class Tile  implements Serializable, IOptimisticLocking, IModelDateTimest
 	private int iMyTestSequence;
     	
 	private TileId id;
-	private Integer intInstanceVariant_UniqueNumber=0;//Wird für jeden neuen Spielstein "dieses VariantenTyps" um 1 erhöht und hier abgespeichert. Soll dann Bestandteil des Default Spielsteinnamens sein. 
+	private Integer intInstanceVariant_UniqueNumber=0;//Wird für jeden neuen Spielstein "dieses VariantenTyps" um 1 erhöht und hier abgespeichert. Soll dann Bestandteil des Default Spielsteinnamens sein.
+	                                                                       //Beispiele für einen ausgelieferten Variantentyp sind Infantry oder Tank, bzw. deren Varianten_ThisId.
+	private Integer intInstanceSubtype_UniqueNumber=0;//Wird für jeden neuen Spielstein "dieses Spielstein Typs" um 1 erhöht und hier abgespeichert. Soll dann Bestandteil des Default Spielsteinnamens sein.
+	                                                                         //Beispiele für Subtype sind FL=Fleet / AR=Army
 	
 	private String sUniquedate; //wird mit einer @Formula zur Laufzeit berechnet. 
 	private String sGeneratedTest; //Test: Hier einen Defaultwert in den Annotationsübergeben.
@@ -388,16 +391,22 @@ public class Tile  implements Serializable, IOptimisticLocking, IModelDateTimest
 			this.getTileIdObject().setUniquename(sValue);
 		}
 		
-		//Bestandteil des Defaultnamens. Nummerierunge der Spielsteine eines Variantentyps
-		//Wird beim Setzen eines neuen Spielsteins um +1 erhöht.
-		 public Integer getInstanceVariantUniquenumber(){	
-			return this.intInstanceVariant_UniqueNumber;		
-		    }
-			public void setInstanceVariantUniquenumber(Integer intInstanceVariant_UniqueNumber){
-				this.intInstanceVariant_UniqueNumber = intInstanceVariant_UniqueNumber;
-			}
+		//Wird beim Setzen eines neuen Spielsteins um +1 erhöht. Nur so... 
+		 public Integer getInstanceSubtypeUniquenumber(){	
+			return this.intInstanceSubtype_UniqueNumber;		
+		}
+		public void setInstanceSubtypeUniquenumber(Integer intInstance_UniqueNumber){
+			this.intInstanceSubtype_UniqueNumber = intInstance_UniqueNumber;
+		}
 		
-		
+	   //Bestandteil des Defaultnamens. Nummerierunge der Spielsteine eines Variantentyps
+	   //Wird beim Setzen eines neuen Spielsteins um +1 erhöht.
+	   public Integer getInstanceVariantUniquenumber(){	
+		   return this.intInstanceVariant_UniqueNumber;		
+	    }
+		public void setInstanceVariantUniquenumber(Integer intInstance_UniqueNumber){
+			this.intInstanceVariant_UniqueNumber = intInstance_UniqueNumber;
+		}
 		
 		//1:1 Beziehung aufbauen über den FieldAliasName
 		//Siehe Buch "Java Persistence API 2", Seite 90ff.	

@@ -168,16 +168,18 @@ public class TroopFleetVariant  extends TroopVariant implements ITroopFleetVaria
 		//### int Key, String shorttext, String longtext, String description
 		//#######################################################
 		public enum EnumTroopFleetVariant implements IEnumSetTroopFleetVariantTHM,  ICategoryProviderZZZ, IThiskeyProviderZZZ<Long>{//Folgendes geht nicht, da alle Enums schon von einer Java BasisKlasse erben... extends EnumSetMappedBaseZZZ{
-			
+		
+		//Werte für alle Spielsteine:
 		//lKey / sUniquetext / sCategorytext / iMoveRange / sImageUrl / 
-		//iThisKeyDefaulttext / iThiskeyImmutabletext;
+		//iThisKeyDefaulttext / iThiskeyImmutabletext (Der Shorttext hiervon wird als Default, abgekürzt in der HexMap angezeigt);
+		//
 		//Speziell für FLEET:
 		//iNumberOfTurret
 	   	 @IFieldDescription(description = "DFLEETVARIANT01") 
-	   	T01(21,"DFLEET01","Destroyer",5,"FLEET\\USS Fletcher (DD 445).png",210,20,7),
+	   	T01(21,"DFLEET01","Ship",5,"FLEET\\USS Fletcher (DD 445).png",210,20,7),
 	   	
 	   	 @IFieldDescription(description = "DFLEETVARIANT02") 
-	   	T02(22,"DFLEET02","Destroyer",3,"FLEET\\USS Samuel B Roberts (DE 413).png",220,20,3);
+	   	T02(22,"DFLEET02","Ship",3,"FLEET\\USS Samuel B Roberts (DE 413).png",220,21,3);
 	   	   	
 	   private Long lKey;
 	   private String sUniquetext, sCategorytext;

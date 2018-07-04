@@ -191,8 +191,8 @@ public class TileTHM extends JPanel implements IMapPositionableTHM, IBackendPers
 			int iIconHeight = Integer.parseInt(sIconHeight);
 			
 		    //+++++++++	
-			//20180630: Hier dann mittelfristig auf das BLOB-Objekt der DTO zugreifen!!! Welches aus der Variante stammt.
-			//Der Pfad zum lokal im Dateisystem abgelegten Bild
+			//20180630: Hier auf das BLOB-Objekt der DTO zugreifen!!! Welches aus der Variante stammt. Performanter. Es ist für jeden "Anwendungsfall" das Bild passend berechnet in der Datenbank gespeichert.
+			//Das wäre die Dateisystem-Lösung: Der Pfad zum lokal im Dateisystem abgelegten Bild
 //			String sTileIconName = this.getVariantImageUrlString();			
 //			 String sBaseDirectory = ApplicationSingletonTHM.getInstance().getBaseDirectoryStringForImages();//WICHTIG: NUN Noch den Basispfad davorhängen!
 //	    	 String sFilename = sBaseDirectory + File.separator + sTileIconName;
@@ -202,50 +202,6 @@ public class TileTHM extends JPanel implements IMapPositionableTHM, IBackendPers
 			//Das Bild aus dem in der Datenbank hinterlegten byte[] beziehen. Transportiert wird das über DTO-Objekt.
 			byte[] imageInByte = this.getVariantImageUsedInByte();
 			BufferedImage objBufferedImageTransparentAndResized = UIHelper.toBufferedImage(imageInByte);
-			
-/*			
-			BufferedImage objBufferedImageTemp = UIHelper.toBufferedImage(imageInByte);
-			
-			
-			//Realisierter Ansatz
-			Color color01 = new Color(255,255,255);//weiss
-						
-			//Image imageTransparent = UIHelperTransparency.makeColorTransparent(objBufferedImageTemp, color01);			
-			//ABER: So richtig schick ist diese Lösung nicht... nur leicht besser, als wenn der Weisse Rand in ein anderes HEX-Feld reinragt.
-			//Grund dafür war, dass das Bild noch weitaus mehr untransparente Farben hatte, die "annähernd" weiss waren. 
-			//Lösungsansatz: Ersetze nun einen Bereich 			
-			Image imageTransparent = UIHelperTransparencyRange.transformColorRangeToTransparency(objBufferedImageTemp, color01, 6, 0, color01);
-			BufferedImage objBufferedImageTransparent = UIHelper.toBufferedImage(imageTransparent);
-			
-			//TODO GOON 20180404: Das hat zwar funktioniert. (Die Bildqualität ist besser auf der Karte)
-			//Aber die Performance leidet darunter.
-			//Lösungsansatz: Speicher das einmal ersetzte Bild als BLOB in der Datenbank (unter der Variante), packe das Bild in das DTO-Objekt
-			//               und rufe hier dann immer nur das optimierte, größenmäßig unveränderte Bild auf.
-		 			
-			
-			//!!! Wenn es Army Bilder sind, dann diese noch weiter verkleinern
-			BufferedImage objBufferedImageTransparentAndResized = null;			
-			String sSubtype = this.getSubtype(); //Army oder Fleet
-		
-			if(sSubtype.equalsIgnoreCase("AR")){
-				objBufferedImageTransparentAndResized = UIHelper.cropImageByPoints(objBufferedImageTransparent, 0,50,60,10);	//Schneide das Bild erst aus dem Rahmen aus. Sehr viel vom unteren Rand weg, sehr viel vom linken Rand weg.
-				objBufferedImageTransparentAndResized = UIHelper.resizeImage(objBufferedImageTransparentAndResized, iIconWidth, iIconHeight);
-							
-				//-1. Analyse des verkleinerten und "um weiss entfernten" Bildes. Ziel ist es dies NOCH transparenter zu machen.
-				//    Es sind noch andere Farben, die stören....
-//				String sX = this.getMapX();
-//				String sY = this.getMapY();
-//				BufferedImage objBufferedImage2analyse = objBufferedImageTransparentAndResized;
-//								
-//			    System.out.println("Klasse " + this.getClass().getName());
-//			    System.out.println(("AAAA "  + sSubtype + " an Position X/Y: " + sX + "/" +sY ));
-//			    UIHelperAnalyseImage.debugPrintImagePixelData(objBufferedImage2analyse, true);			        
-//				System.out.println(("ZZZZ "  + sSubtype + " an Position X/Y: " + sX + "/" +sY ));
-
-			}else{
-				objBufferedImageTransparentAndResized = UIHelper.resizeImage(objBufferedImageTransparent, iIconWidth, iIconHeight);		
-			}
-		*/
 						
 			//+++++++++ Das Bild an der errechneten Postion (unterhalb des Labels) zeichnen.
 			int iTileSideLength = this.getTileSideLength();
@@ -278,6 +234,9 @@ public class TileTHM extends JPanel implements IMapPositionableTHM, IBackendPers
 			//Den gefundenen Namen abkürzen 
 				sComponentLabelUsed = StringZZZ.toShorten(sComponentLabelUsed, StringZZZ.iSHORTEN_METHOD_VOWEL, 1);//Entferne aus dem String die Vokale, offset 1, D.h. Beginnende Vokale werden nicht gekürzt. 
 				sComponentLabelUsed = StringZZZ.abbreviateDynamic(sComponentLabelUsed, 8 );//Nach 8 Zeichen soll der Name abgekürzt werden, d.h. abgeschnitten und "..." am Ende, um das Abkürzen zu kennzeichnen..
+				
+				//TODO GOON: 20180703 Hier die Tatsächliche Nummer der Variante reinschreiben. Momentan wird nur zwiwchen ARMY / FLEET unterschieden.
+				//DAO Klasse .findColumnValueMaxForVariant();
 				
 				Integer intInstanceVariantUniquenumber = this.getInstanceVariantUniqueNumber();
 				String sInstanceUniquenumber = null;

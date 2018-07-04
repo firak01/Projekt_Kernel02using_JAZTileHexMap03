@@ -5,6 +5,8 @@ import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.swing.JOptionPane;
 
@@ -65,6 +67,7 @@ public class TroopArmyDaoFacade extends TileDaoFacade{
 		boolean bReturn = false;
 		main:{
 			Integer intVariantUniqueNumberUsed  = null;
+			Integer intCategoryUniqueNumberUsed  = null;
 			additionalData:{
 				//Hole die bisher höchste Zahl der Varianten 
 				HibernateContextProviderSingletonTHM objContextHibernate = (HibernateContextProviderSingletonTHM) this.getHibernateContext();
@@ -80,6 +83,31 @@ public class TroopArmyDaoFacade extends TileDaoFacade{
 					int itemp = intVariantUniqueNumber.intValue() + 1;
 					intVariantUniqueNumberUsed = new Integer(itemp);
 				}
+				
+				
+				//TODO GOON 20170703
+				try{
+				Map<String, Object> whereBy = new HashMap<String, Object>();
+				
+				//########### FEHLER: could not resolve property: trooparmyvariant_thiskey_id of: use.thm.persistence.model.TroopArmy [select max(instanceVariantUniquenumber) from use.thm.persistence.model.TroopArmy g where g.trooparmyvariant_thiskey_id = :trooparmyvariant_thiskey_id]
+				//whereBy.put("trooparmyvariant_thiskey_id",11);
+				//Also: Mit demObjekt selbst arbeiten.
+				
+				TroopArmyVariant objTroopArmyVariantSearchedFor = objTroopArmyVariant;
+				whereBy.put("troopArmyVariantObject",objTroopArmyVariantSearchedFor);
+				Integer intCategoryUniqueNumber = objTroopDao.findColumnValueMax("instanceVariantUniquenumber",whereBy); 
+				if(intCategoryUniqueNumber==null){ //Merke: Wenn es noch keine Variante der Truppe auf der KArte gibt, dann ist der ermittelte Wert 'null'
+					intCategoryUniqueNumberUsed = new Integer(1);
+				}else{
+					int itemp = intCategoryUniqueNumber.intValue() + 1;
+					intCategoryUniqueNumberUsed = new Integer(itemp);
+				}
+				System.out.println("############ Errechneter neuer max der übergebenen Troopvariant  ist: " + intCategoryUniqueNumberUsed);
+				
+				}catch(Exception e){
+					System.out.println("########### FEHLER: " + e.getMessage());
+				}
+				
 			}
 		
 			validEntry:{

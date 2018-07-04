@@ -157,7 +157,7 @@ public abstract class GeneralDaoZZZ<T> extends GeneralDAO<T> implements IObjectZ
 	 * @return
 	 * @throws ExceptionZZZ 
 	 */
-	public Integer findColumnValueMax(String sTableName, String sColumn, HashMap<String,Object>hmWhereByParameter) throws ExceptionZZZ{
+	public Integer findColumnValueMax(String sTableName, String sColumn, Map<String,Object>hmWhereByParameter) throws ExceptionZZZ{
 			Integer intReturn = null;
 			main:{
 				//null für die WhereBy-Klausel ist nicht erlaubt.	
@@ -188,7 +188,7 @@ public abstract class GeneralDaoZZZ<T> extends GeneralDAO<T> implements IObjectZ
 	 * @return
 	 * @throws ExceptionZZZ 
 	 */
-	public Integer findColumnValueMin(String sTableName, String sColumn, HashMap<String,Object>hmWhereByParameter) throws ExceptionZZZ{
+	public Integer findColumnValueMin(String sTableName, String sColumn, Map<String,Object>hmWhereByParameter) throws ExceptionZZZ{
 			Integer intReturn = null;
 			main:{
 				//null für die WhereBy-Klausel ist nicht erlaubt.	
@@ -419,6 +419,35 @@ public abstract class GeneralDaoZZZ<T> extends GeneralDAO<T> implements IObjectZ
 			return intReturn;
 	}
 	
+	
+	/**FGL: Ermittle den Max-Wert einer Spalte, gib dabei noch einen WHERE Parameter an.
+	 *         Hole dazu den "Tabellennamen" aus dem aktuellen DaoObjekt. Nämlich das was unterder Dao - Klasse angegeben ist.  
+	 * @param sColumn
+	 * @return
+	 * @throws ExceptionZZZ 
+	 */
+	public Integer findColumnValueMax(String sColumn, Map<String, Object> hmWhere) throws ExceptionZZZ{
+		Integer intReturn = null;
+		main:{
+			if(StringZZZ.isEmpty(sColumn)){
+				 ExceptionZZZ ez = new ExceptionZZZ( sERROR_PARAMETER_EMPTY + "; String für den Spaltennamen darf nicht NULL oder leer sein.", iERROR_PARAMETER_EMPTY, this.getClass(),ReflectCodeZZZ.getMethodCurrentName()); 
+				  throw ez;		 
+			}
+			
+			//this.begin();//wird in maxIntegerByCriteria schon gemacht, darf hier nicht gemacht werden.
+			
+			String sTableName = this.getDaoTableName();
+			
+			if(hmWhere==null){
+				//null für die WhereBy-Klausel ist nicht erlaubt.				
+				intReturn = this.findColumnValueMax(sTableName, sColumn, new HashMap<String,Object>());
+			}else{
+				intReturn = this.findColumnValueMax(sTableName, sColumn, hmWhere);					
+			}
+		}//end main
+		return intReturn;
+	}		
+	
 	/**FGL: Ermittle den Min-Wert einer Spalte.
 	 *         Hole dazu den "Tabellennamen" aus dem aktuellen DaoObjekt. Nämlich das was unterder Dao - Klasse angegeben ist.  
 	 * @param sColumn
@@ -440,6 +469,34 @@ public abstract class GeneralDaoZZZ<T> extends GeneralDAO<T> implements IObjectZ
 				
 				//null für die WhereBy-Klausel ist nicht erlaubt.				
 				intReturn = this.findColumnValueMin(sTableName, sColumn, new HashMap<String,Object>());
+			}//end main
+			return intReturn;
+	}
+	
+	/**FGL: Ermittle den Min-Wert einer Spalte, gib dabei noch einen WHERE Paramteran.
+	 *         Hole dazu den "Tabellennamen" aus dem aktuellen DaoObjekt. Nämlich das was unterder Dao - Klasse angegeben ist.  
+	 * @param sColumn
+	 * @return
+	 * @throws ExceptionZZZ 
+	 */
+	public Integer findColumnValueMin(String sColumn, Map<String,Object>hmWhere) throws ExceptionZZZ{
+			Integer intReturn = null;
+			main:{
+				if(StringZZZ.isEmpty(sColumn)){
+					 ExceptionZZZ ez = new ExceptionZZZ( sERROR_PARAMETER_EMPTY + "; String für den Spaltennamen darf nicht NULL oder leer sein.", iERROR_PARAMETER_EMPTY, this.getClass(),ReflectCodeZZZ.getMethodCurrentName()); 
+					  throw ez;		 
+				}
+				
+				//this.begin();//wird in maxIntegerByCriteria schon gemacht, darf hier nicht gemacht werden.
+				
+				String sTableName = this.getDaoTableName();
+								
+				if(hmWhere==null){
+					//null für die WhereBy-Klausel ist nicht erlaubt.						
+					intReturn = this.findColumnValueMin(sTableName, sColumn, new HashMap<String,Object>());
+				}else{
+					intReturn = this.findColumnValueMin(sTableName, sColumn, hmWhere);
+				}
 			}//end main
 			return intReturn;
 	}

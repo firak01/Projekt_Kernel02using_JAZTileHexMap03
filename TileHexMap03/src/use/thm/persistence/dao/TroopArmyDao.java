@@ -218,5 +218,5 @@ public class TroopArmyDao<T> extends TroopDao<T> {
 			this.getHibernateContextProvider().closeAll();
 			System.out.println("SessionFactory über den HibernateContextProvider geschlossen.... Nun wieder bearbeitbar im Java Swing Client?");
 			return listReturn;
-		}
+		}		
 }

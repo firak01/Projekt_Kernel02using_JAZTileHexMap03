@@ -1,5 +1,6 @@
 package use.thm.client.component;
 
+import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Cursor;
 import java.awt.Dimension;
@@ -7,6 +8,7 @@ import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Image;
+import java.awt.Stroke;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -212,12 +214,62 @@ public class TileTHM extends JPanel implements IMapPositionableTHM, IBackendPers
 			//2. Der Hintergrund des Spielsteins: Der Labelkasten (über das Bild, darum erst nach dem Bild malen!!!)
 			int iTileLabelWidth = this.getTileLabelWidth();
 			int iTileLabelHeight = this.getTileLabelHeight();
-			g.setColor(Color.red);
-			g.fillRect(0,0, iTileLabelWidth,iTileLabelHeight);
+			
+
+			//++++ Den Labelkasten als Rechteck über dem Spielstein, mit einem schmalen Rand. Diesen dann mit GRÜN auffüllen, dabei  die HEALTH des Spielsteins beachten.
+			//Verwende dafür Graphics2D. Merke: Graphics Object can always be cast Graphics2D g2d = (Graphics2D)g;
+			//Merke: Den Kasten zuerst, sonst franst das irgendwie aus.
+			Graphics2D g2 = (Graphics2D)g;			
+			float thickness = 4;
+			Stroke oldStroke=g2.getStroke();
+			g2.setStroke(new BasicStroke(thickness));
+			g2.setColor(Color.red); //TODO: Der Kasten sollte irgendwie die "Spielerfarbe sein".
+			g2.drawRect(0,0,iTileLabelWidth,iTileLabelHeight);
+			g2.setStroke(oldStroke);
 			
 			
+			//... und darüber dann den Kasten. Hier die optiemierten Weiten und Höhenangaben
+			//Das Problem ist, dass die Ränder beim 100%igen Überlappen ausfransen. 
+			//Also: Das gefüllte Rechteck etwas unterhalb des gemalten Rahmens beginnen (x=2) und noch etwas tiefer ansetzen (y=2), damit die untere Linie nicht zu dick wird.
+			//       und dann etwas kleiner (-2 in der Höhe, bzw. -4 in der Breite).       	
+			int iWidthInBox_full=iTileLabelWidth-4;
+			int iHeightInBox = iTileLabelHeight-2;
+			int ixInBox=2;
+			int iyInBox=2;
+		
+			//... und darüber dann den Kasten. Zuerst einen weissen Hintergrund
+			g.setColor(Color.white);
+			g.fillRect(ixInBox,iyInBox, iWidthInBox_full,iHeightInBox);
+			 
+			////TODO 20180705 ... und darüber dann den Kasten, nun mit grünem Hintergrund.			Das zeigt die HEALT an.
+			//Hole den Health Grad des Spielsteins aus dem aus dem DTO.
+			int iWidthInBox_used = 0;
+			Float fltHealth = this.getHealth();
+			if(fltHealth==null){
+//				iWidthInBox_used = 0;
+				
+				//TESTWEISE
+				Float fltWithInBox_used = new Float(iWidthInBox_full * 0.5);
+				iWidthInBox_used = fltWithInBox_used.intValue();
+			}else{
+				if(fltHealth.intValue()==1.0){
+					iWidthInBox_used = iWidthInBox_full;
+				}else if(fltHealth.intValue()==0){
+					//Sollte der Spielstein dann nicht schon vernichtet sein?
+					iWidthInBox_used = 0;
+				}else{
+					//iWidthInBox_used = (int) (new Float(iWidthInBox_full).floatValue() * fltHealth.floatValue());
+					Float fltWithInBox_used = new Float(iWidthInBox_full * 0.5);
+					iWidthInBox_used = fltWithInBox_used.intValue();
+				}
+			}
+									
+			g.setColor(Color.green); 	
+			g.fillRect(ixInBox,iyInBox, iWidthInBox_used,iHeightInBox); 	
+							
+	
 			//Die Beschriftung des Spielsteins
-			g.setColor(Color.green);												//Schriftfarbe
+			g.setColor(Color.black);												//Schriftfarbe
 			// Font f = new Font("Comic Sans MS", Font.BOLD, 20); //Die Schriftgröße ändern, hier einen bestimmten Font setzen
 			Font font = g.getFont().deriveFont( 8.0f );					//Die Schriftgöße ändern, hier des aktuellen Fonts						
 			g.setFont( font );
@@ -232,20 +284,19 @@ public class TileTHM extends JPanel implements IMapPositionableTHM, IBackendPers
 			}
 						
 			//Den gefundenen Namen abkürzen 
-				sComponentLabelUsed = StringZZZ.toShorten(sComponentLabelUsed, StringZZZ.iSHORTEN_METHOD_VOWEL, 1);//Entferne aus dem String die Vokale, offset 1, D.h. Beginnende Vokale werden nicht gekürzt. 
-				sComponentLabelUsed = StringZZZ.abbreviateDynamic(sComponentLabelUsed, 8 );//Nach 8 Zeichen soll der Name abgekürzt werden, d.h. abgeschnitten und "..." am Ende, um das Abkürzen zu kennzeichnen..
+			sComponentLabelUsed = StringZZZ.toShorten(sComponentLabelUsed, StringZZZ.iSHORTEN_METHOD_VOWEL, 1);//Entferne aus dem String die Vokale, offset 1, D.h. Beginnende Vokale werden nicht gekürzt. 
+			sComponentLabelUsed = StringZZZ.abbreviateDynamic(sComponentLabelUsed, 5 );//Nach 5 Zeichen soll der Name abgekürzt werden, d.h. abgeschnitten und "..." am Ende, um das Abkürzen zu kennzeichnen..
 				
-				//TODO GOON: 20180703 Hier die Tatsächliche Nummer der Variante reinschreiben. Momentan wird nur zwiwchen ARMY / FLEET unterschieden.
-				//DAO Klasse .findColumnValueMaxForVariant();
-				
-				Integer intInstanceVariantUniquenumber = this.getInstanceVariantUniqueNumber();
-				String sInstanceUniquenumber = null;
-				if(intInstanceVariantUniquenumber!=null){
-					sInstanceUniquenumber = intInstanceVariantUniquenumber.toString();
-					sComponentLabelUsed = sComponentLabelUsed + "_" + sInstanceUniquenumber;
-				}						
-				//g.drawString(sComponentLabelUsed,0,(int)(this.getTileLabelHeight()));//Unter dem Bild
-				g.drawString(sComponentLabelUsed,0,(int)this.getTileLabelHeight()-iFontOffset);//über dem Bild. -3 ist ein Offset, so dass der Text in der Höhe zentriert in den Labelkasten reinpasst. Bei 0 wird ein Teil nach unten verschwinden.									
+			//20180703 Hier wird die tatsächliche Nummer der Variante reingeschrieben und nicht mehr nur zwiwchen ARMY / FLEET unterschieden. Gelöst durch: DAO Klasse .findColumnValueMaxForVariant();	 UND dann in die DTO übertragen			
+			Integer intInstanceVariantUniquenumber = this.getInstanceVariantUniqueNumber();
+			String sInstanceUniquenumber = null;
+			if(intInstanceVariantUniquenumber!=null){
+				sInstanceUniquenumber = intInstanceVariantUniquenumber.toString();
+				sComponentLabelUsed = sComponentLabelUsed + "_" + sInstanceUniquenumber;
+			}						
+			//g.drawString(sComponentLabelUsed,0,(int)(this.getTileLabelHeight()));//Unter dem Bild
+			//nach links wg. des Rahmens etwas Platz (darum x=3) und etwas tiefer, darum in  der Höhe +1
+			g.drawString(sComponentLabelUsed,ixInBox+1,(int)this.getTileLabelHeight()-iFontOffset+1);//über dem Bild. -3 ist ein Offset, so dass der Text in der Höhe zentriert in den Labelkasten reinpasst. Bei 0 wird ein Teil nach unten verschwinden.									
 		} catch (ExceptionZZZ e) {
 			e.printStackTrace();
 		} catch (IOException e) {
@@ -397,6 +448,12 @@ public class TileTHM extends JPanel implements IMapPositionableTHM, IBackendPers
 	protected void setInstanceVariantUniqueNumber(Integer intInstanceVariantUniqueNumber){
 		this.getDto().set(ITileDtoAttribute.INSTANCE_VARIANT_UNIQUENUMBER, intInstanceVariantUniqueNumber);
 	}
+	
+	public Float getHealth(){
+		return (Float) this.getDto().get(ITileDtoAttribute.HEALTH);
+	}
+
+	
 
 	public GenericDTO<ITileDtoAttribute> getDto() {
 		if(this.objDto==null){

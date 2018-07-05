@@ -249,7 +249,8 @@ public class TileTHM extends JPanel implements IMapPositionableTHM, IBackendPers
 //				iWidthInBox_used = 0;
 				
 				//TESTWEISE
-				Float fltWithInBox_used = new Float(iWidthInBox_full * 0.5);
+				//Float fltWithInBox_used = (new Float(iWidthInBox_full * fltHealth.floatValue());
+				Float fltWithInBox_used = new Float(iWidthInBox_full * 0.75);
 				iWidthInBox_used = fltWithInBox_used.intValue();
 			}else{
 				if(fltHealth.intValue()==1.0){
@@ -258,8 +259,8 @@ public class TileTHM extends JPanel implements IMapPositionableTHM, IBackendPers
 					//Sollte der Spielstein dann nicht schon vernichtet sein?
 					iWidthInBox_used = 0;
 				}else{
-					//iWidthInBox_used = (int) (new Float(iWidthInBox_full).floatValue() * fltHealth.floatValue());
-					Float fltWithInBox_used = new Float(iWidthInBox_full * 0.5);
+					//Float fltWithInBox_used = (new Float(iWidthInBox_full * fltHealth.floatValue());
+					Float fltWithInBox_used = new Float(iWidthInBox_full * 0.75);
 					iWidthInBox_used = fltWithInBox_used.intValue();
 				}
 			}

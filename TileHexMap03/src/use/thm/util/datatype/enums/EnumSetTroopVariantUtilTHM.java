@@ -149,6 +149,29 @@ public class EnumSetTroopVariantUtilTHM extends EnumSetUtilZZZ{
 		return intReturn;
 	}
 	
+	public static Float readEnumConstant_HealtInitialValue(Class<IEnumSetTroopVariantTHM> objClass, String sEnumAlias) {
+		Float fltReturn = new Float(-1);
+		main:{
+	    if (objClass==null || sEnumAlias==null || sEnumAlias.isEmpty()) break main;
+	  
+	    
+	    IEnumSetTroopVariantTHM[] enumaSetMapped = objClass.getEnumConstants();
+	    if(enumaSetMapped==null) break main; //Das ist der Fall, wenn es isch um die übergebene Klasse nicht um eine Enumeration handelt
+	    
+	  	for(IEnumSetTroopVariantTHM driver : enumaSetMapped) {
+//			  System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": Driver ALIAS  als driver.name() from Enumeration="+driver.name());
+//			  System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": Driver als driver.toString() from Enumeration="+driver.toString());
+//			  System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": Driver als driver.abbreviaton from Enumeration="+driver.getAbbreviation());
+		
+		  if(driver.getName().equals(sEnumAlias)){
+			  fltReturn = new Float(driver.getHealthInitial());
+			  break main;
+		  }
+		}//end for
+		}//end main:
+		return fltReturn;
+	}
+	
 	public static String readEnumConstant_ImageUrlStringValue(Class<IEnumSetTroopVariantTHM> objClass, String sEnumAlias) {
 		String sReturn = new String("");
 		main:{

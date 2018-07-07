@@ -253,14 +253,14 @@ public class TileTHM extends JPanel implements IMapPositionableTHM, IBackendPers
 				Float fltWithInBox_used = new Float(iWidthInBox_full * 0.75);
 				iWidthInBox_used = fltWithInBox_used.intValue();
 			}else{
-				if(fltHealth.intValue()==1.0){
+				if(fltHealth.intValue()==1){
 					iWidthInBox_used = iWidthInBox_full;
-				}else if(fltHealth.intValue()==0){
-					//Sollte der Spielstein dann nicht schon vernichtet sein?
-					iWidthInBox_used = 0;
+//				}else if(fltHealth.intValue()==0){
+//					//Sollte der Spielstein dann nicht schon vernichtet sein?
+//					iWidthInBox_used = 0;
 				}else{
-					//Float fltWithInBox_used = (new Float(iWidthInBox_full * fltHealth.floatValue());
-					Float fltWithInBox_used = new Float(iWidthInBox_full * 0.75);
+					Float fltWithInBox_used = new Float(iWidthInBox_full * fltHealth.floatValue());
+					//Float fltWithInBox_used = new Float(iWidthInBox_full * 0.75);
 					iWidthInBox_used = fltWithInBox_used.intValue();
 				}
 			}
@@ -272,7 +272,14 @@ public class TileTHM extends JPanel implements IMapPositionableTHM, IBackendPers
 			//Die Beschriftung des Spielsteins
 			g.setColor(Color.black);												//Schriftfarbe
 			// Font f = new Font("Comic Sans MS", Font.BOLD, 20); //Die Schriftgröße ändern, hier einen bestimmten Font setzen
-			Font font = g.getFont().deriveFont( 8.0f );					//Die Schriftgöße ändern, hier des aktuellen Fonts						
+			
+			
+			//Font font = g.getFont().deriveFont( 8.0f );					//Die Schriftgöße ändern, hier des aktuellen Fonts						
+			//Font font = g.getFont().deriveFont( 12.0f );					//Die Schriftgöße ändern, hier des aktuellen Fonts
+			String sIconLabelFontSize = objKernel.getParameterByProgramAlias(sModuleAlias, sProgramAlias, "IconLabelFontSize_float" );
+			if(StringZZZ.isEmpty(sIconLabelFontSize)){ sIconLabelFontSize="8.0"; }
+			Float fltIconLabelFontSize = new Float(sIconLabelFontSize);
+			Font font = g.getFont().deriveFont( fltIconLabelFontSize.floatValue());					//Die Schriftgöße ändern, hier des aktuellen Fonts
 			g.setFont( font );
 			
 			String sComponentLabelUsed = null;//Einen Namen (Kurz, nomal, lang) als Eigenschaft den Objekten hinzufügen (über die Dto-Funktionalität) und dann die "Kurzform" hier anzeigen.

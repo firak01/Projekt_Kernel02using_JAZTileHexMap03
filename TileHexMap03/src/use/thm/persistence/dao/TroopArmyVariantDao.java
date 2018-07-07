@@ -129,13 +129,14 @@ public class TroopArmyVariantDao<T> extends TroopVariantDao<T> {
 			ReferenceZZZ<String> sUniquetext = new ReferenceZZZ("");
 			ReferenceZZZ<String> sCategorytext = new ReferenceZZZ("");
 			ReferenceZZZ<Integer> iMoveRange = new ReferenceZZZ("");
+			ReferenceZZZ<Float> fHealthInitial = new ReferenceZZZ("");
 			ReferenceZZZ<String> sImageUrl = new ReferenceZZZ("");
 			ReferenceZZZ<Long> lngThisidDefaulttext = new ReferenceZZZ("");
 			ReferenceZZZ<Long> lngThisidImmutabletext = new ReferenceZZZ("");	
 			
 			//Speziell für ARMY:
 			ReferenceZZZ<Integer> iDegreeOfCoverMax = new ReferenceZZZ("");
-			this._fillValueImmutableByEnumAlias(objValueTemp, sEnumAlias, lngThisValue, sName, sUniquetext, sCategorytext, iMoveRange, sImageUrl, lngThisidDefaulttext, lngThisidImmutabletext, iDegreeOfCoverMax);
+			this._fillValueImmutableByEnumAlias(objValueTemp, sEnumAlias, lngThisValue, sName, sUniquetext, sCategorytext, iMoveRange, fHealthInitial, sImageUrl, lngThisidDefaulttext, lngThisidImmutabletext, iDegreeOfCoverMax);
 			
 			//TODO .... nicht vergessen nun basierend auf den Thiskey-Einträgen für den Defaulttext und Immutabletext das jeweilige Objekt zu suchen.
 			//          Falls das Objekt nicht gefunden wird, muss es per TileDefaulttextDAO oder TileImmutabletextDAO erzeugt werden.
@@ -213,7 +214,7 @@ public class TroopArmyVariantDao<T> extends TroopVariantDao<T> {
 			session = this.getSession(); //Die Session am Anfang ist durch die vielen anderen DaoObjekte und deren Aktionen bestimmt schon geschlossen.			
 			session.getTransaction().begin();//Ein zu persistierendes Objekt - eine Transaction, auch wenn mehrere in einer Transaction abzuhandeln wären, aber besser um Fehler abfangen zu können.			
 
-			TroopArmyVariant objValueVariant = new TroopArmyVariant(lngThisValue.get().intValue(), sUniquetext.get(), sCategorytext.get(), iMoveRange.get().intValue(), sImageUrl.get(), objDefaulttext, objImmutableText, iDegreeOfCoverMax.get().intValue());		//Bei jedem Schleifendurchlauf neu machen, sonst wird lediglich nur 1 Datensatz immer wieder verändert.
+			TroopArmyVariant objValueVariant = new TroopArmyVariant(lngThisValue.get().intValue(), sUniquetext.get(), sCategorytext.get(), iMoveRange.get().intValue(), fHealthInitial.get().floatValue(), sImageUrl.get(), objDefaulttext, objImmutableText, iDegreeOfCoverMax.get().intValue());		//Bei jedem Schleifendurchlauf neu machen, sonst wird lediglich nur 1 Datensatz immer wieder verändert.
 			
 			//Merke: EINE TRANSACTION = EINE SESSION ==>  neue session von der SessionFactory holen
 			session.save(objValueVariant); //Hibernate Interceptor wird aufgerufen																				
@@ -337,7 +338,7 @@ public boolean delete(TroopArmyVariant objVariant) {
 //Erst die normalen Enum-Werte, dann ... sUniquetext / sCategorytext / iMoveRange / sImageUrl / iThisKeyDefaulttext / iThiskeyImmutabletext;
 protected <T> void _fillValueImmutableByEnumAlias(ITroopArmyVariantTHM objValue,String sEnumAlias, ReferenceZZZ<Long> objlngThiskey, 
 	ReferenceZZZ<String> objsName, ReferenceZZZ<String> objsUniquetext, ReferenceZZZ<String> objsCategorytext, 
-	ReferenceZZZ<Integer> objintMoveRange, ReferenceZZZ<String> objsImageUrl,
+	ReferenceZZZ<Integer> objintMoveRange, ReferenceZZZ<Float> obfltHealthInitial, ReferenceZZZ<String> objsImageUrl,
 	ReferenceZZZ<Long> objlngThisidTextDefault, ReferenceZZZ<Long> objlngThisidTextImmutable,
 	ReferenceZZZ<Integer> objintDegreeOfCoverMax){
 
@@ -345,7 +346,7 @@ protected <T> void _fillValueImmutableByEnumAlias(ITroopArmyVariantTHM objValue,
 	//EnumSetDefaulttextUtilZZZ.getEnumConstant_DescriptionValue(EnumSetDefaulttextTestTypeTHM.class, sEnumAlias);
 	
 	//Einlesen der Werte, die für alle Varianten -Entities vorhanden sind: 
-	super._fillValueImmutableByEnumAlias(objValue, sEnumAlias, objlngThiskey, objsName, objsUniquetext, objsCategorytext, objintMoveRange, objsImageUrl, objlngThisidTextDefault, objlngThisidTextImmutable);
+	super._fillValueImmutableByEnumAlias(objValue, sEnumAlias, objlngThiskey, objsName, objsUniquetext, objsCategorytext, objintMoveRange, obfltHealthInitial, objsImageUrl, objlngThisidTextDefault, objlngThisidTextImmutable);
 		
 	//Also: Klasse holen und danach CASTEN.
 	Class<?> objClass = ((KeyImmutable) objValue).getThiskeyEnumClass();
@@ -419,6 +420,7 @@ public boolean isVariantStandard(long lngThisIdKey) {
 				ReferenceZZZ<String> sUniquetext = new ReferenceZZZ("");
 				ReferenceZZZ<String> sCategorytext = new ReferenceZZZ("");
 				ReferenceZZZ<Integer> iMoveRange = new ReferenceZZZ("");
+				ReferenceZZZ<Float> fHealthInitial = new ReferenceZZZ("");
 				ReferenceZZZ<String> sImageUrl = new ReferenceZZZ("");
 				ReferenceZZZ<Long> lngThisidDefaulttext = new ReferenceZZZ("");
 				ReferenceZZZ<Long> lngThisidImmutabletext = new ReferenceZZZ("");
@@ -426,7 +428,7 @@ public boolean isVariantStandard(long lngThisIdKey) {
 				
 				//Einlesen der Werte, die für alle Entities vorhanden sind PLUS Werte für Amry
 				ReferenceZZZ<Integer> iNumberOfTurret = new ReferenceZZZ("");
-				this._fillValueImmutableByEnumAlias(objValueTemp, sEnumAlias, lngThisValue, sName, sUniquetext, sCategorytext, iMoveRange, sImageUrl, lngThisidDefaulttext, lngThisidImmutabletext, iGradeOfCover);
+				this._fillValueImmutableByEnumAlias(objValueTemp, sEnumAlias, lngThisValue, sName, sUniquetext, sCategorytext, iMoveRange, fHealthInitial, sImageUrl, lngThisidDefaulttext, lngThisidImmutabletext, iGradeOfCover);
 				
 				if(lngThisValue.get().longValue() == lngThisIdKey ){
 					bReturn = true;

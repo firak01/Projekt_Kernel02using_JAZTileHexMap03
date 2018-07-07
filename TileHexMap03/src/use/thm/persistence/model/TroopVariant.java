@@ -114,6 +114,7 @@ public abstract class TroopVariant  extends KeyImmutable implements ITroopVarian
 	private String sUniquetext;
 	private String sCategorytext;
 	private Integer intMapMoveRange;
+	private Float fltHealtInitial;
 	private String sImageUrl;
 	
 	//Blob selbst funtkioniert nicht bei dieser SQLIte Datenbank. Alternativer Lösungsversuch Speicherung als Byte-Array
@@ -178,7 +179,7 @@ public abstract class TroopVariant  extends KeyImmutable implements ITroopVarian
 	 }
 	 	 
 	 //Konstruktor, an den alles übergeben wird. Wg. "Immutable" gibt es keine 'public' Setter.
-	 public TroopVariant(int iKey, String sUniquetext, String sCategorytext, int intMapMoveRange, String sImageUrl, TileDefaulttext objDefaulttext, TileImmutabletext objImmutabletext){
+	 public TroopVariant(int iKey, String sUniquetext, String sCategorytext, int iMapMoveRange, float fHealthInital, String sImageUrl, TileDefaulttext objDefaulttext, TileImmutabletext objImmutabletext){
 		 super();		
 		 this.setKeyType("TROOPVARIANT"); //TODO: HIER EINE ENUMERATION MACHEN ÜBER DIE VERSCHIEDENEN SCHLÜSSELWERTE? 
 		//20180130: Besser eine Konstante hier. Merke: Diese Konstante wird dann in den Dao Klassen auch verwendet . Z.B. in TileDefaulttextDao.searchKey(...)
@@ -186,7 +187,8 @@ public abstract class TroopVariant  extends KeyImmutable implements ITroopVarian
 		 this.setThiskey(Long.valueOf(iKey));
 		 this.setUniquetext(sUniquetext);
 		 this.setCategorytext(sCategorytext);
-		 this.setMapMoveRange(Integer.valueOf(intMapMoveRange));
+		 this.setMapMoveRange(Integer.valueOf(iMapMoveRange));
+		 this.setHealthInitial(Float.valueOf(fHealthInital));
 		 this.setDefaulttextObject(objDefaulttext);
 		 this.setImmutabletextObject(objImmutabletext);
 		 this.setImageUrlString(sImageUrl);
@@ -485,7 +487,7 @@ public abstract class TroopVariant  extends KeyImmutable implements ITroopVarian
 		 this.objImmutabletext = objImmutabletext;
 	 }
 	 
-	 //TODO GOON: Diese Reichweite dann in einen Oberklasse für alle Spielsteine bringen
+	 //TODO GOON: Diese Reichweite dann in eine Oberklasse für alle Spielsteine bringen
 	 @Column(name="TILE_MAPMOVE_RANGE", nullable=false)
 	 public Integer getMapMoveRange(){
 		 return this.intMapMoveRange;
@@ -493,6 +495,15 @@ public abstract class TroopVariant  extends KeyImmutable implements ITroopVarian
 	 protected void setMapMoveRange(Integer intMapMoveRange){
 		 this.intMapMoveRange = intMapMoveRange;				 
 	 }
+	 
+	//TODO GOON: Diese initale "Gesundheit" dann in eine Oberklasse für alle Spielsteine bringen
+		 @Column(name="TILE_HEALTH_INITIAL", nullable=false)
+		 public Float getHealthInitial(){
+			 return this.fltHealtInitial;
+		 }
+		 protected void setHealthInitial(Float fltHealthInitial){
+			 this.fltHealtInitial = fltHealthInitial;				 
+		 }
 	 
 	 //TODO GOON: Diese Bildressource dann in eine Oberklasse für alle Spielsteine bringen
 	 @Column(name="TILE_IMAGEURL", nullable=false)

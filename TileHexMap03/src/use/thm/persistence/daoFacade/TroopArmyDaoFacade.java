@@ -103,6 +103,9 @@ public class TroopArmyDaoFacade extends TileDaoFacade{
 				}
 				System.out.println("############ Errechneter neuer max der übergebenen Troopvariant  ist: " + intVariantUniqueNumberUsed);
 				
+				
+				
+				
 //				}catch(Exception e){
 //					System.out.println("########### FEHLER: " + e.getMessage());
 //				}
@@ -130,6 +133,10 @@ public class TroopArmyDaoFacade extends TileDaoFacade{
 			objTroopTemp.setInstanceVariantUniquenumber(intVariantUniqueNumberUsed); //die muss zuvor ausgerechnet worden sein.
 			objTroopTemp.setInstanceSubtypeUniquenumber(intSubtypeUniqueNumberUsed); //die muss zuvor ausgerechnet worden sein.
 			
+			//Füge die Initialwerte der Variante hinzu.
+			Float fltHealthInitial = objTroopArmyVariant.getHealthInitial();
+			objTroopTemp.setHealth(fltHealthInitial.floatValue());
+					
 			//+++ DAS ERSTELLDATUM ++++++++++++++++++++++++++++++++++++
 			this.makeCreatedDates(objTroopTemp);
 			
@@ -626,6 +633,7 @@ public class TroopArmyDaoFacade extends TileDaoFacade{
 			dto.set(ITileDtoAttribute.SUBTYPE,objTroopArmy.getTroopType());
 			
 			dto.set(ITileDtoAttribute.INSTANCE_VARIANT_UNIQUENUMBER, objTroopArmy.getInstanceVariantUniquenumber());
+			dto.set(ITileDtoAttribute.HEALTH, objTroopArmy.getHealth());
 						
 			if(objTroopArmy.getTroopArmyVariantObject()!=null){
 				dto.set(ITileDtoAttribute.VARIANT_IMAGE_URL_STRING,objTroopArmy.getTroopArmyVariantObject().getImageUrlString());

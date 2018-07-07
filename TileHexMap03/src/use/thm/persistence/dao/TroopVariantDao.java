@@ -102,7 +102,7 @@ public abstract class TroopVariantDao<T> extends AbstractKeyImmutableDao<T> {
 	//Merke: objValue - Klasse ist ein Dummy Objekt, damit man auf die als Innere Klasse deklarierte Enumeration kommt.
 protected <T> void _fillValueImmutableByEnumAlias(ITroopVariantTHM objValue,String sEnumAlias, ReferenceZZZ<Long> objlngThiskey, 
 	ReferenceZZZ<String> objsName, ReferenceZZZ<String> objsUniquetext, ReferenceZZZ<String> objsCategorytext, 
-	ReferenceZZZ<Integer> objintMoveRange, ReferenceZZZ<String> objsImageUrl,ReferenceZZZ<Long> objlngThisidTextDefault, ReferenceZZZ<Long> objlngThisidTextImmutable
+	ReferenceZZZ<Integer> objintMoveRange, ReferenceZZZ<Float> obfltHealthInitial, ReferenceZZZ<String> objsImageUrl,ReferenceZZZ<Long> objlngThisidTextDefault, ReferenceZZZ<Long> objlngThisidTextImmutable
 	){
 
 	//Merke: Direktes Reinschreiben geht wieder nicht wg. "bound exception"
@@ -129,7 +129,11 @@ protected <T> void _fillValueImmutableByEnumAlias(ITroopVariantTHM objValue,Stri
 	Integer intMoveRange = EnumSetTroopArmyVariantUtilTHM.readEnumConstant_MoveRangeValue((Class<IEnumSetTroopVariantTHM>)objClass, sEnumAlias);
 	System.out.println("Gefundener MoveRange: " + intMoveRange);
 	objintMoveRange.set(intMoveRange); //Damit wird CALL_BY_VALUE quasi gemacht....
-		
+	
+	Float fltHealthInitial = EnumSetTroopArmyVariantUtilTHM.readEnumConstant_HealtInitialValue((Class<IEnumSetTroopVariantTHM>)objClass, sEnumAlias);
+	System.out.println("Gefundene HealthInitial: " + fltHealthInitial);
+	obfltHealthInitial.set(fltHealthInitial);
+	
 	String sImageUrl = EnumSetTroopArmyVariantUtilTHM.readEnumConstant_ImageUrlStringValue((Class<IEnumSetTroopVariantTHM>)objClass, sEnumAlias);
 	System.out.println("Gefundener ImageUrlString: " + sImageUrl);
 	objsImageUrl.set(sImageUrl); //Damit wird CALL_BY_VALUE quasi gemacht....	

@@ -103,8 +103,8 @@ public class TroopFleetVariant  extends TroopVariant implements ITroopFleetVaria
 	 }
 	 	 
 	//Konstruktor, an den alles übergeben wird. Wg. "Immutable" gibt es keine 'public' Setter.
-	 public TroopFleetVariant(int iKey, String sUniquetext, String sCategorytext, int iMapMoveRange, String sImageUrl, TileDefaulttext objDefaulttext, TileImmutabletext objImmutabletext, int iNumberOfTurret){
-		 super(iKey, sUniquetext, sCategorytext, iMapMoveRange, sImageUrl, objDefaulttext, objImmutabletext);		
+	 public TroopFleetVariant(int iKey, String sUniquetext, String sCategorytext, int iMapMoveRange, float fHealthInitial, String sImageUrl, TileDefaulttext objDefaulttext, TileImmutabletext objImmutabletext, int iNumberOfTurret){
+		 super(iKey, sUniquetext, sCategorytext, iMapMoveRange, fHealthInitial, sImageUrl, objDefaulttext, objImmutabletext);		
 		 this.setKeyType("TROOPFLEETVARIANT"); //TODO: HIER EINE ENUMERATION MACHEN ÜBER DIE VERSCHIEDENEN SCHLÜSSELWERTE? 
 		//20180130: Besser eine Konstante hier. Merke: Diese Konstante wird dann in den Dao Klassen auch verwendet . Z.B. in TileDefaulttextDao.searchKey(...)
 		 
@@ -170,16 +170,17 @@ public class TroopFleetVariant  extends TroopVariant implements ITroopFleetVaria
 		public enum EnumTroopFleetVariant implements IEnumSetTroopFleetVariantTHM,  ICategoryProviderZZZ, IThiskeyProviderZZZ<Long>{//Folgendes geht nicht, da alle Enums schon von einer Java BasisKlasse erben... extends EnumSetMappedBaseZZZ{
 		
 		//Werte für alle Spielsteine:
-		//lKey / sUniquetext / sCategorytext / iMoveRange / sImageUrl / 
+		//lKey / sUniquetext / sCategorytext / iMoveRange / fHealthInitial / 
+		//	/ sImageUrl / 
 		//iThisKeyDefaulttext / iThiskeyImmutabletext (Der Shorttext hiervon wird als Default, abgekürzt in der HexMap angezeigt);
 		//
 		//Speziell für FLEET:
 		//iNumberOfTurret
 	   	 @IFieldDescription(description = "DFLEETVARIANT01") 
-	   	T01(21,"DFLEET01","Ship",5,"FLEET\\USS Fletcher (DD 445).png",210,20,7),
+	   	T01(21,"DFLEET01","Ship",5, 0.75f,"FLEET\\USS Fletcher (DD 445).png",210,20,7),
 	   	
 	   	 @IFieldDescription(description = "DFLEETVARIANT02") 
-	   	T02(22,"DFLEET02","Ship",3,"FLEET\\USS Samuel B Roberts (DE 413).png",220,21,3);
+	   	T02(22,"DFLEET02","Ship",3, 0.5f,"FLEET\\USS Samuel B Roberts (DE 413).png",220,21,3);
 	   	   	
 	   private Long lKey;
 	   private String sUniquetext, sCategorytext;
@@ -187,6 +188,7 @@ public class TroopFleetVariant  extends TroopVariant implements ITroopFleetVaria
 	   
 	   private String sImageUrl;
 	   private int iMoveRange;
+	   private float fHealthInitial;
 	   
 	   //Speziell für FLEET
 	   private int iNumberOfTurret;
@@ -194,11 +196,12 @@ public class TroopFleetVariant  extends TroopVariant implements ITroopFleetVaria
 	   
 
 	   //Merke: Enums haben keinen public Konstruktor, können also nicht intiantiiert werden, z.B. durch Java-Reflektion.
-	   EnumTroopFleetVariant(int iKey, String sUniquetext,String sCategorytext, int iMoveRange, String sImageUrl, int iThisKeyDefaulttext, int iThiskeyImmutabletext, int iNumberOfTurret){
+	   EnumTroopFleetVariant(int iKey, String sUniquetext,String sCategorytext, int iMoveRange, float fHealthInitial, String sImageUrl, int iThisKeyDefaulttext, int iThiskeyImmutabletext, int iNumberOfTurret){
 	       this.lKey = Long.valueOf(iKey);
 	       this.sUniquetext = sUniquetext;
 	       this.sCategorytext = sCategorytext;
 	       this.iMoveRange = iMoveRange;
+	       this.fHealthInitial = fHealthInitial;
 	       this.sImageUrl = sImageUrl;
 	       this.iThiskeyDefaulttext = iThisKeyDefaulttext;
 	       this.iThiskeyImmutabletext = iThiskeyImmutabletext;	
@@ -236,6 +239,10 @@ public class TroopFleetVariant  extends TroopVariant implements ITroopFleetVaria
 	   public int getMapMoveRange() {
 			return this.iMoveRange;
 		}
+	   
+	   public float getHealthInitial(){
+		   return this.fHealthInitial;
+	   }
 
 		public String getImageUrlString() {
 			return this.sImageUrl;

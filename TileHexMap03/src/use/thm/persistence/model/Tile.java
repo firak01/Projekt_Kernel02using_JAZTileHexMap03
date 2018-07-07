@@ -98,6 +98,10 @@ public class Tile  implements Serializable, IOptimisticLocking, IModelDateTimest
 	private int iXstarted=-1;
 	private int iYstarted=-1;
 	
+	//private double dHealth=0.01;
+	//float ist aber kleiner und die Präzision von double brauchen wir nicht. Also f hiner der Zahl um float im Compiler zu erzwingen. https://stackoverflow.com/questions/9748160/why-f-is-placed-after-float-values
+	private float fHealth=0.01f;
+	
 	//DAS PERSISTIERT ALS BLOB
 	//@Enumerated(EnumType.STRING)	
 	//	@Column(name="AREATYPE")
@@ -290,7 +294,16 @@ public class Tile  implements Serializable, IOptimisticLocking, IModelDateTimest
 //			if(this.getHexCell()!=null){
 //				this.getHexCell().getId().setMapY(sY);
 //			}
-		}	    	    
+		}	    	  
+		
+		@Access(AccessType.PROPERTY)
+		@Column(name="health", nullable=false, columnDefinition="float default 0.01")
+		public float getHealth(){
+			return this.fHealth;
+		}
+		public void setHealth(float fValue){
+			this.fHealth = fValue;
+		}
 	 
 	 
 	 //Siehe Buch "Java Persistence API", Seite 37ff

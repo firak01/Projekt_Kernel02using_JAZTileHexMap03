@@ -16,6 +16,7 @@ public interface IEnumSetTroopVariantTHM extends IThiskeyUserZZZ,IThiskeyProvide
 		
 	//Dies sind die "technisch/fachlichen" Angaben zur "Variante".
 	public int getMapMoveRange();
+	public float getHealthInitial();
 	public String getImageUrlString();
 	public int getDefaulttextThisid();
 	public int getImmutabletextThisid();	

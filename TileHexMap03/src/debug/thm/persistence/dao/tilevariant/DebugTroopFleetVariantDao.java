@@ -140,6 +140,7 @@ public class DebugTroopFleetVariantDao {
 			    String sUniquetext = objaType[iIndex].getUniquetext();
 			    String sCategorytext = objaType[iIndex].getCategorytext();
 			    int iMoveRange = objaType[iIndex].getMapMoveRange();
+			    float fHealthInitial = objaType[iIndex].getHealthInitial();
 			    String sImageUrl = objaType[iIndex].getImageUrlString();
 			    
 			    int iDefaulttextThiskey = objaType[iIndex].getDefaulttextThisid();
@@ -216,7 +217,7 @@ public class DebugTroopFleetVariantDao {
 				
 			    
 			    // public TroopFleetVariant(int iKey, int intMapMoveRange, String sImageUrl, TileDefaulttext objDefaulttext, TileImmutabletext objImmutabletext){
-				TroopFleetVariant objValue = new TroopFleetVariant(lngThiskey.intValue(),sUniquetext, sCategorytext, iMoveRange, sImageUrl, objDefaulttext, objImmutableText, iNumberOfTurret);
+				TroopFleetVariant objValue = new TroopFleetVariant(lngThiskey.intValue(),sUniquetext, sCategorytext, iMoveRange, fHealthInitial, sImageUrl, objDefaulttext, objImmutableText, iNumberOfTurret);
 				
 				//Merke: EINE TRANSACTION = EINE SESSION ==>  neue session von der SessionFactory holen
 				session.save(objValue); //Hibernate Interceptor wird aufgerufen																				
@@ -308,6 +309,7 @@ public class DebugTroopFleetVariantDao {
 			    String sUniquetext = objType.getUniquetext();
 			    String sCategorytext = objType.getCategorytext();
 			    int iMoveRange = objType.getMapMoveRange();
+			    float fHealthInitial = objType.getHealthInitial();
 			    String sImageUrl = objType.getImageUrlString();
 				int iDefaulttextThiskey = objType.getDefaulttextThisid();
 				Long lngThiskeyDefaulttext = new Long(iDefaulttextThiskey);
@@ -384,7 +386,7 @@ public class DebugTroopFleetVariantDao {
 				
 			    
 			    // public TroopFleetVariant(int iKey, int intMapMoveRange, String sImageUrl, TileDefaulttext objDefaulttext, TileImmutabletext objImmutabletext){
-				TroopFleetVariant objValue = new TroopFleetVariant(lngThiskey.intValue(),sUniquetext, sCategorytext, iMoveRange, sImageUrl, objDefaulttext, objImmutableText, iNumberOfTurret);
+				TroopFleetVariant objValue = new TroopFleetVariant(lngThiskey.intValue(),sUniquetext, sCategorytext, iMoveRange, fHealthInitial, sImageUrl, objDefaulttext, objImmutableText, iNumberOfTurret);
 				
 				//Merke: EINE TRANSACTION = EINE SESSION ==>  neue session von der SessionFactory holen
 				session.save(objValue); //Hibernate Interceptor wird aufgerufen																				

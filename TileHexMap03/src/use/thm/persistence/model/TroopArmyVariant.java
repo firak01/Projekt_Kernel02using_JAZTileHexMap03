@@ -102,8 +102,8 @@ public class TroopArmyVariant  extends TroopVariant implements ITroopArmyVariant
 	 }
 	 	 
 	 //Konstruktor, an den alles übergeben wird. Wg. "Immutable" gibt es keine 'public' Setter.
-	 public TroopArmyVariant(int iKey, String sUniquetext, String sCategorytext, int iMapMoveRange, String sImageUrl, TileDefaulttext objDefaulttext, TileImmutabletext objImmutabletext, int iDegreeOfCover){
-		 super(iKey, sUniquetext, sCategorytext, iMapMoveRange, sImageUrl, objDefaulttext, objImmutabletext);		
+	 public TroopArmyVariant(int iKey, String sUniquetext, String sCategorytext, int iMapMoveRange, float fHealthInitial, String sImageUrl, TileDefaulttext objDefaulttext, TileImmutabletext objImmutabletext, int iDegreeOfCover){
+		 super(iKey, sUniquetext, sCategorytext, iMapMoveRange, fHealthInitial, sImageUrl, objDefaulttext, objImmutabletext);		
 		 this.setKeyType("TROOPARMYVARIANT"); //TODO: HIER EINE ENUMERATION MACHEN ÜBER DIE VERSCHIEDENEN SCHLÜSSELWERTE? 
 		//20180130: Besser eine Konstante hier. Merke: Diese Konstante wird dann in den Dao Klassen auch verwendet . Z.B. in TileDefaulttextDao.searchKey(...)
 		 
@@ -171,16 +171,16 @@ public class TroopArmyVariant  extends TroopVariant implements ITroopArmyVariant
 			//Werte für alle Spielsteine:
 			//lKey / sUniquetext / sCategorytext (Merke: "Land Unit" wird als hart verdrahteter Wert  im Konstruktor von TroopVariant verwendet, zur Steuerung der Bildverarbeitung)
 			                                                       //TODO GOON 20180703: Hier soll kein String mehr rein (z.B. 'Infantry Unit', sondern die ThisKey-Id einer entsprechenden CategoryText Tabelle.
-			//			/ iMoveRange / sImageUrl / 
+			//			/ iMoveRange / fHealthInitial /sImageUrl / 
 			//iThisKeyDefaulttext / iThiskeyImmutabletext (Der Shorttext hiervon wird als Default, abgekürzt in der HexMap angezeigt)
 			//
 			//Speziell für TROOP; 
 			//iDegreeOfCoverMax
 	   	 @IFieldDescription(description = "DARMYVARIANT01") 
-	   	T01(11,"DARMY01","Infantry Unit",2,"ARMY\\US - M1 Garand Rifle.png",110,10,90),
+	   	T01(11,"DARMY01","Infantry Unit",2,0.5f,"ARMY\\US - M1 Garand Rifle.png",110,10,90),
 	   	
 	   	 @IFieldDescription(description = "DARMYVARIANT02") 
-	   	T02(12,"DTANKARMY02","Tank Unit",3,"ARMY\\US - M4A1 Sherman.png",120,11,20);
+	   	T02(12,"DTANKARMY02","Tank Unit",3,0.75f,"ARMY\\US - M4A1 Sherman.png",120,11,20);
 	   	   	
 	   private Long lKey;
 	   private String sUniquetext, sCategorytext;
@@ -188,6 +188,7 @@ public class TroopArmyVariant  extends TroopVariant implements ITroopArmyVariant
 	   
 	   private String sImageUrl;
 	   private int iMoveRange;
+	   private float fHealthInitial;
 	   
 	   //Spezielle für TROOP
 	   private int iDegreeOfCoverMax;
@@ -195,11 +196,14 @@ public class TroopArmyVariant  extends TroopVariant implements ITroopArmyVariant
 	   
 
 	   //Merke: Enums haben keinen public Konstruktor, können also nicht intiantiiert werden, z.B. durch Java-Reflektion.
-	   EnumTroopArmyVariant(int iKey, String sUniquetext, String sCategorytext, int iMoveRange, String sImageUrl, int iThisKeyDefaulttext, int iThiskeyImmutabletext, int iDegreeOfCoverMax){
+	   EnumTroopArmyVariant(int iKey, String sUniquetext, String sCategorytext, int iMoveRange, float fHealthInitial, String sImageUrl, int iThisKeyDefaulttext, int iThiskeyImmutabletext, int iDegreeOfCoverMax){
 	       this.lKey = Long.valueOf(iKey);
 	       this.sUniquetext = sUniquetext;
 	       this.sCategorytext = sCategorytext;
 	       this.iMoveRange = iMoveRange;
+	       
+	       this.fHealthInitial = fHealthInitial;
+	       
 	       this.sImageUrl = sImageUrl;
 	       this.iThiskeyDefaulttext = iThisKeyDefaulttext;
 	       this.iThiskeyImmutabletext = iThiskeyImmutabletext;	
@@ -237,6 +241,10 @@ public class TroopArmyVariant  extends TroopVariant implements ITroopArmyVariant
 	   public int getMapMoveRange() {
 			return this.iMoveRange;
 		}
+	   
+	   public float getHealthInitial(){
+		   return this.fHealthInitial;
+	   }
 
 		public String getImageUrlString() {
 			return this.sImageUrl;

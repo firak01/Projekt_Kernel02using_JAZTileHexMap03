@@ -226,6 +226,7 @@ public class TroopFleetDaoFacade extends TileDaoFacade{
 			dto.set(ITileDtoAttribute.SUBTYPE,objTroop.getTroopType());
 			
 			dto.set(ITileDtoAttribute.INSTANCE_VARIANT_UNIQUENUMBER, objTroop.getInstanceVariantUniquenumber());
+			dto.set(ITileDtoAttribute.HEALTH, objTroop.getHealth());
 						
 			if(objTroop.getTroopFleetVariantObject()!=null){
 				dto.set(ITileDtoAttribute.VARIANT_IMAGE_URL_STRING,objTroop.getTroopFleetVariantObject().getImageUrlString());
@@ -314,6 +315,10 @@ public class TroopFleetDaoFacade extends TileDaoFacade{
 			objTroopTemp.setTroopFleetVariantObject(objTroopFleetVariant);
 			objTroopTemp.setInstanceVariantUniquenumber(intVariantUniqueNumberUsed); //die muss zuvor ausgerechnet worden sein.
 			objTroopTemp.setInstanceSubtypeUniquenumber(intSubtypeUniqueNumberUsed); //die muss zuvor ausgerechnet worden sein.
+			
+			//Füge die Initialwerte der Variante hinzu.
+			Float fltHealthInitial = objTroopFleetVariant.getHealthInitial();
+			objTroopTemp.setHealth(fltHealthInitial.floatValue());
 			
 			//+++ DAS ERSTELLDATUM ++++++++++++++++++++++++++++++++++++
 			this.makeCreatedDates(objTroopTemp);

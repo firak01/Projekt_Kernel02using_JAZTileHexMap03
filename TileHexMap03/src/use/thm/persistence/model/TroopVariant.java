@@ -234,6 +234,23 @@ public abstract class TroopVariant  extends KeyImmutable implements ITroopVarian
 			this.setImage01Length(lngFileSize);
 			this.setImage01Name(sTileIconName);
 			
+			//+++++++++++++++++++++++++++++++++++++++
+			String sSubtype = this.getSubtype();
+			System.out.println(ReflectCodeZZZ.getClassCurrentName() +": Erzeuge Bilder für einen Subtype: '" + sSubtype + "'");
+
+			BufferedImage objBufferedImageOriginalUsed = null;
+			boolean bImageWasFlipped=false;
+			
+			//0. Die Schiffsbilder sind anders herum gedreht als die Army-Bilder. Darum hier versuchen diese zu spiegeln.
+			//Diese Spiegelung vor allen anderen Bildverarbeitungen machen. Nicht wg. der Performance (da wäre anderes besser), sondern wg. des Ergebnisses, das überall weiterverwendet werden muss.
+			if(sSubtype.equalsIgnoreCase("FL")){
+				objBufferedImageOriginalUsed = UIHelper.flipImageVertically(objBufferedImageOriginal);
+				bImageWasFlipped=true;	//Merke: wenn das Bild vertikal gedreht wird, muss man auch die andere Seite ausschneiden, sonst bekommt man z.B. bei einem Schiff nur das Heck statt dem Bug.
+			}else{
+				objBufferedImageOriginalUsed = objBufferedImageOriginal;
+			}
+			
+			
 			//++++++++++++++++++++++++++++++++++++++++
 			//2. Bild als Katalogeintrag
 			sModuleAlias = "THM";//this.getModuleName();
@@ -247,7 +264,7 @@ public abstract class TroopVariant  extends KeyImmutable implements ITroopVarian
 			int iIconHeight = Integer.parseInt(sIconHeight);
 			
 			//... Bild bearbeitet als Katalogeintrag
-			BufferedImage objBufferdImageResized = UIHelper.resizeImage(objBufferedImageOriginal, iIconWidth, iIconHeight);
+			BufferedImage objBufferdImageResized = UIHelper.resizeImage(objBufferedImageOriginalUsed, iIconWidth, iIconHeight);
 			byte[] imageInByteCatalog = UIHelper.getByteArrayFromBufferedImage(objBufferdImageResized,"png");			
 			this.setImage01Catalog(imageInByteCatalog);			
 			long lngFileSizeCatalog = imageInByteCatalog.length;
@@ -268,6 +285,7 @@ public abstract class TroopVariant  extends KeyImmutable implements ITroopVarian
 			sIconHeight = objKernel.getParameterByProgramAlias(sModuleAlias, sProgramAlias, "IconHeight" );
 			iIconHeight = Integer.parseInt(sIconHeight);
 			
+			
 			//1. Versuche das Bild mit einem transparenten Hintergrund auszustatten:
 			//Beispielsansatz das Bild mit einem Transparenten Hintergund hinzubekommen:
 			//Ein ImageIcon zeichnen
@@ -280,23 +298,20 @@ public abstract class TroopVariant  extends KeyImmutable implements ITroopVarian
 //			//UIHelperAlphaImageIcon iconTransparent = new UIHelperAlphaImageIcon(icon, alpha);
 //			iconTransparent.paintIcon(this, g, x, y);
 			
-			
-			//Realisierter Ansatz
+			//Realisierter Ansatz, Farbe zum Transparent machen
 			Color color01 = new Color(255,255,255);//weiss
 						
 			//Image imageTransparent = UIHelperTransparency.makeColorTransparent(objBufferedImageTemp, color01);			
 			//ABER: So richtig schick ist diese Lösung nicht... nur leicht besser, als wenn der Weisse Rand in ein anderes HEX-Feld reinragt.
 			//Grund dafür war, dass das Bild noch weitaus mehr untransparente Farben hatte, die "annähernd" weiss waren. 
 			//Lösungsansatz: Ersetze nun einen Bereich 			
-			Image imageTransparent = UIHelperTransparencyRange.transformColorRangeToTransparency(objBufferedImageOriginal, color01, 6, 0, color01);
+			Image imageTransparent = UIHelperTransparencyRange.transformColorRangeToTransparency(objBufferedImageOriginalUsed, color01, 6, 0, color01);
 			BufferedImage objBufferedImageTransparent = UIHelper.toBufferedImage(imageTransparent);
 			//!!! Wenn es Army Bilder sind, dann diese noch weiter verkleinern
 			BufferedImage objBufferedImageTransparentAndResized = null;			
 			//String sSubtype = this.getSubtype(); //Army oder Fleet. Das steht aber nur zur Verfügung in TileTHM.paintComponent() und kommt aus dem DTO. 
 			//Hierher verlagert, muss man entweder den SubType "simulieren" oder auf alle möglichen Catagorietexte abprüfen. Es wird also in den Unterklassen der SubType "simuliert".
-			
-			String sSubtype = this.getSubtype();
-			System.out.println(ReflectCodeZZZ.getClassCurrentName() +": Erzeuge Bilder für einen Subtype: '" + sSubtype + "'");
+						
 			if(sSubtype.equalsIgnoreCase("AR")){
 				if(this.getCategorytext().equalsIgnoreCase("Infantry Unit")){ ////TODO GOON 20180703: Hier soll kein String mehr rein, sondern die ThisKey-Id einer entsprechenden CategoryText Tabelle.
 					objBufferedImageTransparentAndResized = UIHelper.cropImageByPoints(objBufferedImageTransparent, 0,50,60,10);	//Schneide das Bild erst aus dem Rahmen aus. Sehr viel vom unteren Rand weg, sehr viel vom linken Rand weg.
@@ -317,6 +332,14 @@ public abstract class TroopVariant  extends KeyImmutable implements ITroopVarian
 //			    UIHelperAnalyseImage.debugPrintImagePixelData(objBufferedImage2analyse, true);			        
 //				System.out.println(("ZZZZ "  + sSubtype + " an Position X/Y: " + sX + "/" +sY ));
 
+			}else if(sSubtype.equalsIgnoreCase("FL")){				
+				if(bImageWasFlipped){ //Merke: wenn das Bild vertikal gedreht wird, muss man auch die andere Seite abschneiden (hier: links), sonst bekommt man nur das Heck statt dem Bug - in das kleine HexFeld-Icon gepresst.
+					objBufferedImageTransparentAndResized = UIHelper.cropImageByPoints(objBufferedImageTransparent, 0, 80, 0, 0);
+					objBufferedImageTransparentAndResized = UIHelper.resizeImage(objBufferedImageTransparentAndResized, (iIconWidth-20), (iIconHeight));	//Damit es noch nach etwas aussieht.... die Höhe nicht reduzieren.
+				}else{
+					objBufferedImageTransparentAndResized = objBufferedImageTransparent;
+					objBufferedImageTransparentAndResized = UIHelper.resizeImage(objBufferedImageTransparentAndResized, (iIconWidth), (iIconHeight));	//Damit es noch nach etwas aussieht.... die Höhe nicht reduzieren.
+				}			
 			}else{
 				objBufferedImageTransparentAndResized = UIHelper.resizeImage(objBufferedImageTransparent, iIconWidth, iIconHeight);		
 			}
@@ -348,7 +371,7 @@ public abstract class TroopVariant  extends KeyImmutable implements ITroopVarian
 			iIconHeight = Integer.parseInt(sIconHeight);
 			
 			//... Bild bearbeitet als Dialogeintrag
-			BufferedImage objBufferdImage4DialogResized = UIHelper.resizeImage(objBufferedImageOriginal, iIconWidth, iIconHeight);
+			BufferedImage objBufferdImage4DialogResized = UIHelper.resizeImage(objBufferedImageOriginalUsed, iIconWidth, iIconHeight);
 			byte[] imageInByteDialog = UIHelper.getByteArrayFromBufferedImage(objBufferdImage4DialogResized,"png");			
 			this.setImage01Dialog(imageInByteDialog);			
 			long lngFileSizeDialog = imageInByteDialog.length;
@@ -377,7 +400,7 @@ public abstract class TroopVariant  extends KeyImmutable implements ITroopVarian
 			iIconHeight = Integer.parseInt(sIconHeight);
 			
 			//... Bild bearbeitet als "Ziehen über das HEXFeld"
-			BufferedImage objBufferdImage4DragResized = UIHelper.resizeImage(objBufferedImageOriginal, iIconWidth, iIconHeight);
+			BufferedImage objBufferdImage4DragResized = UIHelper.resizeImage(objBufferedImageOriginalUsed, iIconWidth, iIconHeight);
 			byte[] imageInByteDrag = UIHelper.getByteArrayFromBufferedImage(objBufferdImage4DragResized,"png");			
 			this.setImage01Drag(imageInByteDrag);			
 			long lngFileSizeDrag = imageInByteDrag.length;

@@ -178,7 +178,7 @@ public class TileTHM extends JPanel implements IMapPositionableTHM, IBackendPers
 		try{			
 			setOpaque(true);//Schaltet den default Hintergrund aus (normalerweise grau). // Dies auf false gesetzt "opaque heisst 'undurchsichtig' ").
 			
-			int iFontOffset = 3;//Irgenwie die Fontgröße justieren
+			int iFontOffset = 3;//Irgendwie die Fontgröße justieren
 			
 			//1.  Der Hintergrund des Spielsteins: Das Bild...  Merke. Zeichne das zuerst. Dann kann man ggfs. etwas Text darübergeschrieben tollerieren.
 			//++++++++++
@@ -459,6 +459,10 @@ public class TileTHM extends JPanel implements IMapPositionableTHM, IBackendPers
 	
 	public Float getHealth(){
 		return (Float) this.getDto().get(ITileDtoAttribute.HEALTH);
+	}
+	public void setHealth(float fHealth){
+		Float fltValue = new Float(fHealth);
+		this.getDto().set(ITileDtoAttribute.HEALTH, fltValue);
 	}
 
 	

@@ -331,6 +331,13 @@ public class TileMouseMotionHandlerTHM extends MouseAdapter implements MouseMoti
 			Point p = arg0.getPoint();
 			String sCoordinates = "X=" + this.getTile().getMapX() + "; Y=" + this.getTile().getMapY()  + " (" + p.getX() + "/" + p.getY() + ")";
 			sMessage = sMessage + StringZZZ.crlf() + sCoordinates;
+			//Trennzeile
+			sMessage = sMessage + StringZZZ.crlf();
+			Float fltHealth = objDto.get(ITileDtoAttribute.HEALTH);
+			float fHealthNormed = fltHealth.floatValue() * 100;
+			Float fltHealthNormed = new Float(fHealthNormed);
+			String sHealth = "Health: " + StringZZZ.left(fltHealthNormed.toString(),6)+"%";
+			sMessage = sMessage + StringZZZ.crlf() + sHealth;
 			
 			//Trennzeile
 			sMessage = sMessage + StringZZZ.crlf();

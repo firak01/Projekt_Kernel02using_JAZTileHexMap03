@@ -256,7 +256,12 @@ public abstract class TroopVariant  extends KeyImmutable implements ITroopVarian
 			sModuleAlias = "THM";//this.getModuleName();
 			sProgramAlias = "CatalogPanel"; //this.getProgramName();			
 			System.out.println(ReflectCodeZZZ.getMethodCurrentName() + ": Suche Modul: '" + sModuleAlias +"'/ Program: '" + sProgramAlias + "'/ Parameter: 'IconWidth'");
-						 
+			
+			//TODO GOON 20180711
+			//... Bei der Größenermittlung steht momentan ein fester Wert.
+			//Ziel ist: Hole einen "Zoomwert" und rechne den festen Wert damit um.... in der ini-Konfiguration...
+			//........... so an dieser Stelle im Code nichts geändert werden muss.
+						
 			//... Größen holen aus der Kernelkonfiguration
 			String sIconWidth = objKernel.getParameterByProgramAlias(sModuleAlias, sProgramAlias, "IconWidth" );			
 			int iIconWidth = Integer.parseInt(sIconWidth);				

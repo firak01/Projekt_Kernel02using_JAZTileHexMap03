@@ -59,8 +59,13 @@ public class PanelMain_CENTERTHM extends KernelJPanelCascadedZZZ implements IHex
 			String sHexSideLength = this.getKernelObject().getParameterByProgramAlias(sModuleAlias, sProgramAlias, "HexSideLength" );
 			int iHexSideLength = Integer.parseInt(sHexSideLength);
 			
+			String sHexZoomFactor = this.getKernelObject().getParameterByProgramAlias(sModuleAlias, sProgramAlias, "HexZoomFactor" );
+			int iHexZoomFactor = Integer.parseInt(sHexZoomFactor);
+			
+			int iHexSideLengthUsed = iHexSideLength * iHexZoomFactor;
+			
 			//Die Hexadimensionale Karte aufbauen.			
-			HexMapTHM objMap = new HexMapTHM(objKernel, this, iNumberOfColumn, iNumberOfRow, iHexSideLength);
+			HexMapTHM objMap = new HexMapTHM(objKernel, this, iNumberOfColumn, iNumberOfRow, iHexSideLengthUsed);
 			this.setHexMap(objMap);
 			
 			//+++ Das Ziel ist, beim Fallenlassen eines Objekts aus dem glassPane, reagieren zu können

@@ -35,6 +35,7 @@ import basic.zBasicUI.component.UIHelperTransparency;
 import basic.zBasicUI.component.UIHelperTransparencyRange;
 import basic.zKernel.IKernelUserZZZ;
 import basic.zKernel.KernelZZZ;
+import basic.zKernelUI.component.IPanelCascadedZZZ;
 import basic.zKernelUI.component.KernelJPanelCascadedZZZ;
 import use.thm.ApplicationSingletonTHM;
 import use.thm.IMapPositionableTHM;
@@ -44,6 +45,8 @@ import use.thm.persistence.dto.DtoFactoryGenerator;
 import use.thm.persistence.dto.ITileDtoAttribute;
 import use.thm.persistence.dto.TileDtoFactory;
 
+//Merke: 20180718: Zum Zugriff auf INI-Werte, den Kernel aus der PanelMap Holen oder aus dem Singelton-Objekt.
+//dadurch spart man sich: //public class TileTHM extends KernelJPanelCascadedZZZ implements IMapPositionableTHM, IBackendPersistenceUser4UiZZZ {
 public class TileTHM extends JPanel implements IMapPositionableTHM, IBackendPersistenceUser4UiZZZ {
 	private String sUniquename; //Ein eindeutige Bezeichnung. Über diese wird die UI Komponente mit der BackendPersistence-Entsprechung verbunden.
 	private String sAliasX; //Die Koordinaten auf der Karte
@@ -131,12 +134,11 @@ public class TileTHM extends JPanel implements IMapPositionableTHM, IBackendPers
 		
 
 		try {			
-			//this.setUniquename(sUniquename);
 			this.setDto(objDto);
 			
 			this.setMapX(sAliasX);
 			this.setMapY(sAliasY);
-			this.panelMap = panelMap;
+			this.setMapPanel(panelMap);
 			this.setHexSideLength(iHexSideLength);
 			
 			//Klasse, die alle Maus Events vereint
@@ -177,9 +179,7 @@ public class TileTHM extends JPanel implements IMapPositionableTHM, IBackendPers
 		
 		try{			
 			setOpaque(true);//Schaltet den default Hintergrund aus (normalerweise grau). // Dies auf false gesetzt "opaque heisst 'undurchsichtig' ").
-			
-			int iFontOffset = 3;//Irgendwie die Fontgröße justieren
-			
+						
 			//1.  Der Hintergrund des Spielsteins: Das Bild...  Merke. Zeichne das zuerst. Dann kann man ggfs. etwas Text darübergeschrieben tollerieren.
 			//++++++++++
 		    //Die Größe der Icons aus der KernelKonfiguration auslesen
@@ -201,13 +201,27 @@ public class TileTHM extends JPanel implements IMapPositionableTHM, IBackendPers
 //			File objFile = new File(sFilename);		   
 //			BufferedImage objBufferedImageTemp = ImageIO.read(objFile);		
 			
+			//TODO GOON 20180718: Hier in Abhängigkeit vom gerade eingestellten "ZoomFaktor" das passende Bild holen.
+			//Also z.B. this.getVariantImageUsedInByte(int iZoomFactor);
+			//
 			//Das Bild aus dem in der Datenbank hinterlegten byte[] beziehen. Transportiert wird das über DTO-Objekt.
 			byte[] imageInByte = this.getVariantImageUsedInByte();
 			BufferedImage objBufferedImageTransparentAndResized = UIHelper.toBufferedImage(imageInByte);
 						
-			//+++++++++ Das Bild an der errechneten Postion (unterhalb des Labels) zeichnen.
+			//+++++++++ Das Bild an der errechneten Postion (unterhalb des Labels) zeichnen.			
+			String sHexZoomFactor = objKernel.getParameterByProgramAlias(sModuleAlias, sProgramAlias, "HexZoomFactor" );
+			int iHexZoomFactor = Integer.parseInt(sHexZoomFactor);
+			String sFontOffset = objKernel.getParameterByProgramAlias(sModuleAlias, sProgramAlias, "IconLabelFontOffsetHeight_float" );//Irgendwie die Fontgröße justieren in der Höhe. Wird dann auch vom HexMapZoomFaktor beeinflusst ...			//
+			Float fltFontOffset = new Float(sFontOffset);
+			float fFontOffset = fltFontOffset.floatValue();//z.B. 1.5f
+		
+			//TODO GOON 20180718: Die Formel zu Berechnung mit dem ZoomFactor in die ini-DAtei ausgelagert.
+			//int iFontOffsetUsed=(int) (fFontOffset*iHexZoomFactor);
+			int iFontOffsetUsed = (int) fFontOffset;
+			
+			
 			int iTileSideLength = this.getTileSideLength();
-			int iPositionIconInHeight = (iTileSideLength - iIconHeight - iFontOffset); //Darüber kommt noch die Schrift
+			int iPositionIconInHeight = (iTileSideLength - iIconHeight - iFontOffsetUsed); //Darüber kommt noch die Schrift
 			g.drawImage(objBufferedImageTransparentAndResized, 0,iPositionIconInHeight, null);//Hierdurch wird wohl das Image wieder in das neue, zurückzugebend BufferedImage gepackt.
 			
 			//####################
@@ -276,10 +290,15 @@ public class TileTHM extends JPanel implements IMapPositionableTHM, IBackendPers
 			
 			//Font font = g.getFont().deriveFont( 8.0f );					//Die Schriftgöße ändern, hier des aktuellen Fonts						
 			//Font font = g.getFont().deriveFont( 12.0f );					//Die Schriftgöße ändern, hier des aktuellen Fonts
+						
 			String sIconLabelFontSize = objKernel.getParameterByProgramAlias(sModuleAlias, sProgramAlias, "IconLabelFontSize_float" );
 			if(StringZZZ.isEmpty(sIconLabelFontSize)){ sIconLabelFontSize="8.0"; }
 			Float fltIconLabelFontSize = new Float(sIconLabelFontSize);
-			Font font = g.getFont().deriveFont( fltIconLabelFontSize.floatValue());					//Die Schriftgöße ändern, hier des aktuellen Fonts
+			
+			//TODO GOON 20180718: Die Formel zu Berechnung mit dem ZoomFactor in die ini-DAtei ausgelagert.
+			//Float fltIconLabelFontSizeUsed = fltIconLabelFontSize.floatValue() * iHexZoomFactor; 
+			Float fltIconLabelFontSizeUsed = fltIconLabelFontSize;
+			Font font = g.getFont().deriveFont( fltIconLabelFontSizeUsed.floatValue());	//Die Schriftgöße ändern, hier des aktuellen Fonts
 			g.setFont( font );
 			
 			String sComponentLabelUsed = null;//Einen Namen (Kurz, nomal, lang) als Eigenschaft den Objekten hinzufügen (über die Dto-Funktionalität) und dann die "Kurzform" hier anzeigen.
@@ -304,7 +323,8 @@ public class TileTHM extends JPanel implements IMapPositionableTHM, IBackendPers
 			}						
 			//g.drawString(sComponentLabelUsed,0,(int)(this.getTileLabelHeight()));//Unter dem Bild
 			//nach links wg. des Rahmens etwas Platz (darum x=3) und etwas tiefer, darum in  der Höhe +1
-			g.drawString(sComponentLabelUsed,ixInBox+1,(int)this.getTileLabelHeight()-iFontOffset+1);//über dem Bild. -3 ist ein Offset, so dass der Text in der Höhe zentriert in den Labelkasten reinpasst. Bei 0 wird ein Teil nach unten verschwinden.									
+			//g.drawString(sComponentLabelUsed,ixInBox+1,(int)this.getTileLabelHeight()-iFontOffset+1);//über dem Bild. -3 ist ein Offset, so dass der Text in der Höhe zentriert in den Labelkasten reinpasst. Bei 0 wird ein Teil nach unten verschwinden.						
+			g.drawString(sComponentLabelUsed,ixInBox+1,(int)this.getTileLabelHeight()-iFontOffsetUsed+1);//über dem Bild. 
 		} catch (ExceptionZZZ e) {
 			e.printStackTrace();
 		} catch (IOException e) {
@@ -345,6 +365,9 @@ public class TileTHM extends JPanel implements IMapPositionableTHM, IBackendPers
 
 	public KernelJPanelCascadedZZZ getMapPanel() {
 		return this.panelMap;
+	}
+	private void setMapPanel(KernelJPanelCascadedZZZ panelMap){
+		this.panelMap = panelMap;
 	}
 	
 	private void setMouseMotionHandler(TileMouseMotionHandlerTHM objHandler){

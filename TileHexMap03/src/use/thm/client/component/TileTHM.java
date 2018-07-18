@@ -295,7 +295,7 @@ public class TileTHM extends JPanel implements IMapPositionableTHM, IBackendPers
 			if(StringZZZ.isEmpty(sIconLabelFontSize)){ sIconLabelFontSize="8.0"; }
 			Float fltIconLabelFontSize = new Float(sIconLabelFontSize);
 			
-			//TODO GOON 20180718: Die Formel zu Berechnung mit dem ZoomFactor in die ini-DAtei ausgelagert.
+			//20180718: Die Formel zu Berechnung mit dem ZoomFactor in die ini-DAtei ausgelagert.
 			//Float fltIconLabelFontSizeUsed = fltIconLabelFontSize.floatValue() * iHexZoomFactor; 
 			Float fltIconLabelFontSizeUsed = fltIconLabelFontSize;
 			Font font = g.getFont().deriveFont( fltIconLabelFontSizeUsed.floatValue());	//Die Schriftgöße ändern, hier des aktuellen Fonts

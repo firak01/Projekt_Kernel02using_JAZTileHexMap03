@@ -321,8 +321,14 @@ public abstract class TroopVariant  extends KeyImmutable implements ITroopVarian
 				if(this.getCategorytext().equalsIgnoreCase("Infantry Unit")){ ////TODO GOON 20180703: Hier soll kein String mehr rein, sondern die ThisKey-Id einer entsprechenden CategoryText Tabelle.
 					objBufferedImageTransparentAndResized = UIHelper.cropImageByPoints(objBufferedImageTransparent, 0,50,60,10);	//Schneide das Bild erst aus dem Rahmen aus. Sehr viel vom unteren Rand weg, sehr viel vom linken Rand weg.
 					objBufferedImageTransparentAndResized = UIHelper.resizeImage(objBufferedImageTransparentAndResized, iIconWidth, iIconHeight);
+				}else if(this.getCategorytext().equalsIgnoreCase("Tank Unit")){
+					objBufferedImageTransparentAndResized = UIHelper.resizeImage(objBufferedImageTransparent, iIconWidth/1.15f, iIconHeight/1.15f);//Mache das Bild noch kleiner als bei normaler Infanterie.
+					
+					String sHexZoomFactor = objKernel.getParameterByProgramAlias(sModuleAlias, sProgramAlias, "HexZoomFactor" );			
+					int iHexZoomFactor = Integer.parseInt(sHexZoomFactor);	
+					objBufferedImageTransparentAndResized = UIHelper.cropImageByPoints(objBufferedImageTransparentAndResized, 0,(4*iHexZoomFactor), 0, 0);	//Schneide das Bild vom linken Rand aus. Ziel ist es wie bei gespiegelten Schiffen,										
 				}else{
-					objBufferedImageTransparentAndResized = UIHelper.resizeImage(objBufferedImageTransparent, iIconWidth-10, iIconHeight-5);
+					objBufferedImageTransparentAndResized = UIHelper.resizeImage(objBufferedImageTransparent, iIconWidth, iIconHeight);
 				}
 				
 							

@@ -324,7 +324,7 @@ public abstract class TroopVariant  extends KeyImmutable implements ITroopVarian
 				}else if(this.getCategorytext().equalsIgnoreCase("Tank Unit")){
 					objBufferedImageTransparentAndResized = UIHelper.resizeImage(objBufferedImageTransparent, iIconWidth/1.15f, iIconHeight/1.15f);//Mache das Bild noch kleiner als bei normaler Infanterie.
 					
-					String sHexZoomFactor = objKernel.getParameterByProgramAlias(sModuleAlias, sProgramAlias, "HexZoomFactor" );			
+					String sHexZoomFactor = objKernel.getParameterByProgramAlias(sModuleAlias, sProgramAlias, "HexZoomFactorInitial" );			
 					int iHexZoomFactor = Integer.parseInt(sHexZoomFactor);	
 					objBufferedImageTransparentAndResized = UIHelper.cropImageByPoints(objBufferedImageTransparentAndResized, 0,(4*iHexZoomFactor), 0, 0);	//Schneide das Bild vom linken Rand aus. Ziel ist es wie bei gespiegelten Schiffen,										
 				}else{
@@ -345,7 +345,7 @@ public abstract class TroopVariant  extends KeyImmutable implements ITroopVarian
 
 			}else if(sSubtype.equalsIgnoreCase("FL")){				
 				if(bImageWasFlipped){ //Merke: wenn das Bild vertikal gedreht wird, muss man auch die andere Seite abschneiden (hier: links), sonst bekommt man nur das Heck statt dem Bug - in das kleine HexFeld-Icon gepresst.
-					String sHexZoomFactor = objKernel.getParameterByProgramAlias(sModuleAlias, sProgramAlias, "HexZoomFactor" );			
+					String sHexZoomFactor = objKernel.getParameterByProgramAlias(sModuleAlias, sProgramAlias, "HexZoomFactorInitial" );			
 					int iHexZoomFactor = Integer.parseInt(sHexZoomFactor);										
 					objBufferedImageTransparentAndResized = UIHelper.resizeImage(objBufferedImageTransparent, iIconWidth/1.15f, iIconHeight/1.0f);	//Damit es noch nach etwas aussieht.... die Höhe nicht reduzieren.					
 					objBufferedImageTransparentAndResized = UIHelper.cropImageByPoints(objBufferedImageTransparentAndResized, 0, (5*iHexZoomFactor), 0, 0);	

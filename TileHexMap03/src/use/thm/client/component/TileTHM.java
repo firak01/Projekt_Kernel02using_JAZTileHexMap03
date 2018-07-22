@@ -209,7 +209,7 @@ public class TileTHM extends JPanel implements IMapPositionableTHM, IBackendPers
 			BufferedImage objBufferedImageTransparentAndResized = UIHelper.toBufferedImage(imageInByte);
 						
 			//+++++++++ Das Bild an der errechneten Postion (unterhalb des Labels) zeichnen.			
-			String sHexZoomFactor = objKernel.getParameterByProgramAlias(sModuleAlias, sProgramAlias, "HexZoomFactor" );
+			String sHexZoomFactor = objKernel.getParameterByProgramAlias(sModuleAlias, sProgramAlias, "HexZoomFactorInitial" );
 			int iHexZoomFactor = Integer.parseInt(sHexZoomFactor);
 			String sFontOffset = objKernel.getParameterByProgramAlias(sModuleAlias, sProgramAlias, "IconLabelFontOffsetHeight_float" );//Irgendwie die Fontgröße justieren in der Höhe. Wird dann auch vom HexMapZoomFaktor beeinflusst ...			//
 			Float fltFontOffset = new Float(sFontOffset);

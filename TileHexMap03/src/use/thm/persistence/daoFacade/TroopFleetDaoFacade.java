@@ -252,6 +252,21 @@ public class TroopFleetDaoFacade extends TileDaoFacade{
 	public boolean insertTroopFleet(String sUniqueName, TroopFleetVariant objTroopFleetVariant, AreaCell objArea) throws ExceptionZZZ{
 		boolean bReturn = false;
 		main:{
+			check:{
+			//Fehler können z.B. auftreten, wenn die Datenbank komplett leer ist... Dies hier abfangen.
+			if(objTroopFleetVariant==null){
+				String stemp = "Keine TroopFleetVariant übergeben.";
+				System.out.println(ReflectCodeZZZ.getMethodCurrentName() + ": " +stemp);
+				ExceptionZZZ ez = new ExceptionZZZ(stemp,ExceptionZZZ.iERROR_PARAMETER_MISSING, this,  ReflectCodeZZZ.getMethodCurrentName());
+				throw ez;		
+			}
+			if(objArea==null){
+				String stemp = "Keine Area übergeben.";
+				System.out.println(ReflectCodeZZZ.getMethodCurrentName() + ": " +stemp);
+				ExceptionZZZ ez = new ExceptionZZZ(stemp,ExceptionZZZ.iERROR_PARAMETER_MISSING, this,  ReflectCodeZZZ.getMethodCurrentName());
+				throw ez;		
+			}			
+		}//end check:
 			Integer intSubtypeUniqueNumberUsed  = null;
 			Integer intVariantUniqueNumberUsed  = null;			
 			additionalData:{

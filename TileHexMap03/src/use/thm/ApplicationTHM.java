@@ -24,6 +24,8 @@ import use.thm.persistence.model.TroopArmy;
 
 public class ApplicationTHM extends KernelUseObjectZZZ{
 	private String sBaseDirectoryImages = null;
+	private String sApplicationDirectoryDownload = null;
+	private static final String sINI_APPLICATION_DOWNLOADPATH = "ApplicationDownloadPath";
 	
 	public ApplicationTHM(KernelZZZ objKernel) throws ExceptionZZZ{
 		super(objKernel);
@@ -172,6 +174,35 @@ public class ApplicationTHM extends KernelUseObjectZZZ{
 		return this.sBaseDirectoryImages;
 	}
 	public void setBaseDirectoryStringForImages(String sBaseDirectory){
+		this.sBaseDirectoryImages = sBaseDirectory;
+	}
+	
+	public String getBaseDirectoryStringForDownload() throws ExceptionZZZ{
+		if(StringZZZ.isEmpty(this.sApplicationDirectoryDownload)){
+			
+			//Eclipse Workspace 
+//			File f = new File("");
+//		    String sPathEclipse = f.getAbsolutePath();
+//		    ReportLogZZZ.write(ReportLogZZZ.DEBUG, "Eclipse absolut path: " + sPathEclipse);
+	       //String sPathParent = sPathEclipse.substring(0, sPathEclipse.lastIndexOf(System.getProperty("file.separator")));
+		    
+//	       String sBaseDirectory = sPathEclipse + File.separator + "images";
+			
+		  //Der Download-Pfad liegt aber nicht im Eclipse Workspace, sollter er auch nicht weil sonst alles Mögliche in das GIT - Repository hochgeladen wird.		  
+		  String sBaseDirectory = this.getKernelObject().getParameter(ApplicationTHM.sINI_APPLICATION_DOWNLOADPATH);
+			if(sBaseDirectory==null){
+				String stemp = "Parameter existiert nicht in der Konfiguration auf Applikationsebene: '" + ApplicationTHM.sINI_APPLICATION_DOWNLOADPATH + "'";
+				System.out.println(ReflectCodeZZZ.getMethodCurrentName() + ": " +stemp);
+				ExceptionZZZ ez = new ExceptionZZZ(stemp,ExceptionZZZ.iERROR_CONFIGURATION_VALUE, this,  ReflectCodeZZZ.getMethodCurrentName());
+				throw ez;		
+			}
+		  ReportLogZZZ.write(ReportLogZZZ.DEBUG, "Application download path: " + sBaseDirectory);
+		  
+	       this.setBaseDirectoryStringForImages(sBaseDirectory);		       
+		}
+		return this.sBaseDirectoryImages;
+	}
+	public void setBaseDirectoryStringForDownloads(String sBaseDirectory){
 		this.sBaseDirectoryImages = sBaseDirectory;
 	}
 	

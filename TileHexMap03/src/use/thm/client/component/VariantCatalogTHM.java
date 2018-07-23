@@ -534,10 +534,10 @@ public class VariantCatalogTHM  extends KernelUseObjectZZZ implements IGhostGlas
 				System.out.println(ReflectCodeZZZ.getMethodCurrentName() + ": Suche Modul: '" + sModuleAlias +"'/ Program: '" + sProgramAlias + "'/ Parameter: 'IconWidth'");
 	
 				//TODO GOON FGL 20180630
-				String sIconWidthOnDrag = this.getKernelObject().getParameterByProgramAlias(sModuleAlias, sProgramAlias, "IconWidthOnDrag" );
-				int iIconWidthOnDrag = Integer.parseInt(sIconWidthOnDrag);					
+				String sIconWidthOnDrag = this.getKernelObject().getParameterByProgramAlias(sModuleAlias, sProgramAlias, "IconWidthOnDrag" );						
+				int iIconWidthOnDrag = StringZZZ.toInteger(sIconWidthOnDrag);
 				String sIconHeightOnDrag = this.getKernelObject().getParameterByProgramAlias(sModuleAlias, sProgramAlias, "IconHeightOnDrag" );
-				int iIconHeightOnDrag = Integer.parseInt(sIconHeightOnDrag);
+				int iIconHeightOnDrag = StringZZZ.toInteger(sIconHeightOnDrag);
 	    	 //+++++++++	  		    
 			 GhostPictureAdapter pictureAdapter = new GhostPictureAdapter(glassPane, sCatalogVariantEntryId, imageInByte, iIconWidthOnDrag, iIconHeightOnDrag);
 			 pictureAdapter.addGhostDropListener(listenerForDropToHexMap);

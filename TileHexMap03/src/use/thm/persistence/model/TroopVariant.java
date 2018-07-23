@@ -263,13 +263,15 @@ public abstract class TroopVariant  extends KeyImmutable implements ITroopVarian
 			//........... so an dieser Stelle im Code nichts geändert werden muss.
 						
 			//... Größen holen aus der Kernelkonfiguration
-			String sIconWidth = objKernel.getParameterByProgramAlias(sModuleAlias, sProgramAlias, "IconWidth" );			
-			int iIconWidth = Integer.parseInt(sIconWidth);				
+			String sIconWidth = objKernel.getParameterByProgramAlias(sModuleAlias, sProgramAlias, "IconWidth" );
+			float fIconWidth = StringZZZ.toFloat(sIconWidth);
+			
+						
 			String sIconHeight = objKernel.getParameterByProgramAlias(sModuleAlias, sProgramAlias, "IconHeight" );
-			int iIconHeight = Integer.parseInt(sIconHeight);
+			float fIconHeight = StringZZZ.toFloat(sIconHeight);
 			
 			//... Bild bearbeitet als Katalogeintrag
-			BufferedImage objBufferdImageResized = UIHelper.resizeImage(objBufferedImageOriginalUsed, iIconWidth, iIconHeight);
+			BufferedImage objBufferdImageResized = UIHelper.resizeImage(objBufferedImageOriginalUsed, fIconWidth, fIconHeight);
 			byte[] imageInByteCatalog = UIHelper.getByteArrayFromBufferedImage(objBufferdImageResized,"png");			
 			this.setImage01Catalog(imageInByteCatalog);			
 			long lngFileSizeCatalog = imageInByteCatalog.length;
@@ -285,12 +287,13 @@ public abstract class TroopVariant  extends KeyImmutable implements ITroopVarian
 			System.out.println(ReflectCodeZZZ.getMethodCurrentName() + ": Suche Modul: '" + sModuleAlias +"'/ Program: '" + sProgramAlias + "'/ Parameter: 'IconWidth'");
 				
 			//... Größen holen aus der Kernelkonfiguration
-			sIconWidth = objKernel.getParameterByProgramAlias(sModuleAlias, sProgramAlias, "IconWidth" );			
-			iIconWidth = Integer.parseInt(sIconWidth);				
+			sIconWidth = objKernel.getParameterByProgramAlias(sModuleAlias, sProgramAlias, "IconWidth" );							
+			fIconWidth = StringZZZ.toFloat(sIconWidth);
+			
+							
 			sIconHeight = objKernel.getParameterByProgramAlias(sModuleAlias, sProgramAlias, "IconHeight" );
-			iIconHeight = Integer.parseInt(sIconHeight);
-			
-			
+			fIconHeight = StringZZZ.toFloat(sIconHeight);
+						
 			//1. Versuche das Bild mit einem transparenten Hintergrund auszustatten:
 			//Beispielsansatz das Bild mit einem Transparenten Hintergund hinzubekommen:
 			//Ein ImageIcon zeichnen
@@ -320,15 +323,16 @@ public abstract class TroopVariant  extends KeyImmutable implements ITroopVarian
 			if(sSubtype.equalsIgnoreCase("AR")){
 				if(this.getCategorytext().equalsIgnoreCase("Infantry Unit")){ ////TODO GOON 20180703: Hier soll kein String mehr rein, sondern die ThisKey-Id einer entsprechenden CategoryText Tabelle.
 					objBufferedImageTransparentAndResized = UIHelper.cropImageByPoints(objBufferedImageTransparent, 0,50,60,10);	//Schneide das Bild erst aus dem Rahmen aus. Sehr viel vom unteren Rand weg, sehr viel vom linken Rand weg.
-					objBufferedImageTransparentAndResized = UIHelper.resizeImage(objBufferedImageTransparentAndResized, iIconWidth, iIconHeight);
+					objBufferedImageTransparentAndResized = UIHelper.resizeImage(objBufferedImageTransparentAndResized, fIconWidth, fIconHeight);
 				}else if(this.getCategorytext().equalsIgnoreCase("Tank Unit")){
-					objBufferedImageTransparentAndResized = UIHelper.resizeImage(objBufferedImageTransparent, iIconWidth/1.15f, iIconHeight/1.15f);//Mache das Bild noch kleiner als bei normaler Infanterie.
+					objBufferedImageTransparentAndResized = UIHelper.resizeImage(objBufferedImageTransparent, fIconWidth/1.15f, fIconHeight/1.15f);//Mache das Bild noch kleiner als bei normaler Infanterie.
 					
-					String sHexZoomFactor = objKernel.getParameterByProgramAlias(sModuleAlias, sProgramAlias, "HexZoomFactorInitial" );			
-					int iHexZoomFactor = Integer.parseInt(sHexZoomFactor);	
+					String sHexZoomFactor = objKernel.getParameterByProgramAlias(sModuleAlias, sProgramAlias, "HexZoomFactorAliasStart" );			
+					int iHexZoomFactor = StringZZZ.toInteger(sHexZoomFactor);
+							
 					objBufferedImageTransparentAndResized = UIHelper.cropImageByPoints(objBufferedImageTransparentAndResized, 0,(4*iHexZoomFactor), 0, 0);	//Schneide das Bild vom linken Rand aus. Ziel ist es wie bei gespiegelten Schiffen,										
 				}else{
-					objBufferedImageTransparentAndResized = UIHelper.resizeImage(objBufferedImageTransparent, iIconWidth, iIconHeight);
+					objBufferedImageTransparentAndResized = UIHelper.resizeImage(objBufferedImageTransparent, fIconWidth, fIconHeight);
 				}
 				
 							
@@ -345,16 +349,16 @@ public abstract class TroopVariant  extends KeyImmutable implements ITroopVarian
 
 			}else if(sSubtype.equalsIgnoreCase("FL")){				
 				if(bImageWasFlipped){ //Merke: wenn das Bild vertikal gedreht wird, muss man auch die andere Seite abschneiden (hier: links), sonst bekommt man nur das Heck statt dem Bug - in das kleine HexFeld-Icon gepresst.
-					String sHexZoomFactor = objKernel.getParameterByProgramAlias(sModuleAlias, sProgramAlias, "HexZoomFactorInitial" );			
-					int iHexZoomFactor = Integer.parseInt(sHexZoomFactor);										
-					objBufferedImageTransparentAndResized = UIHelper.resizeImage(objBufferedImageTransparent, iIconWidth/1.15f, iIconHeight/1.0f);	//Damit es noch nach etwas aussieht.... die Höhe nicht reduzieren.					
+					String sHexZoomFactor = objKernel.getParameterByProgramAlias(sModuleAlias, sProgramAlias, "HexZoomFactorAliasStart" );			
+					int iHexZoomFactor = StringZZZ.toInteger(sHexZoomFactor);						
+					objBufferedImageTransparentAndResized = UIHelper.resizeImage(objBufferedImageTransparent, fIconWidth/1.15f, fIconHeight/1.0f);	//Damit es noch nach etwas aussieht.... die Höhe nicht reduzieren.					
 					objBufferedImageTransparentAndResized = UIHelper.cropImageByPoints(objBufferedImageTransparentAndResized, 0, (5*iHexZoomFactor), 0, 0);	
 				}else{
 					objBufferedImageTransparentAndResized = objBufferedImageTransparent;
-					objBufferedImageTransparentAndResized = UIHelper.resizeImage(objBufferedImageTransparentAndResized, (iIconWidth), (iIconHeight));	//Damit es noch nach etwas aussieht.... die Höhe nicht reduzieren.
+					objBufferedImageTransparentAndResized = UIHelper.resizeImage(objBufferedImageTransparentAndResized, (fIconWidth), (fIconHeight));	//Damit es noch nach etwas aussieht.... die Höhe nicht reduzieren.
 				}			
 			}else{
-				objBufferedImageTransparentAndResized = UIHelper.resizeImage(objBufferedImageTransparent, iIconWidth, iIconHeight);		
+				objBufferedImageTransparentAndResized = UIHelper.resizeImage(objBufferedImageTransparent, fIconWidth, fIconHeight);		
 			}
 								
 			byte[] imageInByteHexmap = UIHelper.getByteArrayFromBufferedImage(objBufferedImageTransparentAndResized,"png");			
@@ -379,12 +383,14 @@ public abstract class TroopVariant  extends KeyImmutable implements ITroopVarian
 			
 			//... Größen holen aus der Kernelkonfiguration
 			sIconWidth = objKernel.getParameterByProgramAlias(sModuleAlias, sProgramAlias, "IconWidth" );			
-			iIconWidth = Integer.parseInt(sIconWidth);				
+			fIconWidth = StringZZZ.toFloat(sIconWidth);
+							
 			sIconHeight = objKernel.getParameterByProgramAlias(sModuleAlias, sProgramAlias, "IconHeight" );
-			iIconHeight = Integer.parseInt(sIconHeight);
+			fIconHeight = StringZZZ.toFloat(sIconHeight);
+			
 			
 			//... Bild bearbeitet als Dialogeintrag
-			BufferedImage objBufferdImage4DialogResized = UIHelper.resizeImage(objBufferedImageOriginalUsed, iIconWidth, iIconHeight);
+			BufferedImage objBufferdImage4DialogResized = UIHelper.resizeImage(objBufferedImageOriginalUsed, fIconWidth, fIconHeight);
 			byte[] imageInByteDialog = UIHelper.getByteArrayFromBufferedImage(objBufferdImage4DialogResized,"png");			
 			this.setImage01Dialog(imageInByteDialog);			
 			long lngFileSizeDialog = imageInByteDialog.length;
@@ -408,12 +414,14 @@ public abstract class TroopVariant  extends KeyImmutable implements ITroopVarian
 			
 			//... Größen holen aus der Kernelkonfiguration
 			sIconWidth = objKernel.getParameterByProgramAlias(sModuleAlias, sProgramAlias, "IconWidthOnDrag" );			
-			iIconWidth = Integer.parseInt(sIconWidth);				
+			fIconWidth = StringZZZ.toFloat(sIconWidth);
+						
 			sIconHeight = objKernel.getParameterByProgramAlias(sModuleAlias, sProgramAlias, "IconHeightOnDrag" );
-			iIconHeight = Integer.parseInt(sIconHeight);
+			fIconHeight = StringZZZ.toFloat(sIconHeight);
+			
 			
 			//... Bild bearbeitet als "Ziehen über das HEXFeld"
-			BufferedImage objBufferdImage4DragResized = UIHelper.resizeImage(objBufferedImageOriginalUsed, iIconWidth, iIconHeight);
+			BufferedImage objBufferdImage4DragResized = UIHelper.resizeImage(objBufferedImageOriginalUsed, fIconWidth, fIconHeight);
 			byte[] imageInByteDrag = UIHelper.getByteArrayFromBufferedImage(objBufferdImage4DragResized,"png");			
 			this.setImage01Drag(imageInByteDrag);			
 			long lngFileSizeDrag = imageInByteDrag.length;

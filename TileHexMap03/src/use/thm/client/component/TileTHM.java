@@ -188,9 +188,9 @@ public class TileTHM extends JPanel implements IMapPositionableTHM, IBackendPers
 			String sProgramAlias = this.getMapPanel().getProgramAlias();				
 			System.out.println(ReflectCodeZZZ.getMethodCurrentName() + ": Suche Modul: '" + sModuleAlias +"'/ Program: '" + sProgramAlias + "'/ Parameter: 'IconWidth'");
 			String sIconWidth = objKernel.getParameterByProgramAlias(sModuleAlias, sProgramAlias, "IconWidth" );
-			int iIconWidth = Integer.parseInt(sIconWidth);				
+			int iIconWidth = StringZZZ.toInteger(sIconWidth);				
 			String sIconHeight = objKernel.getParameterByProgramAlias(sModuleAlias, sProgramAlias, "IconHeight" );
-			int iIconHeight = Integer.parseInt(sIconHeight);
+			int iIconHeight = StringZZZ.toInteger(sIconHeight);
 			
 		    //+++++++++	
 			//20180630: Hier auf das BLOB-Objekt der DTO zugreifen!!! Welches aus der Variante stammt. Performanter. Es ist für jeden "Anwendungsfall" das Bild passend berechnet in der Datenbank gespeichert.
@@ -209,16 +209,10 @@ public class TileTHM extends JPanel implements IMapPositionableTHM, IBackendPers
 			BufferedImage objBufferedImageTransparentAndResized = UIHelper.toBufferedImage(imageInByte);
 						
 			//+++++++++ Das Bild an der errechneten Postion (unterhalb des Labels) zeichnen.			
-			String sHexZoomFactor = objKernel.getParameterByProgramAlias(sModuleAlias, sProgramAlias, "HexZoomFactorInitial" );
-			int iHexZoomFactor = Integer.parseInt(sHexZoomFactor);
+			String sHexZoomFactor = objKernel.getParameterByProgramAlias(sModuleAlias, sProgramAlias, "HexZoomFactorAliasStart" );
+			int iHexZoomFactor = StringZZZ.toInteger(sHexZoomFactor);
 			String sFontOffset = objKernel.getParameterByProgramAlias(sModuleAlias, sProgramAlias, "IconLabelFontOffsetHeight_float" );//Irgendwie die Fontgröße justieren in der Höhe. Wird dann auch vom HexMapZoomFaktor beeinflusst ...			//
-			Float fltFontOffset = new Float(sFontOffset);
-			float fFontOffset = fltFontOffset.floatValue();//z.B. 1.5f
-		
-			//TODO GOON 20180718: Die Formel zu Berechnung mit dem ZoomFactor in die ini-DAtei ausgelagert.
-			//int iFontOffsetUsed=(int) (fFontOffset*iHexZoomFactor);
-			int iFontOffsetUsed = (int) fFontOffset;
-			
+			int iFontOffsetUsed = StringZZZ.toInteger(sFontOffset);
 			
 			int iTileSideLength = this.getTileSideLength();
 			int iPositionIconInHeight = (iTileSideLength - iIconHeight - iFontOffsetUsed); //Darüber kommt noch die Schrift
@@ -255,15 +249,11 @@ public class TileTHM extends JPanel implements IMapPositionableTHM, IBackendPers
 			g.setColor(Color.white);
 			g.fillRect(ixInBox,iyInBox, iWidthInBox_full,iHeightInBox);
 			 
-			////TODO 20180705 ... und darüber dann den Kasten, nun mit grünem Hintergrund.			Das zeigt die HEALT an.
+			//20180705 ... und darüber dann den Kasten, nun mit grünem Hintergrund.			Das zeigt die HEALT an.
 			//Hole den Health Grad des Spielsteins aus dem aus dem DTO.
 			int iWidthInBox_used = 0;
 			Float fltHealth = this.getHealth();
 			if(fltHealth==null){
-//				iWidthInBox_used = 0;
-				
-				//TESTWEISE
-				//Float fltWithInBox_used = (new Float(iWidthInBox_full * fltHealth.floatValue());
 				Float fltWithInBox_used = new Float(iWidthInBox_full * 0.75);
 				iWidthInBox_used = fltWithInBox_used.intValue();
 			}else{

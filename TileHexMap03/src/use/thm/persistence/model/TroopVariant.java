@@ -8,6 +8,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.EnumSet;
+import java.util.HashMap;
 
 import javax.imageio.ImageIO;
 import javax.persistence.Access;
@@ -31,6 +32,7 @@ import javax.persistence.TableGenerator;
 import javax.persistence.Transient;
 import javax.swing.ImageIcon;
 
+import custom.zKernel.file.ini.FileIniZZZ;
 import use.thm.ApplicationSingletonTHM;
 import use.thm.persistence.interfaces.ITroopArmyVariantTHM;
 import use.thm.persistence.interfaces.ITroopVariantTHM;
@@ -261,7 +263,8 @@ public abstract class TroopVariant  extends KeyImmutable implements ITroopVarian
 			//... Bei der Größenermittlung steht momentan ein fester Wert.
 			//Ziel ist: Hole einen "Zoomwert" und rechne den festen Wert damit um.... in der ini-Konfiguration...
 			//........... so an dieser Stelle im Code nichts geändert werden muss.
-						
+			//... und hier für die Katalogbilder			
+			
 			//... Größen holen aus der Kernelkonfiguration
 			String sIconWidth = objKernel.getParameterByProgramAlias(sModuleAlias, sProgramAlias, "IconWidth" );
 			float fIconWidth = StringZZZ.toFloat(sIconWidth);
@@ -282,12 +285,22 @@ public abstract class TroopVariant  extends KeyImmutable implements ITroopVarian
 			//+++++++++++++++++++++++++
 			//3. ... Bild bearbeitet für die Darstellung in der Karte (wurde ohne diese Abspeicherung zuvor jedesmal in TileTHM.paintComponent() gemacht. Das "jedes Mal" Berechnen spart man sich nun.
 			//Hier wird versucht den weissen Rand zu entfernen und es wird ggfs. noch gesondert ausgeschnitten (crop).
-			sModuleAlias = "THM";//this.getModuleName();
+			sModuleAlias = "THM";					 //this.getModuleName();
 			sProgramAlias = "HexMapCentral"; //this.getProgramName();			
 			System.out.println(ReflectCodeZZZ.getMethodCurrentName() + ": Suche Modul: '" + sModuleAlias +"'/ Program: '" + sProgramAlias + "'/ Parameter: 'IconWidth'");
-				
+			
+			//20180711 Ziel ist: Hole einen "Zoomwert" und rechne den festen Wert damit um.... in der ini-Konfiguration...
+			//...........    so dass an dieser Stelle im Code nichts geändert werden muss.
+			HashMap<String,String>hmZoomFactor=ApplicationSingletonTHM.getInstance().getHashMapZoomFactor(sModuleAlias, sProgramAlias);
+			String sZoomFactor = hmZoomFactor.get("03"); //Merke: Dieser ZoomFaktor-Alias ist dann Bestandteil der Spaltennamen für das Bild. Also das Bild mit der passenden Größe.
+			
+			//Wichtig: Nun eine Variable im Ini-FileZZZ setzen, dann kann mit der Variablen die Größe der Icons - basierend auf der hinterlegten Formel - errechnet werden.
+			FileIniZZZ objIni = objKernel.getFileConfigIni();
+			objIni.setVariable("ZoomFactorUsed", sZoomFactor);
+			
+			
 			//... Größen holen aus der Kernelkonfiguration
-			sIconWidth = objKernel.getParameterByProgramAlias(sModuleAlias, sProgramAlias, "IconWidth" );							
+			sIconWidth = objKernel.getParameterByProgramAlias(objIni, sModuleAlias, sProgramAlias, "IconWidth" );							
 			fIconWidth = StringZZZ.toFloat(sIconWidth);
 			
 							
@@ -360,7 +373,14 @@ public abstract class TroopVariant  extends KeyImmutable implements ITroopVarian
 			}else{
 				objBufferedImageTransparentAndResized = UIHelper.resizeImage(objBufferedImageTransparent, fIconWidth, fIconHeight);		
 			}
-								
+			
+			
+			//TODO GOON 20180724: Die Bilddaten in die passende Spalte speichern.
+			//Die aufgerufene Methode muss für das Bild den Zoomfaktor im Namen haben. Nur so kommen die Bilddaten in die pasende Spalte 
+		    
+			
+
+			
 			byte[] imageInByteHexmap = UIHelper.getByteArrayFromBufferedImage(objBufferedImageTransparentAndResized,"png");			
 			this.setImage01Hexmap(imageInByteHexmap);			
 			long lngFileSizeHexmap = imageInByteHexmap.length; //Diese Infos braucht man, um das Bild wieder auszulesen. Oder?

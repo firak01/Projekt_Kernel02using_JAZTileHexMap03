@@ -27,6 +27,9 @@ public class ApplicationTHM extends KernelUseObjectZZZ{
 	private String sApplicationDirectoryDownload = null;
 	private static final String sINI_APPLICATION_DOWNLOADPATH = "ApplicationDownloadPath";
 	
+	private HashMap<String,String> hmZoomFactor = null;
+	
+	
 	public ApplicationTHM(KernelZZZ objKernel) throws ExceptionZZZ{
 		super(objKernel);
 	}
@@ -204,6 +207,40 @@ public class ApplicationTHM extends KernelUseObjectZZZ{
 	}
 	public void setBaseDirectoryStringForDownloads(String sBaseDirectory){
 		this.sBaseDirectoryImages = sBaseDirectory;
+	}
+	
+	
+	//#### METHODEN FÜR DIE ZOOMFUNKTIONALITÄT
+	public HashMap<String,String>getHashMapZoomFactor() throws ExceptionZZZ{
+		if(this.hmZoomFactor==null){
+			String sModule = this.getKernelObject().getApplicationKey();
+			this.getHashMapZoomFactor(sModule, "HexMapCentral");
+		}
+		return this.hmZoomFactor;
+	}
+	
+	public HashMap<String,String>getHashMapZoomFactor(String sModulAlias, String sProgramAlias) throws ExceptionZZZ{
+		if(this.hmZoomFactor==null){
+			
+			String stemp = this.getKernelObject().getParameterByProgramAlias(sModulAlias, sProgramAlias, "HexZoomFactorListInitial");
+			ReportLogZZZ.write(ReportLogZZZ.DEBUG, "HexZoomFactorListInitial as String " + stemp);
+			
+			if(!StringZZZ.isEmpty(stemp)){
+				this.hmZoomFactor = new HashMap<String,String>();
+				int icount=0;
+				String[] saTemp = StringZZZ.explode(stemp, ";");
+				for(String sZoomFactor : saTemp){
+					icount++;
+					String sCount = StringZZZ.right("0" + Integer.toString(icount),2);
+					this.hmZoomFactor.put(sCount, sZoomFactor);
+				}
+			}
+		}
+		return this.hmZoomFactor;
+	}
+	
+	public void setHashMapZoomFactor(HashMap<String,String> hmZoomFactor){
+		this.hmZoomFactor = hmZoomFactor;
 	}
 	
 	//#### METHODEN DER DATENBANKINITIALISIERUNG

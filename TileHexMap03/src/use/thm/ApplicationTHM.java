@@ -27,7 +27,8 @@ public class ApplicationTHM extends KernelUseObjectZZZ{
 	private String sApplicationDirectoryDownload = null;
 	private static final String sINI_APPLICATION_DOWNLOADPATH = "ApplicationDownloadPath";
 	
-	private HashMap<String,String> hmZoomFactor = null;
+	private HashMap<String,String> hmZoomFactorGui = null;
+	private HashMap<String,String> hmZoomFactorMap = null;
 	
 	
 	public ApplicationTHM(KernelZZZ objKernel) throws ExceptionZZZ{
@@ -211,36 +212,70 @@ public class ApplicationTHM extends KernelUseObjectZZZ{
 	
 	
 	//#### METHODEN FÜR DIE ZOOMFUNKTIONALITÄT
-	public HashMap<String,String>getHashMapZoomFactor() throws ExceptionZZZ{
-		if(this.hmZoomFactor==null){
+	public HashMap<String,String>getHashMapZoomFactorGui() throws ExceptionZZZ{
+		if(this.hmZoomFactorGui==null){
 			String sModule = this.getKernelObject().getApplicationKey();
-			this.getHashMapZoomFactor(sModule, "HexMapCentral");
+			this.getHashMapZoomFactorGui(sModule, "THM");
 		}
-		return this.hmZoomFactor;
+		return this.hmZoomFactorGui;
 	}
 	
-	public HashMap<String,String>getHashMapZoomFactor(String sModulAlias, String sProgramAlias) throws ExceptionZZZ{
-		if(this.hmZoomFactor==null){
+	public HashMap<String,String>getHashMapZoomFactorGui(String sModulAlias, String sProgramAlias) throws ExceptionZZZ{
+		if(this.hmZoomFactorGui==null){
 			
-			String stemp = this.getKernelObject().getParameterByProgramAlias(sModulAlias, sProgramAlias, "HexZoomFactorListInitial");
-			ReportLogZZZ.write(ReportLogZZZ.DEBUG, "HexZoomFactorListInitial as String " + stemp);
+			String stemp = this.getKernelObject().getParameterByProgramAlias(sModulAlias, sProgramAlias, "GuiZoomFactorListInitial");
+			ReportLogZZZ.write(ReportLogZZZ.DEBUG, "GuiZoomFactorListInitial as String " + stemp);
 			
 			if(!StringZZZ.isEmpty(stemp)){
-				this.hmZoomFactor = new HashMap<String,String>();
+				this.hmZoomFactorGui = new HashMap<String,String>();
 				int icount=0;
 				String[] saTemp = StringZZZ.explode(stemp, ";");
 				for(String sZoomFactor : saTemp){
 					icount++;
 					String sCount = StringZZZ.right("0" + Integer.toString(icount),2);
-					this.hmZoomFactor.put(sCount, sZoomFactor);
+					this.hmZoomFactorGui.put(sCount, sZoomFactor);
 				}
 			}
 		}
-		return this.hmZoomFactor;
+		return this.hmZoomFactorGui;
 	}
 	
-	public void setHashMapZoomFactor(HashMap<String,String> hmZoomFactor){
-		this.hmZoomFactor = hmZoomFactor;
+	public void setHashMapZoomFactorGui(HashMap<String,String> hmZoomFactor){
+		this.hmZoomFactorGui = hmZoomFactor;
+	}
+	
+	
+	
+	public HashMap<String,String>getHashMapZoomFactorMap() throws ExceptionZZZ{
+		if(this.hmZoomFactorMap==null){
+			String sModule = this.getKernelObject().getApplicationKey();
+			this.getHashMapZoomFactorMap(sModule, "HexMapCentral");
+		}
+		return this.hmZoomFactorMap;
+	}
+	
+	public HashMap<String,String>getHashMapZoomFactorMap(String sModulAlias, String sProgramAlias) throws ExceptionZZZ{
+		if(this.hmZoomFactorMap==null){
+			
+			String stemp = this.getKernelObject().getParameterByProgramAlias(sModulAlias, sProgramAlias, "HexZoomFactorListInitial");
+			ReportLogZZZ.write(ReportLogZZZ.DEBUG, "HexZoomFactorListInitial as String " + stemp);
+			
+			if(!StringZZZ.isEmpty(stemp)){
+				this.hmZoomFactorMap = new HashMap<String,String>();
+				int icount=0;
+				String[] saTemp = StringZZZ.explode(stemp, ";");
+				for(String sZoomFactor : saTemp){
+					icount++;
+					String sCount = StringZZZ.right("0" + Integer.toString(icount),2);
+					this.hmZoomFactorMap.put(sCount, sZoomFactor);
+				}
+			}
+		}
+		return this.hmZoomFactorMap;
+	}
+	
+	public void setHashMapZoomFactorMap(HashMap<String,String> hmZoomFactor){
+		this.hmZoomFactorMap = hmZoomFactor;
 	}
 	
 	//#### METHODEN DER DATENBANKINITIALISIERUNG

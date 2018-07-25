@@ -455,12 +455,14 @@ public class TileTHM extends JPanel implements IMapPositionableTHM, IBackendPers
 	public byte[] getVariantImageUsedInByte(){
 		//das wäre das Bild in normaler Größe return (byte[]) this.getDto().get(ITileDtoAttribute.VARIANT_IMAGE_IN_BYTE); //es müsste kliner gerechnet werden
 		//das kleiner und transparent gerechnete Bild
-		return (byte[]) this.getDto().get(ITileDtoAttribute.VARIANT_IMAGEHEXMAP_IN_BYTE);
-		//return (byte[]) this.getDto().get(ITileDtoAttribute.VARIANT_IMAGE_IN_BYTE);
+		
+		//TODO GOON 20180725: Das Bild passend zur Eingestellten Zoom Größe in der Applikation auswählen 
+		return (byte[]) this.getDto().get(ITileDtoAttribute.VARIANT_IMAGEHEXMAP_IN_BYTE_01);		
 	}
 	protected void setVariantImageUsedInByte(byte[] imageInByte){
 		//das wäre das Bild in normaler Größe   this.getDto().set(ITileDtoAttribute.VARIANT_IMAGE_IN_BYTE, imageInByte); //es müsste kliner gerechnet werden
-		this.getDto().set(ITileDtoAttribute.VARIANT_IMAGEHEXMAP_IN_BYTE, imageInByte);
+		//TODO GOON 20180725: Das Bild passend zur Eingestellten Zoom Größe in der Applikation auswählen 
+		this.getDto().set(ITileDtoAttribute.VARIANT_IMAGEHEXMAP_IN_BYTE_01, imageInByte);
 	}
 	
 	public Integer getInstanceVariantUniqueNumber(){

@@ -128,17 +128,19 @@ public class DebugTroopFleetDaoFacade {
 	                 dialog.add(new JLabel(objImageIconTemp)); //Das wäre, wenn man es direkt aus der Datei liest: new ImageIcon(ImageIO.read(getClass().getResourceAsStream(IMAGE_URL)))));	               
 				}
 				
+				//TODO GOON -  Über alle Bilder in einer Schleife _02, _03 gehen
 				//Das Bild für die Dialoganzeige über das DTO holen, gespeichert in der Datenbank
-				byte[] byteImageDialog = (byte[]) dto.get(ITileDtoAttribute.VARIANT_IMAGEDIALOG_IN_BYTE); 
+				byte[] byteImageDialog = (byte[]) dto.get(ITileDtoAttribute.VARIANT_IMAGEDIALOG_IN_BYTE_01); 
 				if(byteImageDialog!=null) {
 					BufferedImage objBufferedImageTemp = ImageIO.read(new ByteArrayInputStream(byteImageDialog));
 					ImageIcon objImageIconTemp = new ImageIcon(objBufferedImageTemp);
 				
 					dialog.add(new JLabel(objImageIconTemp)); //Für die Kataloganzeige reduzierte Datei
 				}
-				
+
+				//TODO GOON -  Über alle Bilder in einer Schleife _02, _03 gehen
 				//Das Bild für die Kataloganzeige über das DTO holen, gespeichert in der Datenbank
-				byte[] byteImageCatalog = (byte[]) dto.get(ITileDtoAttribute.VARIANT_IMAGECATALOG_IN_BYTE); 
+				byte[] byteImageCatalog = (byte[]) dto.get(ITileDtoAttribute.VARIANT_IMAGECATALOG_IN_BYTE_01); 
 				if(byteImageCatalog!=null) {
 					BufferedImage objBufferedImageTemp = ImageIO.read(new ByteArrayInputStream(byteImageCatalog));
 					ImageIcon objImageIconTemp = new ImageIcon(objBufferedImageTemp);
@@ -146,8 +148,9 @@ public class DebugTroopFleetDaoFacade {
 					dialog.add(new JLabel(objImageIconTemp)); //Für die Kataloganzeige reduzierte Datei
 				}
 				
+				//TODO GOON -  Über alle ZoomBilder in einer Schleife _02, _03, ... , _06 gehen
 				//Das Bild für das Ziehen über die Hexmap über das DTO holen, gespeichert in der Datenbank
-				byte[] byteImageDrag = (byte[]) dto.get(ITileDtoAttribute.VARIANT_IMAGEDRAG_IN_BYTE); 
+				byte[] byteImageDrag = (byte[]) dto.get(ITileDtoAttribute.VARIANT_IMAGEDRAG_IN_BYTE_01); 
 				if(byteImageDrag!=null) {
 					BufferedImage objBufferedImageTemp = ImageIO.read(new ByteArrayInputStream(byteImageDrag));
 					ImageIcon objImageIconTemp = new ImageIcon(objBufferedImageTemp);
@@ -155,8 +158,9 @@ public class DebugTroopFleetDaoFacade {
 					dialog.add(new JLabel(objImageIconTemp)); //Für die Kataloganzeige reduzierte Datei
 				}
 				
+				//TODO GOON -  Über alle ZoomBilder in einer Schleife _02, _03, ... , _06 gehen
 				//Das Bild für die Hexmap-Anzeige über das DTO holen, gespeichert in der Datenbank
-				byte[] byteImageHexmap = (byte[]) dto.get(ITileDtoAttribute.VARIANT_IMAGEHEXMAP_IN_BYTE); 
+				byte[] byteImageHexmap = (byte[]) dto.get(ITileDtoAttribute.VARIANT_IMAGEHEXMAP_IN_BYTE_01); 
 				if(byteImageHexmap!=null) {
 					BufferedImage objBufferedImageTemp = ImageIO.read(new ByteArrayInputStream(byteImageHexmap));
 					ImageIcon objImageIconTemp = new ImageIcon(objBufferedImageTemp);

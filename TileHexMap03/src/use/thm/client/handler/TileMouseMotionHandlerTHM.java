@@ -349,7 +349,8 @@ public class TileMouseMotionHandlerTHM extends MouseAdapter implements MouseMoti
 			//+++++++++++++++++++++++++++++
 			//Das ICON
 			//+++++++++++++++++++++++++++++
-			byte[] imageInByte = (byte[]) objDto.get(ITileDtoAttribute.VARIANT_IMAGEDIALOG_IN_BYTE); //Das unveränderte Bild aus der Datenbank, wird hier angezeigt.
+			//TODO GOON 20180725: Das Bild passend zur Eingestellten Zoom Größe in der Applikation auswählen 
+			byte[] imageInByte = (byte[]) objDto.get(ITileDtoAttribute.VARIANT_IMAGEDIALOG_IN_BYTE_01); //Das unveränderte Bild aus der Datenbank, wird hier angezeigt.
 			BufferedImage objBufferedImage = UIHelper.toBufferedImage(imageInByte);
 			
 			//Erst jetzt ein größenverändetes ImageIcon aus dem BufferedImage machen. Merke: Ein Image oder ein BufferedImage funktioniert in der JOptionPane nicht

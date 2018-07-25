@@ -654,11 +654,30 @@ public class TroopArmyDaoFacade extends TileDaoFacade{
 				dto.set(ITileDtoAttribute.VARIANT_IMAGE_URL_STRING,objTroopArmy.getTroopArmyVariantObject().getImageUrlString());
 				
 				//20180630: Nun das Bild ausch direkt als byte[] gespeichert aus der Datenbank holen.
-				dto.set(ITileDtoAttribute.VARIANT_IMAGE_IN_BYTE,objTroopArmy.getTroopArmyVariantObject().getImage01());
-				dto.set(ITileDtoAttribute.VARIANT_IMAGEDIALOG_IN_BYTE,objTroopArmy.getTroopArmyVariantObject().getImage01Dialog());
-				dto.set(ITileDtoAttribute.VARIANT_IMAGECATALOG_IN_BYTE,objTroopArmy.getTroopArmyVariantObject().getImage01Catalog());
-				dto.set(ITileDtoAttribute.VARIANT_IMAGEDRAG_IN_BYTE,objTroopArmy.getTroopArmyVariantObject().getImage01Drag());
-				dto.set(ITileDtoAttribute.VARIANT_IMAGEHEXMAP_IN_BYTE,objTroopArmy.getTroopArmyVariantObject().getImage01Hexmap());
+				dto.set(ITileDtoAttribute.VARIANT_IMAGE_IN_BYTE,objTroopArmy.getTroopArmyVariantObject().getImage());
+								
+				dto.set(ITileDtoAttribute.VARIANT_IMAGEDIALOG_IN_BYTE_01,objTroopArmy.getTroopArmyVariantObject().getImageDialog01());
+				dto.set(ITileDtoAttribute.VARIANT_IMAGEDIALOG_IN_BYTE_02,objTroopArmy.getTroopArmyVariantObject().getImageDialog02());
+				dto.set(ITileDtoAttribute.VARIANT_IMAGEDIALOG_IN_BYTE_03,objTroopArmy.getTroopArmyVariantObject().getImageDialog03());
+								
+				dto.set(ITileDtoAttribute.VARIANT_IMAGECATALOG_IN_BYTE_01,objTroopArmy.getTroopArmyVariantObject().getImageCatalog01());
+				dto.set(ITileDtoAttribute.VARIANT_IMAGECATALOG_IN_BYTE_02,objTroopArmy.getTroopArmyVariantObject().getImageCatalog02());
+				dto.set(ITileDtoAttribute.VARIANT_IMAGECATALOG_IN_BYTE_03,objTroopArmy.getTroopArmyVariantObject().getImageCatalog03());
+				
+				
+				dto.set(ITileDtoAttribute.VARIANT_IMAGEDRAG_IN_BYTE_01,objTroopArmy.getTroopArmyVariantObject().getImageDrag01());
+				dto.set(ITileDtoAttribute.VARIANT_IMAGEDRAG_IN_BYTE_02,objTroopArmy.getTroopArmyVariantObject().getImageDrag02());
+				dto.set(ITileDtoAttribute.VARIANT_IMAGEDRAG_IN_BYTE_03,objTroopArmy.getTroopArmyVariantObject().getImageDrag03());
+				dto.set(ITileDtoAttribute.VARIANT_IMAGEDRAG_IN_BYTE_04,objTroopArmy.getTroopArmyVariantObject().getImageDrag04());
+				dto.set(ITileDtoAttribute.VARIANT_IMAGEDRAG_IN_BYTE_05,objTroopArmy.getTroopArmyVariantObject().getImageDrag05());
+				dto.set(ITileDtoAttribute.VARIANT_IMAGEDRAG_IN_BYTE_06,objTroopArmy.getTroopArmyVariantObject().getImageDrag06());
+				
+				dto.set(ITileDtoAttribute.VARIANT_IMAGEHEXMAP_IN_BYTE_01,objTroopArmy.getTroopArmyVariantObject().getImageHexmap01());
+				dto.set(ITileDtoAttribute.VARIANT_IMAGEHEXMAP_IN_BYTE_02,objTroopArmy.getTroopArmyVariantObject().getImageHexmap02());
+				dto.set(ITileDtoAttribute.VARIANT_IMAGEHEXMAP_IN_BYTE_03,objTroopArmy.getTroopArmyVariantObject().getImageHexmap03());
+				dto.set(ITileDtoAttribute.VARIANT_IMAGEHEXMAP_IN_BYTE_04,objTroopArmy.getTroopArmyVariantObject().getImageHexmap04());
+				dto.set(ITileDtoAttribute.VARIANT_IMAGEHEXMAP_IN_BYTE_05,objTroopArmy.getTroopArmyVariantObject().getImageHexmap05());
+				dto.set(ITileDtoAttribute.VARIANT_IMAGEHEXMAP_IN_BYTE_06,objTroopArmy.getTroopArmyVariantObject().getImageHexmap06());
 											
 				if(objTroopArmy.getTroopArmyVariantObject().getImmutabletextObject()!=null){
 					dto.set(ITileDtoAttribute.VARIANT_SHORTTEXT, objTroopArmy.getTroopArmyVariantObject().getImmutabletextObject().getShorttext());	

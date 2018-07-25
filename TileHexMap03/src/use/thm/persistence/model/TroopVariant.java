@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.util.EnumSet;
 import java.util.HashMap;
+import java.util.Set;
 
 import javax.imageio.ImageIO;
 import javax.persistence.Access;
@@ -122,54 +123,143 @@ public abstract class TroopVariant  extends KeyImmutable implements ITroopVarian
 	//Blob selbst funtkioniert nicht bei dieser SQLIte Datenbank. Alternativer Lösungsversuch Speicherung als Byte-Array
 	//Das Bild der Spielsteinvariante (, noch nicht angepasst)
 	@Transient
-	private byte[] imageInByte01;
-	
+	private byte[] imageInByte;	
 	@Transient
-	private String sImageInByte01;
-	
+	private String sImageInByte;	
 	@Transient
-	private Long lngImageInByte01;
+	private Long lngImageInByte;
 	
 	//Das Bild der Spielsteinvariante für Katalog (, entsprechend angepasst)
 	@Transient
-	private byte[] imageInByte01Catalog;
+	private byte[] imageInByteCatalog01;
+	@Transient
+	private String sImageInByteCatalog01;
+	@Transient
+	private Long lngImageInByteCatalog01;
 	
 	@Transient
-	private String sImageInByte01Catalog;
+	private byte[] imageInByteCatalog02;
+	@Transient
+	private String sImageInByteCatalog02;
+	@Transient
+	private Long lngImageInByteCatalog02;
 	
 	@Transient
-	private Long lngImageInByte01Catalog;
+	private byte[] imageInByteCatalog03;
+	@Transient
+	private String sImageInByteCatalog03;
+	@Transient
+	private Long lngImageInByteCatalog03;
+	
+	//Das Bild der Spielsteinvariante für die Darst	ellung im Dialog (, entsprechend angepasst)
+	@Transient
+	private byte[] imageInByteDialog01;	
+	@Transient
+	private String sImageInByteDialog01;	
+	@Transient
+	private Long lngImageInByteDialog01;
+
+	@Transient
+	private byte[] imageInByteDialog02;	
+	@Transient
+	private String sImageInByteDialog02;	
+	@Transient
+	private Long lngImageInByteDialog02;
+	
+	@Transient
+	private byte[] imageInByteDialog03;	
+	@Transient
+	private String sImageInByteDialog03;	
+	@Transient
+	private Long lngImageInByteDialog03;
 	
 	//Das Bild der Spielsteinvariante für die Darstellung in der HexMap - Karte (, entsprechend angepasst)
 			@Transient
-			private byte[] imageInByte01Hexmap;
+			private byte[] imageInByteHexmap01;	
+			@Transient
+			private String sImageInByteHexmap01;			
+			@Transient
+			private Long lngImageInByteHexmap01;
 			
 			@Transient
-			private String sImageInByte01Hexmap;
+			private byte[] imageInByteHexmap02;	
+			@Transient
+			private String sImageInByteHexmap02;			
+			@Transient
+			private Long lngImageInByteHexmap02;
+	
+			@Transient
+			private byte[] imageInByteHexmap03;	
+			@Transient
+			private String sImageInByteHexmap03;			
+			@Transient
+			private Long lngImageInByteHexmap03;
 			
 			@Transient
-			private Long lngImageInByte01Hexmap;
-	
-	//Das Bild der Spielsteinvariante für die Darstellung im Dialog (, entsprechend angepasst)
-		@Transient
-		private byte[] imageInByte01Dialog;
-		
-		@Transient
-		private String sImageInByte01Dialog;
-		
-		@Transient
-		private Long lngImageInByte01Dialog;
-	
+			private byte[] imageInByteHexmap04;	
+			@Transient
+			private String sImageInByteHexmap04;			
+			@Transient
+			private Long lngImageInByteHexmap04;
+			
+			@Transient
+			private byte[] imageInByteHexmap05;	
+			@Transient
+			private String sImageInByteHexmap05;			
+			@Transient
+			private Long lngImageInByteHexmap05;
+			
+			@Transient
+			private byte[] imageInByteHexmap06;	
+			@Transient
+			private String sImageInByteHexmap06;			
+			@Transient
+			private Long lngImageInByteHexmap06;
+			
 		
 		//Das Bild der Spielsteinvariante für die Darstellung beim Ziehen über die HEXMAP (, entsprechend angepasst)
 				@Transient
-				private byte[] imageInByte01Drag;
+				private byte[] imageInByteDrag01;				
+				@Transient
+				private String sImageInByteDrag01;				
+				@Transient
+				private Long lngImageInByteDrag01;
 				
 				@Transient
-				private String sImageInByte01Drag;
+				private byte[] imageInByteDrag02;				
+				@Transient
+				private String sImageInByteDrag02;				
+				@Transient
+				private Long lngImageInByteDrag02;
 				
 				@Transient
-				private Long lngImageInByte01Drag;
+				private byte[] imageInByteDrag03;				
+				@Transient
+				private String sImageInByteDrag03;				
+				@Transient
+				private Long lngImageInByteDrag03;
+				
+				@Transient
+				private byte[] imageInByteDrag04;				
+				@Transient
+				private String sImageInByteDrag04;				
+				@Transient
+				private Long lngImageInByteDrag04;
+				
+				@Transient
+				private byte[] imageInByteDrag05;				
+				@Transient
+				private String sImageInByteDrag05;				
+				@Transient
+				private Long lngImageInByteDrag05;
+				
+				@Transient
+				private byte[] imageInByteDrag06;				
+				@Transient
+				private String sImageInByteDrag06;				
+				@Transient
+				private Long lngImageInByteDrag06;
+				
 				
 	//... und weitere Eigenschaften.
 	
@@ -231,10 +321,10 @@ public abstract class TroopVariant  extends KeyImmutable implements ITroopVarian
 			
 			/*Ansatz, direkt aus dem BufferedImage eine byte[] machen...*/				
 			byte[] imageInByte = UIHelper.getByteArrayFromBufferedImage(objBufferedImageOriginal,"png");			
-			this.setImage01(imageInByte);			
+			this.setImage(imageInByte);			
 			long lngFileSize = imageInByte.length; //Diese Infos braucht man, um das Bild wieder auszulesen. Oder?
-			this.setImage01Length(lngFileSize);
-			this.setImage01Name(sTileIconName);
+			this.setImageLength(lngFileSize);
+			this.setImageName(sTileIconName);
 			
 			//+++++++++++++++++++++++++++++++++++++++
 			String sSubtype = this.getSubtype();
@@ -253,59 +343,110 @@ public abstract class TroopVariant  extends KeyImmutable implements ITroopVarian
 			}
 			
 			
-			//++++++++++++++++++++++++++++++++++++++++
-			//2. Bild als Katalogeintrag
+			//##############################################################################################################
+			//BILDER IN VERSCHIEDENEN ZOOMFAKTOREN
+			//A) GUI-ZOOMFAKTOR
+			
+			//20180711 Ziel ist: Hole einen "Zoomwert" und rechne den festen Wert damit um.... in der ini-Konfiguration...
+			//...........    so dass an dieser Stelle im Code nichts geändert werden muss.			
 			sModuleAlias = "THM";//this.getModuleName();
-			sProgramAlias = "CatalogPanel"; //this.getProgramName();			
+			sProgramAlias = "THM"; //this.getProgramName();			
 			System.out.println(ReflectCodeZZZ.getMethodCurrentName() + ": Suche Modul: '" + sModuleAlias +"'/ Program: '" + sProgramAlias + "'/ Parameter: 'IconWidth'");
 			
-			//TODO GOON 20180711
-			//... Bei der Größenermittlung steht momentan ein fester Wert.
-			//Ziel ist: Hole einen "Zoomwert" und rechne den festen Wert damit um.... in der ini-Konfiguration...
-			//........... so an dieser Stelle im Code nichts geändert werden muss.
-			//... und hier für die Katalogbilder			
+			HashMap<String,String>hmZoomFactorGui=ApplicationSingletonTHM.getInstance().getHashMapZoomFactorGui(sModuleAlias, sProgramAlias);
+			Set<String>setZoomFactorAliasGUI=hmZoomFactorGui.keySet();
+			for(String sZoomFactorAlias : setZoomFactorAliasGUI){
+				String sZoomFactor = hmZoomFactorGui.get(sZoomFactorAlias); //Merke: Dieser ZoomFaktor-Alias ist dann Bestandteil der Spaltennamen für das Bild. Also das Bild mit der passenden Größe.
+				
+				//Wichtig: Nun eine Variable im Ini-FileZZZ setzen, dann kann mit der Variablen die Größe der Icons - basierend auf der hinterlegten Formel - errechnet werden.
+				FileIniZZZ objIni = objKernel.getFileConfigIni();
+				objIni.setVariable("ZoomFactorUsed", sZoomFactor);
 			
+			//++++++++++++++++++++++++++++++++++++++++
+			//A1. Bild als Katalogeintrag						
+				sModuleAlias = "THM";//this.getModuleName();
+				sProgramAlias = "CatalogPanel"; //this.getProgramName();			
+				System.out.println(ReflectCodeZZZ.getMethodCurrentName() + ": Suche Modul: '" + sModuleAlias +"'/ Program: '" + sProgramAlias + "'/ Parameter: 'IconWidth'");
+
 			//... Größen holen aus der Kernelkonfiguration
 			String sIconWidth = objKernel.getParameterByProgramAlias(sModuleAlias, sProgramAlias, "IconWidth" );
 			float fIconWidth = StringZZZ.toFloat(sIconWidth);
-			
-						
+								
 			String sIconHeight = objKernel.getParameterByProgramAlias(sModuleAlias, sProgramAlias, "IconHeight" );
 			float fIconHeight = StringZZZ.toFloat(sIconHeight);
 			
 			//... Bild bearbeitet als Katalogeintrag
 			BufferedImage objBufferdImageResized = UIHelper.resizeImage(objBufferedImageOriginalUsed, fIconWidth, fIconHeight);
-			byte[] imageInByteCatalog = UIHelper.getByteArrayFromBufferedImage(objBufferdImageResized,"png");			
-			this.setImage01Catalog(imageInByteCatalog);			
-			long lngFileSizeCatalog = imageInByteCatalog.length;
-			this.setImage01LengthCatalog(lngFileSizeCatalog);
-			this.setImage01NameCatalog(sTileIconName);
-					
+			byte[] imageInByteCatalog = UIHelper.getByteArrayFromBufferedImage(objBufferdImageResized,"png");	
 			
+			
+			//TODO GOON 20180725 ---- Rufe hier per Reflection jeweils die Methode für den passenden ZoomAlias auf.
+			this.setImageCatalog01(imageInByteCatalog);			
+			long lngFileSizeCatalog = imageInByteCatalog.length;
+			this.setImageCatalogLength01(lngFileSizeCatalog);
+			this.setImageCatalogName01(sTileIconName);
+					
+			//A2. Bild für das Öffnen der Detailangaben in einer Dialogbox
+			sModuleAlias = "THM";
+			sProgramAlias = "TileDetailDialog";
+			System.out.println(ReflectCodeZZZ.getMethodCurrentName() + ": Suche Modul: '" + sModuleAlias +"'/ Program: '" + sProgramAlias + "'/ Parameter: 'IconWidth'");
+			
+			//FALLS GILT: GENUTZT WERDEN SOLL DAS MODUL FÜR DIE GRÖSSENANGABEN AUF DER KARTE. Code stand ursprünglich in TileMouseMotionHandlerTHM.mouseClicked(..)
+			//String sModuleAlias = this.getTile().getMapPanel().getModuleName();
+			//String sProgramAlias = this.getTile().getMapPanel().getProgramAlias();			
+			
+			//FALLS GILT: GENUTZT WERDEN SOLL DAS MODUL FÜR DIE GRÖSSENANGABEN AUF DEM CATALOG
+			//		KernelJPanelCascadedZZZ objPanelToSearch = this.getTile().getMapPanel().getPanelNeighbour("WEST");			
+			//		String sModuleAlias = objPanelToSearch.getModuleName();
+			//		String sProgramAlias = objPanelToSearch.getProgramName();
+			
+			//... Größen holen aus der Kernelkonfiguration
+			sIconWidth = objKernel.getParameterByProgramAlias(sModuleAlias, sProgramAlias, "IconWidth" );			
+			fIconWidth = StringZZZ.toFloat(sIconWidth);
+							
+			sIconHeight = objKernel.getParameterByProgramAlias(sModuleAlias, sProgramAlias, "IconHeight" );
+			fIconHeight = StringZZZ.toFloat(sIconHeight);
+						
+			//... Bild bearbeitet als Dialogeintrag
+			BufferedImage objBufferdImage4DialogResized = UIHelper.resizeImage(objBufferedImageOriginalUsed, fIconWidth, fIconHeight);
+			byte[] imageInByteDialog = UIHelper.getByteArrayFromBufferedImage(objBufferdImage4DialogResized,"png");			
+			this.setImageDialog01(imageInByteDialog);			
+			long lngFileSizeDialog = imageInByteDialog.length;
+			this.setImageDialogLength01(lngFileSizeDialog);
+			this.setImageDialogName01(sTileIconName);
+			
+		 }//end for String sZoomFactorAlias : setZoomFactorAliasGUI){
+			
+			//####################################################################
+			//####################################################################################################
 			//+++++++++++++++++++++++++
-			//3. ... Bild bearbeitet für die Darstellung in der Karte (wurde ohne diese Abspeicherung zuvor jedesmal in TileTHM.paintComponent() gemacht. Das "jedes Mal" Berechnen spart man sich nun.
-			//Hier wird versucht den weissen Rand zu entfernen und es wird ggfs. noch gesondert ausgeschnitten (crop).
+			//A) KARTEN-ZOOMFAKTOR		
 			sModuleAlias = "THM";					 //this.getModuleName();
 			sProgramAlias = "HexMapCentral"; //this.getProgramName();			
 			System.out.println(ReflectCodeZZZ.getMethodCurrentName() + ": Suche Modul: '" + sModuleAlias +"'/ Program: '" + sProgramAlias + "'/ Parameter: 'IconWidth'");
 			
 			//20180711 Ziel ist: Hole einen "Zoomwert" und rechne den festen Wert damit um.... in der ini-Konfiguration...
 			//...........    so dass an dieser Stelle im Code nichts geändert werden muss.
-			HashMap<String,String>hmZoomFactor=ApplicationSingletonTHM.getInstance().getHashMapZoomFactor(sModuleAlias, sProgramAlias);
-			String sZoomFactor = hmZoomFactor.get("03"); //Merke: Dieser ZoomFaktor-Alias ist dann Bestandteil der Spaltennamen für das Bild. Also das Bild mit der passenden Größe.
+			HashMap<String,String>hmZoomFactor=ApplicationSingletonTHM.getInstance().getHashMapZoomFactorMap(sModuleAlias, sProgramAlias);
+			Set<String>setZoomFactorAlias=hmZoomFactor.keySet();
+			for(String sZoomFactorAlias : setZoomFactorAlias){
+			String sZoomFactor = hmZoomFactor.get(sZoomFactorAlias); //Merke: Dieser ZoomFaktor-Alias ist dann Bestandteil der Spaltennamen für das Bild. Also das Bild mit der passenden Größe.
 			
 			//Wichtig: Nun eine Variable im Ini-FileZZZ setzen, dann kann mit der Variablen die Größe der Icons - basierend auf der hinterlegten Formel - errechnet werden.
 			FileIniZZZ objIni = objKernel.getFileConfigIni();
 			objIni.setVariable("ZoomFactorUsed", sZoomFactor);
 			
+			//+++++++++++++++++++
+			//B1. ... Bild bearbeitet für die Darstellung in der Karte (wurde ohne diese Abspeicherung zuvor jedesmal in TileTHM.paintComponent() gemacht. Das "jedes Mal" Berechnen spart man sich nun.
+			sModuleAlias = "THM";					 //this.getModuleName();
+			sProgramAlias = "HexMapCentral"; //this.getProgramName();		
 			
 			//... Größen holen aus der Kernelkonfiguration
-			sIconWidth = objKernel.getParameterByProgramAlias(objIni, sModuleAlias, sProgramAlias, "IconWidth" );							
-			fIconWidth = StringZZZ.toFloat(sIconWidth);
-			
-							
-			sIconHeight = objKernel.getParameterByProgramAlias(sModuleAlias, sProgramAlias, "IconHeight" );
-			fIconHeight = StringZZZ.toFloat(sIconHeight);
+			String sIconWidth = objKernel.getParameterByProgramAlias(objIni, sModuleAlias, sProgramAlias, "IconWidth" );							
+			float fIconWidth = StringZZZ.toFloat(sIconWidth);
+									
+			String sIconHeight = objKernel.getParameterByProgramAlias(sModuleAlias, sProgramAlias, "IconHeight" );
+			float fIconHeight = StringZZZ.toFloat(sIconHeight);
 						
 			//1. Versuche das Bild mit einem transparenten Hintergrund auszustatten:
 			//Beispielsansatz das Bild mit einem Transparenten Hintergund hinzubekommen:
@@ -318,7 +459,8 @@ public abstract class TroopVariant  extends KeyImmutable implements ITroopVarian
 //			UIHelperAlphaIcon iconTransparent = new UIHelperAlphaIcon(icon, alpha);
 //			//UIHelperAlphaImageIcon iconTransparent = new UIHelperAlphaImageIcon(icon, alpha);
 //			iconTransparent.paintIcon(this, g, x, y);
-			
+		
+			//Hier wird versucht den weissen Rand zu entfernen und es wird ggfs. noch gesondert ausgeschnitten (crop).		
 			//Realisierter Ansatz, Farbe zum Transparent machen
 			Color color01 = new Color(255,255,255);//weiss
 						
@@ -377,51 +519,19 @@ public abstract class TroopVariant  extends KeyImmutable implements ITroopVarian
 			
 			//TODO GOON 20180724: Die Bilddaten in die passende Spalte speichern.
 			//Die aufgerufene Methode muss für das Bild den Zoomfaktor im Namen haben. Nur so kommen die Bilddaten in die pasende Spalte 
-		    
-			
 
-			
 			byte[] imageInByteHexmap = UIHelper.getByteArrayFromBufferedImage(objBufferedImageTransparentAndResized,"png");			
-			this.setImage01Hexmap(imageInByteHexmap);			
+			this.setImageHexmap01(imageInByteHexmap);			
 			long lngFileSizeHexmap = imageInByteHexmap.length; //Diese Infos braucht man, um das Bild wieder auszulesen. Oder?
-			this.setImage01LengthHexmap(lngFileSizeHexmap);
-			this.setImage01NameHexmap(sTileIconName);
-			
-			//4. Bild für das Öffnen der Detailangaben in einer Dialogbox
-			sModuleAlias = "THM";
-			sProgramAlias = "TileDetailDialog"	;
-			System.out.println(ReflectCodeZZZ.getMethodCurrentName() + ": Suche Modul: '" + sModuleAlias +"'/ Program: '" + sProgramAlias + "'/ Parameter: 'IconWidth'");
-			
-			//FALLS GILT: GENUTZT WERDEN SOLL DAS MODUL FÜR DIE GRÖSSENANGABEN AUF DER KARTE. Code stand ursprünglich in TileMouseMotionHandlerTHM.mouseClicked(..)
-			//String sModuleAlias = this.getTile().getMapPanel().getModuleName();
-			//String sProgramAlias = this.getTile().getMapPanel().getProgramAlias();			
-			
-			//FALLS GILT: GENUTZT WERDEN SOLL DAS MODUL FÜR DIE GRÖSSENANGABEN AUF DEM CATALOG
-			//		KernelJPanelCascadedZZZ objPanelToSearch = this.getTile().getMapPanel().getPanelNeighbour("WEST");			
-			//		String sModuleAlias = objPanelToSearch.getModuleName();
-			//		String sProgramAlias = objPanelToSearch.getProgramName();
-			
-			//... Größen holen aus der Kernelkonfiguration
-			sIconWidth = objKernel.getParameterByProgramAlias(sModuleAlias, sProgramAlias, "IconWidth" );			
-			fIconWidth = StringZZZ.toFloat(sIconWidth);
-							
-			sIconHeight = objKernel.getParameterByProgramAlias(sModuleAlias, sProgramAlias, "IconHeight" );
-			fIconHeight = StringZZZ.toFloat(sIconHeight);
+			this.setImageHexmapLength01(lngFileSizeHexmap);
+			this.setImageHexmapName01(sTileIconName);
 			
 			
-			//... Bild bearbeitet als Dialogeintrag
-			BufferedImage objBufferdImage4DialogResized = UIHelper.resizeImage(objBufferedImageOriginalUsed, fIconWidth, fIconHeight);
-			byte[] imageInByteDialog = UIHelper.getByteArrayFromBufferedImage(objBufferdImage4DialogResized,"png");			
-			this.setImage01Dialog(imageInByteDialog);			
-			long lngFileSizeDialog = imageInByteDialog.length;
-			this.setImage01LengthDialog(lngFileSizeDialog);
-			this.setImage01NameDialog(sTileIconName);
-			
-			
-			//5. Bild für das Ziehen über die Karte (im Glasspane, per GhostPictureAdapter, der bei der Erstellung der Katalogboxen erzeugt wird.)
-			sModuleAlias = "THM";
-			sProgramAlias = "CatalogPanel"	;
-			System.out.println(ReflectCodeZZZ.getMethodCurrentName() + ": Suche Modul: '" + sModuleAlias +"'/ Program: '" + sProgramAlias + "'/ Parameter: 'IconWidth'");
+			//++++++++++++++++++++++++++++++++++
+			//B2. Bild für das Ziehen über die Karte (im Glasspane, per GhostPictureAdapter, der bei der Erstellung der Katalogboxen erzeugt wird.)
+//			sModuleAlias = "THM";
+//			sProgramAlias = "CatalogPanel"	;
+//			System.out.println(ReflectCodeZZZ.getMethodCurrentName() + ": Suche Modul: '" + sModuleAlias +"'/ Program: '" + sProgramAlias + "'/ Parameter: 'IconWidth'");
 			
 			//FALLS GILT: GENUTZT WERDEN SOLL DAS MODUL FÜR DIE GRÖSSENANGABEN AUF DER KARTE. Code stand ursprünglich in TileMouseMotionHandlerTHM.mouseClicked(..)
 			//String sModuleAlias = this.getTile().getMapPanel().getModuleName();
@@ -443,11 +553,12 @@ public abstract class TroopVariant  extends KeyImmutable implements ITroopVarian
 			//... Bild bearbeitet als "Ziehen über das HEXFeld"
 			BufferedImage objBufferdImage4DragResized = UIHelper.resizeImage(objBufferedImageOriginalUsed, fIconWidth, fIconHeight);
 			byte[] imageInByteDrag = UIHelper.getByteArrayFromBufferedImage(objBufferdImage4DragResized,"png");			
-			this.setImage01Drag(imageInByteDrag);			
+			this.setImageDrag01(imageInByteDrag);			
 			long lngFileSizeDrag = imageInByteDrag.length;
-			this.setImage01LengthDrag(lngFileSizeDrag);
-			this.setImage01NameDrag(sTileIconName);
+			this.setImageDragLength01(lngFileSizeDrag);
+			this.setImageDragName01(sTileIconName);
 			
+			}//end for String sZoomFactorAlias : setZoomFactorAlias){
 			
 			} catch (ExceptionZZZ e) {
 				// TODO Auto-generated catch block
@@ -583,151 +694,523 @@ public abstract class TroopVariant  extends KeyImmutable implements ITroopVarian
 	 	@Access(AccessType.PROPERTY)
 		//ABER SQLite: Probleme beim Holen der Daten per HQL. ... @Lob auch ohne dies Annotation wird ein blob in der Datenbank angelegt... UND Nur so kann dann per HQL wieder auf diese Zelle zugegriffen werden. 
 		//Merke: dependent on the hibernate version, the Lob annotation could have no type parameter. quote from here: @Lob no longer has attributes, the lob type (CLOB, BLOB) is guessed. If the underlying type is a String or an array of character then CLOB are used. Othersise BLOB are used.		
-		@Column(name="image01", nullable=false)	
-		public  byte[] getImage01() {
-			return this.imageInByte01;
+		@Column(name="image", nullable=false)	
+		public  byte[] getImage() {
+			return this.imageInByte;
 		}		
-		public void setImage01(byte[] imageBlob) {
-			this.imageInByte01 = imageBlob;
+		public void setImage(byte[] imageBlob) {
+			this.imageInByte = imageBlob;
 		}
 		
 		@Access(AccessType.PROPERTY)
-		@Column(name="image01name", nullable=false)
-		public String getImage01Name() {
-			return this.sImageInByte01;
+		@Column(name="imageName", nullable=false)
+		public String getImageName() {
+			return this.sImageInByte;
 		}
-		public void setImage01Name(String sFileName) {
-			this.sImageInByte01 = sFileName;
+		public void setImageName(String sFileName) {
+			this.sImageInByte = sFileName;
 		}
 		
 		@Access(AccessType.PROPERTY)
-		@Column(name="image01length", nullable=false)
-		public long getImage01Length() {
-			return this.lngImageInByte01;
+		@Column(name="imageLength", nullable=false)
+		public long getImageLength() {
+			return this.lngImageInByte;
 		}
-		public void setImage01Length(long lngFileSize) {
-			this.lngImageInByte01 = lngFileSize;
+		public void setImageLength(long lngFileSize) {
+			this.lngImageInByte = lngFileSize;
 		}
 		
 		
 		//### DAS BILD FÜR DIE KATLOGAUSWAHL IN DER DATENBANK ABSPEICHERN. EIN BILD IST PFLICHT !
-	 	@Access(AccessType.PROPERTY)
-		//ABER SQLite: Probleme beim Holen der Daten per HQL. ... @Lob auch ohne dies Annotation wird ein blob in der Datenbank angelegt... UND Nur so kann dann per HQL wieder auf diese Zelle zugegriffen werden. 
-		//Merke: dependent on the hibernate version, the Lob annotation could have no type parameter. quote from here: @Lob no longer has attributes, the lob type (CLOB, BLOB) is guessed. If the underlying type is a String or an array of character then CLOB are used. Othersise BLOB are used.		
-		@Column(name="CatalogImage01", nullable=false)	
-		public  byte[] getImage01Catalog() {
-			return this.imageInByte01Catalog;
+	 	@Access(AccessType.PROPERTY)		
+		@Column(name="ImageCatalog01", nullable=false)	
+		public  byte[] getImageCatalog01() {
+			return this.imageInByteCatalog01;
 		}		
-		public void setImage01Catalog(byte[] imageInByte) {
-			this.imageInByte01Catalog = imageInByte;
+		public void setImageCatalog01(byte[] imageInByte) {
+			this.imageInByteCatalog01 = imageInByte;
 		}
 		
-		@Access(AccessType.PROPERTY)
-		@Column(name="CatalogImage01name", nullable=false)
-		public String getImage01NameCatalog() {
-			return this.sImageInByte01Catalog;
-		}
-		public void setImage01NameCatalog(String sFileName) {
-			this.sImageInByte01Catalog = sFileName;
-		}
-		
-		@Access(AccessType.PROPERTY)
-		@Column(name="CatalogImage01length", nullable=false)
-		public long getImage01LengthCatalog() {
-			return this.lngImageInByte01Catalog;
-		}
-		public void setImage01LengthCatalog(long lngFileSize) {
-			this.lngImageInByte01Catalog = lngFileSize;
-		}
-		
-		//### DAS BILD FÜR DIE DARSTELLUNG IN DER KARTE IN DER DATENBANK ABSPEICHERN. EIN BILD IST PFLICHT !
-	 	@Access(AccessType.PROPERTY)
-		//ABER SQLite: Probleme beim Holen der Daten per HQL. ... @Lob auch ohne dies Annotation wird ein blob in der Datenbank angelegt... UND Nur so kann dann per HQL wieder auf diese Zelle zugegriffen werden. 
-		//Merke: dependent on the hibernate version, the Lob annotation could have no type parameter. quote from here: @Lob no longer has attributes, the lob type (CLOB, BLOB) is guessed. If the underlying type is a String or an array of character then CLOB are used. Othersise BLOB are used.		
-		@Column(name="HexmapImage01", nullable=false)	
-		public  byte[] getImage01Hexmap() {
-			return this.imageInByte01Hexmap;
+		@Access(AccessType.PROPERTY)		
+		@Column(name="ImageCatalog02", nullable=false)	
+		public  byte[] getImageCatalog02() {
+			return this.imageInByteCatalog02;
 		}		
-		public void setImage01Hexmap(byte[] imageInByte) {
-			this.imageInByte01Hexmap = imageInByte;
+		public void setImageCatalog02(byte[] imageInByte) {
+			this.imageInByteCatalog02 = imageInByte;
+		}
+		
+		@Access(AccessType.PROPERTY)		
+		@Column(name="ImageCatalog03", nullable=false)	
+		public  byte[] getImageCatalog03() {
+			return this.imageInByteCatalog03;
+		}		
+		public void setImageCatalog03(byte[] imageInByte) {
+			this.imageInByteCatalog03 = imageInByte;
+		}
+		
+		
+		@Access(AccessType.PROPERTY)
+		@Column(name="ImageCatalogName01", nullable=false)
+		public String getImageCatalogName01() {
+			return this.sImageInByteCatalog01;
+		}
+		public void setImageCatalogName01(String sFileName) {
+			this.sImageInByteCatalog01 = sFileName;
+		}
+				
+		@Access(AccessType.PROPERTY)
+		@Column(name="ImageCatalogName02", nullable=false)
+		public String getImageCatalogName02() {
+			return this.sImageInByteCatalog02;
+		}
+		public void setImageCatalogName02(String sFileName) {
+			this.sImageInByteCatalog02 = sFileName;
 		}
 		
 		@Access(AccessType.PROPERTY)
-		@Column(name="HexmapImage01name", nullable=false)
-		public String getImage01NameHexmap() {
-			return this.sImageInByte01Hexmap;
+		@Column(name="ImageCatalogName03", nullable=false)
+		public String getImageCatalogName03() {
+			return this.sImageInByteCatalog03;
 		}
-		public void setImage01NameHexmap(String sFileName) {
-			this.sImageInByte01Hexmap = sFileName;
+		public void setImageCatalogName03(String sFileName) {
+			this.sImageInByteCatalog03 = sFileName;
+		}
+		
+		
+		@Access(AccessType.PROPERTY)
+		@Column(name="ImageCatalogLength01", nullable=false)
+		public long getImageCatalogLength01() {
+			return this.lngImageInByteCatalog01;
+		}
+		public void setImageCatalogLength01(long lngFileSize) {
+			this.lngImageInByteCatalog01 = lngFileSize;
 		}
 		
 		@Access(AccessType.PROPERTY)
-		@Column(name="HexmapImage01length", nullable=false)
-		public long getImage01LengthHexmap() {
-			return this.lngImageInByte01Hexmap;
+		@Column(name="ImageCatalogLength02", nullable=false)
+		public long getImageCatalogLength02() {
+			return this.lngImageInByteCatalog02;
 		}
-		public void setImage01LengthHexmap(long lngFileSize) {
-			this.lngImageInByte01Hexmap = lngFileSize;
+		public void setImageCatalogLength02(long lngFileSize) {
+			this.lngImageInByteCatalog02 = lngFileSize;
+		}
+		
+		@Access(AccessType.PROPERTY)
+		@Column(name="ImageCatalogLength03", nullable=false)
+		public long getImageCatalogLength03() {
+			return this.lngImageInByteCatalog03;
+		}
+		public void setImageCatalogLength03(long lngFileSize) {
+			this.lngImageInByteCatalog03 = lngFileSize;
 		}
 		
 		//### DAS BILD FÜR DIE DARSTELLUNG IM DIALOG IN DER DATENBANK ABSPEICHERN. EIN BILD IST PFLICHT !
-	 	@Access(AccessType.PROPERTY)
-		//ABER SQLite: Probleme beim Holen der Daten per HQL. ... @Lob auch ohne dies Annotation wird ein blob in der Datenbank angelegt... UND Nur so kann dann per HQL wieder auf diese Zelle zugegriffen werden. 
-		//Merke: dependent on the hibernate version, the Lob annotation could have no type parameter. quote from here: @Lob no longer has attributes, the lob type (CLOB, BLOB) is guessed. If the underlying type is a String or an array of character then CLOB are used. Othersise BLOB are used.		
-		@Column(name="DialogImage01", nullable=false)	
-		public  byte[] getImage01Dialog() {
-			return this.imageInByte01Dialog;
+	 	@Access(AccessType.PROPERTY)			
+		@Column(name="ImageDialog01", nullable=false)	
+		public  byte[] getImageDialog01() {
+			return this.imageInByteDialog01;
 		}		
-		public void setImage01Dialog(byte[] imageInByte) {
-			this.imageInByte01Dialog = imageInByte;
+		public void setImageDialog01(byte[] imageInByte) {
+			this.imageInByteDialog01 = imageInByte;
+		}
+		
+		@Access(AccessType.PROPERTY)			
+		@Column(name="ImageDialog02", nullable=false)	
+		public  byte[] getImageDialog02() {
+			return this.imageInByteDialog02;
+		}		
+		public void setImageDialog02(byte[] imageInByte) {
+			this.imageInByteDialog02 = imageInByte;
+		}
+		
+		@Access(AccessType.PROPERTY)			
+		@Column(name="ImageDialog03", nullable=false)	
+		public  byte[] getImageDialog03() {
+			return this.imageInByteDialog03;
+		}		
+		public void setImageDialog03(byte[] imageInByte) {
+			this.imageInByteDialog03 = imageInByte;
 		}
 		
 		@Access(AccessType.PROPERTY)
-		@Column(name="DialogImage01name", nullable=false)
-		public String getImage01NameDialog() {
-			return this.sImageInByte01Dialog;
+		@Column(name="ImageDialogName01", nullable=false)
+		public String getImageDialogName01() {
+			return this.sImageInByteDialog01;
 		}
-		public void setImage01NameDialog(String sFileName) {
-			this.sImageInByte01Dialog = sFileName;
+		public void setImageDialogName01(String sFileName) {
+			this.sImageInByteDialog01 = sFileName;
 		}
 		
 		@Access(AccessType.PROPERTY)
-		@Column(name="DialogImage01length", nullable=false)
-		public long getImage01LengthDialog() {
-			return this.lngImageInByte01Dialog;
+		@Column(name="ImageDialogName02", nullable=false)
+		public String getImageDialogName02() {
+			return this.sImageInByteDialog02;
 		}
-		public void setImage01LengthDialog(long lngFileSize) {
-			this.lngImageInByte01Dialog = lngFileSize;
+		public void setImageDialogName02(String sFileName) {
+			this.sImageInByteDialog02 = sFileName;
 		}
 		
+		@Access(AccessType.PROPERTY)
+		@Column(name="ImageDialogName03", nullable=false)
+		public String getImageDialogName03() {
+			return this.sImageInByteDialog03;
+		}
+		public void setImageDialogName03(String sFileName) {
+			this.sImageInByteDialog03 = sFileName;
+		}
+		
+		@Access(AccessType.PROPERTY)
+		@Column(name="ImageDialogLength01", nullable=false)
+		public long getImageDialogLength01() {
+			return this.lngImageInByteDialog01;
+		}
+		public void setImageDialogLength01(long lngFileSize) {
+			this.lngImageInByteDialog01 = lngFileSize;
+		}
+		
+		@Access(AccessType.PROPERTY)
+		@Column(name="ImageDialogLength02", nullable=false)
+		public long getImageDialogLength02() {
+			return this.lngImageInByteDialog02;
+		}
+		public void setImageDialogLength02(long lngFileSize) {
+			this.lngImageInByteDialog02 = lngFileSize;
+		}
+		
+		@Access(AccessType.PROPERTY)
+		@Column(name="ImageDialogLength03", nullable=false)
+		public long getImageDialogLength03() {
+			return this.lngImageInByteDialog03;
+		}
+		public void setImageDialogLength03(long lngFileSize) {
+			this.lngImageInByteDialog03 = lngFileSize;
+		}
+		
+		//### DAS BILD FÜR DIE DARSTELLUNG IN DER KARTE IN DER DATENBANK ABSPEICHERN. EIN BILD IST PFLICHT !
+	 	@Access(AccessType.PROPERTY)			
+		@Column(name="ImageHexmap01", nullable=false)	
+		public  byte[] getImageHexmap01() {
+			return this.imageInByteHexmap01;
+		}		
+		public void setImageHexmap01(byte[] imageInByte) {
+			this.imageInByteHexmap01 = imageInByte;
+		}
+		
+		@Access(AccessType.PROPERTY)			
+		@Column(name="ImageHexmap02", nullable=false)	
+		public  byte[] getImageHexmap02() {
+			return this.imageInByteHexmap02;
+		}		
+		public void setImageHexmap02(byte[] imageInByte) {
+			this.imageInByteHexmap02 = imageInByte;
+		}
+		
+		@Access(AccessType.PROPERTY)			
+		@Column(name="ImageHexmap03", nullable=false)	
+		public  byte[] getImageHexmap03() {
+			return this.imageInByteHexmap03;
+		}		
+		public void setImageHexmap03(byte[] imageInByte) {
+			this.imageInByteHexmap03 = imageInByte;
+		}
+		
+		@Access(AccessType.PROPERTY)			
+		@Column(name="ImageHexmap04", nullable=false)	
+		public  byte[] getImageHexmap04() {
+			return this.imageInByteHexmap04;
+		}		
+		public void setImageHexmap04(byte[] imageInByte) {
+			this.imageInByteHexmap04 = imageInByte;
+		}
+		
+		@Access(AccessType.PROPERTY)			
+		@Column(name="ImageHexmap05", nullable=false)	
+		public  byte[] getImageHexmap05() {
+			return this.imageInByteHexmap05;
+		}		
+		public void setImageHexmap05(byte[] imageInByte) {
+			this.imageInByteHexmap05 = imageInByte;
+		}
+		
+		@Access(AccessType.PROPERTY)			
+		@Column(name="ImageHexmap06", nullable=false)	
+		public  byte[] getImageHexmap06() {
+			return this.imageInByteHexmap06;
+		}		
+		public void setImageHexmap06(byte[] imageInByte) {
+			this.imageInByteHexmap06 = imageInByte;
+		}
+		
+		@Access(AccessType.PROPERTY)
+		@Column(name="ImageHexmapName01", nullable=false)
+		public String getImageHexmapName01() {
+			return this.sImageInByteHexmap01;
+		}
+		public void setImageHexmapName01(String sFileName) {
+			this.sImageInByteHexmap01 = sFileName;
+		}
+		
+		@Access(AccessType.PROPERTY)
+		@Column(name="ImageHexmapName02", nullable=false)
+		public String getImageHexmapName02() {
+			return this.sImageInByteHexmap02;
+		}
+		public void setImageHexmapName02(String sFileName) {
+			this.sImageInByteHexmap02 = sFileName;
+		}
+		
+		@Access(AccessType.PROPERTY)
+		@Column(name="ImageHexmapName03", nullable=false)
+		public String getImageHexmapName03() {
+			return this.sImageInByteHexmap03;
+		}
+		public void setImageHexmapName03(String sFileName) {
+			this.sImageInByteHexmap03 = sFileName;
+		}
+		
+		@Access(AccessType.PROPERTY)
+		@Column(name="ImageHexmapName04", nullable=false)
+		public String getImageHexmapName04() {
+			return this.sImageInByteHexmap04;
+		}
+		public void setImageHexmapName04(String sFileName) {
+			this.sImageInByteHexmap04 = sFileName;
+		}
+		
+		@Access(AccessType.PROPERTY)
+		@Column(name="ImageHexmapName05", nullable=false)
+		public String getImageHexmapName05() {
+			return this.sImageInByteHexmap05;
+		}
+		public void setImageHexmapName05(String sFileName) {
+			this.sImageInByteHexmap05 = sFileName;
+		}
+		
+		@Access(AccessType.PROPERTY)
+		@Column(name="ImageHexmapName06", nullable=false)
+		public String getImageHexmapName06() {
+			return this.sImageInByteHexmap06;
+		}
+		public void setImageHexmapName06(String sFileName) {
+			this.sImageInByteHexmap06 = sFileName;
+		}
+		
+		@Access(AccessType.PROPERTY)
+		@Column(name="ImageHexmapLength01", nullable=false)
+		public long getImageHexmapLength01() {
+			return this.lngImageInByteHexmap01;
+		}
+		public void setImageHexmapLength01(long lngFileSize) {
+			this.lngImageInByteHexmap01 = lngFileSize;
+		}
+		
+		@Access(AccessType.PROPERTY)
+		@Column(name="ImageHexmapLength02", nullable=false)
+		public long getImageHexmapLength02() {
+			return this.lngImageInByteHexmap02;
+		}
+		public void setImageHexmapLength02(long lngFileSize) {
+			this.lngImageInByteHexmap02 = lngFileSize;
+		}
+		
+		@Access(AccessType.PROPERTY)
+		@Column(name="ImageHexmapLength03", nullable=false)
+		public long getImageHexmapLength03() {
+			return this.lngImageInByteHexmap03;
+		}
+		public void setImageHexmapLength03(long lngFileSize) {
+			this.lngImageInByteHexmap03 = lngFileSize;
+		}
+		
+		@Access(AccessType.PROPERTY)
+		@Column(name="ImageHexmapLength04", nullable=false)
+		public long getImageHexmapLength04() {
+			return this.lngImageInByteHexmap04;
+		}
+		public void setImageHexmapLength04(long lngFileSize) {
+			this.lngImageInByteHexmap04 = lngFileSize;
+		}
+		
+		@Access(AccessType.PROPERTY)
+		@Column(name="ImageHexmapLength05", nullable=false)
+		public long getImageHexmapLength05() {
+			return this.lngImageInByteHexmap05;
+		}
+		public void setImageHexmapLength05(long lngFileSize) {
+			this.lngImageInByteHexmap05 = lngFileSize;
+		}
+		
+		@Access(AccessType.PROPERTY)
+		@Column(name="ImageHexmapLength06", nullable=false)
+		public long getImageHexmapLength06() {
+			return this.lngImageInByteHexmap06;
+		}
+		public void setImageHexmapLength06(long lngFileSize) {
+			this.lngImageInByteHexmap06 = lngFileSize;
+		}
+
 		//### DAS BILD FÜR DIE DARSTELLUNG BEIM ZIEHEN ÜBER DIE HEXKARTE. EIN BILD IST PFLICHT !
-	 	@Access(AccessType.PROPERTY)
-		//ABER SQLite: Probleme beim Holen der Daten per HQL. ... @Lob auch ohne dies Annotation wird ein blob in der Datenbank angelegt... UND Nur so kann dann per HQL wieder auf diese Zelle zugegriffen werden. 
-		//Merke: dependent on the hibernate version, the Lob annotation could have no type parameter. quote from here: @Lob no longer has attributes, the lob type (CLOB, BLOB) is guessed. If the underlying type is a String or an array of character then CLOB are used. Othersise BLOB are used.		
-		@Column(name="DragImage01", nullable=false)	
-		public  byte[] getImage01Drag() {
-			return this.imageInByte01Drag;
+	 	@Access(AccessType.PROPERTY)	
+		@Column(name="ImageDrag01", nullable=false)	
+		public  byte[] getImageDrag01() {
+			return this.imageInByteDrag01;
 		}		
-		public void setImage01Drag(byte[] imageInByte) {
-			this.imageInByte01Drag = imageInByte;
+		public void setImageDrag01(byte[] imageInByte) {
+			this.imageInByteDrag01 = imageInByte;
+		}
+		
+		@Access(AccessType.PROPERTY)	
+		@Column(name="ImageDrag02", nullable=false)	
+		public  byte[] getImageDrag02() {
+			return this.imageInByteDrag02;
+		}		
+		public void setImageDrag02(byte[] imageInByte) {
+			this.imageInByteDrag02 = imageInByte;
+		}
+		
+		@Access(AccessType.PROPERTY)	
+		@Column(name="ImageDrag03", nullable=false)	
+		public  byte[] getImageDrag03() {
+			return this.imageInByteDrag03;
+		}		
+		public void setImageDrag03(byte[] imageInByte) {
+			this.imageInByteDrag03 = imageInByte;
+		}
+		
+		@Access(AccessType.PROPERTY)	
+		@Column(name="ImageDrag04", nullable=false)	
+		public  byte[] getImageDrag04() {
+			return this.imageInByteDrag04;
+		}		
+		public void setImageDrag04(byte[] imageInByte) {
+			this.imageInByteDrag04 = imageInByte;
+		}
+		
+		@Access(AccessType.PROPERTY)	
+		@Column(name="ImageDrag05", nullable=false)	
+		public  byte[] getImageDrag05() {
+			return this.imageInByteDrag05;
+		}		
+		public void setImageDrag05(byte[] imageInByte) {
+			this.imageInByteDrag05 = imageInByte;
+		}
+		
+		@Access(AccessType.PROPERTY)	
+		@Column(name="ImageDrag06", nullable=false)	
+		public  byte[] getImageDrag06() {
+			return this.imageInByteDrag06;
+		}		
+		public void setImageDrag06(byte[] imageInByte) {
+			this.imageInByteDrag06 = imageInByte;
 		}
 		
 		@Access(AccessType.PROPERTY)
-		@Column(name="DragImage01name", nullable=false)
-		public String getImage01NameDrag() {
-			return this.sImageInByte01Drag;
+		@Column(name="ImageDragName01", nullable=false)
+		public String getImageDragName01() {
+			return this.sImageInByteDrag01;
 		}
-		public void setImage01NameDrag(String sFileName) {
-			this.sImageInByte01Drag = sFileName;
+		public void setImageDragName01(String sFileName) {
+			this.sImageInByteDrag01 = sFileName;
 		}
 		
 		@Access(AccessType.PROPERTY)
-		@Column(name="DragImage01length", nullable=false)
-		public long getImage01LengthDrag() {
-			return this.lngImageInByte01Drag;
+		@Column(name="ImageDragName02", nullable=false)
+		public String getImageDragName02() {
+			return this.sImageInByteDrag02;
 		}
-		public void setImage01LengthDrag(long lngFileSize) {
-			this.lngImageInByte01Drag = lngFileSize;
+		public void setImageDragName02(String sFileName) {
+			this.sImageInByteDrag02 = sFileName;
+		}
+		
+		@Access(AccessType.PROPERTY)
+		@Column(name="ImageDragName03", nullable=false)
+		public String getImageDragName03() {
+			return this.sImageInByteDrag03;
+		}
+		public void setImageDragName03(String sFileName) {
+			this.sImageInByteDrag03 = sFileName;
+		}
+		
+		@Access(AccessType.PROPERTY)
+		@Column(name="ImageDragName04", nullable=false)
+		public String getImageDragName04() {
+			return this.sImageInByteDrag04;
+		}
+		public void setImageDragName04(String sFileName) {
+			this.sImageInByteDrag04 = sFileName;
+		}
+		
+		@Access(AccessType.PROPERTY)
+		@Column(name="ImageDragName05", nullable=false)
+		public String getImageDragName05() {
+			return this.sImageInByteDrag05;
+		}
+		public void setImageDragName05(String sFileName) {
+			this.sImageInByteDrag05 = sFileName;
+		}
+		
+		@Access(AccessType.PROPERTY)
+		@Column(name="ImageDragName06", nullable=false)
+		public String getImageDragName06() {
+			return this.sImageInByteDrag06;
+		}
+		public void setImageDragName06(String sFileName) {
+			this.sImageInByteDrag06 = sFileName;
+		}
+		
+		@Access(AccessType.PROPERTY)
+		@Column(name="ImageDragLength01", nullable=false)
+		public long getImageDragLength01() {
+			return this.lngImageInByteDrag01;
+		}
+		public void setImageDragLength01(long lngFileSize) {
+			this.lngImageInByteDrag01 = lngFileSize;
+		}
+		
+		@Access(AccessType.PROPERTY)
+		@Column(name="ImageDragLength02", nullable=false)
+		public long getImageDragLength02() {
+			return this.lngImageInByteDrag02;
+		}
+		public void setImageDragLength02(long lngFileSize) {
+			this.lngImageInByteDrag02 = lngFileSize;
+		}
+		
+		@Access(AccessType.PROPERTY)
+		@Column(name="ImageDragLength03", nullable=false)
+		public long getImageDragLength03() {
+			return this.lngImageInByteDrag03;
+		}
+		public void setImageDragLength03(long lngFileSize) {
+			this.lngImageInByteDrag03 = lngFileSize;
+		}
+		
+		@Access(AccessType.PROPERTY)
+		@Column(name="ImageDragLength04", nullable=false)
+		public long getImageDragLength04() {
+			return this.lngImageInByteDrag04;
+		}
+		public void setImageDragLength04(long lngFileSize) {
+			this.lngImageInByteDrag04 = lngFileSize;
+		}
+		
+		@Access(AccessType.PROPERTY)
+		@Column(name="ImageDragLength05", nullable=false)
+		public long getImageDragLength05() {
+			return this.lngImageInByteDrag05;
+		}
+		public void setImageDragLength05(long lngFileSize) {
+			this.lngImageInByteDrag05 = lngFileSize;
+		}
+		
+		@Access(AccessType.PROPERTY)
+		@Column(name="ImageDragLength06", nullable=false)
+		public long getImageDragLength06() {
+			return this.lngImageInByteDrag06;
+		}
+		public void setImageDragLength06(long lngFileSize) {
+			this.lngImageInByteDrag06 = lngFileSize;
 		}
 	 
 	 //#### abstracte Methoden

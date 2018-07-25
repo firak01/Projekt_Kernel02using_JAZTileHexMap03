@@ -272,7 +272,8 @@ public class VariantCatalogTHM  extends KernelUseObjectZZZ implements IGhostGlas
 			  boxCreated = this.createBoxObject(sCatalogVariantEntryId, sTileLabel, sTileIconName);
 			*/
 			
-			byte[] imageInByte = objEntity.getImage01Catalog(); //Diese Catalog Bilder sind in der Größe reduziert.
+			//TODO GOON 20180725: Lies das Bild gemäß des in der Applikation eingestellten ZOOMFaktors für GUI aus.
+			byte[] imageInByte = objEntity.getImageCatalog01(); //Diese Catalog Bilder sind in der Größe reduziert.
 					
 			boxCreated = this.createBoxObject(sCatalogVariantEntryId, sTileLabel, imageInByte);
 			this.getMapCatalog().put(sVariantId, sCatalogVariantEntryId, boxCreated);
@@ -370,7 +371,9 @@ public class VariantCatalogTHM  extends KernelUseObjectZZZ implements IGhostGlas
 				  boxCreated = this.createBoxObject(sCatalogVariantEntryId, sTileLabel, sTileIconName);
 				*/
 				
-				byte[] imageInByte = objEntity.getImage01Catalog(); //Diese Catalog Bilder sind in der Größe reduziert.
+			
+			//TODO GOON 20180725: Lies das Bild gemäß des in der Applikation eingestellten ZOOMFAKTORS für GUI aus.  
+				byte[] imageInByte = objEntity.getImageCatalog01(); //Diese Catalog Bilder sind in der Größe reduziert.
 						
 				boxCreated = this.createBoxObject(sCatalogVariantEntryId, sTileLabel, imageInByte);
 			  this.getMapCatalog().put(sVariantId, sCatalogVariantEntryId, boxCreated);

@@ -372,7 +372,9 @@ public class VariantCatalogTHM  extends KernelUseObjectZZZ implements IGhostGlas
 				*/
 				
 			
-			//TODO GOON 20180725: Lies das Bild gemäß des in der Applikation eingestellten ZOOMFAKTORS für GUI aus.  
+			//TODO GOON 20180725: Lies das Bild gemäß des in der Applikation eingestellten ZOOMFAKTORS für GUI aus. 
+			
+			
 				byte[] imageInByte = objEntity.getImageCatalog01(); //Diese Catalog Bilder sind in der Größe reduziert.
 						
 				boxCreated = this.createBoxObject(sCatalogVariantEntryId, sTileLabel, imageInByte);

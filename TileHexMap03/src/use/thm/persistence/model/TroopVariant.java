@@ -7,6 +7,8 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.Serializable;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.Set;
@@ -41,6 +43,7 @@ import use.thm.persistence.interfaces.enums.IEnumSetTextTHM;
 import use.thm.persistence.interfaces.enums.IEnumSetTroopArmyVariantTHM;
 import use.thm.persistence.interfaces.enums.IEnumSetTroopFleetVariantTHM;
 import use.thm.persistence.model.Immutabletext.EnumImmutabletext;
+import base.reflection.ReflectionUtil;
 import basic.persistence.model.IFieldDescription;
 import basic.persistence.model.IOptimisticLocking;
 import basic.zBasic.ExceptionZZZ;
@@ -295,7 +298,8 @@ public abstract class TroopVariant  extends KeyImmutable implements ITroopVarian
 		 //... noch weitere Infos
 		 try{
 			 KernelZZZ objKernel = ApplicationSingletonTHM.getInstance().getKernelObject();
-		 	
+		 	 
+			 
 			 //+++++++++++++++++++++++++++++++
 			 //1. Bild als Grundlage, unverändert....
 			 String sModuleAlias = "THM";//this.getModuleName();
@@ -360,7 +364,7 @@ public abstract class TroopVariant  extends KeyImmutable implements ITroopVarian
 				
 				//Wichtig: Nun eine Variable im Ini-FileZZZ setzen, dann kann mit der Variablen die Größe der Icons - basierend auf der hinterlegten Formel - errechnet werden.
 				FileIniZZZ objIni = objKernel.getFileConfigIni();
-				objIni.setVariable("ZoomFactorUsed", sZoomFactor);
+				objIni.setVariable("GuiZoomFactorUsed", sZoomFactor);
 			
 			//++++++++++++++++++++++++++++++++++++++++
 			//A1. Bild als Katalogeintrag						
@@ -381,11 +385,28 @@ public abstract class TroopVariant  extends KeyImmutable implements ITroopVarian
 			
 			
 			//TODO GOON 20180725 ---- Rufe hier per Reflection jeweils die Methode für den passenden ZoomAlias auf.
-			this.setImageCatalog01(imageInByteCatalog);			
+			//Method mtest = ReflectionUtil.findMethodForMethodName("use.thm.persistence.model.TroopArmyVariant", "getImage01");
+			//byte[]byteImage=(byte[]) mtest.invoke(this, null);
+			
+			//this.setImageCatalog01(imageInByteCatalog);
+			String sMethodNameCatalog = "setImageCatalog"+sZoomFactorAlias;
+			Method mtestCatalog = ReflectionUtil.findMethodForMethodName("use.thm.persistence.model.TroopArmyVariant", sMethodNameCatalog);
+			mtestCatalog.invoke(this, imageInByteCatalog);
+			
+						
 			long lngFileSizeCatalog = imageInByteCatalog.length;
-			this.setImageCatalogLength01(lngFileSizeCatalog);
-			this.setImageCatalogName01(sTileIconName);
-					
+			//this.setImageCatalogLength01(lngFileSizeCatalog);
+			String sMethodNameCatalogLength = "setImageCatalogLength"+sZoomFactorAlias;
+			Method mtestCatalogLength = ReflectionUtil.findMethodForMethodName("use.thm.persistence.model.TroopArmyVariant", sMethodNameCatalogLength);
+			mtestCatalogLength.invoke(this, lngFileSizeCatalog);
+			
+			String sTileIconNameZoomed = sTileIconName + "_x_" + sZoomFactor;
+			//this.setImageCatalogName01(sTileIconNameZoomed);
+			String sMethodNameCatalogName = "setImageCatalogName"+sZoomFactorAlias;
+			Method mtestCatalogName = ReflectionUtil.findMethodForMethodName("use.thm.persistence.model.TroopArmyVariant", sMethodNameCatalogName);
+			mtestCatalogName.invoke(this, sTileIconNameZoomed);
+			
+            //++++++++++++++++++++++++++++++++++++++++++++++++++
 			//A2. Bild für das Öffnen der Detailangaben in einer Dialogbox
 			sModuleAlias = "THM";
 			sProgramAlias = "TileDetailDialog";
@@ -409,11 +430,25 @@ public abstract class TroopVariant  extends KeyImmutable implements ITroopVarian
 						
 			//... Bild bearbeitet als Dialogeintrag
 			BufferedImage objBufferdImage4DialogResized = UIHelper.resizeImage(objBufferedImageOriginalUsed, fIconWidth, fIconHeight);
-			byte[] imageInByteDialog = UIHelper.getByteArrayFromBufferedImage(objBufferdImage4DialogResized,"png");			
-			this.setImageDialog01(imageInByteDialog);			
+			byte[] imageInByteDialog = UIHelper.getByteArrayFromBufferedImage(objBufferdImage4DialogResized,"png");	
+
+			//this.setImageDialog01(imageInByteDialog);		
+			String sMethodNameDialog = "setImageDialog"+sZoomFactorAlias;
+			Method mtestDialog = ReflectionUtil.findMethodForMethodName("use.thm.persistence.model.TroopArmyVariant", sMethodNameDialog);
+			mtestDialog.invoke(this, imageInByteDialog);
+			
 			long lngFileSizeDialog = imageInByteDialog.length;
-			this.setImageDialogLength01(lngFileSizeDialog);
-			this.setImageDialogName01(sTileIconName);
+			//this.setImageDialogLength01(lngFileSizeDialog);
+			String sMethodNameDialogLength = "setImageDialogLength"+sZoomFactorAlias;
+			Method mtestDialogLength = ReflectionUtil.findMethodForMethodName("use.thm.persistence.model.TroopArmyVariant", sMethodNameDialogLength);
+			mtestDialogLength.invoke(this, lngFileSizeDialog);
+		
+			//String sTileIconNameZoomed = sTileIconName + "_x_" + sZoomFactor;
+			//this.setImageDialogName01(sTileIconNameZoomed);
+			String sMethodNameDialogName = "setImageDialogName"+sZoomFactorAlias;
+			Method mtestDialogName = ReflectionUtil.findMethodForMethodName("use.thm.persistence.model.TroopArmyVariant", sMethodNameDialogName);
+			mtestDialogName.invoke(this, sTileIconNameZoomed);
+			
 			
 		 }//end for String sZoomFactorAlias : setZoomFactorAliasGUI){
 			
@@ -434,7 +469,7 @@ public abstract class TroopVariant  extends KeyImmutable implements ITroopVarian
 			
 			//Wichtig: Nun eine Variable im Ini-FileZZZ setzen, dann kann mit der Variablen die Größe der Icons - basierend auf der hinterlegten Formel - errechnet werden.
 			FileIniZZZ objIni = objKernel.getFileConfigIni();
-			objIni.setVariable("ZoomFactorUsed", sZoomFactor);
+			objIni.setVariable("HexZoomFactorUsed", sZoomFactor);
 			
 			//+++++++++++++++++++
 			//B1. ... Bild bearbeitet für die Darstellung in der Karte (wurde ohne diese Abspeicherung zuvor jedesmal in TileTHM.paintComponent() gemacht. Das "jedes Mal" Berechnen spart man sich nun.
@@ -521,17 +556,29 @@ public abstract class TroopVariant  extends KeyImmutable implements ITroopVarian
 			//Die aufgerufene Methode muss für das Bild den Zoomfaktor im Namen haben. Nur so kommen die Bilddaten in die pasende Spalte 
 
 			byte[] imageInByteHexmap = UIHelper.getByteArrayFromBufferedImage(objBufferedImageTransparentAndResized,"png");			
-			this.setImageHexmap01(imageInByteHexmap);			
-			long lngFileSizeHexmap = imageInByteHexmap.length; //Diese Infos braucht man, um das Bild wieder auszulesen. Oder?
-			this.setImageHexmapLength01(lngFileSizeHexmap);
-			this.setImageHexmapName01(sTileIconName);
+			//this.setImageHexmap01(imageInByteHexmap);			
+			String sMethodNameHexmap = "setImageHexmap"+sZoomFactorAlias;
+			Method mtestHexmap = ReflectionUtil.findMethodForMethodName("use.thm.persistence.model.TroopArmyVariant", sMethodNameHexmap);
+			mtestHexmap.invoke(this, imageInByteHexmap);
+			
+			long lngFileSizeHexmap = imageInByteHexmap.length; //Diese Infos braucht man, um das Bild wieder auszulesen. Oder?			
+			//this.setImageHexmapLength01(lngFileSizeHexmap);
+			String sMethodNameHexmapLength = "setImageHexmapLength"+sZoomFactorAlias;
+			Method mtestHexmapLength = ReflectionUtil.findMethodForMethodName("use.thm.persistence.model.TroopArmyVariant", sMethodNameHexmapLength);
+			mtestHexmapLength.invoke(this, lngFileSizeHexmap);
+		
+			String sTileIconNameZoomed = sTileIconName + "_x_" + sZoomFactor;
+			//this.setImageHexmapName01(sTileIconNameZoomed);
+			String sMethodNameHexmapName = "setImageHexmapName"+sZoomFactorAlias;
+			Method mtestHexmapName = ReflectionUtil.findMethodForMethodName("use.thm.persistence.model.TroopArmyVariant", sMethodNameHexmapName);
+			mtestHexmapName.invoke(this, sTileIconNameZoomed);
 			
 			
 			//++++++++++++++++++++++++++++++++++
 			//B2. Bild für das Ziehen über die Karte (im Glasspane, per GhostPictureAdapter, der bei der Erstellung der Katalogboxen erzeugt wird.)
-//			sModuleAlias = "THM";
-//			sProgramAlias = "CatalogPanel"	;
-//			System.out.println(ReflectCodeZZZ.getMethodCurrentName() + ": Suche Modul: '" + sModuleAlias +"'/ Program: '" + sProgramAlias + "'/ Parameter: 'IconWidth'");
+			sModuleAlias = "THM";
+			sProgramAlias = "CatalogPanel"	;			
+			System.out.println(ReflectCodeZZZ.getMethodCurrentName() + ": Suche Modul: '" + sModuleAlias +"'/ Program: '" + sProgramAlias + "'/ Parameter: 'IconWidth'");			
 			
 			//FALLS GILT: GENUTZT WERDEN SOLL DAS MODUL FÜR DIE GRÖSSENANGABEN AUF DER KARTE. Code stand ursprünglich in TileMouseMotionHandlerTHM.mouseClicked(..)
 			//String sModuleAlias = this.getTile().getMapPanel().getModuleName();
@@ -553,17 +600,41 @@ public abstract class TroopVariant  extends KeyImmutable implements ITroopVarian
 			//... Bild bearbeitet als "Ziehen über das HEXFeld"
 			BufferedImage objBufferdImage4DragResized = UIHelper.resizeImage(objBufferedImageOriginalUsed, fIconWidth, fIconHeight);
 			byte[] imageInByteDrag = UIHelper.getByteArrayFromBufferedImage(objBufferdImage4DragResized,"png");			
-			this.setImageDrag01(imageInByteDrag);			
-			long lngFileSizeDrag = imageInByteDrag.length;
-			this.setImageDragLength01(lngFileSizeDrag);
-			this.setImageDragName01(sTileIconName);
+			//this.setImageDrag01(imageInByteDrag);			
+			String sMethodNameDrag = "setImageDrag"+sZoomFactorAlias;
+			Method mtestDrag = ReflectionUtil.findMethodForMethodName("use.thm.persistence.model.TroopArmyVariant", sMethodNameDrag);
+			mtestDrag.invoke(this, imageInByteDrag);
+			
+			long lngFileSizeDrag = imageInByteDrag.length;			
+			//this.setImageDragLength01(lngFileSizeDrag);
+			String sMethodNameDragLength = "setImageDragLength"+sZoomFactorAlias;
+			Method mtestDragLength = ReflectionUtil.findMethodForMethodName("use.thm.persistence.model.TroopArmyVariant", sMethodNameDragLength);
+			mtestDragLength.invoke(this, lngFileSizeDrag);
+		
+			//String sTileIconNameZoomed = sTileIconName + "_x_" + sZoomFactor;
+			//this.setImageDragName01(sTileIconNameZoomed);
+			String sMethodNameDragName = "setImageDragName"+sZoomFactorAlias;
+			Method mtestDragName = ReflectionUtil.findMethodForMethodName("use.thm.persistence.model.TroopArmyVariant", sMethodNameDragName);
+			mtestDragName.invoke(this, sTileIconNameZoomed);
 			
 			}//end for String sZoomFactorAlias : setZoomFactorAlias){
-			
+			System.out.println(ReflectCodeZZZ.getMethodCurrentName() + ": Variante erstellt.");
 			} catch (ExceptionZZZ e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (ClassNotFoundException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (IllegalAccessException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (IllegalArgumentException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (InvocationTargetException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}

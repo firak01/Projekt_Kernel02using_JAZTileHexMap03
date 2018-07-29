@@ -12,13 +12,19 @@ import java.awt.Stroke;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
+import java.util.HashMap;
 
 import javax.imageio.ImageIO;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JPanel;
 
+import custom.zKernel.file.ini.FileIniZZZ;
+import basic.persistence.dto.DTOAttribute;
 import basic.persistence.dto.GenericDTO;
+import basic.persistence.dto.IDTOAttributeGroup;
 import basic.zBasic.ExceptionZZZ;
 import basic.zBasic.KernelSingletonTHM;
 import basic.zBasic.ReflectCodeZZZ;
@@ -187,6 +193,15 @@ public class TileTHM extends JPanel implements IMapPositionableTHM, IBackendPers
 			String sModuleAlias = this.getMapPanel().getModuleName();
 			String sProgramAlias = this.getMapPanel().getProgramAlias();				
 			System.out.println(ReflectCodeZZZ.getMethodCurrentName() + ": Suche Modul: '" + sModuleAlias +"'/ Program: '" + sProgramAlias + "'/ Parameter: 'IconWidth'");
+			
+			//... Zuerst den eingestellten ZoomFaktor holen UND als Variable hier speichern. Ansonsten wird ggfs. der zuletzt bei der Erstellung der Bilder (z.B bei der Variante) verwendete ZoomFaktor verwendet. //TODO GOON 20180727: Der wird noch aus der Ini.Datei ausgelesen. Demnächst aus Applikation-Einstellung.....			
+			String sHexZoomFactorAlias = objKernel.getParameterByProgramAlias(sModuleAlias, sProgramAlias, "HexZoomFactorAliasStart" );
+			HashMap<String,String>hmZoomFactor=ApplicationSingletonTHM.getInstance().getHashMapZoomFactorMap(sModuleAlias, sProgramAlias);
+			String sHexZoomFactorUsed = hmZoomFactor.get(sHexZoomFactorAlias);	
+			FileIniZZZ objIni = objKernel.getFileConfigIni();
+			objIni.setVariable("HexZoomFactorUsed", sHexZoomFactorUsed);
+			
+			//... Nun können die Formeln wieder korrekt arbeiten.				
 			String sIconWidth = objKernel.getParameterByProgramAlias(sModuleAlias, sProgramAlias, "IconWidth" );
 			int iIconWidth = StringZZZ.toInteger(sIconWidth);				
 			String sIconHeight = objKernel.getParameterByProgramAlias(sModuleAlias, sProgramAlias, "IconHeight" );
@@ -209,8 +224,6 @@ public class TileTHM extends JPanel implements IMapPositionableTHM, IBackendPers
 			BufferedImage objBufferedImageTransparentAndResized = UIHelper.toBufferedImage(imageInByte);
 						
 			//+++++++++ Das Bild an der errechneten Postion (unterhalb des Labels) zeichnen.			
-			String sHexZoomFactor = objKernel.getParameterByProgramAlias(sModuleAlias, sProgramAlias, "HexZoomFactorAliasStart" );
-			int iHexZoomFactor = StringZZZ.toInteger(sHexZoomFactor);
 			String sFontOffset = objKernel.getParameterByProgramAlias(sModuleAlias, sProgramAlias, "IconLabelFontOffsetHeight_float" );//Irgendwie die Fontgröße justieren in der Höhe. Wird dann auch vom HexMapZoomFaktor beeinflusst ...			//
 			int iFontOffsetUsed = StringZZZ.toInteger(sFontOffset);
 			
@@ -452,17 +465,49 @@ public class TileTHM extends JPanel implements IMapPositionableTHM, IBackendPers
 		this.getDto().set(ITileDtoAttribute.VARIANT_IMAGE_URL_STRING, sVariantImageUrlString);
 	}
 	
-	public byte[] getVariantImageUsedInByte(){
+	public byte[] getVariantImageUsedInByte() throws ExceptionZZZ{
 		//das wäre das Bild in normaler Größe return (byte[]) this.getDto().get(ITileDtoAttribute.VARIANT_IMAGE_IN_BYTE); //es müsste kliner gerechnet werden
 		//das kleiner und transparent gerechnete Bild
 		
+		String sZoomFactor = ApplicationSingletonTHM.getInstance().getZoomFactorMapInitial();
+		
+		Class<ITileDtoAttribute> c = ITileDtoAttribute.class;
+		for(Field f : c.getDeclaredFields() ){
+			int mod = f.getModifiers();
+			if(Modifier.isStatic(mod) && Modifier.isPublic(mod) && Modifier.isFinal(mod)){
+//				try{
+					//System.out.printf("%s = %d%n",  f.getName(), f.get(null));// f.get(null) wirkt wohl nur bei Konstanten, die im Interface so defineirt sind: public static final int CONST_1 = 9;
+					String s = f.getName();
+					if(StringZZZ.contains(s, "IMAGEHEXMAP", true)){
+						if(s.endsWith(sZoomFactor)){
+							
+							//Erzeuge eine DTOAttribut Instanz, die dem aktuell gefundenen Namen der Konstante entspricht.
+							//Merke: DTOAttribute braucht eine überschreibene equals() und hashCode() Methode, damit der gespeichert Wert mit einer erzeugten Instanz verglichen werden kann.
+							DTOAttribute objDtoAttribute = DTOAttribute.getInstance(s); //<IDTOAttributeGroup, T>		
+							
+//							Object obj = ITileDtoAttribute.VARIANT_IMAGEHEXMAP_IN_BYTE_04;//Die Gleichheit und den HashCode mit "hart verdrahteten Werten" entwickeln/überprüfen.						
+//							if(obj.equals(objDtoAttribute)){
+//								System.out.println("GLEICH");
+//								System.out.println("Hashcode: " + obj.hashCode());
+//							}else{
+//								System.out.println("UNGLEICH");
+//							}
+							return (byte[]) this.getDto().get(objDtoAttribute);	
+						}
+					}
+//				}catch(IllegalAccessException e){
+//					e.printStackTrace();
+//				}
+			}
+		}
+		
 		//TODO GOON 20180725: Das Bild passend zur Eingestellten Zoom Größe in der Applikation auswählen 
-		return (byte[]) this.getDto().get(ITileDtoAttribute.VARIANT_IMAGEHEXMAP_IN_BYTE_01);		
+		return (byte[]) this.getDto().get(ITileDtoAttribute.VARIANT_IMAGEHEXMAP_IN_BYTE_04);		
 	}
 	protected void setVariantImageUsedInByte(byte[] imageInByte){
 		//das wäre das Bild in normaler Größe   this.getDto().set(ITileDtoAttribute.VARIANT_IMAGE_IN_BYTE, imageInByte); //es müsste kliner gerechnet werden
-		//TODO GOON 20180725: Das Bild passend zur Eingestellten Zoom Größe in der Applikation auswählen 
-		this.getDto().set(ITileDtoAttribute.VARIANT_IMAGEHEXMAP_IN_BYTE_01, imageInByte);
+		//TODO GOON 20180725: Das Bild passend zur Eingestellten Zoom Größe in der Applikation auswählen 						
+		this.getDto().set(ITileDtoAttribute.VARIANT_IMAGEHEXMAP_IN_BYTE_04, imageInByte);
 	}
 	
 	public Integer getInstanceVariantUniqueNumber(){

@@ -11,11 +11,12 @@ public class KernelSingletonTHM extends KernelZZZ{
 	private static String sKEY_APPLICATION_DEFAULT = "THM";
 	public static KernelSingletonTHM getInstance() throws ExceptionZZZ{
 		if(objKernelSingelton==null){
-			objKernelSingelton = new KernelSingletonTHM();			
+			String[] saFlagZ={"init"};
+			objKernelSingelton = new KernelSingletonTHM(saFlagZ);			
 		}
 		return objKernelSingelton;	
 	}
-	
+		
 	public static  KernelSingletonTHM getInstance(IKernelConfigZZZ objConfig, String sFlagControl) throws ExceptionZZZ{
 		if(objKernelSingelton==null){
 			objKernelSingelton = new KernelSingletonTHM(objConfig, sFlagControl);
@@ -47,6 +48,10 @@ public class KernelSingletonTHM extends KernelZZZ{
 	//Die Konstruktoren nun verbergen, wg. Singleton
 		private KernelSingletonTHM() throws ExceptionZZZ{
 			super();
+		}
+		
+		private KernelSingletonTHM(String[] saFlagControl) throws ExceptionZZZ{
+			super(saFlagControl);
 		}
 		
 		//Die Konstruktoren nun verbergen, wg. Singleton

@@ -13,6 +13,8 @@ public interface ITileDtoAttribute extends IDTOAttributeGroup {
     //20180630: Das Ziel ist es die Daten eines Bilds ebenfalls über das DTO-Objekt auszutauschen. Das byte[] kommt aus der in der Datenbank gespeicherten Variante.
     public final static DTOAttribute<ITileDtoAttribute, byte[]> VARIANT_IMAGE_IN_BYTE= DTOAttribute.getInstance("VARIANT_IMAGE_IN_BYTE");
   
+    //2ß180726: Damit schnell die Kartengröße "gezoomt" werden kann ist es das Ziel die verschiedenen Bilder für die unterschiedlichen Zoomstufen in der Datenbank zu speichern
+    //               und natürlich dann per DTO zu übergeben.
     public final static DTOAttribute<ITileDtoAttribute, byte[]> VARIANT_IMAGECATALOG_IN_BYTE_01 = DTOAttribute.getInstance("VARIANT_IMAGECATALOG_IN_BYTE_01");
     public final static DTOAttribute<ITileDtoAttribute, byte[]> VARIANT_IMAGECATALOG_IN_BYTE_02 = DTOAttribute.getInstance("VARIANT_IMAGECATALOG_IN_BYTE_02");
     public final static DTOAttribute<ITileDtoAttribute, byte[]> VARIANT_IMAGECATALOG_IN_BYTE_03 = DTOAttribute.getInstance("VARIANT_IMAGECATALOG_IN_BYTE_03");

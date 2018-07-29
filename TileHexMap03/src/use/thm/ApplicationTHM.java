@@ -212,6 +212,15 @@ public class ApplicationTHM extends KernelUseObjectZZZ{
 	
 	
 	//#### METHODEN FÜR DIE ZOOMFUNKTIONALITÄT
+	public String getZoomFactorGuiInitial() throws ExceptionZZZ{
+		String sModuleAlias = this.getKernelObject().getApplicationKey();
+		String sProgramAlias = "THM";
+		
+		String stemp = this.getKernelObject().getParameterByProgramAlias(sModuleAlias, sProgramAlias, "GuiZoomFactorAliasStart");
+		ReportLogZZZ.write(ReportLogZZZ.DEBUG, "GuiZoomFactorAliasStart as String " + stemp);
+		
+		return stemp;
+	}
 	public HashMap<String,String>getHashMapZoomFactorGui() throws ExceptionZZZ{
 		if(this.hmZoomFactorGui==null){
 			String sModule = this.getKernelObject().getApplicationKey();
@@ -220,10 +229,10 @@ public class ApplicationTHM extends KernelUseObjectZZZ{
 		return this.hmZoomFactorGui;
 	}
 	
-	public HashMap<String,String>getHashMapZoomFactorGui(String sModulAlias, String sProgramAlias) throws ExceptionZZZ{
+	public HashMap<String,String>getHashMapZoomFactorGui(String sModuleAlias, String sProgramAlias) throws ExceptionZZZ{
 		if(this.hmZoomFactorGui==null){
 			
-			String stemp = this.getKernelObject().getParameterByProgramAlias(sModulAlias, sProgramAlias, "GuiZoomFactorListInitial");
+			String stemp = this.getKernelObject().getParameterByProgramAlias(sModuleAlias, sProgramAlias, "GuiZoomFactorListInitial");
 			ReportLogZZZ.write(ReportLogZZZ.DEBUG, "GuiZoomFactorListInitial as String " + stemp);
 			
 			if(!StringZZZ.isEmpty(stemp)){
@@ -231,9 +240,11 @@ public class ApplicationTHM extends KernelUseObjectZZZ{
 				int icount=0;
 				String[] saTemp = StringZZZ.explode(stemp, ";");
 				for(String sZoomFactor : saTemp){
-					icount++;
-					String sCount = StringZZZ.right("0" + Integer.toString(icount),2);
-					this.hmZoomFactorGui.put(sCount, sZoomFactor);
+					if(!StringZZZ.isEmpty(sZoomFactor)){
+						icount++;
+						String sCount = StringZZZ.right("0" + Integer.toString(icount),2);
+						this.hmZoomFactorGui.put(sCount, sZoomFactor);
+					}
 				}
 			}
 		}
@@ -245,7 +256,15 @@ public class ApplicationTHM extends KernelUseObjectZZZ{
 	}
 	
 	
-	
+	public String getZoomFactorMapInitial() throws ExceptionZZZ{
+		String sModuleAlias = this.getKernelObject().getApplicationKey();
+		String sProgramAlias = "HexMapCentral";
+		
+		String stemp = this.getKernelObject().getParameterByProgramAlias(sModuleAlias, sProgramAlias, "HexZoomFactorAliasStart");
+		ReportLogZZZ.write(ReportLogZZZ.DEBUG, "HexZoomFactorAliasStart as String " + stemp);
+		
+		return stemp;
+	}
 	public HashMap<String,String>getHashMapZoomFactorMap() throws ExceptionZZZ{
 		if(this.hmZoomFactorMap==null){
 			String sModule = this.getKernelObject().getApplicationKey();
@@ -272,8 +291,7 @@ public class ApplicationTHM extends KernelUseObjectZZZ{
 			}
 		}
 		return this.hmZoomFactorMap;
-	}
-	
+	}	
 	public void setHashMapZoomFactorMap(HashMap<String,String> hmZoomFactor){
 		this.hmZoomFactorMap = hmZoomFactor;
 	}

@@ -9,6 +9,7 @@ import javax.swing.Box;
 import javax.swing.JLabel;
 import javax.swing.border.EmptyBorder;
 
+import custom.zKernel.file.ini.FileIniZZZ;
 import use.thm.ApplicationSingletonTHM;
 import use.thm.ApplicationTHM;
 import use.thm.ITileEventUserTHM;
@@ -504,9 +505,10 @@ public class VariantCatalogTHM  extends KernelUseObjectZZZ implements IGhostGlas
 	    	 	    	
 	    	 //Ein Label hinzufügen mit dem entsprechenden Titel und dem Bild
 	    	 
-	    	//Modullnamen und Programnamen für die Position in der KernelKonfiguation  	 
+	    
 	    	 	KernelZZZ objKernel = this.getKernelObject();
 			
+	    	 
 		   //++++++++++
 				 //Die Größe der Icons aus der KernelKonfiguration auslesen
 				//DAS IST IN DER ERSTELLUNG DES ENTITIES AUSGELAGERT UND WIRD EXTRA GESPEICHERT
@@ -515,6 +517,27 @@ public class VariantCatalogTHM  extends KernelUseObjectZZZ implements IGhostGlas
 //				String sIconHeight = this.getKernelObject().getParameterByProgramAlias(sModuleAlias, sProgramAlias, "IconHeight" );
 //				int iIconHeight = Integer.parseInt(sIconHeight);
 	    	 //+++++++++	    	 
+	    	 		
+	    	 	
+	    	 	//... Zuerst den eingestellten ZoomFaktor holen UND als Variable hier speichern. Ansonsten wird ggfs. der zuletzt bei der Erstellung der Bilder (z.B bei der Variante) verwendete ZoomFaktor verwendet. //TODO GOON 20180727: Der wird noch aus der Ini.Datei ausgelesen. Demnächst aus Applikation-Einstellung.....
+	    	 	//Problem: IconWidtOnDrag bezieht sich auf eine Formel aus HexMap..
+	    	 	//               ABER: Die Variable in der Formel aus HexMap ist ggfs. noch nicht gefüllt....
+//	    	 	String sHexZoomFactorAlias = objKernel.getParameterByProgramAlias(sModuleAlias, sProgramAlias, "HexZoomFactorAliasStart" );
+//				HashMap<String,String>hmZoomFactor=ApplicationSingletonTHM.getInstance().getHashMapZoomFactorMap(sModuleAlias, sProgramAlias);
+//				String sHexZoomFactorUsed = hmZoomFactor.get(sHexZoomFactorAlias);	
+//				FileIniZZZ objIni = objKernel.getFileConfigIni();
+//				objIni.setVariable("HexZoomFactorUsed", sHexZoomFactorUsed);
+	    	 	
+	    	 	//Test: Hier schon definiert?
+	    	 	String stest = objKernel.getFileConfigIni().getVariable("HexZoomFactorUsed");
+	    	 	System.out.println(ReflectCodeZZZ.getMethodCurrentNameLined(0) + ": HexZoomFactorUsed als Variable = '" + stest + "'");
+	    	 	
+	    		//Modullnamen und Programnamen für die Position in der KernelKonfiguation  	 
+	    		String sModuleAlias =  this.getModuleUsed();// this.getModuleName();
+				String sProgramAlias = this.getProgramUsed(); //this.getProgramAlias(); //				
+				System.out.println(ReflectCodeZZZ.getMethodCurrentName() + ": Suche Modul: '" + sModuleAlias +"'/ Program: '" + sProgramAlias + "'/ Parameter: 'IconWidthOnDrag'");
+	
+				
 
 			// JLabel label = UIHelper.createLabelWithIconResized(sTileLabel, imageInByte, iIconWidth,iIconHeight);
 			JLabel label = UIHelper.createLabelWithIcon(sTileLabel,  imageInByte);
@@ -534,10 +557,7 @@ public class VariantCatalogTHM  extends KernelUseObjectZZZ implements IGhostGlas
 		     
 		     //++++++++++
 	    	 //Die Größe der Icons beim Ziehen aus der KernelKonfiguration auslesen	  
-				String sModuleAlias =  this.getModuleUsed();// this.getModuleName();
-				String sProgramAlias = this.getProgramUsed(); //this.getProgramAlias(); //				
-				System.out.println(ReflectCodeZZZ.getMethodCurrentName() + ": Suche Modul: '" + sModuleAlias +"'/ Program: '" + sProgramAlias + "'/ Parameter: 'IconWidth'");
-	
+				
 				//TODO GOON FGL 20180630
 				String sIconWidthOnDrag = this.getKernelObject().getParameterByProgramAlias(sModuleAlias, sProgramAlias, "IconWidthOnDrag" );						
 				int iIconWidthOnDrag = StringZZZ.toInteger(sIconWidthOnDrag);

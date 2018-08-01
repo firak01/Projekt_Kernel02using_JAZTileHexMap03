@@ -20,6 +20,7 @@ import java.util.HashMap;
 
 import javax.swing.JLabel;
 
+import use.thm.ApplicationSingletonTHM;
 import use.thm.IHexMapUserTHM;
 import use.thm.client.component.HexCellTHM;
 import use.thm.client.component.HexMapTHM;
@@ -59,7 +60,8 @@ public class PanelMain_CENTERTHM extends KernelJPanelCascadedZZZ implements IHex
 			String sHexSideLength = this.getKernelObject().getParameterByProgramAlias(sModuleAlias, sProgramAlias, "HexSideLength" );
 			int iHexSideLength = Integer.parseInt(sHexSideLength);
 			
-			String sHexZoomFactor = this.getKernelObject().getParameterByProgramAlias(sModuleAlias, sProgramAlias, "HexZoomFactorAliasStart" );
+			//Merke: Beim Applikationsstart werden bestimmte ini-Variablen gefüllt.
+			String sHexZoomFactor = this.getKernelObject().getFileConfigIni().getVariable("HexZoomFactorUsed");//this.getKernelObject().getParameterByProgramAlias(sModuleAlias, sProgramAlias, "HexZoomFactorAliasStart" );
 			int iHexZoomFactor = StringZZZ.toInteger(sHexZoomFactor);
 			
 			int iHexSideLengthUsed = iHexSideLength * iHexZoomFactor;

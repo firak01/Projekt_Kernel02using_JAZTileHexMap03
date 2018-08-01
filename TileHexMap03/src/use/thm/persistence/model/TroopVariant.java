@@ -302,10 +302,9 @@ public abstract class TroopVariant  extends KeyImmutable implements ITroopVarian
 			 
 			 //+++++++++++++++++++++++++++++++
 			 //1. Bild als Grundlage, unverändert....
-			 String sModuleAlias = "THM";//this.getModuleName();
-			 String sProgramAlias = "EntityTroopVariant"; //this.getProgramName();			
-			 System.out.println(ReflectCodeZZZ.getMethodCurrentName() + ": Suche Modul: '" + sModuleAlias +"'/ Program: '" + sProgramAlias + "'/ Parameter: 'IconWidth'");
-					 
+//			 String sModuleAlias = "THM";//this.getModuleName();
+//			 String sProgramAlias = "EntityTroopVariant"; //this.getProgramName();			
+			 	 
 			String sTileIconName =  sImageUrl;	//so holt man es aus dem DTO Objekt, wenn man im UI ist... this.getTile().getVariantImageUrlString();			
 			String sBaseDirectory = ApplicationSingletonTHM.getInstance().getBaseDirectoryStringForImages();//WICHTIG: NUN Noch den Basispfad davorhängen!
 	    	String sFilename = sBaseDirectory + File.separator + sTileIconName;
@@ -350,32 +349,33 @@ public abstract class TroopVariant  extends KeyImmutable implements ITroopVarian
 			//##############################################################################################################
 			//BILDER IN VERSCHIEDENEN ZOOMFAKTOREN
 			//A) GUI-ZOOMFAKTOR
+			//Wichtig: Nun eine Variable im Ini-FileZZZ setzen, dann kann mit der Variablen die Größe der Icons - basierend auf der hinterlegten Formel - errechnet werden.
+			//Zuerst: Sichere den Wert der Variablen weg, bevor man ihn hier temporär zum Rechnen verändert.
+			FileIniZZZ objIni = objKernel.getFileConfigIni();
+			String sZoomFactorInitial = objIni.getVariable("GuiZoomFactorUsed");
+			
 			
 			//20180711 Ziel ist: Hole einen "Zoomwert" und rechne den festen Wert damit um.... in der ini-Konfiguration...
 			//...........    so dass an dieser Stelle im Code nichts geändert werden muss.			
-			sModuleAlias = "THM";//this.getModuleName();
-			sProgramAlias = "THM"; //this.getProgramName();			
-			System.out.println(ReflectCodeZZZ.getMethodCurrentName() + ": Suche Modul: '" + sModuleAlias +"'/ Program: '" + sProgramAlias + "'/ Parameter: 'IconWidth'");
-			
-			HashMap<String,String>hmZoomFactorGui=ApplicationSingletonTHM.getInstance().getHashMapZoomFactorGui(sModuleAlias, sProgramAlias);
+			HashMap<String,String>hmZoomFactorGui=ApplicationSingletonTHM.getInstance().getHashMapZoomFactorGui();
 			Set<String>setZoomFactorAliasGUI=hmZoomFactorGui.keySet();
+			
+			String sModuleAlias = objKernel.getApplicationKey();
 			for(String sZoomFactorAlias : setZoomFactorAliasGUI){
-				String sZoomFactor = hmZoomFactorGui.get(sZoomFactorAlias); //Merke: Dieser ZoomFaktor-Alias ist dann Bestandteil der Spaltennamen für das Bild. Also das Bild mit der passenden Größe.
 				
-				//Wichtig: Nun eine Variable im Ini-FileZZZ setzen, dann kann mit der Variablen die Größe der Icons - basierend auf der hinterlegten Formel - errechnet werden.
-				FileIniZZZ objIni = objKernel.getFileConfigIni();
+				String sZoomFactor = hmZoomFactorGui.get(sZoomFactorAlias); //Merke: Dieser ZoomFaktor-Alias ist dann Bestandteil der Spaltennamen für das Bild. Also das Bild mit der passenden Größe.								
 				objIni.setVariable("GuiZoomFactorUsed", sZoomFactor);
 			
 			//++++++++++++++++++++++++++++++++++++++++
-			//A1. Bild als Katalogeintrag						
-				sModuleAlias = "THM";//this.getModuleName();
-				sProgramAlias = "CatalogPanel"; //this.getProgramName();			
-				System.out.println(ReflectCodeZZZ.getMethodCurrentName() + ": Suche Modul: '" + sModuleAlias +"'/ Program: '" + sProgramAlias + "'/ Parameter: 'IconWidth'");
-
+			//A1. Bild als Katalogeintrag										
+			String sProgramAlias = "CatalogPanel"; //this.getProgramName();			
+			
 			//... Größen holen aus der Kernelkonfiguration
+			System.out.println(ReflectCodeZZZ.getMethodCurrentName() + ": Suche Modul: '" + sModuleAlias +"'/ Program: '" + sProgramAlias + "'/ Parameter: 'IconWidth'");				
 			String sIconWidth = objKernel.getParameterByProgramAlias(sModuleAlias, sProgramAlias, "IconWidth" );
 			float fIconWidth = StringZZZ.toFloat(sIconWidth);
-								
+			
+			System.out.println(ReflectCodeZZZ.getMethodCurrentName() + ": Suche Modul: '" + sModuleAlias +"'/ Program: '" + sProgramAlias + "'/ Parameter: 'IconHeight'");			
 			String sIconHeight = objKernel.getParameterByProgramAlias(sModuleAlias, sProgramAlias, "IconHeight" );
 			float fIconHeight = StringZZZ.toFloat(sIconHeight);
 			
@@ -384,33 +384,23 @@ public abstract class TroopVariant  extends KeyImmutable implements ITroopVarian
 			byte[] imageInByteCatalog = UIHelper.getByteArrayFromBufferedImage(objBufferdImageResized,"png");	
 			
 			
-			//TODO GOON 20180725 ---- Rufe hier per Reflection jeweils die Methode für den passenden ZoomAlias auf.
-			//Method mtest = ReflectionUtil.findMethodForMethodName("use.thm.persistence.model.TroopArmyVariant", "getImage01");
-			//byte[]byteImage=(byte[]) mtest.invoke(this, null);
-			
-			//this.setImageCatalog01(imageInByteCatalog);
+			//Merke: Rufe per Reflection jeweils die Methode für den passenden ZoomAlias auf.			
 			String sMethodNameCatalog = "setImageCatalog"+sZoomFactorAlias;
 			Method mtestCatalog = ReflectionUtil.findMethodForMethodName("use.thm.persistence.model.TroopArmyVariant", sMethodNameCatalog);
 			mtestCatalog.invoke(this, imageInByteCatalog);
-			
-						
+				
 			long lngFileSizeCatalog = imageInByteCatalog.length;
-			//this.setImageCatalogLength01(lngFileSizeCatalog);
 			String sMethodNameCatalogLength = "setImageCatalogLength"+sZoomFactorAlias;
 			Method mtestCatalogLength = ReflectionUtil.findMethodForMethodName("use.thm.persistence.model.TroopArmyVariant", sMethodNameCatalogLength);
 			mtestCatalogLength.invoke(this, lngFileSizeCatalog);
 			
-			String sTileIconNameZoomed = sTileIconName + "_x_" + sZoomFactor;
-			//this.setImageCatalogName01(sTileIconNameZoomed);
+			String sTileIconNameZoomed = sTileIconName + "_x_" + sZoomFactor; //TODO GOON 20180731: Sicherstellen, dass ein Dateiname die Endung .png trotzdem am ende hat.
 			String sMethodNameCatalogName = "setImageCatalogName"+sZoomFactorAlias;
 			Method mtestCatalogName = ReflectionUtil.findMethodForMethodName("use.thm.persistence.model.TroopArmyVariant", sMethodNameCatalogName);
 			mtestCatalogName.invoke(this, sTileIconNameZoomed);
-			
+					
             //++++++++++++++++++++++++++++++++++++++++++++++++++
 			//A2. Bild für das Öffnen der Detailangaben in einer Dialogbox
-			sModuleAlias = "THM";
-			sProgramAlias = "TileDetailDialog";
-			System.out.println(ReflectCodeZZZ.getMethodCurrentName() + ": Suche Modul: '" + sModuleAlias +"'/ Program: '" + sProgramAlias + "'/ Parameter: 'IconWidth'");
 			
 			//FALLS GILT: GENUTZT WERDEN SOLL DAS MODUL FÜR DIE GRÖSSENANGABEN AUF DER KARTE. Code stand ursprünglich in TileMouseMotionHandlerTHM.mouseClicked(..)
 			//String sModuleAlias = this.getTile().getMapPanel().getModuleName();
@@ -421,65 +411,69 @@ public abstract class TroopVariant  extends KeyImmutable implements ITroopVarian
 			//		String sModuleAlias = objPanelToSearch.getModuleName();
 			//		String sProgramAlias = objPanelToSearch.getProgramName();
 			
+			sProgramAlias = "TileDetailDialog";
+						
 			//... Größen holen aus der Kernelkonfiguration
+			System.out.println(ReflectCodeZZZ.getMethodCurrentName() + ": Suche Modul: '" + sModuleAlias +"'/ Program: '" + sProgramAlias + "'/ Parameter: 'IconWidth'");			
 			sIconWidth = objKernel.getParameterByProgramAlias(sModuleAlias, sProgramAlias, "IconWidth" );			
 			fIconWidth = StringZZZ.toFloat(sIconWidth);
 							
+			System.out.println(ReflectCodeZZZ.getMethodCurrentName() + ": Suche Modul: '" + sModuleAlias +"'/ Program: '" + sProgramAlias + "'/ Parameter: 'IconHeight'");			
 			sIconHeight = objKernel.getParameterByProgramAlias(sModuleAlias, sProgramAlias, "IconHeight" );
 			fIconHeight = StringZZZ.toFloat(sIconHeight);
 						
 			//... Bild bearbeitet als Dialogeintrag
 			BufferedImage objBufferdImage4DialogResized = UIHelper.resizeImage(objBufferedImageOriginalUsed, fIconWidth, fIconHeight);
 			byte[] imageInByteDialog = UIHelper.getByteArrayFromBufferedImage(objBufferdImage4DialogResized,"png");	
-
-			//this.setImageDialog01(imageInByteDialog);		
+	
 			String sMethodNameDialog = "setImageDialog"+sZoomFactorAlias;
 			Method mtestDialog = ReflectionUtil.findMethodForMethodName("use.thm.persistence.model.TroopArmyVariant", sMethodNameDialog);
 			mtestDialog.invoke(this, imageInByteDialog);
 			
 			long lngFileSizeDialog = imageInByteDialog.length;
-			//this.setImageDialogLength01(lngFileSizeDialog);
 			String sMethodNameDialogLength = "setImageDialogLength"+sZoomFactorAlias;
 			Method mtestDialogLength = ReflectionUtil.findMethodForMethodName("use.thm.persistence.model.TroopArmyVariant", sMethodNameDialogLength);
 			mtestDialogLength.invoke(this, lngFileSizeDialog);
-		
-			//String sTileIconNameZoomed = sTileIconName + "_x_" + sZoomFactor;
-			//this.setImageDialogName01(sTileIconNameZoomed);
+
 			String sMethodNameDialogName = "setImageDialogName"+sZoomFactorAlias;
 			Method mtestDialogName = ReflectionUtil.findMethodForMethodName("use.thm.persistence.model.TroopArmyVariant", sMethodNameDialogName);
 			mtestDialogName.invoke(this, sTileIconNameZoomed);
-			
-			
 		 }//end for String sZoomFactorAlias : setZoomFactorAliasGUI){
+			
+			//Zuletzt: Speichere den anfangs gemerkten Wert wieder zurück
+			objIni.setVariable("GuiZoomFactorUsed", sZoomFactorInitial);
+			
 			
 			//####################################################################
 			//####################################################################################################
 			//+++++++++++++++++++++++++
 			//A) KARTEN-ZOOMFAKTOR		
-			sModuleAlias = "THM";					 //this.getModuleName();
-			sProgramAlias = "HexMapCentral"; //this.getProgramName();			
-			System.out.println(ReflectCodeZZZ.getMethodCurrentName() + ": Suche Modul: '" + sModuleAlias +"'/ Program: '" + sProgramAlias + "'/ Parameter: 'IconWidth'");
-			
+			//Wichtig: Nun eine Variable im Ini-FileZZZ setzen, dann kann mit der Variablen die Größe der Icons - basierend auf der hinterlegten Formel - errechnet werden.
+			//Zuerst: Sichere den Wert der Variablen weg, bevor man ihn hier temporär zum Rechnen verändert.
+			objIni = objKernel.getFileConfigIni();
+			sZoomFactorInitial = objIni.getVariable("HexZoomFactorUsed");
+					
 			//20180711 Ziel ist: Hole einen "Zoomwert" und rechne den festen Wert damit um.... in der ini-Konfiguration...
 			//...........    so dass an dieser Stelle im Code nichts geändert werden muss.
-			HashMap<String,String>hmZoomFactor=ApplicationSingletonTHM.getInstance().getHashMapZoomFactorMap(sModuleAlias, sProgramAlias);
+			HashMap<String,String>hmZoomFactor=ApplicationSingletonTHM.getInstance().getHashMapZoomFactorMap();
 			Set<String>setZoomFactorAlias=hmZoomFactor.keySet();
-			for(String sZoomFactorAlias : setZoomFactorAlias){
-			String sZoomFactor = hmZoomFactor.get(sZoomFactorAlias); //Merke: Dieser ZoomFaktor-Alias ist dann Bestandteil der Spaltennamen für das Bild. Also das Bild mit der passenden Größe.
 			
-			//Wichtig: Nun eine Variable im Ini-FileZZZ setzen, dann kann mit der Variablen die Größe der Icons - basierend auf der hinterlegten Formel - errechnet werden.
-			FileIniZZZ objIni = objKernel.getFileConfigIni();
-			objIni.setVariable("HexZoomFactorUsed", sZoomFactor);
+			sModuleAlias = objKernel.getApplicationKey();
+			for(String sZoomFactorAlias : setZoomFactorAlias){
+				
+			String sHexZoomFactor = hmZoomFactor.get(sZoomFactorAlias); //Merke: Dieser ZoomFaktor-Alias ist dann Bestandteil der Spaltennamen für das Bild. Also das Bild mit der passenden Größe.						
+			objIni.setVariable("HexZoomFactorUsed", sHexZoomFactor);
 			
 			//+++++++++++++++++++
 			//B1. ... Bild bearbeitet für die Darstellung in der Karte (wurde ohne diese Abspeicherung zuvor jedesmal in TileTHM.paintComponent() gemacht. Das "jedes Mal" Berechnen spart man sich nun.
-			sModuleAlias = "THM";					 //this.getModuleName();
-			sProgramAlias = "HexMapCentral"; //this.getProgramName();		
+			String sProgramAlias = "HexMapCentral"; //this.getProgramName();		
 			
 			//... Größen holen aus der Kernelkonfiguration
+			System.out.println(ReflectCodeZZZ.getMethodCurrentName() + ": Suche Modul: '" + sModuleAlias +"'/ Program: '" + sProgramAlias + "'/ Parameter: 'IconWidth'");			
 			String sIconWidth = objKernel.getParameterByProgramAlias(objIni, sModuleAlias, sProgramAlias, "IconWidth" );							
 			float fIconWidth = StringZZZ.toFloat(sIconWidth);
 									
+			System.out.println(ReflectCodeZZZ.getMethodCurrentName() + ": Suche Modul: '" + sModuleAlias +"'/ Program: '" + sProgramAlias + "'/ Parameter: 'IconHeight'");			
 			String sIconHeight = objKernel.getParameterByProgramAlias(sModuleAlias, sProgramAlias, "IconHeight" );
 			float fIconHeight = StringZZZ.toFloat(sIconHeight);
 						
@@ -516,10 +510,8 @@ public abstract class TroopVariant  extends KeyImmutable implements ITroopVarian
 					objBufferedImageTransparentAndResized = UIHelper.resizeImage(objBufferedImageTransparentAndResized, fIconWidth, fIconHeight);
 				}else if(this.getCategorytext().equalsIgnoreCase("Tank Unit")){
 					objBufferedImageTransparentAndResized = UIHelper.resizeImage(objBufferedImageTransparent, fIconWidth/1.15f, fIconHeight/1.15f);//Mache das Bild noch kleiner als bei normaler Infanterie.
-					
-					String sHexZoomFactor = objKernel.getParameterByProgramAlias(sModuleAlias, sProgramAlias, "HexZoomFactorAliasStart" );			
-					int iHexZoomFactor = StringZZZ.toInteger(sHexZoomFactor);
-							
+		
+					int iHexZoomFactor = StringZZZ.toInteger(sHexZoomFactor);							
 					objBufferedImageTransparentAndResized = UIHelper.cropImageByPoints(objBufferedImageTransparentAndResized, 0,(4*iHexZoomFactor), 0, 0);	//Schneide das Bild vom linken Rand aus. Ziel ist es wie bei gespiegelten Schiffen,										
 				}else{
 					objBufferedImageTransparentAndResized = UIHelper.resizeImage(objBufferedImageTransparent, fIconWidth, fIconHeight);
@@ -538,8 +530,7 @@ public abstract class TroopVariant  extends KeyImmutable implements ITroopVarian
 //				System.out.println(("ZZZZ "  + sSubtype + " an Position X/Y: " + sX + "/" +sY ));
 
 			}else if(sSubtype.equalsIgnoreCase("FL")){				
-				if(bImageWasFlipped){ //Merke: wenn das Bild vertikal gedreht wird, muss man auch die andere Seite abschneiden (hier: links), sonst bekommt man nur das Heck statt dem Bug - in das kleine HexFeld-Icon gepresst.
-					String sHexZoomFactor = objKernel.getParameterByProgramAlias(sModuleAlias, sProgramAlias, "HexZoomFactorAliasStart" );			
+				if(bImageWasFlipped){ //Merke: wenn das Bild vertikal gedreht wird, muss man auch die andere Seite abschneiden (hier: links), sonst bekommt man nur das Heck statt dem Bug - in das kleine HexFeld-Icon gepresst.		
 					int iHexZoomFactor = StringZZZ.toInteger(sHexZoomFactor);						
 					objBufferedImageTransparentAndResized = UIHelper.resizeImage(objBufferedImageTransparent, fIconWidth/1.15f, fIconHeight/1.0f);	//Damit es noch nach etwas aussieht.... die Höhe nicht reduzieren.					
 					objBufferedImageTransparentAndResized = UIHelper.cropImageByPoints(objBufferedImageTransparentAndResized, 0, (5*iHexZoomFactor), 0, 0);	
@@ -552,23 +543,20 @@ public abstract class TroopVariant  extends KeyImmutable implements ITroopVarian
 			}
 			
 			
-			//TODO GOON 20180724: Die Bilddaten in die passende Spalte speichern.
+			//Die Bilddaten in die passende Spalte speichern.
 			//Die aufgerufene Methode muss für das Bild den Zoomfaktor im Namen haben. Nur so kommen die Bilddaten in die pasende Spalte 
 
-			byte[] imageInByteHexmap = UIHelper.getByteArrayFromBufferedImage(objBufferedImageTransparentAndResized,"png");			
-			//this.setImageHexmap01(imageInByteHexmap);			
+			byte[] imageInByteHexmap = UIHelper.getByteArrayFromBufferedImage(objBufferedImageTransparentAndResized,"png");					
 			String sMethodNameHexmap = "setImageHexmap"+sZoomFactorAlias;
 			Method mtestHexmap = ReflectionUtil.findMethodForMethodName("use.thm.persistence.model.TroopArmyVariant", sMethodNameHexmap);
 			mtestHexmap.invoke(this, imageInByteHexmap);
 			
-			long lngFileSizeHexmap = imageInByteHexmap.length; //Diese Infos braucht man, um das Bild wieder auszulesen. Oder?			
-			//this.setImageHexmapLength01(lngFileSizeHexmap);
+			long lngFileSizeHexmap = imageInByteHexmap.length; //Diese Infos braucht man, auch zum Debuggen, ob die Größenänderung erfolgreich gespeicehrt wurde			
 			String sMethodNameHexmapLength = "setImageHexmapLength"+sZoomFactorAlias;
 			Method mtestHexmapLength = ReflectionUtil.findMethodForMethodName("use.thm.persistence.model.TroopArmyVariant", sMethodNameHexmapLength);
 			mtestHexmapLength.invoke(this, lngFileSizeHexmap);
 		
-			String sTileIconNameZoomed = sTileIconName + "_x_" + sZoomFactor;
-			//this.setImageHexmapName01(sTileIconNameZoomed);
+			String sTileIconNameZoomed = sTileIconName + "_x_" + sHexZoomFactor; //TODO Goon 20180731: Die Dateiendung .png muss am Ende stehen bleiben.
 			String sMethodNameHexmapName = "setImageHexmapName"+sZoomFactorAlias;
 			Method mtestHexmapName = ReflectionUtil.findMethodForMethodName("use.thm.persistence.model.TroopArmyVariant", sMethodNameHexmapName);
 			mtestHexmapName.invoke(this, sTileIconNameZoomed);
@@ -576,9 +564,6 @@ public abstract class TroopVariant  extends KeyImmutable implements ITroopVarian
 			
 			//++++++++++++++++++++++++++++++++++
 			//B2. Bild für das Ziehen über die Karte (im Glasspane, per GhostPictureAdapter, der bei der Erstellung der Katalogboxen erzeugt wird.)
-			sModuleAlias = "THM";
-			sProgramAlias = "CatalogPanel"	;			
-			System.out.println(ReflectCodeZZZ.getMethodCurrentName() + ": Suche Modul: '" + sModuleAlias +"'/ Program: '" + sProgramAlias + "'/ Parameter: 'IconWidth'");			
 			
 			//FALLS GILT: GENUTZT WERDEN SOLL DAS MODUL FÜR DIE GRÖSSENANGABEN AUF DER KARTE. Code stand ursprünglich in TileMouseMotionHandlerTHM.mouseClicked(..)
 			//String sModuleAlias = this.getTile().getMapPanel().getModuleName();
@@ -589,35 +574,41 @@ public abstract class TroopVariant  extends KeyImmutable implements ITroopVarian
 			//		String sModuleAlias = objPanelToSearch.getModuleName();
 			//		String sProgramAlias = objPanelToSearch.getProgramName();
 			
-			//... Größen holen aus der Kernelkonfiguration
+			sProgramAlias = "CatalogPanel"	;			
+			
+			//... Größen holen aus der Kernelkonfiguration			
+			System.out.println(ReflectCodeZZZ.getMethodCurrentName() + ": Suche Modul: '" + sModuleAlias +"'/ Program: '" + sProgramAlias + "'/ Parameter: 'IconWidthOnDrag'");						
 			sIconWidth = objKernel.getParameterByProgramAlias(sModuleAlias, sProgramAlias, "IconWidthOnDrag" );			
 			fIconWidth = StringZZZ.toFloat(sIconWidth);
 						
+			System.out.println(ReflectCodeZZZ.getMethodCurrentName() + ": Suche Modul: '" + sModuleAlias +"'/ Program: '" + sProgramAlias + "'/ Parameter: 'IconHeightOnDrag'");
 			sIconHeight = objKernel.getParameterByProgramAlias(sModuleAlias, sProgramAlias, "IconHeightOnDrag" );
 			fIconHeight = StringZZZ.toFloat(sIconHeight);
 			
 			
 			//... Bild bearbeitet als "Ziehen über das HEXFeld"
 			BufferedImage objBufferdImage4DragResized = UIHelper.resizeImage(objBufferedImageOriginalUsed, fIconWidth, fIconHeight);
-			byte[] imageInByteDrag = UIHelper.getByteArrayFromBufferedImage(objBufferdImage4DragResized,"png");			
-			//this.setImageDrag01(imageInByteDrag);			
+			byte[] imageInByteDrag = UIHelper.getByteArrayFromBufferedImage(objBufferdImage4DragResized,"png");				
 			String sMethodNameDrag = "setImageDrag"+sZoomFactorAlias;
 			Method mtestDrag = ReflectionUtil.findMethodForMethodName("use.thm.persistence.model.TroopArmyVariant", sMethodNameDrag);
 			mtestDrag.invoke(this, imageInByteDrag);
 			
 			long lngFileSizeDrag = imageInByteDrag.length;			
-			//this.setImageDragLength01(lngFileSizeDrag);
 			String sMethodNameDragLength = "setImageDragLength"+sZoomFactorAlias;
 			Method mtestDragLength = ReflectionUtil.findMethodForMethodName("use.thm.persistence.model.TroopArmyVariant", sMethodNameDragLength);
 			mtestDragLength.invoke(this, lngFileSizeDrag);
 		
-			//String sTileIconNameZoomed = sTileIconName + "_x_" + sZoomFactor;
-			//this.setImageDragName01(sTileIconNameZoomed);
 			String sMethodNameDragName = "setImageDragName"+sZoomFactorAlias;
 			Method mtestDragName = ReflectionUtil.findMethodForMethodName("use.thm.persistence.model.TroopArmyVariant", sMethodNameDragName);
 			mtestDragName.invoke(this, sTileIconNameZoomed);
 			
 			}//end for String sZoomFactorAlias : setZoomFactorAlias){
+			
+			//Zuletzt: Speichere den anfangs gemerkten Wert wieder zurück
+			objIni.setVariable("HexZoomFactorUsed", sZoomFactorInitial);
+			//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+			
+			
 			System.out.println(ReflectCodeZZZ.getMethodCurrentName() + ": Variante erstellt.");
 			} catch (ExceptionZZZ e) {
 				// TODO Auto-generated catch block

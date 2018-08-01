@@ -194,12 +194,7 @@ public class TileTHM extends JPanel implements IMapPositionableTHM, IBackendPers
 			String sProgramAlias = this.getMapPanel().getProgramAlias();				
 			System.out.println(ReflectCodeZZZ.getMethodCurrentName() + ": Suche Modul: '" + sModuleAlias +"'/ Program: '" + sProgramAlias + "'/ Parameter: 'IconWidth'");
 			
-			//... Zuerst den eingestellten ZoomFaktor holen UND als Variable hier speichern. Ansonsten wird ggfs. der zuletzt bei der Erstellung der Bilder (z.B bei der Variante) verwendete ZoomFaktor verwendet. //TODO GOON 20180727: Der wird noch aus der Ini.Datei ausgelesen. Demnächst aus Applikation-Einstellung.....			
-			String sHexZoomFactorAlias = objKernel.getParameterByProgramAlias(sModuleAlias, sProgramAlias, "HexZoomFactorAliasStart" );
-			HashMap<String,String>hmZoomFactor=ApplicationSingletonTHM.getInstance().getHashMapZoomFactorMap(sModuleAlias, sProgramAlias);
-			String sHexZoomFactorUsed = hmZoomFactor.get(sHexZoomFactorAlias);	
-			FileIniZZZ objIni = objKernel.getFileConfigIni();
-			objIni.setVariable("HexZoomFactorUsed", sHexZoomFactorUsed);
+
 			
 			//... Nun können die Formeln wieder korrekt arbeiten.				
 			String sIconWidth = objKernel.getParameterByProgramAlias(sModuleAlias, sProgramAlias, "IconWidth" );

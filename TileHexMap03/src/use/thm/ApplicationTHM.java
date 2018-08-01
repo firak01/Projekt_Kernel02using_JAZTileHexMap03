@@ -3,6 +3,7 @@ package use.thm;
 import java.io.File;
 import java.util.HashMap;
 
+import custom.zKernel.file.ini.FileIniZZZ;
 import basic.zBasic.ExceptionZZZ;
 import basic.zBasic.ReflectCodeZZZ;
 import basic.zBasic.persistence.SQLiteUtilZZZ;
@@ -42,6 +43,7 @@ public class ApplicationTHM extends KernelUseObjectZZZ{
 		ReportLogZZZ.write(ReportLogZZZ.DEBUG, "launch - thread: " + ". ApplicationSingleton....");
 		main:{
 			KernelZZZ objKernel = this.getKernelObject();
+			boolean bSuccessFillVariableIniInitial = fillVariableIniInitial();//Setze bestimmte, für die Applikation (in <z:math>) verwendeten Variablen der Ini Datei, initial an dieser Stelle, damit sie immer zur Verfügung stehen.			
 			FrmMapSingletonTHM frameInfo = FrmMapSingletonTHM.getInstance(objKernel, null);
 				
 			//---- Bereite Hibernate und die SQLite Datenbank vor.
@@ -70,12 +72,13 @@ public class ApplicationTHM extends KernelUseObjectZZZ{
 			}
 			//objContextHibernate.getConfiguration().setProperty("hibernate.hbm2ddl.auto", "create");  //! Damit wird die Datenbank und sogar die Tabellen darin automatisch erstellt, aber: Sie wird am Anwendungsende geleert.
 			objContextHibernate.getConfiguration().setProperty("hibernate.hbm2ddl.auto", "update");  //! Jetzt erst wird jede Tabelle über den Anwendungsstart hinaus gepseichert.
-			
+						 					
 			boolean bSuccessDefaulttext = fillDefaulttextAll(bDbExists);
 			boolean bSuccessImmutabletext = fillImmutabletextAll(bDbExists);
 			boolean bSuccessTroopArmyVariant = fillTroopArmyVariantAll(bDbExists);
 			boolean bSuccessTroopFleetVariant = fillTroopFleetVariantAll(bDbExists);
 				
+			
 			//Falls Datenbank nicht existierte, gilt das hier als neue Datenbank....
 			this.setFlag(FLAGZ.DATABASE_NEW.name(), !bDbExists);
 			
@@ -214,24 +217,19 @@ public class ApplicationTHM extends KernelUseObjectZZZ{
 	//#### METHODEN FÜR DIE ZOOMFUNKTIONALITÄT
 	public String getZoomFactorGuiInitial() throws ExceptionZZZ{
 		String sModuleAlias = this.getKernelObject().getApplicationKey();
-		String sProgramAlias = "THM";
+		String sProgramAlias = this.getKernelObject().getSystemNumber();
 		
 		String stemp = this.getKernelObject().getParameterByProgramAlias(sModuleAlias, sProgramAlias, "GuiZoomFactorAliasStart");
 		ReportLogZZZ.write(ReportLogZZZ.DEBUG, "GuiZoomFactorAliasStart as String " + stemp);
 		
 		return stemp;
 	}
-	public HashMap<String,String>getHashMapZoomFactorGui() throws ExceptionZZZ{
-		if(this.hmZoomFactorGui==null){
-			String sModule = this.getKernelObject().getApplicationKey();
-			this.getHashMapZoomFactorGui(sModule, "THM");
-		}
-		return this.hmZoomFactorGui;
-	}
 	
-	public HashMap<String,String>getHashMapZoomFactorGui(String sModuleAlias, String sProgramAlias) throws ExceptionZZZ{
-		if(this.hmZoomFactorGui==null){
-			
+	public HashMap<String,String>getHashMapZoomFactorGui() throws ExceptionZZZ{
+		if(this.hmZoomFactorGui==null){			
+			String sModuleAlias = this.getKernelObject().getApplicationKey();
+			String sProgramAlias = this.getKernelObject().getSystemNumber();
+			System.out.println(ReflectCodeZZZ.getMethodCurrentName() + ": Suche Modul: '" + sModuleAlias +"'/ Program: '" + sProgramAlias + "'/ Parameter: 'GuiZoomFactorListInitial'");						
 			String stemp = this.getKernelObject().getParameterByProgramAlias(sModuleAlias, sProgramAlias, "GuiZoomFactorListInitial");
 			ReportLogZZZ.write(ReportLogZZZ.DEBUG, "GuiZoomFactorListInitial as String " + stemp);
 			
@@ -265,18 +263,14 @@ public class ApplicationTHM extends KernelUseObjectZZZ{
 		
 		return stemp;
 	}
+	
 	public HashMap<String,String>getHashMapZoomFactorMap() throws ExceptionZZZ{
 		if(this.hmZoomFactorMap==null){
-			String sModule = this.getKernelObject().getApplicationKey();
-			this.getHashMapZoomFactorMap(sModule, "HexMapCentral");
-		}
-		return this.hmZoomFactorMap;
-	}
-	
-	public HashMap<String,String>getHashMapZoomFactorMap(String sModulAlias, String sProgramAlias) throws ExceptionZZZ{
-		if(this.hmZoomFactorMap==null){
+			String sModuleAlias = this.getKernelObject().getApplicationKey();
+			String sProgramAlias ="HexMapCentral";
+			System.out.println(ReflectCodeZZZ.getMethodCurrentName() + ": Suche Modul: '" + sModuleAlias +"'/ Program: '" + sProgramAlias + "'/ Parameter: 'HexZoomFactorListInitial'");						
 			
-			String stemp = this.getKernelObject().getParameterByProgramAlias(sModulAlias, sProgramAlias, "HexZoomFactorListInitial");
+			String stemp = this.getKernelObject().getParameterByProgramAlias(sModuleAlias, sProgramAlias, "HexZoomFactorListInitial");
 			ReportLogZZZ.write(ReportLogZZZ.DEBUG, "HexZoomFactorListInitial as String " + stemp);
 			
 			if(!StringZZZ.isEmpty(stemp)){
@@ -295,6 +289,47 @@ public class ApplicationTHM extends KernelUseObjectZZZ{
 	public void setHashMapZoomFactorMap(HashMap<String,String> hmZoomFactor){
 		this.hmZoomFactorMap = hmZoomFactor;
 	}
+	
+	//==== METHODEN DER ANWENDUNGSINITIALISIERUNG 
+	//=== INI-VARIABLEN
+	public boolean fillVariableIniInitial() throws ExceptionZZZ{
+		boolean bReturn = false;
+		main:{
+			
+			//Kernel Objekt
+			KernelZZZ objKernel = this.getKernelObject();
+			FileIniZZZ objIni = objKernel.getFileConfigIni();
+			
+			
+			guizoomfactor:{
+				// "GuiZoomFactorUsed"
+				//... Zuerst den eingestellten ZoomFaktor holen UND als Variable hier speichern. Ansonsten wird ggfs. der zuletzt bei der Erstellung der Bilder (z.B bei der Variante) verwendete ZoomFaktor verwendet. //TODO GOON 20180727: Der wird noch aus der Ini.Datei ausgelesen. Demnächst aus Applikation-Einstellung.....
+				String sModuleAlias = this.getKernelObject().getApplicationKey(); //
+				String sProgramAlias = this.getKernelObject().getSystemNumber(); //Ist hier auf Applikationsebene (also "Modulübergreifend") eingerichtet.				
+				System.out.println(ReflectCodeZZZ.getMethodCurrentName() + ": Suche Modul: '" + sModuleAlias +"'/ Program: '" + sProgramAlias + "'/ Parameter: 'GuiZoomFactorAliasStart'");
+
+				String sHexZoomFactorAlias = objKernel.getParameterByProgramAlias(sModuleAlias, sProgramAlias, "GuiZoomFactorAliasStart" );
+				HashMap<String,String>hmZoomFactor=this.getHashMapZoomFactorGui();
+				String sHexZoomFactorUsed = hmZoomFactor.get(sHexZoomFactorAlias);				
+				objIni.setVariable("GuiZoomFactorUsed", sHexZoomFactorUsed);
+			}
+			
+			hexzoomfactor:{
+			// "HexZoomFactorUsed"
+			//... Zuerst den eingestellten ZoomFaktor holen UND als Variable hier speichern. Ansonsten wird ggfs. der zuletzt bei der Erstellung der Bilder (z.B bei der Variante) verwendete ZoomFaktor verwendet. //TODO GOON 20180727: Der wird noch aus der Ini.Datei ausgelesen. Demnächst aus Applikation-Einstellung.....
+			String sModuleAlias = this.getKernelObject().getApplicationKey(); //in TileTHM wäre das: this.getMapPanel().getModuleName();
+			String sProgramAlias = "HexMapCentral";  //in TileTHM wäre das: this.getMapPanel().getProgramAlias();				
+			System.out.println(ReflectCodeZZZ.getMethodCurrentName() + ": Suche Modul: '" + sModuleAlias +"'/ Program: '" + sProgramAlias + "'/ Parameter: 'HexZoomFactorAliasStart'");
+
+			String sHexZoomFactorAlias = objKernel.getParameterByProgramAlias(sModuleAlias, sProgramAlias, "HexZoomFactorAliasStart" );
+			HashMap<String,String>hmZoomFactor=this.getHashMapZoomFactorMap();
+			String sHexZoomFactorUsed = hmZoomFactor.get(sHexZoomFactorAlias);				
+			objIni.setVariable("HexZoomFactorUsed", sHexZoomFactorUsed);
+			}			
+		}//end main:		
+		return bReturn;
+	}
+	
 	
 	//#### METHODEN DER DATENBANKINITIALISIERUNG
 	//### DEFAULTTEXTE ###########################################################

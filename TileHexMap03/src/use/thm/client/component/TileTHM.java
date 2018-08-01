@@ -185,20 +185,26 @@ public class TileTHM extends JPanel implements IMapPositionableTHM, IBackendPers
 		
 		try{			
 			setOpaque(true);//Schaltet den default Hintergrund aus (normalerweise grau). // Dies auf false gesetzt "opaque heisst 'undurchsichtig' ").
-						
+			
+			//0. Hole den gerade in der Applikation für die Karte eingestellten ZoomFaktor. Diesen als Variable für die INI-Berechnungen zur Verfügung stellen
+			String sHexZoomFactor = ApplicationSingletonTHM.getInstance().getHexZoomFactorCurrent();
+		
+			KernelSingletonTHM objKernel = KernelSingletonTHM.getInstance();	
+			FileIniZZZ objFileConfig = objKernel.getFileConfigIni();
+			objFileConfig.setVariable("HexZoomFactorUsed", sHexZoomFactor);
+
 			//1.  Der Hintergrund des Spielsteins: Das Bild...  Merke. Zeichne das zuerst. Dann kann man ggfs. etwas Text darübergeschrieben tollerieren.
 			//++++++++++
 		    //Die Größe der Icons aus der KernelKonfiguration auslesen
-			KernelSingletonTHM objKernel = KernelSingletonTHM.getInstance();	
 			String sModuleAlias = this.getMapPanel().getModuleName();
 			String sProgramAlias = this.getMapPanel().getProgramAlias();				
-			System.out.println(ReflectCodeZZZ.getMethodCurrentName() + ": Suche Modul: '" + sModuleAlias +"'/ Program: '" + sProgramAlias + "'/ Parameter: 'IconWidth'");
 			
-
 			
-			//... Nun können die Formeln wieder korrekt arbeiten.				
+			//... Nun können die Formeln wieder korrekt arbeiten.		
+			System.out.println(ReflectCodeZZZ.getMethodCurrentName() + ": Suche Modul: '" + sModuleAlias +"'/ Program: '" + sProgramAlias + "'/ Parameter: 'IconWidth'");			
 			String sIconWidth = objKernel.getParameterByProgramAlias(sModuleAlias, sProgramAlias, "IconWidth" );
 			int iIconWidth = StringZZZ.toInteger(sIconWidth);				
+			System.out.println(ReflectCodeZZZ.getMethodCurrentName() + ": Suche Modul: '" + sModuleAlias +"'/ Program: '" + sProgramAlias + "'/ Parameter: 'IconHeight'");			
 			String sIconHeight = objKernel.getParameterByProgramAlias(sModuleAlias, sProgramAlias, "IconHeight" );
 			int iIconHeight = StringZZZ.toInteger(sIconHeight);
 			
@@ -211,11 +217,11 @@ public class TileTHM extends JPanel implements IMapPositionableTHM, IBackendPers
 //			File objFile = new File(sFilename);		   
 //			BufferedImage objBufferedImageTemp = ImageIO.read(objFile);		
 			
-			//TODO GOON 20180718: Hier in Abhängigkeit vom gerade eingestellten "ZoomFaktor" das passende Bild holen.
-			//Also z.B. this.getVariantImageUsedInByte(int iZoomFactor);
-			//
+			//+++++++++
+			//In Abhängigkeit vom gerade eingestellten "ZoomFaktor" das passende Bild holen.						
 			//Das Bild aus dem in der Datenbank hinterlegten byte[] beziehen. Transportiert wird das über DTO-Objekt.
-			byte[] imageInByte = this.getVariantImageUsedInByte();
+			String sHexZoomFactorAliasCurrent = ApplicationSingletonTHM.getInstance().getHexZoomFactorAliasCurrent();
+			byte[] imageInByte = this.getVariantImageUsedInByte(sHexZoomFactorAliasCurrent);
 			BufferedImage objBufferedImageTransparentAndResized = UIHelper.toBufferedImage(imageInByte);
 						
 			//+++++++++ Das Bild an der errechneten Postion (unterhalb des Labels) zeichnen.			
@@ -460,12 +466,29 @@ public class TileTHM extends JPanel implements IMapPositionableTHM, IBackendPers
 		this.getDto().set(ITileDtoAttribute.VARIANT_IMAGE_URL_STRING, sVariantImageUrlString);
 	}
 	
+	/**Hole per Reflection aus der DTO-Attribut Klasse das Bild, welches zur Auflösung passt.
+	 * Hier: Initialer HexMapZoomFactor-ALIAS.
+	 * 
+	 * @return
+	 * @throws ExceptionZZZ
+	 */
 	public byte[] getVariantImageUsedInByte() throws ExceptionZZZ{
 		//das wäre das Bild in normaler Größe return (byte[]) this.getDto().get(ITileDtoAttribute.VARIANT_IMAGE_IN_BYTE); //es müsste kliner gerechnet werden
 		//das kleiner und transparent gerechnete Bild
 		
-		String sZoomFactor = ApplicationSingletonTHM.getInstance().getZoomFactorMapInitial();
-		
+		String sZoomFactorAlias = ApplicationSingletonTHM.getInstance().getHexZoomFactorAliasInitial();
+		return this.getVariantImageUsedInByte(sZoomFactorAlias);
+	}
+	
+	/**Hole per Reflection aus der DTO-Attribut Klasse das Bild, welches zur Auflösung passt.
+	 * Hier: Übergebener HexMapZoomFactor-ALIAS.
+	 * 
+	 * @return
+	 * @throws ExceptionZZZ
+	 */
+	public byte[] getVariantImageUsedInByte(String sZoomFactorAlias) throws ExceptionZZZ{
+		if(StringZZZ.isEmpty(sZoomFactorAlias)) return (byte[]) this.getDto().get(ITileDtoAttribute.VARIANT_IMAGE_IN_BYTE); //vielelicht ein Defaultwert zurückgeben
+
 		Class<ITileDtoAttribute> c = ITileDtoAttribute.class;
 		for(Field f : c.getDeclaredFields() ){
 			int mod = f.getModifiers();
@@ -474,7 +497,7 @@ public class TileTHM extends JPanel implements IMapPositionableTHM, IBackendPers
 					//System.out.printf("%s = %d%n",  f.getName(), f.get(null));// f.get(null) wirkt wohl nur bei Konstanten, die im Interface so defineirt sind: public static final int CONST_1 = 9;
 					String s = f.getName();
 					if(StringZZZ.contains(s, "IMAGEHEXMAP", true)){
-						if(s.endsWith(sZoomFactor)){
+						if(s.endsWith(sZoomFactorAlias)){
 							
 							//Erzeuge eine DTOAttribut Instanz, die dem aktuell gefundenen Namen der Konstante entspricht.
 							//Merke: DTOAttribute braucht eine überschreibene equals() und hashCode() Methode, damit der gespeichert Wert mit einer erzeugten Instanz verglichen werden kann.
@@ -495,15 +518,53 @@ public class TileTHM extends JPanel implements IMapPositionableTHM, IBackendPers
 //				}
 			}
 		}
-		
-		//TODO GOON 20180725: Das Bild passend zur Eingestellten Zoom Größe in der Applikation auswählen 
-		return (byte[]) this.getDto().get(ITileDtoAttribute.VARIANT_IMAGEHEXMAP_IN_BYTE_04);		
+		return (byte[]) this.getDto().get(ITileDtoAttribute.VARIANT_IMAGE_IN_BYTE); //vielelicht ein Defaultwert zurückgeben	
 	}
 	protected void setVariantImageUsedInByte(byte[] imageInByte){
-		//das wäre das Bild in normaler Größe   this.getDto().set(ITileDtoAttribute.VARIANT_IMAGE_IN_BYTE, imageInByte); //es müsste kliner gerechnet werden
-		//TODO GOON 20180725: Das Bild passend zur Eingestellten Zoom Größe in der Applikation auswählen 						
-		this.getDto().set(ITileDtoAttribute.VARIANT_IMAGEHEXMAP_IN_BYTE_04, imageInByte);
+		//das wäre das Bild in normaler Größe   this.getDto().set(ITileDtoAttribute.VARIANT_IMAGE_IN_BYTE, imageInByte); //es müsste kliner gerechnet werden					
+		this.getDto().set(ITileDtoAttribute.VARIANT_IMAGE_IN_BYTE, imageInByte);
 	}
+	protected void setVariantImageUsedInByte(byte[] imageInByte, String sZoomFactorAlias){
+		main:{
+			if(StringZZZ.isEmpty(sZoomFactorAlias)){
+				this.setVariantImageUsedInByte(imageInByte);
+				break main;
+			}
+			
+			Class<ITileDtoAttribute> c = ITileDtoAttribute.class;
+			for(Field f : c.getDeclaredFields() ){
+				int mod = f.getModifiers();
+				if(Modifier.isStatic(mod) && Modifier.isPublic(mod) && Modifier.isFinal(mod)){
+//					try{
+						//System.out.printf("%s = %d%n",  f.getName(), f.get(null));// f.get(null) wirkt wohl nur bei Konstanten, die im Interface so defineirt sind: public static final int CONST_1 = 9;
+						String s = f.getName();
+						if(StringZZZ.contains(s, "IMAGEHEXMAP", true)){
+							if(s.endsWith(sZoomFactorAlias)){
+								
+								//Erzeuge eine DTOAttribut Instanz, die dem aktuell gefundenen Namen der Konstante entspricht.
+								//Merke: DTOAttribute braucht eine überschreibene equals() und hashCode() Methode, damit der gespeichert Wert mit einer erzeugten Instanz verglichen werden kann.
+								DTOAttribute objDtoAttribute = DTOAttribute.getInstance(s); //<IDTOAttributeGroup, T>		
+								
+//								Object obj = ITileDtoAttribute.VARIANT_IMAGEHEXMAP_IN_BYTE_04;//Die Gleichheit und den HashCode mit "hart verdrahteten Werten" entwickeln/überprüfen.						
+//								if(obj.equals(objDtoAttribute)){
+//									System.out.println("GLEICH");
+//									System.out.println("Hashcode: " + obj.hashCode());
+//								}else{
+//									System.out.println("UNGLEICH");
+//								}
+								this.getDto().set(objDtoAttribute, imageInByte);	
+							}
+						}
+//					}catch(IllegalAccessException e){
+//						e.printStackTrace();
+//					}
+				}
+			}
+		}//end main
+	}
+	
+	
+	
 	
 	public Integer getInstanceVariantUniqueNumber(){
 		return (Integer) this.getDto().get(ITileDtoAttribute.INSTANCE_VARIANT_UNIQUENUMBER);

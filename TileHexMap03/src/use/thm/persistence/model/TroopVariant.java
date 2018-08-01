@@ -52,6 +52,7 @@ import basic.zBasic.ReflectCodeZZZ;
 import basic.zBasic.persistence.interfaces.enums.ICategoryProviderZZZ;
 import basic.zBasic.persistence.interfaces.enums.IThiskeyProviderZZZ;
 import basic.zBasic.util.datatype.string.StringZZZ;
+import basic.zBasic.util.file.FileEasyZZZ;
 import basic.zBasicUI.component.UIHelper;
 import basic.zBasicUI.component.UIHelperTransparencyRange;
 import basic.zKernel.KernelZZZ;
@@ -352,19 +353,19 @@ public abstract class TroopVariant  extends KeyImmutable implements ITroopVarian
 			//Wichtig: Nun eine Variable im Ini-FileZZZ setzen, dann kann mit der Variablen die Größe der Icons - basierend auf der hinterlegten Formel - errechnet werden.
 			//Zuerst: Sichere den Wert der Variablen weg, bevor man ihn hier temporär zum Rechnen verändert.
 			FileIniZZZ objIni = objKernel.getFileConfigIni();
-			String sZoomFactorInitial = objIni.getVariable("GuiZoomFactorUsed");
+			String sGuiZoomFactorInitial = objIni.getVariable("GuiZoomFactorUsed");
 			
 			
 			//20180711 Ziel ist: Hole einen "Zoomwert" und rechne den festen Wert damit um.... in der ini-Konfiguration...
 			//...........    so dass an dieser Stelle im Code nichts geändert werden muss.			
-			HashMap<String,String>hmZoomFactorGui=ApplicationSingletonTHM.getInstance().getHashMapZoomFactorGui();
+			HashMap<String,String>hmZoomFactorGui=ApplicationSingletonTHM.getInstance().getHashMapGuiZoomFactorAlias();
 			Set<String>setZoomFactorAliasGUI=hmZoomFactorGui.keySet();
 			
 			String sModuleAlias = objKernel.getApplicationKey();
 			for(String sZoomFactorAlias : setZoomFactorAliasGUI){
 				
-				String sZoomFactor = hmZoomFactorGui.get(sZoomFactorAlias); //Merke: Dieser ZoomFaktor-Alias ist dann Bestandteil der Spaltennamen für das Bild. Also das Bild mit der passenden Größe.								
-				objIni.setVariable("GuiZoomFactorUsed", sZoomFactor);
+				String sGuiZoomFactor = hmZoomFactorGui.get(sZoomFactorAlias); //Merke: Dieser ZoomFaktor-Alias ist dann Bestandteil der Spaltennamen für das Bild. Also das Bild mit der passenden Größe.								
+				objIni.setVariable("GuiZoomFactorUsed", sGuiZoomFactor);
 			
 			//++++++++++++++++++++++++++++++++++++++++
 			//A1. Bild als Katalogeintrag										
@@ -394,7 +395,8 @@ public abstract class TroopVariant  extends KeyImmutable implements ITroopVarian
 			Method mtestCatalogLength = ReflectionUtil.findMethodForMethodName("use.thm.persistence.model.TroopArmyVariant", sMethodNameCatalogLength);
 			mtestCatalogLength.invoke(this, lngFileSizeCatalog);
 			
-			String sTileIconNameZoomed = sTileIconName + "_x_" + sZoomFactor; //TODO GOON 20180731: Sicherstellen, dass ein Dateiname die Endung .png trotzdem am ende hat.
+			String sSuffix = "_x_" + sGuiZoomFactor; 
+			String sTileIconNameZoomed = FileEasyZZZ.getNameWithChangedSuffixKeptEnd(sTileIconName,sSuffix);//Die Dateiendung .png muss am Ende stehen bleiben.
 			String sMethodNameCatalogName = "setImageCatalogName"+sZoomFactorAlias;
 			Method mtestCatalogName = ReflectionUtil.findMethodForMethodName("use.thm.persistence.model.TroopArmyVariant", sMethodNameCatalogName);
 			mtestCatalogName.invoke(this, sTileIconNameZoomed);
@@ -441,7 +443,7 @@ public abstract class TroopVariant  extends KeyImmutable implements ITroopVarian
 		 }//end for String sZoomFactorAlias : setZoomFactorAliasGUI){
 			
 			//Zuletzt: Speichere den anfangs gemerkten Wert wieder zurück
-			objIni.setVariable("GuiZoomFactorUsed", sZoomFactorInitial);
+			objIni.setVariable("GuiZoomFactorUsed", sGuiZoomFactorInitial);
 			
 			
 			//####################################################################
@@ -451,11 +453,11 @@ public abstract class TroopVariant  extends KeyImmutable implements ITroopVarian
 			//Wichtig: Nun eine Variable im Ini-FileZZZ setzen, dann kann mit der Variablen die Größe der Icons - basierend auf der hinterlegten Formel - errechnet werden.
 			//Zuerst: Sichere den Wert der Variablen weg, bevor man ihn hier temporär zum Rechnen verändert.
 			objIni = objKernel.getFileConfigIni();
-			sZoomFactorInitial = objIni.getVariable("HexZoomFactorUsed");
+			String sHexZoomFactorInitial = objIni.getVariable("HexZoomFactorUsed");
 					
 			//20180711 Ziel ist: Hole einen "Zoomwert" und rechne den festen Wert damit um.... in der ini-Konfiguration...
 			//...........    so dass an dieser Stelle im Code nichts geändert werden muss.
-			HashMap<String,String>hmZoomFactor=ApplicationSingletonTHM.getInstance().getHashMapZoomFactorMap();
+			HashMap<String,String>hmZoomFactor=ApplicationSingletonTHM.getInstance().getHashMapHexZoomFactorAlias();
 			Set<String>setZoomFactorAlias=hmZoomFactor.keySet();
 			
 			sModuleAlias = objKernel.getApplicationKey();
@@ -555,8 +557,9 @@ public abstract class TroopVariant  extends KeyImmutable implements ITroopVarian
 			String sMethodNameHexmapLength = "setImageHexmapLength"+sZoomFactorAlias;
 			Method mtestHexmapLength = ReflectionUtil.findMethodForMethodName("use.thm.persistence.model.TroopArmyVariant", sMethodNameHexmapLength);
 			mtestHexmapLength.invoke(this, lngFileSizeHexmap);
-		
-			String sTileIconNameZoomed = sTileIconName + "_x_" + sHexZoomFactor; //TODO Goon 20180731: Die Dateiendung .png muss am Ende stehen bleiben.
+
+			String sSuffix = "_x_" + sHexZoomFactor; 
+			String sTileIconNameZoomed = FileEasyZZZ.getNameWithChangedSuffixKeptEnd(sTileIconName,sSuffix);//Die Dateiendung .png muss am Ende stehen bleiben. 
 			String sMethodNameHexmapName = "setImageHexmapName"+sZoomFactorAlias;
 			Method mtestHexmapName = ReflectionUtil.findMethodForMethodName("use.thm.persistence.model.TroopArmyVariant", sMethodNameHexmapName);
 			mtestHexmapName.invoke(this, sTileIconNameZoomed);
@@ -605,7 +608,7 @@ public abstract class TroopVariant  extends KeyImmutable implements ITroopVarian
 			}//end for String sZoomFactorAlias : setZoomFactorAlias){
 			
 			//Zuletzt: Speichere den anfangs gemerkten Wert wieder zurück
-			objIni.setVariable("HexZoomFactorUsed", sZoomFactorInitial);
+			objIni.setVariable("HexZoomFactorUsed", sHexZoomFactorInitial);
 			//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 			
 			

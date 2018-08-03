@@ -66,7 +66,8 @@ public class PanelMain_WESTTHM extends KernelJPanelCascadedZZZ implements IGhost
 	        //Der übergebene String wird beim Drop-Event ausgewertet.
 	        //Nur darüber kann dem Backend mitgeteilt werden von welcher "Variante" das neu zu erstellende Entity sein soll.
 		    //Das passiert in: GhostDropManagerHexMapPanelTHM.ghostDropped(GhostDropEvent e)
-
+	
+			
 			//NEU 20180326: Die Box-Objekte im Konstruktor der VariantCatalog-Klasse erzeugen.
 			VariantCatalogTHM objCatalog = new VariantCatalogTHM(objKernel, panelParent, glassPane, listenerForDropToHexMap);
 			this.setVariantCatalog(objCatalog);

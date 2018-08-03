@@ -50,6 +50,7 @@ import use.thm.client.handler.TileMouseMotionHandlerTHM;
 import use.thm.persistence.dto.DtoFactoryGenerator;
 import use.thm.persistence.dto.ITileDtoAttribute;
 import use.thm.persistence.dto.TileDtoFactory;
+import use.zBasicUI.component.UIHelperTHM;
 
 //Merke: 20180718: Zum Zugriff auf INI-Werte, den Kernel aus der PanelMap Holen oder aus dem Singelton-Objekt.
 //dadurch spart man sich: //public class TileTHM extends KernelJPanelCascadedZZZ implements IMapPositionableTHM, IBackendPersistenceUser4UiZZZ {
@@ -487,38 +488,8 @@ public class TileTHM extends JPanel implements IMapPositionableTHM, IBackendPers
 	 * @throws ExceptionZZZ
 	 */
 	public byte[] getVariantImageUsedInByte(String sZoomFactorAlias) throws ExceptionZZZ{
-		if(StringZZZ.isEmpty(sZoomFactorAlias)) return (byte[]) this.getDto().get(ITileDtoAttribute.VARIANT_IMAGE_IN_BYTE); //vielelicht ein Defaultwert zurückgeben
-
-		Class<ITileDtoAttribute> c = ITileDtoAttribute.class;
-		for(Field f : c.getDeclaredFields() ){
-			int mod = f.getModifiers();
-			if(Modifier.isStatic(mod) && Modifier.isPublic(mod) && Modifier.isFinal(mod)){
-//				try{
-					//System.out.printf("%s = %d%n",  f.getName(), f.get(null));// f.get(null) wirkt wohl nur bei Konstanten, die im Interface so defineirt sind: public static final int CONST_1 = 9;
-					String s = f.getName();
-					if(StringZZZ.contains(s, "IMAGEHEXMAP", true)){
-						if(s.endsWith(sZoomFactorAlias)){
-							
-							//Erzeuge eine DTOAttribut Instanz, die dem aktuell gefundenen Namen der Konstante entspricht.
-							//Merke: DTOAttribute braucht eine überschreibene equals() und hashCode() Methode, damit der gespeichert Wert mit einer erzeugten Instanz verglichen werden kann.
-							DTOAttribute objDtoAttribute = DTOAttribute.getInstance(s); //<IDTOAttributeGroup, T>		
-							
-//							Object obj = ITileDtoAttribute.VARIANT_IMAGEHEXMAP_IN_BYTE_04;//Die Gleichheit und den HashCode mit "hart verdrahteten Werten" entwickeln/überprüfen.						
-//							if(obj.equals(objDtoAttribute)){
-//								System.out.println("GLEICH");
-//								System.out.println("Hashcode: " + obj.hashCode());
-//							}else{
-//								System.out.println("UNGLEICH");
-//							}
-							return (byte[]) this.getDto().get(objDtoAttribute);	
-						}
-					}
-//				}catch(IllegalAccessException e){
-//					e.printStackTrace();
-//				}
-			}
-		}
-		return (byte[]) this.getDto().get(ITileDtoAttribute.VARIANT_IMAGE_IN_BYTE); //vielelicht ein Defaultwert zurückgeben	
+		GenericDTO<ITileDtoAttribute>objDto = this.getDto();
+		return UIHelperTHM.getVariantImageUsedInByte(objDto,"IMAGEHEXMAP", sZoomFactorAlias);	
 	}
 	protected void setVariantImageUsedInByte(byte[] imageInByte){
 		//das wäre das Bild in normaler Größe   this.getDto().set(ITileDtoAttribute.VARIANT_IMAGE_IN_BYTE, imageInByte); //es müsste kliner gerechnet werden					

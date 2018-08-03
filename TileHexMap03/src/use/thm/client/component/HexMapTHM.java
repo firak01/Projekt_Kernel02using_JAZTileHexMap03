@@ -452,6 +452,8 @@ public class HexMapTHM extends KernelUseObjectZZZ implements ITileEventUserTHM {
 				//dto.set(ITileDtoAttribute.UNIQUENAME, sUniquename);				
 				//dto.set(ITileDtoAttribute.VARIANT_SHORTTEXT, "NEUTEST");
 				
+		
+				
 				ArmyTileTHM objArmyTemp = new ArmyTileTHM(panelMap, objTileMoveEventBroker, dto, sX, sY, this.getSideLength());
 				EventTileCreatedInCellTHM objEventTileCreated = new EventTileCreatedInCellTHM(objArmyTemp, 1, sX, sY);
 				objTileMetaEventBroker.fireEvent(objEventTileCreated);

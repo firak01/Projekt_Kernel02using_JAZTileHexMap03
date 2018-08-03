@@ -2,6 +2,7 @@ package use.thm.persistence.dto;
 
 import use.thm.client.component.ArmyTileTHM;
 import use.thm.client.component.FleetTileTHM;
+import use.thm.client.component.VariantCatalogTHM;
 import basic.persistence.dto.GenericDTO;
 import basic.persistence.dto.IDTOAttributeGroup;
 import basic.zBasic.ExceptionZZZ;
@@ -62,6 +63,8 @@ public class DtoFactoryGenerator  extends KernelUseObjectZZZ implements IDtoFact
 			objReturn = new ArmyTileDtoFactory();
 		}else if(FleetTileTHM.class.equals(classUsingTheDto)){
 				objReturn = new FleetTileDtoFactory();
+		}else if(VariantCatalogTHM.class.equals(classUsingTheDto)){
+				objReturn = new VariantCatalogDtoFactory();
 		}else{
 			ExceptionZZZ ez  = new ExceptionZZZ("Noch keine DTOFactory für die Klasse '" + classUsingTheDto.getName() + "' vorgesehen.", iERROR_PARAMETER_VALUE, this, ReflectCodeZZZ.getMethodCurrentName());
 			throw ez;	

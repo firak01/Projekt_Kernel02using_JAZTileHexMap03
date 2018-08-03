@@ -25,6 +25,7 @@ import use.thm.persistence.dao.TroopVariantDao;
 import use.thm.persistence.daoFacade.TroopArmyDaoFacade;
 import use.thm.persistence.daoFacade.TroopFleetDaoFacade;
 import use.thm.persistence.dto.DtoFactoryGenerator;
+import use.thm.persistence.dto.ITileDtoAttribute;
 import use.thm.persistence.hibernate.HibernateContextProviderSingletonTHM;
 import use.thm.persistence.model.AreaCell;
 import use.thm.persistence.model.AreaCellLand;
@@ -37,6 +38,7 @@ import use.thm.persistence.model.TroopArmyVariant;
 import use.thm.persistence.model.TroopFleet;
 import use.thm.persistence.model.TroopFleetVariant;
 import use.thm.util.datatype.enums.EnumSetTroopVariantUtilTHM;
+import use.zBasicUI.component.UIHelperTHM;
 import basic.persistence.dto.GenericDTO;
 import basic.zBasic.ExceptionZZZ;
 import basic.zBasic.KernelSingletonTHM;
@@ -63,6 +65,8 @@ public class VariantCatalogTHM  extends KernelUseObjectZZZ implements IGhostGlas
 	
 	private KernelJPanelCascadedZZZ panelParent;
 	private int iNrOfEntries=0;
+	
+	private GenericDTO<ITileDtoAttribute>objDto = null;
 	
 	//GhostDragDrop Interface
 	private GhostGlassPane glassPane; //etwas, das per Drag/Drop bewegt wird, wird dorthin als Bild kopiert.
@@ -274,7 +278,9 @@ public class VariantCatalogTHM  extends KernelUseObjectZZZ implements IGhostGlas
 			*/
 			
 			//TODO GOON 20180725: Lies das Bild gemäß des in der Applikation eingestellten ZOOMFaktors für GUI aus.
-			byte[] imageInByte = objEntity.getImageCatalog01(); //Diese Catalog Bilder sind in der Größe reduziert.
+			//byte[] imageInByte = objEntity.getImageCatalog01(); //Diese Catalog Bilder sind in der Größe reduziert.
+			String sGuiZoomFactorAliasCurrent = ApplicationSingletonTHM.getInstance().getGuiZoomFactorAliasCurrent();
+			byte[] imageInByte = this.getVariantCatalogImageUsedInByte(sGuiZoomFactorAliasCurrent);
 					
 			boxCreated = this.createBoxObject(sCatalogVariantEntryId, sTileLabel, imageInByte);
 			this.getMapCatalog().put(sVariantId, sCatalogVariantEntryId, boxCreated);
@@ -505,10 +511,18 @@ public class VariantCatalogTHM  extends KernelUseObjectZZZ implements IGhostGlas
 	    	 	    	
 	    	 //Ein Label hinzufügen mit dem entsprechenden Titel und dem Bild
 	    	 
-	    
-	    	 	KernelZZZ objKernel = this.getKernelObject();
-			
-	    	 
+	    	 KernelSingletonTHM objKernel = KernelSingletonTHM.getInstance();	
+			FileIniZZZ objFileConfig = objKernel.getFileConfigIni();
+			String sGuiZoomFactor = ApplicationSingletonTHM.getInstance().getGuiZoomFactorCurrent();							
+			objFileConfig.setVariable("GuiZoomFactorUsed", sGuiZoomFactor);
+								
+	    	//0. Hole den gerade in der Applikation für die Karte eingestellten ZoomFaktor. Diesen als Variable für die INI-Berechnungen zur Verfügung stellen
+			String sHexZoomFactor = ApplicationSingletonTHM.getInstance().getHexZoomFactorCurrent();							
+			objFileConfig.setVariable("HexZoomFactorUsed", sHexZoomFactor);
+				
+				
+				
+ 
 		   //++++++++++
 				 //Die Größe der Icons aus der KernelKonfiguration auslesen
 				//DAS IST IN DER ERSTELLUNG DES ENTITIES AUSGELAGERT UND WIRD EXTRA GESPEICHERT
@@ -529,8 +543,8 @@ public class VariantCatalogTHM  extends KernelUseObjectZZZ implements IGhostGlas
 //				objIni.setVariable("HexZoomFactorUsed", sHexZoomFactorUsed);
 	    	 	
 	    	 	//Test: Hier schon definiert?
-	    	 	String stest = objKernel.getFileConfigIni().getVariable("HexZoomFactorUsed");
-	    	 	System.out.println(ReflectCodeZZZ.getMethodCurrentNameLined(0) + ": HexZoomFactorUsed als Variable = '" + stest + "'");
+	    	 	//String stest = objKernel.getFileConfigIni().getVariable("GuiZoomFactorUsed");
+	    	 	//System.out.println(ReflectCodeZZZ.getMethodCurrentNameLined(0) + ": GuiZoomFactorUsed als Variable = '" + stest + "'");
 	    	 	
 	    		//Modullnamen und Programnamen für die Position in der KernelKonfiguation  	 
 	    		String sModuleAlias =  this.getModuleUsed();// this.getModuleName();
@@ -575,6 +589,53 @@ public class VariantCatalogTHM  extends KernelUseObjectZZZ implements IGhostGlas
 	     return objBoxReturn;
 	}
 		
+	public GenericDTO<ITileDtoAttribute> getDto() {
+		if(this.objDto==null){
+			//this.objDto =GenericDTO.getInstance(ITileDtoAttribute.class); //ITileDtoAttribute bestimmt also welche Properties in der DTO-Klasse gespeicehrt sind.
+			
+			//FGL 20171011: Ersetzt durch eine Factory - Klasse
+//			TileDtoFactory factoryTile = new TileDtoFactory();
+//			GenericDTO dto = factoryTile.createDTO();	
+			
+			//FGL 20171112: Hole die Factory - Klasse generisch per FactoryGenerator, die als Singleton umgebaut wurde:
+			try {
+				DtoFactoryGenerator objFactoryGenerator = DtoFactoryGenerator.getInstance();
+				GenericDTO dto = objFactoryGenerator.createDtoForClass(this.getClass());										
+				this.objDto = dto;				
+			} catch (ExceptionZZZ e) {
+				e.printStackTrace();
+				System.out.println("Ein Fehler ist aufgetreten: " + e.getDetailAllLast());
+				ReportLogZZZ.write(ReportLogZZZ.ERROR, e.getDetailAllLast());
+			}						
+		}
+		return this.objDto;
+	}
+	
+	/**Hole per Reflection aus der DTO-Attribut Klasse das Bild, welches zur Auflösung passt.
+	 * Hier: Initialer HexMapZoomFactor-ALIAS.
+	 * 
+	 * @return
+	 * @throws ExceptionZZZ
+	 */
+	public byte[] getVariantCatalogImageUsedInByte() throws ExceptionZZZ{
+		//das wäre das Bild in normaler Größe return (byte[]) this.getDto().get(ITileDtoAttribute.VARIANT_IMAGE_IN_BYTE); //es müsste kliner gerechnet werden
+		//das kleiner und transparent gerechnete Bild
+		
+		String sZoomFactorAlias = ApplicationSingletonTHM.getInstance().getHexZoomFactorAliasInitial();
+		return this.getVariantCatalogImageUsedInByte(sZoomFactorAlias);
+	}
+	
+	/**Hole per Reflection aus der DTO-Attribut Klasse das Bild, welches zur Auflösung passt.
+	 * Hier: Übergebener HexMapZoomFactor-ALIAS.
+	 * 
+	 * @return
+	 * @throws ExceptionZZZ
+	 */
+	public byte[] getVariantCatalogImageUsedInByte(String sZoomFactorAlias) throws ExceptionZZZ{
+		GenericDTO<ITileDtoAttribute>objDto = this.getDto();
+		return UIHelperTHM.getVariantImageUsedInByte(objDto,"IMAGECATALOG", sZoomFactorAlias);	
+	}
+	
 		//#### GETTER / SETTER
 		public void setPanelParent(KernelJPanelCascadedZZZ panelParent){
 			this.panelParent = panelParent;

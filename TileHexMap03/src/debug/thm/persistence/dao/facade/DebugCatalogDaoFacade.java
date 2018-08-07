@@ -14,15 +14,20 @@ import javax.swing.JLabel;
 
 import debug.thm.persistence.dao.tilevariant.DebugTroopArmyVariantDao;
 import use.thm.client.component.ArmyTileTHM;
+import use.thm.client.component.BoxTHM;
 import use.thm.persistence.dao.TileDao;
 import use.thm.persistence.dao.TroopArmyDao;
+import use.thm.persistence.dao.TroopArmyVariantDao;
+import use.thm.persistence.dao.TroopVariantDao;
 import use.thm.persistence.daoFacade.TroopArmyDaoFacade;
+import use.thm.persistence.daoFacade.TroopArmyVariantDaoFacade;
 import use.thm.persistence.dto.DtoFactoryGenerator;
+import use.thm.persistence.dto.IBoxDtoAttribute;
 import use.thm.persistence.dto.ITileDtoAttribute;
 import use.thm.persistence.hibernate.HibernateContextProviderSingletonTHM;
 import use.thm.persistence.model.TroopArmy;
+import use.thm.persistence.model.TroopArmyVariant;
 import use.thm.web.webservice.axis2.pojo.TroopArmyPojo;
-import use.zBasicUI.component.UIHelperTHM;
 import basic.persistence.dto.GenericDTO;
 import basic.persistence.dto.IDTOAttributeGroup;
 import basic.zBasic.ExceptionZZZ;
@@ -30,7 +35,7 @@ import basic.zBasic.util.math.RandomZZZ;
 import basic.zBasicUI.component.UIHelper;
 import basic.zKernel.KernelZZZ;
 
-public class DebugTroopArmyDaoFacade {
+public class DebugCatalogDaoFacade {
 	public static void main(String[] args) {				
 		try {
 			KernelZZZ objKernel = new KernelZZZ();		
@@ -39,7 +44,7 @@ public class DebugTroopArmyDaoFacade {
 			
 			//##################################
 			
-			DebugTroopArmyDaoFacade objDebug = new DebugTroopArmyDaoFacade();				
+			DebugCatalogDaoFacade objDebug = new DebugCatalogDaoFacade();				
 			objDebug.debugFillDto();
 					
 		} catch (ExceptionZZZ e) {
@@ -47,7 +52,7 @@ public class DebugTroopArmyDaoFacade {
 		} 
 		
 	}
-	public DebugTroopArmyDaoFacade(){		
+	public DebugCatalogDaoFacade(){		
 	}
 	public boolean debugFillDto(){
 		boolean bReturn = false;
@@ -57,20 +62,20 @@ public class DebugTroopArmyDaoFacade {
 				KernelZZZ objKernel = new KernelZZZ();		
 				HibernateContextProviderSingletonTHM objContextHibernate = HibernateContextProviderSingletonTHM.getInstance(objKernel);
 				
-				//Hole eine Army für den Test
-				String sMap = "EINS";
-				TroopArmy objToFill = null;
+				//Hole eine Variante für den Test
+				TroopArmyVariant objToFill = null;
 				String sUniquename = null;
+				Long lngThiskey = null;
 				
-				TroopArmyDao dao = new TroopArmyDao(objContextHibernate);				
-				List<TroopArmy>listTroop = dao.searchTroopArmiesAll(sMap);			
-				if(listTroop.size()==0){
-					System.out.println("Es gibt auf der Karte '" + sMap + " keine platzierte Armeen. Beende die Funktion.");				
+				TroopArmyVariantDao dao = new TroopArmyVariantDao(objContextHibernate);				
+				List<TroopArmyVariant>listTroopVariant = dao.searchTroopArmyVariantsAll();			
+				if(listTroopVariant.size()==0){
+					System.out.println("Es gibt im Katalog keine Armee-Varianten. Beende die Funktion.");				
 					break main;
 				}else{
-					System.out.println("Es gibt auf der Karte '" + sMap + " platzierte Armeen: " + listTroop.size());				
+					System.out.println("Es gibt im Katalog Armee-Varianten: " + listTroopVariant.size());				
 					
-					int iChoose = RandomZZZ.getRandomNumber(0, listTroop.size()-1);
+					int iChoose = RandomZZZ.getRandomNumber(0, listTroopVariant.size()-1);
 					System.out.println("Verwende eine zufällig ... iChoose="+iChoose);
 					
 //					for(TroopArmy objTroop : listTroop){
@@ -87,27 +92,28 @@ public class DebugTroopArmyDaoFacade {
 //						listReturn.add(objPojo);
 //					}
 					
-					objToFill = listTroop.get(iChoose);
-					sUniquename = objToFill.getUniquename();
+					objToFill = listTroopVariant.get(iChoose);
+					sUniquename = objToFill.getSubtype();
+					lngThiskey = objToFill.getThiskey();
 				}
 				
 				
 				DtoFactoryGenerator objFactoryGenerator = DtoFactoryGenerator.getInstance();			 
-				GenericDTO dto = objFactoryGenerator.createDtoForClass(ArmyTileTHM.class);
+				GenericDTO dto = objFactoryGenerator.createDtoForClass(BoxTHM.class);
 			
 				
-				TroopArmyDaoFacade objTroopDaoFacade = new TroopArmyDaoFacade(objContextHibernate);
-				bReturn = objTroopDaoFacade.fillTroopArmyDto(sUniquename, dto);
+				TroopArmyVariantDaoFacade objTroopVariantDaoFacade = new TroopArmyVariantDaoFacade(objContextHibernate);
+				bReturn = objTroopVariantDaoFacade.fillTroopArmyVariantDto(lngThiskey, dto);
                 
 				//###########################################
 				//### DEBUG AUSGABEN ########################
 				//###########################################
 				//+++ Debug Ausgabe als Printout
-				String sShorttext = (String) dto.get(ITileDtoAttribute.VARIANT_SHORTTEXT);
-				System.out.println("Dto - Shorttext: " + sShorttext);
+				String sSubtype = (String) dto.get(IBoxDtoAttribute.SUBTYPE);
+				System.out.println("Dto - Subtype: " + sSubtype);
 				
-				Integer intInstanceUniqueNumber = (Integer) dto.get(ITileDtoAttribute.INSTANCE_VARIANT_UNIQUENUMBER);
-				System.out.println("Dto - Instance_VARIANT_Uniquenumber: " + intInstanceUniqueNumber.toString());
+				String sUniqueName = (String) dto.get(IBoxDtoAttribute.UNIQUENAME);
+				System.out.println("Dto - Uniqename: " +sUniqueName);
 				
 				//+++ Debug Ausgabe der gespeicherten Bilder
 				JDialog dialog = new JDialog();     
@@ -117,7 +123,7 @@ public class DebugTroopArmyDaoFacade {
                 dialog.setLayout(manager);
 				
 				//Das Bild über das DTO holen, gespeichert in der Datenbank
-				byte[] byteImage = (byte[]) dto.get(ITileDtoAttribute.VARIANT_IMAGE_IN_BYTE); 
+				byte[] byteImage = (byte[]) dto.get(IBoxDtoAttribute.VARIANT_IMAGE_IN_BYTE); 
 				if(byteImage!=null) {
 					BufferedImage objBufferedImageTemp = ImageIO.read(new ByteArrayInputStream(byteImage));
 					ImageIcon objImageIconTemp = new ImageIcon(objBufferedImageTemp);
@@ -127,7 +133,7 @@ public class DebugTroopArmyDaoFacade {
 				
 				//TODO GOON: 200180725 - Über alle 3 Dialobilder _02 _03 in einer Schleife gehen
 				//Das Bild für die Dialoganzeige über das DTO holen, gespeichert in der Datenbank
-				byte[] byteImageDialog = (byte[]) dto.get(ITileDtoAttribute.VARIANT_IMAGEDIALOG_IN_BYTE_01); 
+				byte[] byteImageDialog = (byte[]) dto.get(IBoxDtoAttribute.VARIANT_IMAGEDIALOG_IN_BYTE_01); 
 				if(byteImageDialog!=null) {
 					BufferedImage objBufferedImageTemp = ImageIO.read(new ByteArrayInputStream(byteImageDialog));
 					ImageIcon objImageIconTemp = new ImageIcon(objBufferedImageTemp);
@@ -137,7 +143,7 @@ public class DebugTroopArmyDaoFacade {
 				
 				//TODO GOON: 200180725 - Über alle 3 Katalogbilder _02 _03 in einer Schleife gehen
 				//Das Bild für die Kataloganzeige über das DTO holen, gespeichert in der Datenbank
-				byte[] byteImageCatalog = (byte[]) dto.get(ITileDtoAttribute.VARIANT_IMAGECATALOG_IN_BYTE_01); 
+				byte[] byteImageCatalog = (byte[]) dto.get(IBoxDtoAttribute.VARIANT_IMAGE_IN_BYTE_01); 
 				if(byteImageCatalog!=null) {
 					BufferedImage objBufferedImageTemp = ImageIO.read(new ByteArrayInputStream(byteImageCatalog));
 					ImageIcon objImageIconTemp = new ImageIcon(objBufferedImageTemp);
@@ -145,26 +151,16 @@ public class DebugTroopArmyDaoFacade {
 					dialog.add(new JLabel(objImageIconTemp));
 				}
 				
-				//TODO GOON: 200180725 - Über alle 6 Zoombilder _02 _03 ... _06 in einer Schleife gehen
+				//TODO GOON: 200180725 - Über alle 3 Zoombilder _02 .. _03 der GUI Zoomstufen in Schleife gehen
 				//Das Bild für das Ziehen über die Hexmap über das DTO holen, gespeichert in der Datenbank
-				byte[] byteImageDrag = (byte[]) dto.get(ITileDtoAttribute.VARIANT_IMAGEDRAG_IN_BYTE_01); 
+				byte[] byteImageDrag = (byte[]) dto.get(IBoxDtoAttribute.VARIANT_IMAGEDRAG_IN_BYTE_01); 
 				if(byteImageDrag!=null) {
 					BufferedImage objBufferedImageTemp = ImageIO.read(new ByteArrayInputStream(byteImageDrag));
 					ImageIcon objImageIconTemp = new ImageIcon(objBufferedImageTemp);
 				
 					dialog.add(new JLabel(objImageIconTemp)); 
 				}
-				
-				//TODO GOON: 200180725 - Über alle 6 Zoombilder _02 _03 ... _06 in einer Schleife gehen
-				//Das Bild für die Hexmap-Anzeige über das DTO holen, gespeichert in der Datenbank
-				byte[] byteImageHexmap = (byte[]) dto.get(ITileDtoAttribute.VARIANT_IMAGEHEXMAP_IN_BYTE_01); 
-				if(byteImageHexmap!=null) {
-					BufferedImage objBufferedImageTemp = ImageIO.read(new ByteArrayInputStream(byteImageHexmap));
-					ImageIcon objImageIconTemp = new ImageIcon(objBufferedImageTemp);
-				
-					dialog.add(new JLabel(objImageIconTemp)); 
-				}
-				
+								
 	             dialog.pack();
 	             dialog.setLocationByPlatform(true);
 	             dialog.setVisible(true);

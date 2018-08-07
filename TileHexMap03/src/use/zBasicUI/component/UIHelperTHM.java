@@ -4,6 +4,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 
+import use.thm.persistence.dto.IBoxDtoAttribute;
 import use.thm.persistence.dto.ITileDtoAttribute;
 import base.reflection.ReflectionUtil;
 import basic.persistence.dto.DTOAttribute;
@@ -76,38 +77,156 @@ public final class UIHelperTHM implements IConstantZZZ{
 				}
 								
 				Class<ITileDtoAttribute> c = ITileDtoAttribute.class;
-				String sAttributename = "VARIANT_IMAGE_IN_BYTE";
-				return UIHelperTHM.getAttributeFromDtoInByte(objDto, sAttributename);
+				String sAttributename = "VARIANT_CATALOGIMAGE_IN_BYTE";
+				//return UIHelperTHM.getAttributeFromDtoInByte(objDto, sAttributename);
+				return UIHelperTHM.getAttributeFromDtoInByte(c, objDto, sAttributename);
 			}
+							
+//			public static byte[] getAttributeFromDtoInByte(GenericDTO<ITileDtoAttribute>objDto, String sAttributename) throws ExceptionZZZ{
+//				if(objDto==null){
+//					ExceptionZZZ ez = new ExceptionZZZ("Dto-Object",iERROR_PARAMETER_MISSING, UIHelperTHM.class,  ReflectCodeZZZ.getMethodCurrentName());
+//					throw ez;
+//				}
+//				if(StringZZZ.isEmpty(sAttributename)){
+//					ExceptionZZZ ez = new ExceptionZZZ("AttributeName",iERROR_PARAMETER_MISSING, UIHelperTHM.class,  ReflectCodeZZZ.getMethodCurrentName());
+//					throw ez;
+//				}
+//				
+//				Class<ITileDtoAttribute> c = ITileDtoAttribute.class;
+//				
+//				for(Field f : c.getDeclaredFields() ){
+//					int mod = f.getModifiers();
+//					if(Modifier.isStatic(mod) && Modifier.isPublic(mod) && Modifier.isFinal(mod)){
+//							//System.out.printf("%s = %d%n",  f.getName(), f.get(null));// f.get(null) wirkt wohl nur bei Konstanten, die im Interface so defineirt sind: public static final int CONST_1 = 9;
+//							String s = f.getName();
+//							if(StringZZZ.contains(s, sAttributename, true)){								
+//									//Erzeuge eine DTOAttribut Instanz, die dem aktuell gefundenen Namen der Konstante entspricht.
+//									//Merke: DTOAttribute braucht eine überschreibene equals() und hashCode() Methode, damit der gespeichert Wert mit einer erzeugten Instanz verglichen werden kann.
+//									DTOAttribute objDtoAttribute = DTOAttribute.getInstance(s); //<IDTOAttributeGroup, T>										
+//									return (byte[]) objDto.get(objDtoAttribute);	
+//								}
+//					}
+//				}//End for
+//				
+//				return null;
+//			}
 			
-			
-			public static byte[] getAttributeFromDtoInByte(GenericDTO<ITileDtoAttribute>objDto, String sAttributename) throws ExceptionZZZ{
+			//###############################
+			/**Hole per Reflection aus der DTO-Attribut Klasse das Bild, welches zur Auflösung passt.
+			 * Hier: Übergebener HexMapZoomFactor-ALIAS.
+			 * 
+			 * @return
+			 * @throws ExceptionZZZ
+			 */
+			public static byte[] getVariantCatalogImageUsedInByte(GenericDTO<IBoxDtoAttribute>objDto, String sAttributeSuffix, String sZoomFactorAlias) throws ExceptionZZZ{
 				if(objDto==null){
 					ExceptionZZZ ez = new ExceptionZZZ("Dto-Object",iERROR_PARAMETER_MISSING, UIHelperTHM.class,  ReflectCodeZZZ.getMethodCurrentName());
 					throw ez;
 				}
-				if(StringZZZ.isEmpty(sAttributename)){
-					ExceptionZZZ ez = new ExceptionZZZ("AttributeName",iERROR_PARAMETER_MISSING, UIHelperTHM.class,  ReflectCodeZZZ.getMethodCurrentName());
+				if(StringZZZ.isEmpty(sAttributeSuffix)){
+					ExceptionZZZ ez = new ExceptionZZZ("AttributeSuffix",iERROR_PARAMETER_MISSING, UIHelper.class,  ReflectCodeZZZ.getMethodCurrentName());
 					throw ez;
 				}
+							
+				if(StringZZZ.isEmpty(sZoomFactorAlias)){
+					return UIHelperTHM.getVariantCatalogImageUsedInByteDefault(objDto);
+				}
 				
-				Class<ITileDtoAttribute> c = ITileDtoAttribute.class;
-				
+				//+++ Hole aus dem Dto das Attribut mit dem erechneten Namen	
+				Class<IBoxDtoAttribute> c = IBoxDtoAttribute.class;
+				String sPrefix = "VARIANT_";
+													
+				//Hole aus dem Dto-Objekt das Ausgangsbild
 				for(Field f : c.getDeclaredFields() ){
 					int mod = f.getModifiers();
 					if(Modifier.isStatic(mod) && Modifier.isPublic(mod) && Modifier.isFinal(mod)){
+//							try{
 							//System.out.printf("%s = %d%n",  f.getName(), f.get(null));// f.get(null) wirkt wohl nur bei Konstanten, die im Interface so defineirt sind: public static final int CONST_1 = 9;
 							String s = f.getName();
-							if(StringZZZ.contains(s, sAttributename, true)){								
+							if(StringZZZ.contains(s, sPrefix + sAttributeSuffix + "_IN_BYTE_", true)){
+								if(s.endsWith(sZoomFactorAlias)){
+									
 									//Erzeuge eine DTOAttribut Instanz, die dem aktuell gefundenen Namen der Konstante entspricht.
 									//Merke: DTOAttribute braucht eine überschreibene equals() und hashCode() Methode, damit der gespeichert Wert mit einer erzeugten Instanz verglichen werden kann.
 									DTOAttribute objDtoAttribute = DTOAttribute.getInstance(s); //<IDTOAttributeGroup, T>										
 									return (byte[]) objDto.get(objDtoAttribute);	
 								}
-					}
-				}//End for
+							}
+						}
+					}//end for
+			
+					//+++ Wurde nichts gefunden, vieleicht einen Defaultwert zurückgeben
+					return UIHelperTHM.getVariantCatalogImageUsedInByteDefault(objDto);
+				}
+					
 				
-				return null;
-			}
+					public static byte[] getVariantCatalogImageUsedInByteDefault(GenericDTO<IBoxDtoAttribute>objDto) throws ExceptionZZZ{
+						if(objDto==null){
+							ExceptionZZZ ez = new ExceptionZZZ("Dto-Object",iERROR_PARAMETER_MISSING, UIHelperTHM.class,  ReflectCodeZZZ.getMethodCurrentName());
+							throw ez;
+						}
+										
+						Class<IBoxDtoAttribute> c = IBoxDtoAttribute.class;
+						String sAttributename = "VARIANT_IMAGE_IN_BYTE";
+						//return UIHelperTHM.getAttributeFromDtoInByte(objDto, sAttributename);
+						return UIHelperTHM.getAttributeFromDtoInByte(c, objDto, sAttributename);
+					}
 	
+//					public static byte[] getAttributeFromDtoInByte(GenericDTO<IBoxDtoAttribute>objDto, String sAttributename) throws ExceptionZZZ{
+//						if(objDto==null){
+//							ExceptionZZZ ez = new ExceptionZZZ("Dto-Object",iERROR_PARAMETER_MISSING, UIHelperTHM.class,  ReflectCodeZZZ.getMethodCurrentName());
+//							throw ez;
+//						}
+//						if(StringZZZ.isEmpty(sAttributename)){
+//							ExceptionZZZ ez = new ExceptionZZZ("AttributeName",iERROR_PARAMETER_MISSING, UIHelperTHM.class,  ReflectCodeZZZ.getMethodCurrentName());
+//							throw ez;
+//						}
+//						
+//						Class<IBoxDtoAttribute> c = IBoxDtoAttribute.class;
+//						
+//						for(Field f : c.getDeclaredFields() ){
+//							int mod = f.getModifiers();
+//							if(Modifier.isStatic(mod) && Modifier.isPublic(mod) && Modifier.isFinal(mod)){
+//									//System.out.printf("%s = %d%n",  f.getName(), f.get(null));// f.get(null) wirkt wohl nur bei Konstanten, die im Interface so defineirt sind: public static final int CONST_1 = 9;
+//									String s = f.getName();
+//									if(StringZZZ.contains(s, sAttributename, true)){								
+//											//Erzeuge eine DTOAttribut Instanz, die dem aktuell gefundenen Namen der Konstante entspricht.
+//											//Merke: DTOAttribute braucht eine überschreibene equals() und hashCode() Methode, damit der gespeichert Wert mit einer erzeugten Instanz verglichen werden kann.
+//											DTOAttribute objDtoAttribute = DTOAttribute.getInstance(s); //<IDTOAttributeGroup, T>										
+//											return (byte[]) objDto.get(objDtoAttribute);	
+//										}
+//							}
+//						}//End for
+//						
+//						return null;
+//					}
+					
+					public static byte[] getAttributeFromDtoInByte(Class interfaceClassOfDtoAttribute, GenericDTO<?>objDto, String sAttributename) throws ExceptionZZZ{
+						if(objDto==null){
+							ExceptionZZZ ez = new ExceptionZZZ("Dto-Object",iERROR_PARAMETER_MISSING, UIHelperTHM.class,  ReflectCodeZZZ.getMethodCurrentName());
+							throw ez;
+						}
+						if(StringZZZ.isEmpty(sAttributename)){
+							ExceptionZZZ ez = new ExceptionZZZ("AttributeName",iERROR_PARAMETER_MISSING, UIHelperTHM.class,  ReflectCodeZZZ.getMethodCurrentName());
+							throw ez;
+						}
+						
+						Class<?> c = IBoxDtoAttribute.class;
+						
+						for(Field f : c.getDeclaredFields() ){
+							int mod = f.getModifiers();
+							if(Modifier.isStatic(mod) && Modifier.isPublic(mod) && Modifier.isFinal(mod)){
+									//System.out.printf("%s = %d%n",  f.getName(), f.get(null));// f.get(null) wirkt wohl nur bei Konstanten, die im Interface so defineirt sind: public static final int CONST_1 = 9;
+									String s = f.getName();
+									if(StringZZZ.contains(s, sAttributename, true)){								
+											//Erzeuge eine DTOAttribut Instanz, die dem aktuell gefundenen Namen der Konstante entspricht.
+											//Merke: DTOAttribute braucht eine überschreibene equals() und hashCode() Methode, damit der gespeichert Wert mit einer erzeugten Instanz verglichen werden kann.
+											DTOAttribute objDtoAttribute = DTOAttribute.getInstance(s); //<IDTOAttributeGroup, T>										
+											return (byte[]) objDto.get(objDtoAttribute);	
+										}
+							}
+						}//End for
+						
+						return null;
+					}
 }

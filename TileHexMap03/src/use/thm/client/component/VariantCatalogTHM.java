@@ -66,8 +66,6 @@ public class VariantCatalogTHM  extends KernelUseObjectZZZ implements IGhostGlas
 	private KernelJPanelCascadedZZZ panelParent;
 	private int iNrOfEntries=0;
 	
-	private GenericDTO<ITileDtoAttribute>objDto = null;
-	
 	//GhostDragDrop Interface
 	private GhostGlassPane glassPane; //etwas, das per Drag/Drop bewegt wird, wird dorthin als Bild kopiert.
 	private GhostDropListener listenerForDropToTarget; //
@@ -205,6 +203,10 @@ public class VariantCatalogTHM  extends KernelUseObjectZZZ implements IGhostGlas
 			String sVariantId = "ARMY";
 			//Merke: Der im GhostrDropManager verwendete Searchkey ist "TROOPARMYVARIANT"
 			
+			//TODO GOON 20180805 Hier Objekte der neuen Klasse VariantCatalogDaoFacade erzeugen
+			//VariantCatalogDaoFacade.createBoxAllForVariant(sVariantId);
+			//und folgenden CODE darin aufnehmen....
+			
 		//Steuerung über DAO - Klassen
 		TroopArmyVariantDao daoTroopVariant = new TroopArmyVariantDao(objContextHibernate);
 		
@@ -215,7 +217,7 @@ public class VariantCatalogTHM  extends KernelUseObjectZZZ implements IGhostGlas
 		String sTileIconName = null;
 		String sTileLabel  = null;
 		String sCatalogVariantEntryId = null;
-		Box boxCreated = null;
+		BoxTHM boxCreated = null;
 		
 		//Aus den Daten müssen die "Box"-Objekte erstellt werden, die in die HashMapMultiZZZ abgelegt werden.
 		//!!! nicht die Entities direkt irgendwo abspeichern.
@@ -277,12 +279,9 @@ public class VariantCatalogTHM  extends KernelUseObjectZZZ implements IGhostGlas
 			  boxCreated = this.createBoxObject(sCatalogVariantEntryId, sTileLabel, sTileIconName);
 			*/
 			
-			//TODO GOON 20180725: Lies das Bild gemäß des in der Applikation eingestellten ZOOMFaktors für GUI aus.
-			//byte[] imageInByte = objEntity.getImageCatalog01(); //Diese Catalog Bilder sind in der Größe reduziert.
+			//Hier eine Zoomstufe (die aktuell ausgewählte angeben
 			String sGuiZoomFactorAliasCurrent = ApplicationSingletonTHM.getInstance().getGuiZoomFactorAliasCurrent();
-			byte[] imageInByte = this.getVariantCatalogImageUsedInByte(sGuiZoomFactorAliasCurrent);
-					
-			boxCreated = this.createBoxObject(sCatalogVariantEntryId, sTileLabel, imageInByte);
+			boxCreated = this.createBoxObject(sCatalogVariantEntryId, sTileLabel, sGuiZoomFactorAliasCurrent);
 			this.getMapCatalog().put(sVariantId, sCatalogVariantEntryId, boxCreated);
 			 iNrOfEntriesHere++; //Zelle zur Summe hinzufügen
 		} //end for ... Variant
@@ -316,7 +315,7 @@ public class VariantCatalogTHM  extends KernelUseObjectZZZ implements IGhostGlas
 		String sTileIconName = null;
 		String sTileLabel  = null;
 		String sCatalogVariantEntryId = null;
-		Box boxCreated = null;
+		BoxTHM boxCreated = null;
 		
 		//Aus den Daten müssen die "Box"-Objekte erstellt werden, die in die HashMapMultiZZZ abgelegt werden.
 		//!!! nicht die Entities direkt irgendwo abspeichern.
@@ -371,21 +370,11 @@ public class VariantCatalogTHM  extends KernelUseObjectZZZ implements IGhostGlas
 			String sShorttextDefault = objDefaulttextTemp.getShorttext();
 			sTileLabel = sShorttextImmutable + " - " + sShorttextDefault;
 			sCatalogVariantEntryId = "new_" + objEntity.getThiskey();
-			
-			   //20180630: Lies nicht mehr ein Bild von der Platte, sondern aus dem Entity direkt	
-				/*
-				sTileIconName = objEntity.getImageUrlString();			
-				  boxCreated = this.createBoxObject(sCatalogVariantEntryId, sTileLabel, sTileIconName);
-				*/
-				
-			
-			//TODO GOON 20180725: Lies das Bild gemäß des in der Applikation eingestellten ZOOMFAKTORS für GUI aus. 
-			
-			
-				byte[] imageInByte = objEntity.getImageCatalog01(); //Diese Catalog Bilder sind in der Größe reduziert.
 						
-				boxCreated = this.createBoxObject(sCatalogVariantEntryId, sTileLabel, imageInByte);
-			  this.getMapCatalog().put(sVariantId, sCatalogVariantEntryId, boxCreated);
+			//Hier eine Zoomstufe (die aktuell ausgewählte angeben
+			String sGuiZoomFactorAliasCurrent = ApplicationSingletonTHM.getInstance().getGuiZoomFactorAliasCurrent();
+			boxCreated = this.createBoxObject(sCatalogVariantEntryId, sTileLabel, sGuiZoomFactorAliasCurrent);
+			this.getMapCatalog().put(sVariantId, sCatalogVariantEntryId, boxCreated);
 			iNrOfEntriesHere++; //Zelle zur Summe hinzufügen
 		} //end for ... Variant
 		
@@ -444,85 +433,34 @@ public class VariantCatalogTHM  extends KernelUseObjectZZZ implements IGhostGlas
 		return bReturn;
 	}
 	
-	
-	
-	public Box createBoxObject(String sCatalogVariantEntryId, String sTileLabel, String sTileIconName) throws ExceptionZZZ{
-	     Box objBoxReturn = Box.createVerticalBox();
-	     main:{
-	    	 objBoxReturn.setBorder(new EmptyBorder(0, 0, 0, 20));
-	    	 
-	    	 String sBaseDirectory = this.getBaseDirectoryForCatalogIcon();
-	    	 String sFile = sBaseDirectory + File.separator + sTileIconName;
-	    	 
-	    	 //Ein Label hinzufügen mit dem entsprechenden Titel und dem Bild
-	    	 
-
-	    		//Modullnamen und Programnamen für die Position in der KernelKonfiguation  	 
-	    	 	KernelZZZ objKernel = this.getKernelObject();
-				String sModuleAlias =  this.getModuleUsed();// this.getModuleName();
-				String sProgramAlias = this.getProgramUsed(); //this.getProgramAlias(); //				
-				System.out.println(ReflectCodeZZZ.getMethodCurrentName() + ": Suche Modul: '" + sModuleAlias +"'/ Program: '" + sProgramAlias + "'/ Parameter: 'IconWidth'");
-				
-		   //++++++++++
-				 //Die Größe der Icons aus der KernelKonfiguration auslesen
-				String sIconWidth = this.getKernelObject().getParameterByProgramAlias(sModuleAlias, sProgramAlias, "IconWidth" );
-				int iIconWidth = Integer.parseInt(sIconWidth);				
-				String sIconHeight = this.getKernelObject().getParameterByProgramAlias(sModuleAlias, sProgramAlias, "IconHeight" );
-				int iIconHeight = Integer.parseInt(sIconHeight);
-	    	 //+++++++++	    	 
-		     JLabel label = UIHelper.createLabelWithIconResized(sTileLabel, sFile, iIconWidth,iIconHeight); 
-		     objBoxReturn.add(label);
-		     
-		     //### Funktionalität DRAG & DROP
-		     //Merke: Verwendet man hier den bisherigen Picture Adapter und hängt noch einen weitern dropListener an, 
-			 //       dann wird 2x ein drop durchgeführt. D.h. es wird 2x ein Entity erzeugt. Beim 2. Mal gibt es dann die Fehlermeldung:
-			 //       'Maximale Anzahl der Amreen / Flotten im Feld erreicht'. Darum ist es wichtig hier immer einen NEUEN picture Adapter zu erzeugen, pro Variante.			    			    			
-			 //Es muss also das pictureAdapter-Objekt der gleich sein, der das DRAGGEN bereitstellt, wie auch das DROPPEN!!!!
-		   
-		     //Das Bild beim Ziehen über den Glaspane weiterverwenden. Anhand der sCatalogEntryId wird dann beim Fallenlassen entschieden um welches Entity es sich überhaupt handelt		     
-			    GhostGlassPane glassPane = this.getGhostGlassPane();
-			    if(glassPane==null) throw new ExceptionZZZ("Kein GhostGlassPane im FrameParent vorhanden");
-			    		      
-		     GhostDropListener listenerForDropToHexMap = this.getGhostDropListener(); //.. und hier entscheidet sich  wie beim Fallenlassen gehandelt wird.
-		     
-		     //++++++++++
-	    	 //Die Größe der Icons beim Ziehen aus der KernelKonfiguration auslesen	    	 					
-				String sIconWidthOnDrag = this.getKernelObject().getParameterByProgramAlias(sModuleAlias, sProgramAlias, "IconWidthOnDrag" );
-				int iIconWidthOnDrag = Integer.parseInt(sIconWidthOnDrag);					
-				String sIconHeightOnDrag = this.getKernelObject().getParameterByProgramAlias(sModuleAlias, sProgramAlias, "IconHeightOnDrag" );
-				int iIconHeightOnDrag = Integer.parseInt(sIconHeightOnDrag);
-	    	 //+++++++++	  		    
-		     GhostPictureAdapter pictureAdapter = new GhostPictureAdapter(glassPane, sCatalogVariantEntryId, sFile, iIconWidthOnDrag, iIconHeightOnDrag);
-			 pictureAdapter.addGhostDropListener(listenerForDropToHexMap);
-			 
-			 //Das DRAGGEN, ausgehend vom Label 			
-		     label.addMouseListener(pictureAdapter); //Beim Clicken wird das Bild vom pictureAdapter an die passende Stelle im glassPane gesetzt.
-		     label.addMouseMotionListener(new GhostMotionAdapter(glassPane));
-			 
-	     }//end main:
-	     return objBoxReturn;
-	}
-	
-	
-	public Box createBoxObject(String sCatalogVariantEntryId, String sTileLabel, byte[] imageInByte) throws ExceptionZZZ{
-	     Box objBoxReturn = Box.createVerticalBox();
-	     main:{
-	    	 objBoxReturn.setBorder(new EmptyBorder(0, 0, 0, 20));
-	    	 	    	
-	    	 //Ein Label hinzufügen mit dem entsprechenden Titel und dem Bild
-	    	 
+	public BoxTHM createBoxObject(String sCatalogVariantEntryId, String sTileLabel, String sGuiZoomFactorAliasCurrent) throws ExceptionZZZ{
+	//public BoxTHM createBoxObject(String sCatalogVariantEntryId, String sTileLabel, byte[] imageInByte) throws ExceptionZZZ{
+	     BoxTHM objBoxReturn = new BoxTHM ();
+	     main:{	    	
+	    	 //TODO GOON 20180803: HIER IN EINER SCHLEIFE ALLE BILDER FÜR DIE VERSCHIEDENEN ZOOMSTUFEN DURCHGEGEHN UND IN EIN DTO der BOX PACKEN
 	    	 KernelSingletonTHM objKernel = KernelSingletonTHM.getInstance();	
-			FileIniZZZ objFileConfig = objKernel.getFileConfigIni();
-			String sGuiZoomFactor = ApplicationSingletonTHM.getInstance().getGuiZoomFactorCurrent();							
-			objFileConfig.setVariable("GuiZoomFactorUsed", sGuiZoomFactor);
+			FileIniZZZ objFileConfig = objKernel.getFileConfigIni();	
+			
+			//Zuerst den aktuellen GUI zoomFaktor merken
+			
+			String sGuiZoomFactorCurrent = ApplicationSingletonTHM.getInstance().getGuiZoomFactor(sGuiZoomFactorAliasCurrent);
+			
+			objFileConfig.setVariable("GuiZoomFactorUsed", sGuiZoomFactorCurrent);
+				
+			//byte[] imageInByte = this.getVariantCatalogImageUsedInByte(sGuiZoomFactorAliasCurrent);
+			
+	    	 //TODO: Größe gemäß Zoomfaktor
+	    	 objBoxReturn.setBorder(new EmptyBorder(0, 0, 0, 20));
+	    	 
+	    	 
+	    	 //Ein Label hinzufügen mit dem entsprechenden Titel und dem Bild
+	    	 
+	    	
 								
 	    	//0. Hole den gerade in der Applikation für die Karte eingestellten ZoomFaktor. Diesen als Variable für die INI-Berechnungen zur Verfügung stellen
-			String sHexZoomFactor = ApplicationSingletonTHM.getInstance().getHexZoomFactorCurrent();							
-			objFileConfig.setVariable("HexZoomFactorUsed", sHexZoomFactor);
+			String sHexZoomFactorCurrent = ApplicationSingletonTHM.getInstance().getHexZoomFactorCurrent();							
+			objFileConfig.setVariable("HexZoomFactorUsed", sHexZoomFactorCurrent);
 				
-				
-				
- 
 		   //++++++++++
 				 //Die Größe der Icons aus der KernelKonfiguration auslesen
 				//DAS IST IN DER ERSTELLUNG DES ENTITIES AUSGELAGERT UND WIRD EXTRA GESPEICHERT
@@ -552,9 +490,16 @@ public class VariantCatalogTHM  extends KernelUseObjectZZZ implements IGhostGlas
 				System.out.println(ReflectCodeZZZ.getMethodCurrentName() + ": Suche Modul: '" + sModuleAlias +"'/ Program: '" + sProgramAlias + "'/ Parameter: 'IconWidthOnDrag'");
 	
 				
-
+			//20180807: Verwende zum Konkreten Erzeugen des Bildes das, welches dem aktuell eingestellten ZoomFaktor entspricht
+		    //Merke: Das muss zuvor in ein Dto-Objekt gefüllt worden sein, durch VariantCatalogDaoFacade.fillVariantCatalogDto(....)
 			// JLabel label = UIHelper.createLabelWithIconResized(sTileLabel, imageInByte, iIconWidth,iIconHeight);
-			JLabel label = UIHelper.createLabelWithIcon(sTileLabel,  imageInByte);
+			byte[] imageInByteUsed = objBoxReturn.getVariantCatalogImageUsedInByte();
+			JLabel label = null;
+			if(imageInByteUsed==null){
+				label = new JLabel(sTileLabel);
+			}else{
+				label = UIHelper.createLabelWithIcon(sTileLabel,  imageInByteUsed);
+			}
 		    objBoxReturn.add(label);
 
 		     //### Funktionalität DRAG & DROP
@@ -578,64 +523,18 @@ public class VariantCatalogTHM  extends KernelUseObjectZZZ implements IGhostGlas
 				String sIconHeightOnDrag = this.getKernelObject().getParameterByProgramAlias(sModuleAlias, sProgramAlias, "IconHeightOnDrag" );
 				int iIconHeightOnDrag = StringZZZ.toInteger(sIconHeightOnDrag);
 	    	 //+++++++++	  		    
-			 GhostPictureAdapter pictureAdapter = new GhostPictureAdapter(glassPane, sCatalogVariantEntryId, imageInByte, iIconWidthOnDrag, iIconHeightOnDrag);
+			 GhostPictureAdapter pictureAdapter = new GhostPictureAdapter(glassPane, sCatalogVariantEntryId, imageInByteUsed, iIconWidthOnDrag, iIconHeightOnDrag);
 			 pictureAdapter.addGhostDropListener(listenerForDropToHexMap);
 			 
 			 //Das DRAGGEN, ausgehend vom Label 			
 		     label.addMouseListener(pictureAdapter); //Beim Clicken wird das Bild vom pictureAdapter an die passende Stelle im glassPane gesetzt.
 		     label.addMouseMotionListener(new GhostMotionAdapter(glassPane));
 			 
+		     
 	     }//end main:
 	     return objBoxReturn;
 	}
 		
-	public GenericDTO<ITileDtoAttribute> getDto() {
-		if(this.objDto==null){
-			//this.objDto =GenericDTO.getInstance(ITileDtoAttribute.class); //ITileDtoAttribute bestimmt also welche Properties in der DTO-Klasse gespeicehrt sind.
-			
-			//FGL 20171011: Ersetzt durch eine Factory - Klasse
-//			TileDtoFactory factoryTile = new TileDtoFactory();
-//			GenericDTO dto = factoryTile.createDTO();	
-			
-			//FGL 20171112: Hole die Factory - Klasse generisch per FactoryGenerator, die als Singleton umgebaut wurde:
-			try {
-				DtoFactoryGenerator objFactoryGenerator = DtoFactoryGenerator.getInstance();
-				GenericDTO dto = objFactoryGenerator.createDtoForClass(this.getClass());										
-				this.objDto = dto;				
-			} catch (ExceptionZZZ e) {
-				e.printStackTrace();
-				System.out.println("Ein Fehler ist aufgetreten: " + e.getDetailAllLast());
-				ReportLogZZZ.write(ReportLogZZZ.ERROR, e.getDetailAllLast());
-			}						
-		}
-		return this.objDto;
-	}
-	
-	/**Hole per Reflection aus der DTO-Attribut Klasse das Bild, welches zur Auflösung passt.
-	 * Hier: Initialer HexMapZoomFactor-ALIAS.
-	 * 
-	 * @return
-	 * @throws ExceptionZZZ
-	 */
-	public byte[] getVariantCatalogImageUsedInByte() throws ExceptionZZZ{
-		//das wäre das Bild in normaler Größe return (byte[]) this.getDto().get(ITileDtoAttribute.VARIANT_IMAGE_IN_BYTE); //es müsste kliner gerechnet werden
-		//das kleiner und transparent gerechnete Bild
-		
-		String sZoomFactorAlias = ApplicationSingletonTHM.getInstance().getHexZoomFactorAliasInitial();
-		return this.getVariantCatalogImageUsedInByte(sZoomFactorAlias);
-	}
-	
-	/**Hole per Reflection aus der DTO-Attribut Klasse das Bild, welches zur Auflösung passt.
-	 * Hier: Übergebener HexMapZoomFactor-ALIAS.
-	 * 
-	 * @return
-	 * @throws ExceptionZZZ
-	 */
-	public byte[] getVariantCatalogImageUsedInByte(String sZoomFactorAlias) throws ExceptionZZZ{
-		GenericDTO<ITileDtoAttribute>objDto = this.getDto();
-		return UIHelperTHM.getVariantImageUsedInByte(objDto,"IMAGECATALOG", sZoomFactorAlias);	
-	}
-	
 		//#### GETTER / SETTER
 		public void setPanelParent(KernelJPanelCascadedZZZ panelParent){
 			this.panelParent = panelParent;

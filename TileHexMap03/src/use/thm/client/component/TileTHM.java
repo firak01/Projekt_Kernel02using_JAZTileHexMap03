@@ -477,7 +477,7 @@ public class TileTHM extends JPanel implements IMapPositionableTHM, IBackendPers
 		//das wäre das Bild in normaler Größe return (byte[]) this.getDto().get(ITileDtoAttribute.VARIANT_IMAGE_IN_BYTE); //es müsste kliner gerechnet werden
 		//das kleiner und transparent gerechnete Bild
 		
-		String sZoomFactorAlias = ApplicationSingletonTHM.getInstance().getHexZoomFactorAliasInitial();
+		String sZoomFactorAlias = ApplicationSingletonTHM.getInstance().getHexZoomFactorAliasCurrent();
 		return this.getVariantImageUsedInByte(sZoomFactorAlias);
 	}
 	
@@ -491,11 +491,14 @@ public class TileTHM extends JPanel implements IMapPositionableTHM, IBackendPers
 		GenericDTO<ITileDtoAttribute>objDto = this.getDto();
 		return UIHelperTHM.getVariantImageUsedInByte(objDto,"IMAGEHEXMAP", sZoomFactorAlias);	
 	}
-	protected void setVariantImageUsedInByte(byte[] imageInByte){
+	protected void setVariantImageUsedInByte(byte[] imageInByte) throws ExceptionZZZ{
 		//das wäre das Bild in normaler Größe   this.getDto().set(ITileDtoAttribute.VARIANT_IMAGE_IN_BYTE, imageInByte); //es müsste kliner gerechnet werden					
-		this.getDto().set(ITileDtoAttribute.VARIANT_IMAGE_IN_BYTE, imageInByte);
+		//this.getDto().set(ITileDtoAttribute.VARIANT_IMAGE_IN_BYTE, imageInByte);
+		
+		String sZoomFactorAlias = ApplicationSingletonTHM.getInstance().getHexZoomFactorAliasCurrent();
+		this.setVariantImageUsedInByte(imageInByte, sZoomFactorAlias);
 	}
-	protected void setVariantImageUsedInByte(byte[] imageInByte, String sZoomFactorAlias){
+	protected void setVariantImageUsedInByte(byte[] imageInByte, String sZoomFactorAlias) throws ExceptionZZZ{
 		main:{
 			if(StringZZZ.isEmpty(sZoomFactorAlias)){
 				this.setVariantImageUsedInByte(imageInByte);

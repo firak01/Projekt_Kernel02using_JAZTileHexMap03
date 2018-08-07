@@ -241,12 +241,12 @@ public class TroopFleetDaoFacade extends TileDaoFacade{
 				dto.set(ITileDtoAttribute.VARIANT_IMAGEDIALOG_IN_BYTE_02,objTroop.getTroopFleetVariantObject().getImageDialog02());
 				dto.set(ITileDtoAttribute.VARIANT_IMAGEDIALOG_IN_BYTE_03,objTroop.getTroopFleetVariantObject().getImageDialog03());
 				
-				dto.set(ITileDtoAttribute.VARIANT_IMAGEDRAG_IN_BYTE_01,objTroop.getTroopFleetVariantObject().getImageDrag01());							
-				dto.set(ITileDtoAttribute.VARIANT_IMAGEDRAG_IN_BYTE_02,objTroop.getTroopFleetVariantObject().getImageDrag02());
-				dto.set(ITileDtoAttribute.VARIANT_IMAGEDRAG_IN_BYTE_03,objTroop.getTroopFleetVariantObject().getImageDrag03());
-				dto.set(ITileDtoAttribute.VARIANT_IMAGEDRAG_IN_BYTE_04,objTroop.getTroopFleetVariantObject().getImageDrag04());
-				dto.set(ITileDtoAttribute.VARIANT_IMAGEDRAG_IN_BYTE_05,objTroop.getTroopFleetVariantObject().getImageDrag05());
-				dto.set(ITileDtoAttribute.VARIANT_IMAGEDRAG_IN_BYTE_06,objTroop.getTroopFleetVariantObject().getImageDrag06());
+				dto.set(ITileDtoAttribute.VARIANT_IMAGEDRAG_IN_BYTE_01,objTroop.getTroopFleetVariantObject().getImageHexmapDrag01());							
+				dto.set(ITileDtoAttribute.VARIANT_IMAGEDRAG_IN_BYTE_02,objTroop.getTroopFleetVariantObject().getImageHexmapDrag02());
+				dto.set(ITileDtoAttribute.VARIANT_IMAGEDRAG_IN_BYTE_03,objTroop.getTroopFleetVariantObject().getImageHexmapDrag03());
+				dto.set(ITileDtoAttribute.VARIANT_IMAGEDRAG_IN_BYTE_04,objTroop.getTroopFleetVariantObject().getImageHexmapDrag04());
+				dto.set(ITileDtoAttribute.VARIANT_IMAGEDRAG_IN_BYTE_05,objTroop.getTroopFleetVariantObject().getImageHexmapDrag05());
+				dto.set(ITileDtoAttribute.VARIANT_IMAGEDRAG_IN_BYTE_06,objTroop.getTroopFleetVariantObject().getImageHexmapDrag06());
 				
 				dto.set(ITileDtoAttribute.VARIANT_IMAGEHEXMAP_IN_BYTE_01,objTroop.getTroopFleetVariantObject().getImageHexmap01());
 				dto.set(ITileDtoAttribute.VARIANT_IMAGEHEXMAP_IN_BYTE_02,objTroop.getTroopFleetVariantObject().getImageHexmap02());

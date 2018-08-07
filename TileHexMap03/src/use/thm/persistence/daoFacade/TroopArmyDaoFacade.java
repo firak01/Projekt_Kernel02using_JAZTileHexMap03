@@ -643,7 +643,7 @@ public class TroopArmyDaoFacade extends TileDaoFacade{
 			System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": START #### fillTroopArmyDto(objTroopArmy)  ####################");
 			if(objTroopArmy == null) break main;
 					
-			//FRAGE: FUNKTIONIERT HIERBEI CALL BY REFERENCE? JA. Es werden ja Werte in den Objekten gefüllt.		
+			//FRAGE: FUNKTIONIERT HIERBEI CALL BY REFERENCE? JA. Es werden nämlich Werte in den Objekten gefüllt.		
 			dto.set(ITileDtoAttribute.UNIQUENAME, objTroopArmy.getUniquename());
 			dto.set(ITileDtoAttribute.SUBTYPE,objTroopArmy.getTroopType());
 			
@@ -665,12 +665,12 @@ public class TroopArmyDaoFacade extends TileDaoFacade{
 				dto.set(ITileDtoAttribute.VARIANT_IMAGECATALOG_IN_BYTE_03,objTroopArmy.getTroopArmyVariantObject().getImageCatalog03());
 				
 				
-				dto.set(ITileDtoAttribute.VARIANT_IMAGEDRAG_IN_BYTE_01,objTroopArmy.getTroopArmyVariantObject().getImageDrag01());
-				dto.set(ITileDtoAttribute.VARIANT_IMAGEDRAG_IN_BYTE_02,objTroopArmy.getTroopArmyVariantObject().getImageDrag02());
-				dto.set(ITileDtoAttribute.VARIANT_IMAGEDRAG_IN_BYTE_03,objTroopArmy.getTroopArmyVariantObject().getImageDrag03());
-				dto.set(ITileDtoAttribute.VARIANT_IMAGEDRAG_IN_BYTE_04,objTroopArmy.getTroopArmyVariantObject().getImageDrag04());
-				dto.set(ITileDtoAttribute.VARIANT_IMAGEDRAG_IN_BYTE_05,objTroopArmy.getTroopArmyVariantObject().getImageDrag05());
-				dto.set(ITileDtoAttribute.VARIANT_IMAGEDRAG_IN_BYTE_06,objTroopArmy.getTroopArmyVariantObject().getImageDrag06());
+				dto.set(ITileDtoAttribute.VARIANT_IMAGEDRAG_IN_BYTE_01,objTroopArmy.getTroopArmyVariantObject().getImageHexmapDrag01());
+				dto.set(ITileDtoAttribute.VARIANT_IMAGEDRAG_IN_BYTE_02,objTroopArmy.getTroopArmyVariantObject().getImageHexmapDrag02());
+				dto.set(ITileDtoAttribute.VARIANT_IMAGEDRAG_IN_BYTE_03,objTroopArmy.getTroopArmyVariantObject().getImageHexmapDrag03());
+				dto.set(ITileDtoAttribute.VARIANT_IMAGEDRAG_IN_BYTE_04,objTroopArmy.getTroopArmyVariantObject().getImageHexmapDrag04());
+				dto.set(ITileDtoAttribute.VARIANT_IMAGEDRAG_IN_BYTE_05,objTroopArmy.getTroopArmyVariantObject().getImageHexmapDrag05());
+				dto.set(ITileDtoAttribute.VARIANT_IMAGEDRAG_IN_BYTE_06,objTroopArmy.getTroopArmyVariantObject().getImageHexmapDrag06());
 				
 				dto.set(ITileDtoAttribute.VARIANT_IMAGEHEXMAP_IN_BYTE_01,objTroopArmy.getTroopArmyVariantObject().getImageHexmap01());
 				dto.set(ITileDtoAttribute.VARIANT_IMAGEHEXMAP_IN_BYTE_02,objTroopArmy.getTroopArmyVariantObject().getImageHexmap02());

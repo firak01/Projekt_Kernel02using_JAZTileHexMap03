@@ -126,13 +126,16 @@ public abstract class TroopVariant  extends KeyImmutable implements ITroopVarian
 	
 	//Blob selbst funtkioniert nicht bei dieser SQLIte Datenbank. Alternativer Lösungsversuch Speicherung als Byte-Array
 	//Das Bild der Spielsteinvariante (, noch nicht angepasst)
-	@Transient
-	private byte[] imageInByte;	
-	@Transient
-	private String sImageInByte;	
-	@Transient
-	private Long lngImageInByte;
-	
+		@Transient
+		private byte[] imageInByte;	
+		@Transient
+		private String sImageInByte;	
+		@Transient
+		private Long lngImageInByte;
+		
+	//##########################################################################
+	//### ZUR VERWENDUNG IM KATALOG
+	//##########################################################################	
 	//Das Bild der Spielsteinvariante für Katalog (, entsprechend angepasst)
 	@Transient
 	private byte[] imageInByteCatalog01;
@@ -155,7 +158,54 @@ public abstract class TroopVariant  extends KeyImmutable implements ITroopVarian
 	@Transient
 	private Long lngImageInByteCatalog03;
 	
-	//Das Bild der Spielsteinvariante für die Darst	ellung im Dialog (, entsprechend angepasst)
+	//Das Bild der Spielsteinvariante für die Darstellung beim Ziehen vom Katalog auf die HEXMAP (, entsprechend angepasst)
+	@Transient
+	private byte[] imageInByteCatalogDrag01;				
+	@Transient
+	private String sImageInByteCatalogDrag01;				
+	@Transient
+	private Long lngImageInByteCatalogDrag01;
+	
+	@Transient
+	private byte[] imageInByteCatalogDrag02;				
+	@Transient
+	private String sImageInByteCatalogDrag02;				
+	@Transient
+	private Long lngImageInByteCatalogDrag02;
+	
+	@Transient
+	private byte[] imageInByteCatalogDrag03;				
+	@Transient
+	private String sImageInByteCatalogDrag03;				
+	@Transient
+	private Long lngImageInByteCatalogDrag03;
+	
+	//Das Bild der Spielsteinvariante für die Darstellung im Dialog (, entsprechend angepasst) über einen Katalogeintrag
+	@Transient
+	private byte[] imageInByteCatalogDialog01;	
+	@Transient
+	private String sImageInByteCatalogDialog01;	
+	@Transient
+	private Long lngImageInByteCatalogDialog01;
+
+	@Transient
+	private byte[] imageInByteCatalogDialog02;	
+	@Transient
+	private String sImageInByteCatalogDialog02;	
+	@Transient
+	private Long lngImageInByteCatalogDialog02;
+	
+	@Transient
+	private byte[] imageInByteCatalogDialog03;	
+	@Transient
+	private String sImageInByteCatalogDialog03;	
+	@Transient
+	private Long lngImageInByteCatalogDialog03;
+	
+	//##########################################################################
+	//### ZUR VERWENDUNG IN DER HEXMAP
+	//##########################################################################
+	//Das Bild der Spielsteinvariante für die Darst	ellung im Dialog (, entsprechend angepasst) über einen Spielstein in der HexMap
 	@Transient
 	private byte[] imageInByteDialog01;	
 	@Transient
@@ -223,46 +273,46 @@ public abstract class TroopVariant  extends KeyImmutable implements ITroopVarian
 		
 		//Das Bild der Spielsteinvariante für die Darstellung beim Ziehen über die HEXMAP (, entsprechend angepasst)
 				@Transient
-				private byte[] imageInByteDrag01;				
+				private byte[] imageInByteHexmapDrag01;				
 				@Transient
-				private String sImageInByteDrag01;				
+				private String sImageInByteHexmapDrag01;				
 				@Transient
-				private Long lngImageInByteDrag01;
+				private Long lngImageInByteHexmapDrag01;
 				
 				@Transient
-				private byte[] imageInByteDrag02;				
+				private byte[] imageInByteHexmapDrag02;				
 				@Transient
-				private String sImageInByteDrag02;				
+				private String sImageInByteHexmapDrag02;				
 				@Transient
-				private Long lngImageInByteDrag02;
+				private Long lngImageInByteHexmapDrag02;
 				
 				@Transient
-				private byte[] imageInByteDrag03;				
+				private byte[] imageInByteHexmapDrag03;				
 				@Transient
-				private String sImageInByteDrag03;				
+				private String sImageInByteHexmapDrag03;				
 				@Transient
-				private Long lngImageInByteDrag03;
+				private Long lngImageInByteHexmapDrag03;
 				
 				@Transient
-				private byte[] imageInByteDrag04;				
+				private byte[] imageInByteHexmapDrag04;				
 				@Transient
-				private String sImageInByteDrag04;				
+				private String sImageInByteHexmapDrag04;				
 				@Transient
-				private Long lngImageInByteDrag04;
+				private Long lngImageInByteHexmapDrag04;
 				
 				@Transient
-				private byte[] imageInByteDrag05;				
+				private byte[] imageInByteHexmapDrag05;				
 				@Transient
-				private String sImageInByteDrag05;				
+				private String sImageInByteHexmapDrag05;				
 				@Transient
-				private Long lngImageInByteDrag05;
+				private Long lngImageInByteHexmapDrag05;
 				
 				@Transient
-				private byte[] imageInByteDrag06;				
+				private byte[] imageInByteHexmapDrag06;				
 				@Transient
-				private String sImageInByteDrag06;				
+				private String sImageInByteHexmapDrag06;				
 				@Transient
-				private Long lngImageInByteDrag06;
+				private Long lngImageInByteHexmapDrag06;
 				
 				
 	//... und weitere Eigenschaften.
@@ -402,7 +452,7 @@ public abstract class TroopVariant  extends KeyImmutable implements ITroopVarian
 			mtestCatalogName.invoke(this, sTileIconNameZoomed);
 					
             //++++++++++++++++++++++++++++++++++++++++++++++++++
-			//A2. Bild für das Öffnen der Detailangaben in einer Dialogbox
+			//A2. Bild für das Öffnen der Detailangaben in einer Dialogbox ÜBER DEM KATALOG
 			
 			//FALLS GILT: GENUTZT WERDEN SOLL DAS MODUL FÜR DIE GRÖSSENANGABEN AUF DER KARTE. Code stand ursprünglich in TileMouseMotionHandlerTHM.mouseClicked(..)
 			//String sModuleAlias = this.getTile().getMapPanel().getModuleName();
@@ -424,15 +474,81 @@ public abstract class TroopVariant  extends KeyImmutable implements ITroopVarian
 			sIconHeight = objKernel.getParameterByProgramAlias(sModuleAlias, sProgramAlias, "IconHeight" );
 			fIconHeight = StringZZZ.toFloat(sIconHeight);
 						
-			//... Bild bearbeitet als Dialogeintrag
+			//... Bild bearbeitet als Dialogeintrag über dem Katalog
+			BufferedImage objBufferdImageCatalog4DialogResized = UIHelper.resizeImage(objBufferedImageOriginalUsed, fIconWidth, fIconHeight);
+			byte[] imageInByteCatalogDialog = UIHelper.getByteArrayFromBufferedImage(objBufferdImageCatalog4DialogResized,"png");	
+	
+			String sMethodNameCatalogDialog = "setImageCatalogDialog"+sZoomFactorAlias;
+			Method mtestCatalogDialog = ReflectionUtil.findMethodForMethodName("use.thm.persistence.model.TroopArmyVariant", sMethodNameCatalogDialog);
+			mtestCatalogDialog.invoke(this, imageInByteCatalogDialog);
+			
+			long lngFileSizeCatalogDialog = imageInByteCatalogDialog.length;
+			String sMethodNameCatalogDialogLength = "setImageCatalogDialogLength"+sZoomFactorAlias;
+			Method mtestCatalogDialogLength = ReflectionUtil.findMethodForMethodName("use.thm.persistence.model.TroopArmyVariant", sMethodNameCatalogDialogLength);
+			mtestCatalogDialogLength.invoke(this, lngFileSizeCatalogDialog);
+
+			String sMethodNameCatalogDialogName = "setImageCatalogDialogName"+sZoomFactorAlias;
+			Method mtestCatalogDialogName = ReflectionUtil.findMethodForMethodName("use.thm.persistence.model.TroopArmyVariant", sMethodNameCatalogDialogName);
+			mtestCatalogDialogName.invoke(this, sTileIconNameZoomed);
+			
+			//A3 Bild für das Ziehen aus der Dialogbox (im Glasspane, per GhostPictureAdapter, der bei der Erstellung der Katalogboxen erzeugt wird.)
+			//... Bild bearbeitet als "Ziehen über das HEXFeld"
+			BufferedImage objBufferdImage4DragResized = UIHelper.resizeImage(objBufferedImageOriginalUsed, fIconWidth, fIconHeight);
+			byte[] imageInByteDrag = UIHelper.getByteArrayFromBufferedImage(objBufferdImage4DragResized,"png");				
+			String sMethodNameDrag = "setImageCatalogDrag"+sZoomFactorAlias;
+			Method mtestDrag = ReflectionUtil.findMethodForMethodName("use.thm.persistence.model.TroopArmyVariant", sMethodNameDrag);
+			mtestDrag.invoke(this, imageInByteDrag);
+			
+			long lngFileSizeDrag = imageInByteDrag.length;			
+			String sMethodNameDragLength = "setImageCatalogDragLength"+sZoomFactorAlias;
+			Method mtestDragLength = ReflectionUtil.findMethodForMethodName("use.thm.persistence.model.TroopArmyVariant", sMethodNameDragLength);
+			mtestDragLength.invoke(this, lngFileSizeDrag);
+		
+			String sMethodNameDragName = "setImageCatalogDragName"+sZoomFactorAlias;
+			Method mtestDragName = ReflectionUtil.findMethodForMethodName("use.thm.persistence.model.TroopArmyVariant", sMethodNameDragName);
+			mtestDragName.invoke(this, sTileIconNameZoomed);
+			
+			
+			
+			
+			
+			//####################################################################
+			//####################################################################################################
+			//+++++++++++++++++++++++++
+			//A0) KARTEN-GUI Zoomfaktor
+			
+			//######################################
+			//A2. Bild für das Öffnen der Detailangaben in einer Dialogbox ÜBER DER HEXMAP
+			
+			//FALLS GILT: GENUTZT WERDEN SOLL DAS MODUL FÜR DIE GRÖSSENANGABEN AUF DER KARTE. Code stand ursprünglich in TileMouseMotionHandlerTHM.mouseClicked(..)
+			//String sModuleAlias = this.getTile().getMapPanel().getModuleName();
+			//String sProgramAlias = this.getTile().getMapPanel().getProgramAlias();			
+			
+			//FALLS GILT: GENUTZT WERDEN SOLL DAS MODUL FÜR DIE GRÖSSENANGABEN AUF DEM CATALOG
+			//		KernelJPanelCascadedZZZ objPanelToSearch = this.getTile().getMapPanel().getPanelNeighbour("WEST");			
+			//		String sModuleAlias = objPanelToSearch.getModuleName();
+			//		String sProgramAlias = objPanelToSearch.getProgramName();
+			
+			sProgramAlias = "TileDetailDialog";
+						
+			//... Größen holen aus der Kernelkonfiguration
+			System.out.println(ReflectCodeZZZ.getMethodCurrentName() + ": Suche Modul: '" + sModuleAlias +"'/ Program: '" + sProgramAlias + "'/ Parameter: 'IconWidth'");			
+			sIconWidth = objKernel.getParameterByProgramAlias(sModuleAlias, sProgramAlias, "IconWidth" );			
+			fIconWidth = StringZZZ.toFloat(sIconWidth);
+							
+			System.out.println(ReflectCodeZZZ.getMethodCurrentName() + ": Suche Modul: '" + sModuleAlias +"'/ Program: '" + sProgramAlias + "'/ Parameter: 'IconHeight'");			
+			sIconHeight = objKernel.getParameterByProgramAlias(sModuleAlias, sProgramAlias, "IconHeight" );
+			fIconHeight = StringZZZ.toFloat(sIconHeight);
+						
+			//... Bild bearbeitet als Dialogeintrag über dem Katalog
 			BufferedImage objBufferdImage4DialogResized = UIHelper.resizeImage(objBufferedImageOriginalUsed, fIconWidth, fIconHeight);
 			byte[] imageInByteDialog = UIHelper.getByteArrayFromBufferedImage(objBufferdImage4DialogResized,"png");	
 	
 			String sMethodNameDialog = "setImageDialog"+sZoomFactorAlias;
 			Method mtestDialog = ReflectionUtil.findMethodForMethodName("use.thm.persistence.model.TroopArmyVariant", sMethodNameDialog);
-			mtestDialog.invoke(this, imageInByteDialog);
+			mtestDialog.invoke(this, imageInByteCatalogDialog);
 			
-			long lngFileSizeDialog = imageInByteDialog.length;
+			long lngFileSizeDialog = imageInByteCatalogDialog.length;
 			String sMethodNameDialogLength = "setImageDialogLength"+sZoomFactorAlias;
 			Method mtestDialogLength = ReflectionUtil.findMethodForMethodName("use.thm.persistence.model.TroopArmyVariant", sMethodNameDialogLength);
 			mtestDialogLength.invoke(this, lngFileSizeDialog);
@@ -440,15 +556,16 @@ public abstract class TroopVariant  extends KeyImmutable implements ITroopVarian
 			String sMethodNameDialogName = "setImageDialogName"+sZoomFactorAlias;
 			Method mtestDialogName = ReflectionUtil.findMethodForMethodName("use.thm.persistence.model.TroopArmyVariant", sMethodNameDialogName);
 			mtestDialogName.invoke(this, sTileIconNameZoomed);
-		 }//end for String sZoomFactorAlias : setZoomFactorAliasGUI){
+			
+		
+		 }//end for String sZoomFactorAlias : setZoomFactorAliasGUI){    //AUCH //END FOR KARTEN GUI ZOOMFAKTOR
 			
 			//Zuletzt: Speichere den anfangs gemerkten Wert wieder zurück
 			objIni.setVariable("GuiZoomFactorUsed", sGuiZoomFactorInitial);
+		
 			
 			
-			//####################################################################
-			//####################################################################################################
-			//+++++++++++++++++++++++++
+			
 			//A) KARTEN-ZOOMFAKTOR		
 			//Wichtig: Nun eine Variable im Ini-FileZZZ setzen, dann kann mit der Variablen die Größe der Icons - basierend auf der hinterlegten Formel - errechnet werden.
 			//Zuerst: Sichere den Wert der Variablen weg, bevor man ihn hier temporär zum Rechnen verändert.
@@ -565,9 +682,8 @@ public abstract class TroopVariant  extends KeyImmutable implements ITroopVarian
 			mtestHexmapName.invoke(this, sTileIconNameZoomed);
 			
 			
-			//++++++++++++++++++++++++++++++++++
-			//B2. Bild für das Ziehen über die Karte (im Glasspane, per GhostPictureAdapter, der bei der Erstellung der Katalogboxen erzeugt wird.)
-			
+			//######################################
+			//
 			//FALLS GILT: GENUTZT WERDEN SOLL DAS MODUL FÜR DIE GRÖSSENANGABEN AUF DER KARTE. Code stand ursprünglich in TileMouseMotionHandlerTHM.mouseClicked(..)
 			//String sModuleAlias = this.getTile().getMapPanel().getModuleName();
 			//String sProgramAlias = this.getTile().getMapPanel().getProgramAlias();			
@@ -592,16 +708,16 @@ public abstract class TroopVariant  extends KeyImmutable implements ITroopVarian
 			//... Bild bearbeitet als "Ziehen über das HEXFeld"
 			BufferedImage objBufferdImage4DragResized = UIHelper.resizeImage(objBufferedImageOriginalUsed, fIconWidth, fIconHeight);
 			byte[] imageInByteDrag = UIHelper.getByteArrayFromBufferedImage(objBufferdImage4DragResized,"png");				
-			String sMethodNameDrag = "setImageDrag"+sZoomFactorAlias;
+			String sMethodNameDrag = "setImageHexmapDrag"+sZoomFactorAlias;
 			Method mtestDrag = ReflectionUtil.findMethodForMethodName("use.thm.persistence.model.TroopArmyVariant", sMethodNameDrag);
 			mtestDrag.invoke(this, imageInByteDrag);
 			
 			long lngFileSizeDrag = imageInByteDrag.length;			
-			String sMethodNameDragLength = "setImageDragLength"+sZoomFactorAlias;
+			String sMethodNameDragLength = "setImageHexmapDragLength"+sZoomFactorAlias;
 			Method mtestDragLength = ReflectionUtil.findMethodForMethodName("use.thm.persistence.model.TroopArmyVariant", sMethodNameDragLength);
 			mtestDragLength.invoke(this, lngFileSizeDrag);
 		
-			String sMethodNameDragName = "setImageDragName"+sZoomFactorAlias;
+			String sMethodNameDragName = "setImageHexmapDragName"+sZoomFactorAlias;
 			Method mtestDragName = ReflectionUtil.findMethodForMethodName("use.thm.persistence.model.TroopArmyVariant", sMethodNameDragName);
 			mtestDragName.invoke(this, sTileIconNameZoomed);
 			
@@ -785,8 +901,10 @@ public abstract class TroopVariant  extends KeyImmutable implements ITroopVarian
 			this.lngImageInByte = lngFileSize;
 		}
 		
-		
-		//### DAS BILD FÜR DIE KATLOGAUSWAHL IN DER DATENBANK ABSPEICHERN. EIN BILD IST PFLICHT !
+		//#############################################################
+		//### BILDER ÜBER DEM KATALOG
+		//### DAS BILD FÜR DIE KATALOGAUSWAHL IN DER DATENBANK ABSPEICHERN. EIN BILD IST PFLICHT !
+		//#############################################################
 	 	@Access(AccessType.PROPERTY)		
 		@Column(name="ImageCatalog01", nullable=false)	
 		public  byte[] getImageCatalog01() {
@@ -870,6 +988,173 @@ public abstract class TroopVariant  extends KeyImmutable implements ITroopVarian
 			this.lngImageInByteCatalog03 = lngFileSize;
 		}
 		
+		//### DAS BILD FÜR DIE DARSTELLUNG BEIM ZIEHEN VOM KATALOG AUF DIE HEXKARTE. EIN BILD IST PFLICHT !
+	 	@Access(AccessType.PROPERTY)	
+		@Column(name="ImageCatalogDrag01", nullable=false)	
+		public  byte[] getImageCatalogDrag01() {
+			return this.imageInByteCatalogDrag01;
+		}		
+		public void setImageCatalogDrag01(byte[] imageInByte) {
+			this.imageInByteCatalogDrag01 = imageInByte;
+		}
+		
+		@Access(AccessType.PROPERTY)	
+		@Column(name="ImageCatalogDrag02", nullable=false)	
+		public  byte[] getImageCatalogDrag02() {
+			return this.imageInByteCatalogDrag02;
+		}		
+		public void setImageCatalogDrag02(byte[] imageInByte) {
+			this.imageInByteCatalogDrag02 = imageInByte;
+		}
+		
+		@Access(AccessType.PROPERTY)	
+		@Column(name="ImageCatalogDrag03", nullable=false)	
+		public  byte[] getImageCatalogDrag03() {
+			return this.imageInByteCatalogDrag03;
+		}		
+		public void setImageCatalogDrag03(byte[] imageInByte) {
+			this.imageInByteCatalogDrag03 = imageInByte;
+		}
+		
+		@Access(AccessType.PROPERTY)
+		@Column(name="ImageCatalogDragName01", nullable=false)
+		public String getImageCatalogDragName01() {
+			return this.sImageInByteCatalogDrag01;
+		}
+		public void setImageCatalogDragName01(String sFileName) {
+			this.sImageInByteCatalogDrag01 = sFileName;
+		}
+		
+		@Access(AccessType.PROPERTY)
+		@Column(name="ImageCatalogDragName02", nullable=false)
+		public String getImageCatalogDragName02() {
+			return this.sImageInByteCatalogDrag02;
+		}
+		public void setImageCatalogDragName02(String sFileName) {
+			this.sImageInByteCatalogDrag02 = sFileName;
+		}
+		
+		@Access(AccessType.PROPERTY)
+		@Column(name="ImageCatalogDragName03", nullable=false)
+		public String getImageCatalogDragName03() {
+			return this.sImageInByteCatalogDrag03;
+		}
+		public void setImageCatalogDragName03(String sFileName) {
+			this.sImageInByteCatalogDrag03 = sFileName;
+		}
+		
+		@Access(AccessType.PROPERTY)
+		@Column(name="ImageCatalogDragLength01", nullable=false)
+		public long getImageCatalogDragLength01() {
+			return this.lngImageInByteCatalogDrag01;
+		}
+		public void setImageCatalogDragLength01(long lngFileSize) {
+			this.lngImageInByteCatalogDrag01 = lngFileSize;
+		}
+		
+		@Access(AccessType.PROPERTY)
+		@Column(name="ImageCatalogDragLength02", nullable=false)
+		public long getImageCatalogDragLength02() {
+			return this.lngImageInByteCatalogDrag02;
+		}
+		public void setImageCatalogDragLength02(long lngFileSize) {
+			this.lngImageInByteCatalogDrag02 = lngFileSize;
+		}
+		
+		@Access(AccessType.PROPERTY)
+		@Column(name="ImageCatalogDragLength03", nullable=false)
+		public long getImageCatalogDragLength03() {
+			return this.lngImageInByteCatalogDrag03;
+		}
+		public void setImageCatalogDragLength03(long lngFileSize) {
+			this.lngImageInByteCatalogDrag03 = lngFileSize;
+		}
+		
+		//### DAS BILD FÜR DIE DARSTELLUNG BEI EINEM DIALOG ÜBER DEM KATALOG. EIN BILD IST PFLICHT !
+		@Access(AccessType.PROPERTY)			
+		@Column(name="ImageCatalogDialog01", nullable=false)	
+		public  byte[] getImageCatalogDialog01() {
+			return this.imageInByteCatalogDialog01;
+		}		
+		public void setImageCatalogDialog01(byte[] imageInByte) {
+			this.imageInByteCatalogDialog01 = imageInByte;
+		}
+		
+		@Access(AccessType.PROPERTY)			
+		@Column(name="ImageCatalogDialog02", nullable=false)	
+		public  byte[] getImageCatalogDialog02() {
+			return this.imageInByteCatalogDialog02;
+		}		
+		public void setImageCatalogDialog02(byte[] imageInByte) {
+			this.imageInByteCatalogDialog02 = imageInByte;
+		}
+		
+		@Access(AccessType.PROPERTY)			
+		@Column(name="ImageCatalogDialog03", nullable=false)	
+		public  byte[] getImageCatalogDialog03() {
+			return this.imageInByteCatalogDialog03;
+		}		
+		public void setImageCatalogDialog03(byte[] imageInByte) {
+			this.imageInByteCatalogDialog03 = imageInByte;
+		}
+		
+		@Access(AccessType.PROPERTY)
+		@Column(name="ImageCatalogDialogName01", nullable=false)
+		public String getImageCatalogDialogName01() {
+			return this.sImageInByteCatalogDialog01;
+		}
+		public void setImageCatalogDialogName01(String sFileName) {
+			this.sImageInByteCatalogDialog01 = sFileName;
+		}
+		
+		@Access(AccessType.PROPERTY)
+		@Column(name="ImageCatalogDialogName02", nullable=false)
+		public String getImageCatalogDialogName02() {
+			return this.sImageInByteCatalogDialog02;
+		}
+		public void setImageCatalogDialogName02(String sFileName) {
+			this.sImageInByteCatalogDialog02 = sFileName;
+		}
+		
+		@Access(AccessType.PROPERTY)
+		@Column(name="ImageCatalogDialogName03", nullable=false)
+		public String getImageCatalogDialogName03() {
+			return this.sImageInByteCatalogDialog03;
+		}
+		public void setImageCatalogDialogName03(String sFileName) {
+			this.sImageInByteCatalogDialog03 = sFileName;
+		}
+		
+		@Access(AccessType.PROPERTY)
+		@Column(name="ImageCatalogDialogLength01", nullable=false)
+		public long getImageCatalogDialogLength01() {
+			return this.lngImageInByteCatalogDialog01;
+		}
+		public void setImageCatalogDialogLength01(long lngFileSize) {
+			this.lngImageInByteCatalogDialog01 = lngFileSize;
+		}
+		
+		@Access(AccessType.PROPERTY)
+		@Column(name="ImageCatalogDialogLength02", nullable=false)
+		public long getImageCatalogDialogLength02() {
+			return this.lngImageInByteCatalogDialog02;
+		}
+		public void setImageCatalogDialogLength02(long lngFileSize) {
+			this.lngImageInByteCatalogDialog02 = lngFileSize;
+		}
+		
+		@Access(AccessType.PROPERTY)
+		@Column(name="ImageCatalogDialogLength03", nullable=false)
+		public long getImageCatalogDialogLength03() {
+			return this.lngImageInByteCatalogDialog03;
+		}
+		public void setImageCatalogDialogLength03(long lngFileSize) {
+			this.lngImageInByteCatalogDialog03 = lngFileSize;
+		}
+		
+		
+		//#################################################################################
+		//### BILDER ÜBER DER HEXMAP 
 		//### DAS BILD FÜR DIE DARSTELLUNG IM DIALOG IN DER DATENBANK ABSPEICHERN. EIN BILD IST PFLICHT !
 	 	@Access(AccessType.PROPERTY)			
 		@Column(name="ImageDialog01", nullable=false)	
@@ -1117,165 +1402,165 @@ public abstract class TroopVariant  extends KeyImmutable implements ITroopVarian
 
 		//### DAS BILD FÜR DIE DARSTELLUNG BEIM ZIEHEN ÜBER DIE HEXKARTE. EIN BILD IST PFLICHT !
 	 	@Access(AccessType.PROPERTY)	
-		@Column(name="ImageDrag01", nullable=false)	
-		public  byte[] getImageDrag01() {
-			return this.imageInByteDrag01;
+		@Column(name="ImageHexmapDrag01", nullable=false)	
+		public  byte[] getImageHexmapDrag01() {
+			return this.imageInByteHexmapDrag01;
 		}		
-		public void setImageDrag01(byte[] imageInByte) {
-			this.imageInByteDrag01 = imageInByte;
+		public void setImageHexmapDrag01(byte[] imageInByte) {
+			this.imageInByteHexmapDrag01 = imageInByte;
 		}
 		
 		@Access(AccessType.PROPERTY)	
-		@Column(name="ImageDrag02", nullable=false)	
-		public  byte[] getImageDrag02() {
-			return this.imageInByteDrag02;
+		@Column(name="ImageHexmapDrag02", nullable=false)	
+		public  byte[] getImageHexmapDrag02() {
+			return this.imageInByteHexmapDrag02;
 		}		
-		public void setImageDrag02(byte[] imageInByte) {
-			this.imageInByteDrag02 = imageInByte;
+		public void setImageHexmapDrag02(byte[] imageInByte) {
+			this.imageInByteHexmapDrag02 = imageInByte;
 		}
 		
 		@Access(AccessType.PROPERTY)	
-		@Column(name="ImageDrag03", nullable=false)	
-		public  byte[] getImageDrag03() {
-			return this.imageInByteDrag03;
+		@Column(name="ImageHexmapDrag03", nullable=false)	
+		public  byte[] getImageHexmapDrag03() {
+			return this.imageInByteHexmapDrag03;
 		}		
-		public void setImageDrag03(byte[] imageInByte) {
-			this.imageInByteDrag03 = imageInByte;
+		public void setImageHexmapDrag03(byte[] imageInByte) {
+			this.imageInByteHexmapDrag03 = imageInByte;
 		}
 		
 		@Access(AccessType.PROPERTY)	
-		@Column(name="ImageDrag04", nullable=false)	
-		public  byte[] getImageDrag04() {
-			return this.imageInByteDrag04;
+		@Column(name="ImageHexmapDrag04", nullable=false)	
+		public  byte[] getImageHexmapDrag04() {
+			return this.imageInByteHexmapDrag04;
 		}		
-		public void setImageDrag04(byte[] imageInByte) {
-			this.imageInByteDrag04 = imageInByte;
+		public void setImageHexmapDrag04(byte[] imageInByte) {
+			this.imageInByteHexmapDrag04 = imageInByte;
 		}
 		
 		@Access(AccessType.PROPERTY)	
-		@Column(name="ImageDrag05", nullable=false)	
-		public  byte[] getImageDrag05() {
-			return this.imageInByteDrag05;
+		@Column(name="ImageHexmapDrag05", nullable=false)	
+		public  byte[] getImageHexmapDrag05() {
+			return this.imageInByteHexmapDrag05;
 		}		
-		public void setImageDrag05(byte[] imageInByte) {
-			this.imageInByteDrag05 = imageInByte;
+		public void setImageHexmapDrag05(byte[] imageInByte) {
+			this.imageInByteHexmapDrag05 = imageInByte;
 		}
 		
 		@Access(AccessType.PROPERTY)	
-		@Column(name="ImageDrag06", nullable=false)	
-		public  byte[] getImageDrag06() {
-			return this.imageInByteDrag06;
+		@Column(name="ImageHexmapDrag06", nullable=false)	
+		public  byte[] getImageHexmapDrag06() {
+			return this.imageInByteHexmapDrag06;
 		}		
-		public void setImageDrag06(byte[] imageInByte) {
-			this.imageInByteDrag06 = imageInByte;
+		public void setImageHexmapDrag06(byte[] imageInByte) {
+			this.imageInByteHexmapDrag06 = imageInByte;
 		}
 		
 		@Access(AccessType.PROPERTY)
-		@Column(name="ImageDragName01", nullable=false)
-		public String getImageDragName01() {
-			return this.sImageInByteDrag01;
+		@Column(name="ImageHexmapDragName01", nullable=false)
+		public String getImageHexmapDragName01() {
+			return this.sImageInByteHexmapDrag01;
 		}
-		public void setImageDragName01(String sFileName) {
-			this.sImageInByteDrag01 = sFileName;
-		}
-		
-		@Access(AccessType.PROPERTY)
-		@Column(name="ImageDragName02", nullable=false)
-		public String getImageDragName02() {
-			return this.sImageInByteDrag02;
-		}
-		public void setImageDragName02(String sFileName) {
-			this.sImageInByteDrag02 = sFileName;
+		public void setImageHexmapDragName01(String sFileName) {
+			this.sImageInByteHexmapDrag01 = sFileName;
 		}
 		
 		@Access(AccessType.PROPERTY)
-		@Column(name="ImageDragName03", nullable=false)
-		public String getImageDragName03() {
-			return this.sImageInByteDrag03;
+		@Column(name="ImageHexmapDragName02", nullable=false)
+		public String getImageHexmapDragName02() {
+			return this.sImageInByteHexmapDrag02;
 		}
-		public void setImageDragName03(String sFileName) {
-			this.sImageInByteDrag03 = sFileName;
-		}
-		
-		@Access(AccessType.PROPERTY)
-		@Column(name="ImageDragName04", nullable=false)
-		public String getImageDragName04() {
-			return this.sImageInByteDrag04;
-		}
-		public void setImageDragName04(String sFileName) {
-			this.sImageInByteDrag04 = sFileName;
+		public void setImageHexmapDragName02(String sFileName) {
+			this.sImageInByteHexmapDrag02 = sFileName;
 		}
 		
 		@Access(AccessType.PROPERTY)
-		@Column(name="ImageDragName05", nullable=false)
-		public String getImageDragName05() {
-			return this.sImageInByteDrag05;
+		@Column(name="ImageHexmapDragName03", nullable=false)
+		public String getImageHexmapDragName03() {
+			return this.sImageInByteHexmapDrag03;
 		}
-		public void setImageDragName05(String sFileName) {
-			this.sImageInByteDrag05 = sFileName;
-		}
-		
-		@Access(AccessType.PROPERTY)
-		@Column(name="ImageDragName06", nullable=false)
-		public String getImageDragName06() {
-			return this.sImageInByteDrag06;
-		}
-		public void setImageDragName06(String sFileName) {
-			this.sImageInByteDrag06 = sFileName;
+		public void setImageHexmapDragName03(String sFileName) {
+			this.sImageInByteHexmapDrag03 = sFileName;
 		}
 		
 		@Access(AccessType.PROPERTY)
-		@Column(name="ImageDragLength01", nullable=false)
-		public long getImageDragLength01() {
-			return this.lngImageInByteDrag01;
+		@Column(name="ImageHexmapDragName04", nullable=false)
+		public String getImageHexmapDragName04() {
+			return this.sImageInByteHexmapDrag04;
 		}
-		public void setImageDragLength01(long lngFileSize) {
-			this.lngImageInByteDrag01 = lngFileSize;
-		}
-		
-		@Access(AccessType.PROPERTY)
-		@Column(name="ImageDragLength02", nullable=false)
-		public long getImageDragLength02() {
-			return this.lngImageInByteDrag02;
-		}
-		public void setImageDragLength02(long lngFileSize) {
-			this.lngImageInByteDrag02 = lngFileSize;
+		public void setImageHexmapDragName04(String sFileName) {
+			this.sImageInByteHexmapDrag04 = sFileName;
 		}
 		
 		@Access(AccessType.PROPERTY)
-		@Column(name="ImageDragLength03", nullable=false)
-		public long getImageDragLength03() {
-			return this.lngImageInByteDrag03;
+		@Column(name="ImageHexmapDragName05", nullable=false)
+		public String getImageHexmapDragName05() {
+			return this.sImageInByteHexmapDrag05;
 		}
-		public void setImageDragLength03(long lngFileSize) {
-			this.lngImageInByteDrag03 = lngFileSize;
-		}
-		
-		@Access(AccessType.PROPERTY)
-		@Column(name="ImageDragLength04", nullable=false)
-		public long getImageDragLength04() {
-			return this.lngImageInByteDrag04;
-		}
-		public void setImageDragLength04(long lngFileSize) {
-			this.lngImageInByteDrag04 = lngFileSize;
+		public void setImageHexmapDragName05(String sFileName) {
+			this.sImageInByteHexmapDrag05 = sFileName;
 		}
 		
 		@Access(AccessType.PROPERTY)
-		@Column(name="ImageDragLength05", nullable=false)
-		public long getImageDragLength05() {
-			return this.lngImageInByteDrag05;
+		@Column(name="ImageHexmapDragName06", nullable=false)
+		public String getImageHexmapDragName06() {
+			return this.sImageInByteHexmapDrag06;
 		}
-		public void setImageDragLength05(long lngFileSize) {
-			this.lngImageInByteDrag05 = lngFileSize;
+		public void setImageHexmapDragName06(String sFileName) {
+			this.sImageInByteHexmapDrag06 = sFileName;
 		}
 		
 		@Access(AccessType.PROPERTY)
-		@Column(name="ImageDragLength06", nullable=false)
-		public long getImageDragLength06() {
-			return this.lngImageInByteDrag06;
+		@Column(name="ImageHexmapDragLength01", nullable=false)
+		public long getImageHexmapDragLength01() {
+			return this.lngImageInByteHexmapDrag01;
 		}
-		public void setImageDragLength06(long lngFileSize) {
-			this.lngImageInByteDrag06 = lngFileSize;
+		public void setImageHexmapDragLength01(long lngFileSize) {
+			this.lngImageInByteHexmapDrag01 = lngFileSize;
+		}
+		
+		@Access(AccessType.PROPERTY)
+		@Column(name="ImageHexmapDragLength02", nullable=false)
+		public long getImageHexmapDragLength02() {
+			return this.lngImageInByteHexmapDrag02;
+		}
+		public void setImageHexmapDragLength02(long lngFileSize) {
+			this.lngImageInByteHexmapDrag02 = lngFileSize;
+		}
+		
+		@Access(AccessType.PROPERTY)
+		@Column(name="ImageHexmapDragLength03", nullable=false)
+		public long getImageHexmapDragLength03() {
+			return this.lngImageInByteHexmapDrag03;
+		}
+		public void setImageHexmapDragLength03(long lngFileSize) {
+			this.lngImageInByteHexmapDrag03 = lngFileSize;
+		}
+		
+		@Access(AccessType.PROPERTY)
+		@Column(name="ImageHexmapDragLength04", nullable=false)
+		public long getImageHexmapDragLength04() {
+			return this.lngImageInByteHexmapDrag04;
+		}
+		public void setImageHexmapDragLength04(long lngFileSize) {
+			this.lngImageInByteHexmapDrag04 = lngFileSize;
+		}
+		
+		@Access(AccessType.PROPERTY)
+		@Column(name="ImageHexmapDragLength05", nullable=false)
+		public long getImageHexmapDragLength05() {
+			return this.lngImageInByteHexmapDrag05;
+		}
+		public void setImageHexmapDragLength05(long lngFileSize) {
+			this.lngImageInByteHexmapDrag05 = lngFileSize;
+		}
+		
+		@Access(AccessType.PROPERTY)
+		@Column(name="ImageHexmapDragLength06", nullable=false)
+		public long getImageHexmapDragLength06() {
+			return this.lngImageInByteHexmapDrag06;
+		}
+		public void setImageHexmapDragLength06(long lngFileSize) {
+			this.lngImageInByteHexmapDrag06 = lngFileSize;
 		}
 	 
 	 //#### abstracte Methoden

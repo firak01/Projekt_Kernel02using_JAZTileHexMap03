@@ -4,6 +4,7 @@ import basic.persistence.dto.GenericDTO;
 import basic.persistence.dto.IDTOAttributeGroup;
 
 public interface IDtoFactoryZZZ {
-	public GenericDTO<IDTOAttributeGroup> createDTO();
+	//public GenericDTO<IDTOAttributeGroup> createDTO();
 	abstract GenericDTO<?> createDTO(Class classObjectType); //class ist von ... IDTOAttributeGroup objType
+	abstract GenericDTO<?> createDTO(); //class ist von ... IDTOAttributeGroup objType
 }

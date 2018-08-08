@@ -15,18 +15,22 @@ public interface IBoxDtoAttribute extends IDTOAttributeGroup {
   
     //20180726: Damit schnell die GUIgröße "gezoomt" werden kann ist es das Ziel die verschiedenen Bilder für die unterschiedlichen Zoomstufen in der Datenbank zu speichern
     //               und natürlich dann per DTO zu übergeben.
-    public final static DTOAttribute<IBoxDtoAttribute, byte[]> VARIANT_IMAGE_IN_BYTE_01 = DTOAttribute.getInstance("VARIANT_IMAGECATALOG_IN_BYTE_01");
-    public final static DTOAttribute<IBoxDtoAttribute, byte[]> VARIANT_IMAGE_IN_BYTE_02 = DTOAttribute.getInstance("VARIANT_IMAGECATALOG_IN_BYTE_02");
-    public final static DTOAttribute<IBoxDtoAttribute, byte[]> VARIANT_IMAGE_IN_BYTE_03 = DTOAttribute.getInstance("VARIANT_IMAGECATALOG_IN_BYTE_03");
+    public final static DTOAttribute<IBoxDtoAttribute, byte[]> VARIANT_IMAGE_IN_BYTE_01 = DTOAttribute.getInstance("VARIANT_IMAGE_IN_BYTE_01");
+    public final static DTOAttribute<IBoxDtoAttribute, byte[]> VARIANT_IMAGE_IN_BYTE_02 = DTOAttribute.getInstance("VARIANT_IMAGE_IN_BYTE_02");
+    public final static DTOAttribute<IBoxDtoAttribute, byte[]> VARIANT_IMAGE_IN_BYTE_03 = DTOAttribute.getInstance("VARIANT_IMAGE_IN_BYTE_03");
     
     public final static DTOAttribute<IBoxDtoAttribute, byte[]> VARIANT_IMAGEDIALOG_IN_BYTE_01 = DTOAttribute.getInstance("VARIANT_IMAGEDIALOG_IN_BYTE_01");
     public final static DTOAttribute<IBoxDtoAttribute, byte[]> VARIANT_IMAGEDIALOG_IN_BYTE_02 = DTOAttribute.getInstance("VARIANT_IMAGEDIALOG_IN_BYTE_02");
     public final static DTOAttribute<IBoxDtoAttribute, byte[]> VARIANT_IMAGEDIALOG_IN_BYTE_03 = DTOAttribute.getInstance("VARIANT_IMAGEDIALOG_IN_BYTE_03");
        
+    //Das sind dann entsprechend der Hexmap-Zoomstufen viele Bildvarianten....
     public final static DTOAttribute<IBoxDtoAttribute, byte[]> VARIANT_IMAGEDRAG_IN_BYTE_01= DTOAttribute.getInstance("VARIANT_IMAGEDRAG_IN_BYTE_01");
     public final static DTOAttribute<IBoxDtoAttribute, byte[]> VARIANT_IMAGEDRAG_IN_BYTE_02= DTOAttribute.getInstance("VARIANT_IMAGEDRAG_IN_BYTE_02");
     public final static DTOAttribute<IBoxDtoAttribute, byte[]> VARIANT_IMAGEDRAG_IN_BYTE_03= DTOAttribute.getInstance("VARIANT_IMAGEDRAG_IN_BYTE_03");
-     
+    public final static DTOAttribute<IBoxDtoAttribute, byte[]> VARIANT_IMAGEDRAG_IN_BYTE_04= DTOAttribute.getInstance("VARIANT_IMAGEDRAG_IN_BYTE_04");
+    public final static DTOAttribute<IBoxDtoAttribute, byte[]> VARIANT_IMAGEDRAG_IN_BYTE_05= DTOAttribute.getInstance("VARIANT_IMAGEDRAG_IN_BYTE_05");
+    public final static DTOAttribute<IBoxDtoAttribute, byte[]> VARIANT_IMAGEDRAG_IN_BYTE_06= DTOAttribute.getInstance("VARIANT_IMAGEDRAG_IN_BYTE_06");
+    
     //Werte aus TileImmutableText
     public final static DTOAttribute<IBoxDtoAttribute, String> VARIANT_SHORTTEXT = DTOAttribute.getInstance("VARIANT_SHORTTEXT");
     //public final static Attribute<Integer> ID = Attribute.getInstance("CustomerAttributes.Id");

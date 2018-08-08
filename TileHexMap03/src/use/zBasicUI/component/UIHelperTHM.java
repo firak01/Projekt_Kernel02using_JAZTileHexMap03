@@ -77,7 +77,7 @@ public final class UIHelperTHM implements IConstantZZZ{
 				}
 								
 				Class<ITileDtoAttribute> c = ITileDtoAttribute.class;
-				String sAttributename = "VARIANT_CATALOGIMAGE_IN_BYTE";
+				String sAttributename = "VARIANT_IMAGE_IN_BYTE";
 				//return UIHelperTHM.getAttributeFromDtoInByte(objDto, sAttributename);
 				return UIHelperTHM.getAttributeFromDtoInByte(c, objDto, sAttributename);
 			}
@@ -201,6 +201,72 @@ public final class UIHelperTHM implements IConstantZZZ{
 //						return null;
 //					}
 					
+
+					
+					
+				//#########################
+					//###############################
+					/**Hole per Reflection aus der DTO-Attribut Klasse das Bild, welches zur Auflösung passt.
+					 * Hier: Übergebener HexMapZoomFactor-ALIAS.
+					 * 
+					 * @return
+					 * @throws ExceptionZZZ
+					 */
+					public static byte[] getVariantCatalogImageDragUsedInByte(GenericDTO<IBoxDtoAttribute>objDto, String sAttributeSuffix, String sZoomFactorAlias) throws ExceptionZZZ{
+						if(objDto==null){
+							ExceptionZZZ ez = new ExceptionZZZ("Dto-Object",iERROR_PARAMETER_MISSING, UIHelperTHM.class,  ReflectCodeZZZ.getMethodCurrentName());
+							throw ez;
+						}
+						if(StringZZZ.isEmpty(sAttributeSuffix)){
+							ExceptionZZZ ez = new ExceptionZZZ("AttributeSuffix",iERROR_PARAMETER_MISSING, UIHelper.class,  ReflectCodeZZZ.getMethodCurrentName());
+							throw ez;
+						}
+									
+						if(StringZZZ.isEmpty(sZoomFactorAlias)){
+							return UIHelperTHM.getVariantCatalogImageDragUsedInByteDefault(objDto);
+						}
+						
+						//+++ Hole aus dem Dto das Attribut mit dem erechneten Namen	
+						Class<IBoxDtoAttribute> c = IBoxDtoAttribute.class;
+						String sPrefix = "VARIANT_";
+															
+						//Hole aus dem Dto-Objekt das Ausgangsbild
+						for(Field f : c.getDeclaredFields() ){
+							int mod = f.getModifiers();
+							if(Modifier.isStatic(mod) && Modifier.isPublic(mod) && Modifier.isFinal(mod)){
+//									try{
+									//System.out.printf("%s = %d%n",  f.getName(), f.get(null));// f.get(null) wirkt wohl nur bei Konstanten, die im Interface so defineirt sind: public static final int CONST_1 = 9;
+									String s = f.getName();
+									if(StringZZZ.contains(s, sPrefix + sAttributeSuffix + "_IN_BYTE_", true)){
+										if(s.endsWith(sZoomFactorAlias)){
+											
+											//Erzeuge eine DTOAttribut Instanz, die dem aktuell gefundenen Namen der Konstante entspricht.
+											//Merke: DTOAttribute braucht eine überschreibene equals() und hashCode() Methode, damit der gespeichert Wert mit einer erzeugten Instanz verglichen werden kann.
+											DTOAttribute objDtoAttribute = DTOAttribute.getInstance(s); //<IDTOAttributeGroup, T>			
+											byte[] objaReturn = (byte[]) objDto.get(objDtoAttribute);  
+											return 	objaReturn;
+										}
+									}
+								}
+							}//end for
+					
+							//+++ Wurde nichts gefunden, vieleicht einen Defaultwert zurückgeben
+							return UIHelperTHM.getVariantCatalogImageUsedInByteDefault(objDto);
+						}
+					
+					public static byte[] getVariantCatalogImageDragUsedInByteDefault(GenericDTO<IBoxDtoAttribute>objDto) throws ExceptionZZZ{
+						if(objDto==null){
+							ExceptionZZZ ez = new ExceptionZZZ("Dto-Object",iERROR_PARAMETER_MISSING, UIHelperTHM.class,  ReflectCodeZZZ.getMethodCurrentName());
+							throw ez;
+						}
+										
+						Class<ITileDtoAttribute> c = ITileDtoAttribute.class;
+						String sAttributename = "VARIANT_IMAGE_IN_BYTE";
+						return UIHelperTHM.getAttributeFromDtoInByte(c, objDto, sAttributename);
+					}
+					
+					//#########################
+					//##################
 					public static byte[] getAttributeFromDtoInByte(Class interfaceClassOfDtoAttribute, GenericDTO<?>objDto, String sAttributename) throws ExceptionZZZ{
 						if(objDto==null){
 							ExceptionZZZ ez = new ExceptionZZZ("Dto-Object",iERROR_PARAMETER_MISSING, UIHelperTHM.class,  ReflectCodeZZZ.getMethodCurrentName());

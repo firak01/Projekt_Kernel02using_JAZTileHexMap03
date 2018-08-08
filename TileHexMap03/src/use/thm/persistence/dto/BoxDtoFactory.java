@@ -20,10 +20,12 @@ public class BoxDtoFactory extends AbstractDtoFactoryZZZ {
 	
 	//###########################################
 
-	public GenericDTO<IDTOAttributeGroup> createDTO() {		
+	public GenericDTO<IBoxDtoAttribute> createDTO() {		
 		@SuppressWarnings("unchecked")
-		GenericDTO<IDTOAttributeGroup> dto = (GenericDTO<IDTOAttributeGroup>) this.createDTO(IBoxDtoAttribute.class);
+		GenericDTO<IBoxDtoAttribute> dto = (GenericDTO<IBoxDtoAttribute>) this.createDTO(IBoxDtoAttribute.class);
 		return dto;
 	}
+	
+	
 
 }

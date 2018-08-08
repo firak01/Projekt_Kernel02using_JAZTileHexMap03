@@ -180,6 +180,27 @@ public abstract class TroopVariant  extends KeyImmutable implements ITroopVarian
 	@Transient
 	private Long lngImageInByteCatalogDrag03;
 	
+	@Transient
+	private byte[] imageInByteCatalogDrag04;				
+	@Transient
+	private String sImageInByteCatalogDrag04;				
+	@Transient
+	private Long lngImageInByteCatalogDrag04;
+	
+	@Transient
+	private byte[] imageInByteCatalogDrag05;				
+	@Transient
+	private String sImageInByteCatalogDrag05;				
+	@Transient
+	private Long lngImageInByteCatalogDrag05;
+	
+	@Transient
+	private byte[] imageInByteCatalogDrag06;				
+	@Transient
+	private String sImageInByteCatalogDrag06;				
+	@Transient
+	private Long lngImageInByteCatalogDrag06;
+	
 	//Das Bild der Spielsteinvariante für die Darstellung im Dialog (, entsprechend angepasst) über einen Katalogeintrag
 	@Transient
 	private byte[] imageInByteCatalogDialog01;	
@@ -491,24 +512,7 @@ public abstract class TroopVariant  extends KeyImmutable implements ITroopVarian
 			Method mtestCatalogDialogName = ReflectionUtil.findMethodForMethodName("use.thm.persistence.model.TroopArmyVariant", sMethodNameCatalogDialogName);
 			mtestCatalogDialogName.invoke(this, sTileIconNameZoomed);
 			
-			//A3 Bild für das Ziehen aus der Dialogbox (im Glasspane, per GhostPictureAdapter, der bei der Erstellung der Katalogboxen erzeugt wird.)
-			//... Bild bearbeitet als "Ziehen über das HEXFeld"
-			BufferedImage objBufferdImage4DragResized = UIHelper.resizeImage(objBufferedImageOriginalUsed, fIconWidth, fIconHeight);
-			byte[] imageInByteDrag = UIHelper.getByteArrayFromBufferedImage(objBufferdImage4DragResized,"png");				
-			String sMethodNameDrag = "setImageCatalogDrag"+sZoomFactorAlias;
-			Method mtestDrag = ReflectionUtil.findMethodForMethodName("use.thm.persistence.model.TroopArmyVariant", sMethodNameDrag);
-			mtestDrag.invoke(this, imageInByteDrag);
-			
-			long lngFileSizeDrag = imageInByteDrag.length;			
-			String sMethodNameDragLength = "setImageCatalogDragLength"+sZoomFactorAlias;
-			Method mtestDragLength = ReflectionUtil.findMethodForMethodName("use.thm.persistence.model.TroopArmyVariant", sMethodNameDragLength);
-			mtestDragLength.invoke(this, lngFileSizeDrag);
 		
-			String sMethodNameDragName = "setImageCatalogDragName"+sZoomFactorAlias;
-			Method mtestDragName = ReflectionUtil.findMethodForMethodName("use.thm.persistence.model.TroopArmyVariant", sMethodNameDragName);
-			mtestDragName.invoke(this, sTileIconNameZoomed);
-			
-			
 			
 			
 			
@@ -720,6 +724,24 @@ public abstract class TroopVariant  extends KeyImmutable implements ITroopVarian
 			String sMethodNameDragName = "setImageHexmapDragName"+sZoomFactorAlias;
 			Method mtestDragName = ReflectionUtil.findMethodForMethodName("use.thm.persistence.model.TroopArmyVariant", sMethodNameDragName);
 			mtestDragName.invoke(this, sTileIconNameZoomed);
+			
+			
+			//A3 Bild für das Ziehen aus der Dialogbox (im Glasspane, per GhostPictureAdapter, der bei der Erstellung der Katalogboxen erzeugt wird.)
+			//... Bild bearbeitet als "Ziehen über das HEXFeld"
+			BufferedImage objBufferdImageCatalog4DragResized = UIHelper.resizeImage(objBufferedImageOriginalUsed, fIconWidth, fIconHeight);
+			byte[] imageInByteCatalogDrag = UIHelper.getByteArrayFromBufferedImage(objBufferdImageCatalog4DragResized,"png");				
+			String sMethodNameCatalogDrag = "setImageCatalogDrag"+sZoomFactorAlias;
+			Method mtestCatalogDrag = ReflectionUtil.findMethodForMethodName("use.thm.persistence.model.TroopArmyVariant", sMethodNameCatalogDrag);
+			mtestCatalogDrag.invoke(this, imageInByteCatalogDrag);
+			
+			long lngFileSizeCatalogDrag = imageInByteCatalogDrag.length;			
+			String sMethodNameCatalogDragLength = "setImageCatalogDragLength"+sZoomFactorAlias;
+			Method mtestCatalogDragLength = ReflectionUtil.findMethodForMethodName("use.thm.persistence.model.TroopArmyVariant", sMethodNameCatalogDragLength);
+			mtestCatalogDragLength.invoke(this, lngFileSizeCatalogDrag);
+			
+			String sMethodNameCatalogDragName = "setImageCatalogDragName"+sZoomFactorAlias;
+			Method mtestCatalogDragName = ReflectionUtil.findMethodForMethodName("use.thm.persistence.model.TroopArmyVariant", sMethodNameCatalogDragName);
+			mtestCatalogDragName.invoke(this, sTileIconNameZoomed);
 			
 			}//end for String sZoomFactorAlias : setZoomFactorAlias){
 			
@@ -1016,6 +1038,33 @@ public abstract class TroopVariant  extends KeyImmutable implements ITroopVarian
 			this.imageInByteCatalogDrag03 = imageInByte;
 		}
 		
+		@Access(AccessType.PROPERTY)	
+		@Column(name="ImageCatalogDrag04", nullable=false)	
+		public  byte[] getImageCatalogDrag04() {
+			return this.imageInByteCatalogDrag04;
+		}		
+		public void setImageCatalogDrag04(byte[] imageInByte) {
+			this.imageInByteCatalogDrag04 = imageInByte;
+		}
+		
+		@Access(AccessType.PROPERTY)	
+		@Column(name="ImageCatalogDrag05", nullable=false)	
+		public  byte[] getImageCatalogDrag05() {
+			return this.imageInByteCatalogDrag05;
+		}		
+		public void setImageCatalogDrag05(byte[] imageInByte) {
+			this.imageInByteCatalogDrag05 = imageInByte;
+		}
+		
+		@Access(AccessType.PROPERTY)	
+		@Column(name="ImageCatalogDrag06", nullable=false)	
+		public  byte[] getImageCatalogDrag06() {
+			return this.imageInByteCatalogDrag06;
+		}		
+		public void setImageCatalogDrag06(byte[] imageInByte) {
+			this.imageInByteCatalogDrag06 = imageInByte;
+		}
+		
 		@Access(AccessType.PROPERTY)
 		@Column(name="ImageCatalogDragName01", nullable=false)
 		public String getImageCatalogDragName01() {
@@ -1044,6 +1093,33 @@ public abstract class TroopVariant  extends KeyImmutable implements ITroopVarian
 		}
 		
 		@Access(AccessType.PROPERTY)
+		@Column(name="ImageCatalogDragName04", nullable=false)
+		public String getImageCatalogDragName04() {
+			return this.sImageInByteCatalogDrag04;
+		}
+		public void setImageCatalogDragName04(String sFileName) {
+			this.sImageInByteCatalogDrag04 = sFileName;
+		}
+		
+		@Access(AccessType.PROPERTY)
+		@Column(name="ImageCatalogDragName05", nullable=false)
+		public String getImageCatalogDragName05() {
+			return this.sImageInByteCatalogDrag05;
+		}
+		public void setImageCatalogDragName05(String sFileName) {
+			this.sImageInByteCatalogDrag05 = sFileName;
+		}
+		
+		@Access(AccessType.PROPERTY)
+		@Column(name="ImageCatalogDragName06", nullable=false)
+		public String getImageCatalogDragName06() {
+			return this.sImageInByteCatalogDrag06;
+		}
+		public void setImageCatalogDragName06(String sFileName) {
+			this.sImageInByteCatalogDrag06 = sFileName;
+		}
+		
+		@Access(AccessType.PROPERTY)
 		@Column(name="ImageCatalogDragLength01", nullable=false)
 		public long getImageCatalogDragLength01() {
 			return this.lngImageInByteCatalogDrag01;
@@ -1068,6 +1144,33 @@ public abstract class TroopVariant  extends KeyImmutable implements ITroopVarian
 		}
 		public void setImageCatalogDragLength03(long lngFileSize) {
 			this.lngImageInByteCatalogDrag03 = lngFileSize;
+		}
+		
+		@Access(AccessType.PROPERTY)
+		@Column(name="ImageCatalogDragLength04", nullable=false)
+		public long getImageCatalogDragLength04() {
+			return this.lngImageInByteCatalogDrag04;
+		}
+		public void setImageCatalogDragLength04(long lngFileSize) {
+			this.lngImageInByteCatalogDrag04 = lngFileSize;
+		}
+		
+		@Access(AccessType.PROPERTY)
+		@Column(name="ImageCatalogDragLength05", nullable=false)
+		public long getImageCatalogDragLength05() {
+			return this.lngImageInByteCatalogDrag05;
+		}
+		public void setImageCatalogDragLength05(long lngFileSize) {
+			this.lngImageInByteCatalogDrag05 = lngFileSize;
+		}
+		
+		@Access(AccessType.PROPERTY)
+		@Column(name="ImageCatalogDragLength06", nullable=false)
+		public long getImageCatalogDragLength06() {
+			return this.lngImageInByteCatalogDrag06;
+		}
+		public void setImageCatalogDragLength06(long lngFileSize) {
+			this.lngImageInByteCatalogDrag06 = lngFileSize;
 		}
 		
 		//### DAS BILD FÜR DIE DARSTELLUNG BEI EINEM DIALOG ÜBER DEM KATALOG. EIN BILD IST PFLICHT !

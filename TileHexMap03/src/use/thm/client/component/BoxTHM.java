@@ -15,6 +15,7 @@ import use.thm.persistence.dto.ITileDtoAttribute;
 import use.zBasicUI.component.UIHelperTHM;
 import basic.persistence.dto.DTOAttribute;
 import basic.persistence.dto.GenericDTO;
+import basic.persistence.dto.IDTOAttributeGroup;
 import basic.zBasic.ExceptionZZZ;
 import basic.zBasic.util.datatype.string.StringZZZ;
 import basic.zBasic.util.log.ReportLogZZZ;
@@ -78,6 +79,7 @@ public class BoxTHM extends Box{
 			}//end for Zoomfactor alias
 		*/
 			
+			bReturn = true;
 		}//end main:
 		return bReturn;
 	}
@@ -178,6 +180,34 @@ public class BoxTHM extends Box{
 				}
 			}
 		}//end main
+	}
+	
+	
+	/**Hole per Reflection aus der DTO-Attribut Klasse das Bild, welches zur Auflösung (der HexMap) passt.
+	 * Hier: Initialer HexMapZoomFactor-ALIAS.
+	 * 
+	 * @return
+	 * @throws ExceptionZZZ
+	 */
+	public byte[] getVariantCatalogImageDragUsedInByte() throws ExceptionZZZ{
+		//das wäre das Bild in normaler Größe return (byte[]) this.getDto().get(ITileDtoAttribute.VARIANT_IMAGE_IN_BYTE); //es müsste kliner gerechnet werden
+		//das kleiner und transparent gerechnete Bild
+		
+		String sZoomFactorAlias = ApplicationSingletonTHM.getInstance().getHexZoomFactorAliasCurrent();
+		byte[] objaReturn =  this.getVariantCatalogImageDragUsedInByte(sZoomFactorAlias);
+		return objaReturn;
+	}
+	
+	/**Hole per Reflection aus der DTO-Attribut Klasse das Bild, welches zur Auflösung BEIM ZIEHEN AUF DIE KARTE passt.
+	 * Hier: Übergebener HexMapZoomFactor-ALIAS.
+	 * 
+	 * @return
+	 * @throws ExceptionZZZ
+	 */
+	public byte[] getVariantCatalogImageDragUsedInByte(String sZoomFactorAlias) throws ExceptionZZZ{
+		GenericDTO<IBoxDtoAttribute>objDto = this.getDto();
+		byte[] objaReturn =   UIHelperTHM.getVariantCatalogImageDragUsedInByte(objDto,"IMAGEDRAG", sZoomFactorAlias);	
+		return objaReturn;
 	}
 
 	

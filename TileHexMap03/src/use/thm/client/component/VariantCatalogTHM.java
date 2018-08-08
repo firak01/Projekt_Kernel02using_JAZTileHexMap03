@@ -23,9 +23,13 @@ import use.thm.persistence.dao.TroopDao;
 import use.thm.persistence.dao.TroopFleetVariantDao;
 import use.thm.persistence.dao.TroopVariantDao;
 import use.thm.persistence.daoFacade.TroopArmyDaoFacade;
+import use.thm.persistence.daoFacade.TroopArmyVariantDaoFacade;
 import use.thm.persistence.daoFacade.TroopFleetDaoFacade;
+import use.thm.persistence.daoFacade.TroopFleetVariantDaoFacade;
 import use.thm.persistence.dto.DtoFactoryGenerator;
+import use.thm.persistence.dto.IBoxDtoAttribute;
 import use.thm.persistence.dto.ITileDtoAttribute;
+import use.thm.persistence.dto.VariantCatalogDtoFactory;
 import use.thm.persistence.hibernate.HibernateContextProviderSingletonTHM;
 import use.thm.persistence.model.AreaCell;
 import use.thm.persistence.model.AreaCellLand;
@@ -40,14 +44,17 @@ import use.thm.persistence.model.TroopFleetVariant;
 import use.thm.util.datatype.enums.EnumSetTroopVariantUtilTHM;
 import use.zBasicUI.component.UIHelperTHM;
 import basic.persistence.dto.GenericDTO;
+import basic.persistence.dto.IDTOAttributeGroup;
 import basic.zBasic.ExceptionZZZ;
 import basic.zBasic.KernelSingletonTHM;
 import basic.zBasic.ReflectCodeZZZ;
+import basic.zBasic.persistence.interfaces.IDtoFactoryZZZ;
 import basic.zBasic.util.abstractList.HashMapMultiZZZ;
 import basic.zBasic.util.datatype.enums.EnumSetInnerUtilZZZ;
 import basic.zBasic.util.datatype.enums.EnumSetInnerUtilZZZ.ThiskeyEnumMappingExceptionZZZ;
 import basic.zBasic.util.datatype.string.StringZZZ;
 import basic.zBasic.util.log.ReportLogZZZ;
+import basic.zBasic.util.math.RandomZZZ;
 import basic.zBasicUI.component.UIHelper;
 import basic.zBasicUI.glassPane.dragDropTranslucent.GhostDropEvent;
 import basic.zBasicUI.glassPane.dragDropTranslucent.GhostDropListener;
@@ -202,11 +209,7 @@ public class VariantCatalogTHM  extends KernelUseObjectZZZ implements IGhostGlas
 			int iNrOfEntriesHere = 0;  //Die Gesamtzahl der HIER erstellten Einträge. Wird hochgezählt beim Füllen.
 			String sVariantId = "ARMY";
 			//Merke: Der im GhostrDropManager verwendete Searchkey ist "TROOPARMYVARIANT"
-			
-			//TODO GOON 20180805 Hier Objekte der neuen Klasse VariantCatalogDaoFacade erzeugen
-			//VariantCatalogDaoFacade.createBoxAllForVariant(sVariantId);
-			//und folgenden CODE darin aufnehmen....
-			
+						
 		//Steuerung über DAO - Klassen
 		TroopArmyVariantDao daoTroopVariant = new TroopArmyVariantDao(objContextHibernate);
 		
@@ -214,7 +217,6 @@ public class VariantCatalogTHM  extends KernelUseObjectZZZ implements IGhostGlas
 		ArrayList<TroopArmyVariant>listaVariant = (ArrayList<TroopArmyVariant>) daoTroopVariant.findLazyAll(0, -1);
 		System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": Anzahl gefundener ArmyVarianten = " + listaVariant.size());
 								
-		String sTileIconName = null;
 		String sTileLabel  = null;
 		String sCatalogVariantEntryId = null;
 		BoxTHM boxCreated = null;
@@ -253,17 +255,12 @@ public class VariantCatalogTHM  extends KernelUseObjectZZZ implements IGhostGlas
 				System.out.println("WERT WURDE VERÄNDERT");
 			}
 			*/
-			
-			
-			//Hole die Immutable Texte für die Variante im Katalog
-			//0. Die ThiskeyId ist dier eindeutige Kennezichnung der Variante, für das Erstellen aus dem Katalog
-			//1. Die Kategory ist ggfs. für eine Sortierung wichtig (TODO) UND ist Bestandteil einer 
-			Long lngThiskeyTemp = objEntity.getThiskey();
-			
-			////1. Die Kategory ist ggfs. für eine Sortierung wichtig (TODO) 
+					
+			//1. Die Kategory ist ggfs. für eine Sortierung wichtig (TODO) 
 			String sCategorytextStored = objEntity.getCategorytext();
 			System.out.println("Categorytext (gespeichert): " + sCategorytextStored);
 			
+			//Hole die Immutable Texte für die Variante im Katalog
 			//2. Immutabletexte: Merke: Theoretisch kann ein Text in mehreren Varianten verwendet werden.
 			Immutabletext objImmutabletextTemp = objEntity.getImmutabletextObject();
 			String sShorttextImmutable = objImmutabletextTemp.getShorttext();
@@ -272,18 +269,14 @@ public class VariantCatalogTHM  extends KernelUseObjectZZZ implements IGhostGlas
 			String sShorttextDefault = objDefaulttextTemp.getShorttext();
 			sTileLabel = sShorttextImmutable + " - " + sShorttextDefault;
 			sCatalogVariantEntryId = "new_" + objEntity.getThiskey();
-			
-		    //20180630: Lies nicht mehr ein Bild von der Platte, sondern aus dem Entity direkt	
-			/*
-			sTileIconName = objEntity.getImageUrlString();			
-			  boxCreated = this.createBoxObject(sCatalogVariantEntryId, sTileLabel, sTileIconName);
-			*/
-			
-			//Hier eine Zoomstufe (die aktuell ausgewählte angeben
+   	
+			//Hier eine Zoomstufe (die aktuell ausgewählte angeben)
 			String sGuiZoomFactorAliasCurrent = ApplicationSingletonTHM.getInstance().getGuiZoomFactorAliasCurrent();
-			boxCreated = this.createBoxObject(sCatalogVariantEntryId, sTileLabel, sGuiZoomFactorAliasCurrent);
-			this.getMapCatalog().put(sVariantId, sCatalogVariantEntryId, boxCreated);
-			 iNrOfEntriesHere++; //Zelle zur Summe hinzufügen
+			boxCreated = this.createBoxObject(objEntity, sCatalogVariantEntryId, sTileLabel, sGuiZoomFactorAliasCurrent);
+			if(boxCreated!=null){
+				this.getMapCatalog().put(sVariantId, sCatalogVariantEntryId, boxCreated);
+				iNrOfEntriesHere++; //Zelle zur Summe hinzufügen
+			}
 		} //end for ... Variant
 		
 
@@ -312,7 +305,6 @@ public class VariantCatalogTHM  extends KernelUseObjectZZZ implements IGhostGlas
 		ArrayList<TroopFleetVariant>listaVariant = (ArrayList<TroopFleetVariant>) daoTroopVariant.findLazyAll(0, -1);
 		System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": Anzahl gefundener FleetVarianten = " + listaVariant.size());
 								
-		String sTileIconName = null;
 		String sTileLabel  = null;
 		String sCatalogVariantEntryId = null;
 		BoxTHM boxCreated = null;
@@ -352,16 +344,11 @@ public class VariantCatalogTHM  extends KernelUseObjectZZZ implements IGhostGlas
 			}
 			*/
 			
-			
-			//Hole die Immutable Texte für die Variante im Katalog
-			//0. Die ThiskeyId ist dier eindeutige Kennezichnung der Variante, für das Erstellen aus dem Katalog
-			//1. Die Kategory ist ggfs. für eine Sortierung wichtig (TODO) UND ist Bestandteil einer 
-			Long lngThiskeyTemp = objEntity.getThiskey();
-			
-			////1. Die Kategory ist ggfs. für eine Sortierung wichtig (TODO) 
+			//1. Die Kategory ist ggfs. für eine Sortierung wichtig (TODO) 
 			String sCategorytextStored = objEntity.getCategorytext();
 			System.out.println("Categorytext (gespeichert): " + sCategorytextStored);
 			
+			//Hole die Immutable Texte für die Variante im Katalog
 			//2. Immutabletexte: Merke: Theoretisch kann ein Text in mehreren Varianten verwendet werden.
 			Immutabletext objImmutabletextTemp = objEntity.getImmutabletextObject();
 			String sShorttextImmutable = objImmutabletextTemp.getShorttext();
@@ -371,11 +358,13 @@ public class VariantCatalogTHM  extends KernelUseObjectZZZ implements IGhostGlas
 			sTileLabel = sShorttextImmutable + " - " + sShorttextDefault;
 			sCatalogVariantEntryId = "new_" + objEntity.getThiskey();
 						
-			//Hier eine Zoomstufe (die aktuell ausgewählte angeben
+			//Hier eine Zoomstufe (die aktuell ausgewählte angeben)
 			String sGuiZoomFactorAliasCurrent = ApplicationSingletonTHM.getInstance().getGuiZoomFactorAliasCurrent();
-			boxCreated = this.createBoxObject(sCatalogVariantEntryId, sTileLabel, sGuiZoomFactorAliasCurrent);
-			this.getMapCatalog().put(sVariantId, sCatalogVariantEntryId, boxCreated);
-			iNrOfEntriesHere++; //Zelle zur Summe hinzufügen
+			boxCreated = this.createBoxObject(objEntity, sCatalogVariantEntryId, sTileLabel, sGuiZoomFactorAliasCurrent);
+			if(boxCreated!=null){
+				this.getMapCatalog().put(sVariantId, sCatalogVariantEntryId, boxCreated);
+				iNrOfEntriesHere++; //Zelle zur Summe hinzufügen
+			}
 		} //end for ... Variant
 		
 
@@ -433,34 +422,80 @@ public class VariantCatalogTHM  extends KernelUseObjectZZZ implements IGhostGlas
 		return bReturn;
 	}
 	
-	public BoxTHM createBoxObject(String sCatalogVariantEntryId, String sTileLabel, String sGuiZoomFactorAliasCurrent) throws ExceptionZZZ{
-	//public BoxTHM createBoxObject(String sCatalogVariantEntryId, String sTileLabel, byte[] imageInByte) throws ExceptionZZZ{
-	     BoxTHM objBoxReturn = new BoxTHM ();
-	     main:{	    	
-	    	 //TODO GOON 20180803: HIER IN EINER SCHLEIFE ALLE BILDER FÜR DIE VERSCHIEDENEN ZOOMSTUFEN DURCHGEGEHN UND IN EIN DTO der BOX PACKEN
-	    	 KernelSingletonTHM objKernel = KernelSingletonTHM.getInstance();	
-			FileIniZZZ objFileConfig = objKernel.getFileConfigIni();	
+	public BoxTHM createBoxObject(TroopArmyVariant objEntity, String sCatalogVariantEntryId, String sTileLabel, String sGuiZoomFactorAliasCurrent) throws ExceptionZZZ{
+		BoxTHM objReturn = null;
+		main:{
+			if(objEntity == null) break main;
 			
-			//Zuerst den aktuellen GUI zoomFaktor merken
+			DtoFactoryGenerator objFactoryGenerator = DtoFactoryGenerator.getInstance();			 
+			//GenericDTO<IDTOAttributeGroup> objDto = objFactoryGenerator.createDtoForClass(BoxTHM.class);
+			//Scheisse, man kann nicht casten... GenericDTO<IBoxDtoAttribute>objDtoUsed = (GenericDTO<IBoxDtoAttribute>) objDto;
+			//GenericDTO<IBoxDtoAttribute> objDto = objFactoryGenerator.createDtoForClass(BoxTHM.class);
+			//Also umständlicher über die konkrete Factory arbeiten.
 			
-			String sGuiZoomFactorCurrent = ApplicationSingletonTHM.getInstance().getGuiZoomFactor(sGuiZoomFactorAliasCurrent);
+			IDtoFactoryZZZ objFactory = objFactoryGenerator.getDtoFactory(BoxTHM.class);
+			VariantCatalogDtoFactory objFactoryUsed = (VariantCatalogDtoFactory) objFactory;
+			GenericDTO<IBoxDtoAttribute> objDto = objFactoryUsed.createDTO();
+			KernelSingletonTHM objKernel = KernelSingletonTHM.getInstance();		
+			HibernateContextProviderSingletonTHM objContextHibernate = HibernateContextProviderSingletonTHM.getInstance(objKernel);					
+			TroopArmyVariantDaoFacade objTroopVariantDaoFacade = new TroopArmyVariantDaoFacade(objContextHibernate);
+			boolean bSuccess = objTroopVariantDaoFacade.fillTroopArmyVariantDto(objEntity, objDto);
+			if(!bSuccess) break main;
+					
+			objReturn = this.createBoxObject(objDto, sCatalogVariantEntryId, sTileLabel, sGuiZoomFactorAliasCurrent);
 			
+		}//end main
+		return objReturn;
+	}
+	
+	public BoxTHM createBoxObject(TroopFleetVariant objEntity, String sCatalogVariantEntryId, String sTileLabel, String sGuiZoomFactorAliasCurrent) throws ExceptionZZZ{
+		BoxTHM objReturn = null;
+		main:{
+			if(objEntity == null) break main;
+
+			DtoFactoryGenerator objFactoryGenerator = DtoFactoryGenerator.getInstance();			 
+			//GenericDTO<IDTOAttributeGroup> objDto = objFactoryGenerator.createDtoForClass(BoxTHM.class);
+			//Scheisse, man kann nicht casten... GenericDTO<IBoxDtoAttribute>objDtoUsed = (GenericDTO<IBoxDtoAttribute>) objDto;
+			//GenericDTO<IBoxDtoAttribute> objDto = objFactoryGenerator.createDtoForClass(BoxTHM.class);
+			//Also umständlicher über die konkrete Factory arbeiten.
+			
+			IDtoFactoryZZZ objFactory = objFactoryGenerator.getDtoFactory(BoxTHM.class);
+			VariantCatalogDtoFactory objFactoryUsed = (VariantCatalogDtoFactory) objFactory;
+			GenericDTO<IBoxDtoAttribute> objDto = objFactoryUsed.createDTO();
+			KernelSingletonTHM objKernel = KernelSingletonTHM.getInstance();		
+			HibernateContextProviderSingletonTHM objContextHibernate = HibernateContextProviderSingletonTHM.getInstance(objKernel);				
+			TroopFleetVariantDaoFacade objTroopVariantDaoFacade = new TroopFleetVariantDaoFacade(objContextHibernate);
+			boolean bSuccess = objTroopVariantDaoFacade.fillTroopFleetVariantDto(objEntity, objDto);
+			if(!bSuccess) break main;
+					
+			objReturn = this.createBoxObject(objDto, sCatalogVariantEntryId, sTileLabel, sGuiZoomFactorAliasCurrent);
+			
+		}//end main
+		return objReturn;
+	}
+	
+	public BoxTHM createBoxObject(GenericDTO<IBoxDtoAttribute> objDto, String sCatalogVariantEntryId, String sTileLabel, String sGuiZoomFactorAliasCurrent) throws ExceptionZZZ{
+		BoxTHM objReturn = null;
+		main:{
+			if(objDto == null) break main;
+					
+			KernelSingletonTHM objKernel = KernelSingletonTHM.getInstance();
+			FileIniZZZ objFileConfig = objKernel.getFileConfigIni();
+		
+			//0. Hole den gerade in der Applikation für das GUI eingestellten ZoomFaktor. Diesen als Variable für die INI-Berechnungen zur Verfügung stellen
+			String sGuiZoomFactorCurrent = ApplicationSingletonTHM.getInstance().getGuiZoomFactor(sGuiZoomFactorAliasCurrent);							
 			objFileConfig.setVariable("GuiZoomFactorUsed", sGuiZoomFactorCurrent);
-				
-			//byte[] imageInByte = this.getVariantCatalogImageUsedInByte(sGuiZoomFactorAliasCurrent);
-			
-	    	 //TODO: Größe gemäß Zoomfaktor
-	    	 objBoxReturn.setBorder(new EmptyBorder(0, 0, 0, 20));
-	    	 
-	    	 
-	    	 //Ein Label hinzufügen mit dem entsprechenden Titel und dem Bild
-	    	 
-	    	
-								
-	    	//0. Hole den gerade in der Applikation für die Karte eingestellten ZoomFaktor. Diesen als Variable für die INI-Berechnungen zur Verfügung stellen
+		
+			//0. Hole den gerade in der Applikation für die Karte eingestellten ZoomFaktor. Diesen als Variable für die INI-Berechnungen zur Verfügung stellen
 			String sHexZoomFactorCurrent = ApplicationSingletonTHM.getInstance().getHexZoomFactorCurrent();							
 			objFileConfig.setVariable("HexZoomFactorUsed", sHexZoomFactorCurrent);
-				
+		
+			objReturn = new BoxTHM (objDto);  //TODO GOON: 20180807: Hier das passende dto-Objetk übergeben, das zuvorerstellt werden muss					
+			//###################################################################################################################
+						
+	    	 objReturn.setBorder(new EmptyBorder(0, 0, 0, 20)); //TODO: Größe gemäß Zoomfaktor
+	     
+	    				
 		   //++++++++++
 				 //Die Größe der Icons aus der KernelKonfiguration auslesen
 				//DAS IST IN DER ERSTELLUNG DES ENTITIES AUSGELAGERT UND WIRD EXTRA GESPEICHERT
@@ -493,14 +528,14 @@ public class VariantCatalogTHM  extends KernelUseObjectZZZ implements IGhostGlas
 			//20180807: Verwende zum Konkreten Erzeugen des Bildes das, welches dem aktuell eingestellten ZoomFaktor entspricht
 		    //Merke: Das muss zuvor in ein Dto-Objekt gefüllt worden sein, durch VariantCatalogDaoFacade.fillVariantCatalogDto(....)
 			// JLabel label = UIHelper.createLabelWithIconResized(sTileLabel, imageInByte, iIconWidth,iIconHeight);
-			byte[] imageInByteUsed = objBoxReturn.getVariantCatalogImageUsedInByte();
+			byte[] imageInByteUsed = objReturn.getVariantCatalogImageUsedInByte();
 			JLabel label = null;
 			if(imageInByteUsed==null){
 				label = new JLabel(sTileLabel);
 			}else{
 				label = UIHelper.createLabelWithIcon(sTileLabel,  imageInByteUsed);
 			}
-		    objBoxReturn.add(label);
+		    objReturn.add(label);
 
 		     //### Funktionalität DRAG & DROP
 		     //Merke: Verwendet man hier den bisherigen Picture Adapter und hängt noch einen weitern dropListener an, 
@@ -518,12 +553,17 @@ public class VariantCatalogTHM  extends KernelUseObjectZZZ implements IGhostGlas
 	    	 //Die Größe der Icons beim Ziehen aus der KernelKonfiguration auslesen	  
 				
 				//TODO GOON FGL 20180630
-				String sIconWidthOnDrag = this.getKernelObject().getParameterByProgramAlias(sModuleAlias, sProgramAlias, "IconWidthOnDrag" );						
-				int iIconWidthOnDrag = StringZZZ.toInteger(sIconWidthOnDrag);
-				String sIconHeightOnDrag = this.getKernelObject().getParameterByProgramAlias(sModuleAlias, sProgramAlias, "IconHeightOnDrag" );
-				int iIconHeightOnDrag = StringZZZ.toInteger(sIconHeightOnDrag);
+//				String sIconWidthOnDrag = this.getKernelObject().getParameterByProgramAlias(sModuleAlias, sProgramAlias, "IconWidthOnDrag" );						
+//				int iIconWidthOnDrag = StringZZZ.toInteger(sIconWidthOnDrag);
+//				String sIconHeightOnDrag = this.getKernelObject().getParameterByProgramAlias(sModuleAlias, sProgramAlias, "IconHeightOnDrag" );
+//				int iIconHeightOnDrag = StringZZZ.toInteger(sIconHeightOnDrag);
+//				GhostPictureAdapter pictureAdapter = new GhostPictureAdapter(glassPane, sCatalogVariantEntryId, imageInByteUsed, iIconWidthOnDrag, iIconHeightOnDrag);
 	    	 //+++++++++	  		    
-			 GhostPictureAdapter pictureAdapter = new GhostPictureAdapter(glassPane, sCatalogVariantEntryId, imageInByteUsed, iIconWidthOnDrag, iIconHeightOnDrag);
+				
+				//Das per Dto bereitgestellte Bild für den passenden ZoomFaktor (HexMap!) holen
+				byte[] imageDragInByteUsed = objReturn.getVariantCatalogImageDragUsedInByte();
+				
+			 GhostPictureAdapter pictureAdapter = new GhostPictureAdapter(glassPane, sCatalogVariantEntryId, imageDragInByteUsed);
 			 pictureAdapter.addGhostDropListener(listenerForDropToHexMap);
 			 
 			 //Das DRAGGEN, ausgehend vom Label 			
@@ -532,7 +572,7 @@ public class VariantCatalogTHM  extends KernelUseObjectZZZ implements IGhostGlas
 			 
 		     
 	     }//end main:
-	     return objBoxReturn;
+	     return objReturn;
 	}
 		
 		//#### GETTER / SETTER

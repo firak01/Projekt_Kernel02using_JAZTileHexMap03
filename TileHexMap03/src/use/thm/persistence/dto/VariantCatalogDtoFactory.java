@@ -1,6 +1,9 @@
 package use.thm.persistence.dto;
 
-public class VariantCatalogDtoFactory extends BoxDtoFactory{
+import basic.persistence.dto.GenericDTO;
+import basic.persistence.dto.IDTOAttributeGroup;
 
+public class VariantCatalogDtoFactory extends BoxDtoFactory{
+	
 }
 

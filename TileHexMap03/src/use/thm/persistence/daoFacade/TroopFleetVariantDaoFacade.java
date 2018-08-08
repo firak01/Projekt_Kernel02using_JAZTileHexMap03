@@ -36,6 +36,7 @@ import use.thm.persistence.dao.AreaCellDao;
 import use.thm.persistence.dao.TroopArmyDao;
 import use.thm.persistence.dao.TroopArmyVariantDao;
 import use.thm.persistence.dao.TroopFleetDao;
+import use.thm.persistence.dao.TroopFleetVariantDao;
 import use.thm.persistence.dto.IBoxDtoAttribute;
 import use.thm.persistence.dto.ITileDtoAttribute;
 import use.thm.persistence.event.VetoFlag4ListenerZZZ;
@@ -48,6 +49,7 @@ import use.thm.persistence.model.TileDefaulttext;
 import use.thm.persistence.model.TileId;
 import use.thm.persistence.model.TroopArmy;
 import use.thm.persistence.model.TroopArmyVariant;
+import use.thm.persistence.model.TroopFleetVariant;
 import use.thm.persistence.model.TroopType;
 import use.thm.rule.facade.TroopArmyRuleFacade;
 import use.thm.rule.model.TroopArmyRuleType;
@@ -59,13 +61,13 @@ import use.thm.rule.model.TroopArmyRuleType;
  * @author Fritz Lindhauer
  *
  */
-public class TroopArmyVariantDaoFacade extends TroopVariantDaoFacade{
+public class TroopFleetVariantDaoFacade extends TroopVariantDaoFacade{
 		
-	public TroopArmyVariantDaoFacade(HibernateContextProviderZZZ objContextHibernate){
+	public TroopFleetVariantDaoFacade(HibernateContextProviderZZZ objContextHibernate){
 		super(objContextHibernate);
 	}
 		
-	public boolean fillTroopArmyVariantDto(long lngThiskey, GenericDTO<IBoxDtoAttribute> dto) throws ExceptionZZZ{
+	public boolean fillTroopFleetVariantDto(long lngThiskey, GenericDTO<IBoxDtoAttribute> dto) throws ExceptionZZZ{
 		boolean bReturn = false;
 		main:{
 			System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": START #### fillTroopArmyVariantDto(lngThiskey)  ####################");
@@ -74,22 +76,22 @@ public class TroopArmyVariantDaoFacade extends TroopVariantDaoFacade{
 			//1. Hole die TroopArmy, füge die neue Area der TroopArmy hinzu, damit sie weiss in welchem neuen Feld sie steht.
 			//####################								
 			HibernateContextProviderSingletonTHM objContextHibernate = (HibernateContextProviderSingletonTHM) this.getHibernateContext();
-			TroopArmyVariantDao objTroopVariantDao = new TroopArmyVariantDao(objContextHibernate);
+			TroopFleetVariantDao objTroopVariantDao = new TroopFleetVariantDao(objContextHibernate);
 
 			//HQL verwenden, um die TroopArmy anhand des Uniquename zu bekommen. 
-			TroopArmyVariant objTroopVariant = (TroopArmyVariant) objTroopVariantDao.searchThiskey(lngThiskey);
+			TroopFleetVariant objTroopVariant = (TroopFleetVariant) objTroopVariantDao.searchThiskey(lngThiskey);
 			if(objTroopVariant == null) break main;
 			
-			bReturn = this.fillTroopArmyVariantDto(objTroopVariant, dto);
+			bReturn = this.fillTroopFleetVariantDto(objTroopVariant, dto);
 			
 		}//end main:
 		return bReturn;
 	}
 	
-	public boolean fillTroopArmyVariantDto(TroopArmyVariant objTroopVariant, GenericDTO<IBoxDtoAttribute> dto) throws ExceptionZZZ{
+	public boolean fillTroopFleetVariantDto(TroopFleetVariant objTroopVariant, GenericDTO<IBoxDtoAttribute> dto) throws ExceptionZZZ{
 		boolean bReturn = false;
 		main:{
-			System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": START #### fillTroopArmyVariantDto(objTroopArmyVariant)  ####################");
+			System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": START #### fillTroopFleetVariantDto(objTroopArmyVariant)  ####################");
 			if(objTroopVariant == null) break main;
 					
 				//FRAGE: FUNKTIONIERT HIERBEI CALL BY REFERENCE? JA. Es werden nämlich Werte in den Objekten gefüllt.		
@@ -100,7 +102,7 @@ public class TroopArmyVariantDaoFacade extends TroopVariantDaoFacade{
 					
 				//20180630: Nun das Bild ausch direkt als byte[] gespeichert aus der Datenbank holen.
 				dto.set(IBoxDtoAttribute.VARIANT_IMAGE_IN_BYTE,objTroopVariant.getImage());
-				
+											
 				//Diese sind alle auf den Katalog bezogen, darum nur in den 3 Zoomstufen des GUI
 				dto.set(IBoxDtoAttribute.VARIANT_IMAGEDIALOG_IN_BYTE_01,objTroopVariant.getImageCatalogDialog01());
 				dto.set(IBoxDtoAttribute.VARIANT_IMAGEDIALOG_IN_BYTE_02,objTroopVariant.getImageCatalogDialog02());
@@ -118,7 +120,7 @@ public class TroopArmyVariantDaoFacade extends TroopVariantDaoFacade{
 				dto.set(IBoxDtoAttribute.VARIANT_IMAGEDRAG_IN_BYTE_04,objTroopVariant.getImageCatalogDrag04());
 				dto.set(IBoxDtoAttribute.VARIANT_IMAGEDRAG_IN_BYTE_05,objTroopVariant.getImageCatalogDrag05());
 				dto.set(IBoxDtoAttribute.VARIANT_IMAGEDRAG_IN_BYTE_06,objTroopVariant.getImageCatalogDrag06());
-										
+
 			bReturn = true;
 		}//end main:
 		return bReturn;

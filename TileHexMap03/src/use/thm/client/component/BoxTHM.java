@@ -39,46 +39,8 @@ public class BoxTHM extends Box{
 	
 	private boolean BoxNew_(GenericDTO<IBoxDtoAttribute> objDto) throws ExceptionZZZ{
 		boolean bReturn = false;
-		main:{
-			
-			this.setDto(objDto);
-			
-		/* Nachstehenden Code nach VariantCatalogDaoFacade.fillVariantCatalogDto() verschieben
-			//TODO GOON 20180725: Lies das Bild gemäß des in der Applikation eingestellten ZOOMFaktors für GUI aus.
-			//byte[] imageInByte = objEntity.getImageCatalog01(); //Diese Catalog Bilder sind in der Größe reduziert.
-			//FGL 20180803: DAS IST HIER ZU HOCH. ES SOLLTE IM BOX-Objkekt (boxTHM?) ein Dto-Objekt geben, dass dann gefüllt wird. U.a. mit Bildern auf verschiedenen Zoomstufen!!!!
-			//String sGuiZoomFactorAliasCurrent = ApplicationSingletonTHM.getInstance().getGuiZoomFactorAliasCurrent();
-			//byte[] imageInByte = this.getVariantCatalogImageUsedInByte(sGuiZoomFactorAliasCurrent);
-			
-			//Hole alle ZoomFaktoren als Alias und gehe diese durch 
-			HashMap<String,String> hmZoomFactor = ApplicationSingletonTHM.getInstance().getHashMapGuiZoomFactorAlias();
-			Set<String> setZoomFactorAliasKey = hmZoomFactor.keySet();
-			for(String sGuiZoomFactorAliasCurrent : setZoomFactorAliasKey){
-				
-				//TODO GOON: ALSO HIER DAS DTO ERST EINMAL FÜLLEN UND NICHT AUSLESEN !!!
-				//D.H. imageInByte "errechnen"!!!!
-				
-				byte[] imageInByte = this.getVariantCatalogImageUsedInByte(sGuiZoomFactorAliasCurrent);
-			   
-				
-			Class<ITileDtoAttribute> c = ITileDtoAttribute.class;
-			for(Field f : c.getDeclaredFields() ){
-				int mod = f.getModifiers();
-				if(Modifier.isStatic(mod) && Modifier.isPublic(mod) && Modifier.isFinal(mod)){
-//					try{
-						//System.out.printf("%s = %d%n",  f.getName(), f.get(null));// f.get(null) wirkt wohl nur bei Konstanten, die im Interface so defineirt sind: public static final int CONST_1 = 9;
-						String s = f.getName();
-						if(StringZZZ.contains(s, "IMAGECATALOG", true)){
-							if(s.endsWith(sGuiZoomFactorAliasCurrent)){
-								DTOAttribute objDtoAttribute = DTOAttribute.getInstance(s); //<IDTOAttributeGroup, T>		
-								this.getDto().set(objDtoAttribute, imageInByte);								
-							}
-						}
-				}
-			}//end for Field
-			}//end for Zoomfactor alias
-		*/
-			
+		main:{			
+			this.setDto(objDto);						
 			bReturn = true;
 		}//end main:
 		return bReturn;
@@ -89,12 +51,7 @@ public class BoxTHM extends Box{
 	}
 	public GenericDTO<IBoxDtoAttribute> getDto() {
 		if(this.objDto==null){
-			//this.objDto =GenericDTO.getInstance(ITileDtoAttribute.class); //ITileDtoAttribute bestimmt also welche Properties in der DTO-Klasse gespeicehrt sind.
-			
-			//FGL 20171011: Ersetzt durch eine Factory - Klasse
-//			TileDtoFactory factoryTile = new TileDtoFactory();
-//			GenericDTO dto = factoryTile.createDTO();	
-			
+		
 			//FGL 20171112: Hole die Factory - Klasse generisch per FactoryGenerator, die als Singleton umgebaut wurde:
 			try {
 				DtoFactoryGenerator objFactoryGenerator = DtoFactoryGenerator.getInstance();
@@ -116,9 +73,6 @@ public class BoxTHM extends Box{
 	 * @throws ExceptionZZZ
 	 */
 	public byte[] getVariantCatalogImageUsedInByte() throws ExceptionZZZ{
-		//das wäre das Bild in normaler Größe return (byte[]) this.getDto().get(ITileDtoAttribute.VARIANT_IMAGE_IN_BYTE); //es müsste kliner gerechnet werden
-		//das kleiner und transparent gerechnete Bild
-		
 		String sZoomFactorAlias = ApplicationSingletonTHM.getInstance().getGuiZoomFactorAliasCurrent();
 		return this.getVariantCatalogImageUsedInByte(sZoomFactorAlias);
 	}
@@ -136,9 +90,6 @@ public class BoxTHM extends Box{
 	
 	
 	protected void setVariantCatalogImageUsedInByte(byte[] imageInByte) throws ExceptionZZZ{
-		//das wäre das Bild in normaler Größe   this.getDto().set(ITileDtoAttribute.VARIANT_IMAGE_IN_BYTE, imageInByte); //es müsste kliner gerechnet werden					
-		//this.getDto().set(ITileDtoAttribute.VARIANT_IMAGE_IN_BYTE, imageInByte);
-		
 		String sZoomFactorAlias = ApplicationSingletonTHM.getInstance().getHexZoomFactorAliasCurrent();
 		this.setVariantCatalogImageUsedInByte(imageInByte, sZoomFactorAlias);
 	}
@@ -154,8 +105,6 @@ public class BoxTHM extends Box{
 			for(Field f : c.getDeclaredFields() ){
 				int mod = f.getModifiers();
 				if(Modifier.isStatic(mod) && Modifier.isPublic(mod) && Modifier.isFinal(mod)){
-//					try{
-						//System.out.printf("%s = %d%n",  f.getName(), f.get(null));// f.get(null) wirkt wohl nur bei Konstanten, die im Interface so defineirt sind: public static final int CONST_1 = 9;
 						String s = f.getName();
 						if(StringZZZ.contains(s, "IMAGE", true)){
 							if(s.endsWith(sZoomFactorAlias)){
@@ -163,20 +112,9 @@ public class BoxTHM extends Box{
 								//Erzeuge eine DTOAttribut Instanz, die dem aktuell gefundenen Namen der Konstante entspricht.
 								//Merke: DTOAttribute braucht eine überschreibene equals() und hashCode() Methode, damit der gespeichert Wert mit einer erzeugten Instanz verglichen werden kann.
 								DTOAttribute objDtoAttribute = DTOAttribute.getInstance(s); //<IDTOAttributeGroup, T>		
-								
-//								Object obj = ITileDtoAttribute.VARIANT_IMAGEHEXMAP_IN_BYTE_04;//Die Gleichheit und den HashCode mit "hart verdrahteten Werten" entwickeln/überprüfen.						
-//								if(obj.equals(objDtoAttribute)){
-//									System.out.println("GLEICH");
-//									System.out.println("Hashcode: " + obj.hashCode());
-//								}else{
-//									System.out.println("UNGLEICH");
-//								}
 								this.getDto().set(objDtoAttribute, imageInByte);	
 							}
 						}
-//					}catch(IllegalAccessException e){
-//						e.printStackTrace();
-//					}
 				}
 			}
 		}//end main
@@ -190,7 +128,7 @@ public class BoxTHM extends Box{
 	 * @throws ExceptionZZZ
 	 */
 	public byte[] getVariantCatalogImageDragUsedInByte() throws ExceptionZZZ{
-		//das wäre das Bild in normaler Größe return (byte[]) this.getDto().get(ITileDtoAttribute.VARIANT_IMAGE_IN_BYTE); //es müsste kliner gerechnet werden
+		//das wäre das Bild in normaler Größe return (byte[]) this.getDto().get(ITileDtoAttribute.VARIANT_IMAGE_IN_BYTE); //es müsste kleiner gerechnet werden
 		//das kleiner und transparent gerechnete Bild
 		
 		String sZoomFactorAlias = ApplicationSingletonTHM.getInstance().getHexZoomFactorAliasCurrent();

@@ -4,9 +4,16 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
+import use.thm.persistence.dto.IBoxDtoAttribute;
 import use.thm.persistence.interfaces.IBackendPersistenceFacadeTHM;
 import use.thm.persistence.model.Tile;
+import use.thm.persistence.model.TroopFleetVariant;
+import use.thm.persistence.model.TroopVariant;
 import basic.persistence.daoFacade.GeneralDaoFacadeZZZ;
+import basic.persistence.dto.GenericDTO;
+import basic.zBasic.ExceptionZZZ;
+import basic.zBasic.IConstantZZZ;
+import basic.zBasic.ReflectCodeZZZ;
 import basic.zBasic.persistence.hibernate.DateMapping;
 import basic.zBasic.persistence.hibernate.HibernateContextProviderZZZ;
 import basic.zBasic.util.datatype.dateTime.DateTimeZZZ;
@@ -17,25 +24,49 @@ public abstract class TroopVariantDaoFacade extends GeneralDaoFacadeZZZ implemen
 	}
 	
 	public abstract String getFacadeType();
-	
-	public  String computeUniquename(){
+	public abstract TroopVariant getEntityUsed();
+	public abstract void setEntityUsed(TroopVariant objTroopVariant);
+		
+	/* (non-Javadoc)
+	 * @see use.thm.persistence.interfaces.IBackendPersistenceFacadeTHM#computeUniquename()
+	 * 
+	 * Anders als bei den erzeugten Spielsteinen ist nicht der Zeitpunkt der Erzeugung, sondern der verwendete Thiskey Bestandteil des Schlüssels
+	 * (vgl. TileDaoFacade...)
+	 */
+	public  String computeUniquename() throws ExceptionZZZ{
 		String sReturn = new String("");
 		main:{
 			String sFacadeType = this.getFacadeType();
-			sReturn = TroopVariantDaoFacade.computeUniquename(sFacadeType);			
+			String sThiskeyUsed = this.getThiskeyUsed();
+			sReturn = TroopVariantDaoFacade.computeUniquename(sFacadeType, sThiskeyUsed);			
 		}
 		return sReturn;
 	}
 	
-	public static String computeUniquename(String sFacadeType){
+	public static String computeUniquename(String sFacadeType, String sThiskeyUsed){
 		String sReturn = new String("");
-		main:{
-			String sTimestamp = DateTimeZZZ.computeTimestampUniqueString();
-			sReturn = sFacadeType + "_" + sTimestamp;
+		main:{		
+			sReturn = sFacadeType + "_" + sThiskeyUsed;
 		}//end main:
 		return sReturn;
 	}
 	
+	public String getThiskeyUsed() throws ExceptionZZZ{
+		String sReturn = new String("");
+		main:{
+			TroopVariant objTroopVariant = this.getEntityUsed();
+			if(objTroopVariant == null){
+				ExceptionZZZ ez = new ExceptionZZZ("objTroopVariant", IConstantZZZ.iERROR_PROPERTY_MISSING, this.getClass().getName(), ReflectCodeZZZ.getMethodCurrentName());
+				throw ez;
+			}
+			
+			sReturn = objTroopVariant.getThiskey().toString();
+		}//end main:
+		return sReturn;
+	}
+	
+	
+
 	protected boolean makeCreatedDates(Tile objTroopTemp){
 		boolean bReturn = false;
 		main:{
@@ -122,5 +153,45 @@ public abstract class TroopVariantDaoFacade extends GeneralDaoFacadeZZZ implemen
 		}//end main
 		return bReturn;				
 	}
+
+	public boolean fillTroopVariantDto(TroopVariant objTroopVariant, GenericDTO<IBoxDtoAttribute> dto) throws ExceptionZZZ{
+		boolean bReturn = false;
+		main:{
+			System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": START #### fillTroopVariantDto(objTroopVariant)  ####################");
+			if(objTroopVariant == null) break main;
+					
+				//FRAGE: FUNKTIONIERT HIERBEI CALL BY REFERENCE? JA. Es werden nämlich Werte in den Objekten gefüllt.		
+				//dto.set(IBoxDtoAttribute.UNIQUENAME, objTroopVariant.getThiskey().toString());
+				dto.set(IBoxDtoAttribute.UNIQUENAME, this.computeUniquename());
+				dto.set(IBoxDtoAttribute.SUBTYPE,this.getEntityUsed().getSubtype());
+	
+				dto.set(IBoxDtoAttribute.VARIANT_IMAGE_URL_STRING,this.getEntityUsed().getImageUrlString());
+					
+				//20180630: Nun das Bild ausch direkt als byte[] gespeichert aus der Datenbank holen.
+				dto.set(IBoxDtoAttribute.VARIANT_IMAGE_IN_BYTE,this.getEntityUsed().getImage());
+											
+				//Diese sind alle auf den Katalog bezogen, darum nur in den 3 Zoomstufen des GUI
+				dto.set(IBoxDtoAttribute.VARIANT_IMAGEDIALOG_IN_BYTE_01,this.getEntityUsed().getImageCatalogDialog01());
+				dto.set(IBoxDtoAttribute.VARIANT_IMAGEDIALOG_IN_BYTE_02,this.getEntityUsed().getImageCatalogDialog02());
+				dto.set(IBoxDtoAttribute.VARIANT_IMAGEDIALOG_IN_BYTE_03,this.getEntityUsed().getImageCatalogDialog03());
+				
+				//Diese sind alle auf den Katalog bezogen, darum nur in den 3 Zoomstufen des GUI
+				dto.set(IBoxDtoAttribute.VARIANT_IMAGE_IN_BYTE_01,this.getEntityUsed().getImageCatalog01());
+				dto.set(IBoxDtoAttribute.VARIANT_IMAGE_IN_BYTE_02,this.getEntityUsed().getImageCatalog02());
+				dto.set(IBoxDtoAttribute.VARIANT_IMAGE_IN_BYTE_03,this.getEntityUsed().getImageCatalog03());
+				
+				//Diese sind auf die Hexmap bezogen (also vom Katalog in die HexMap ziehen), darum hier auch die 6 Zoomstufen der Hexmap
+				dto.set(IBoxDtoAttribute.VARIANT_IMAGEDRAG_IN_BYTE_01,this.getEntityUsed().getImageCatalogDrag01());
+				dto.set(IBoxDtoAttribute.VARIANT_IMAGEDRAG_IN_BYTE_02,this.getEntityUsed().getImageCatalogDrag02());
+				dto.set(IBoxDtoAttribute.VARIANT_IMAGEDRAG_IN_BYTE_03,this.getEntityUsed().getImageCatalogDrag03());
+				dto.set(IBoxDtoAttribute.VARIANT_IMAGEDRAG_IN_BYTE_04,this.getEntityUsed().getImageCatalogDrag04());
+				dto.set(IBoxDtoAttribute.VARIANT_IMAGEDRAG_IN_BYTE_05,this.getEntityUsed().getImageCatalogDrag05());
+				dto.set(IBoxDtoAttribute.VARIANT_IMAGEDRAG_IN_BYTE_06,this.getEntityUsed().getImageCatalogDrag06());
+
+			bReturn = true;
+		}//end main:
+		return bReturn;
+	}
+		
 	
 }

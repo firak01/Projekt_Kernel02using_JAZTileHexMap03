@@ -51,6 +51,7 @@ import use.thm.persistence.model.TroopArmy;
 import use.thm.persistence.model.TroopArmyVariant;
 import use.thm.persistence.model.TroopFleetVariant;
 import use.thm.persistence.model.TroopType;
+import use.thm.persistence.model.TroopVariant;
 import use.thm.rule.facade.TroopArmyRuleFacade;
 import use.thm.rule.model.TroopArmyRuleType;
 
@@ -62,7 +63,8 @@ import use.thm.rule.model.TroopArmyRuleType;
  *
  */
 public class TroopFleetVariantDaoFacade extends TroopVariantDaoFacade{
-		
+	private TroopFleetVariant objTroopFleetVariant = null;	
+	
 	public TroopFleetVariantDaoFacade(HibernateContextProviderZZZ objContextHibernate){
 		super(objContextHibernate);
 	}
@@ -92,36 +94,9 @@ public class TroopFleetVariantDaoFacade extends TroopVariantDaoFacade{
 		boolean bReturn = false;
 		main:{
 			System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": START #### fillTroopFleetVariantDto(objTroopArmyVariant)  ####################");
-			if(objTroopVariant == null) break main;
-					
-				//FRAGE: FUNKTIONIERT HIERBEI CALL BY REFERENCE? JA. Es werden nämlich Werte in den Objekten gefüllt.		
-				dto.set(IBoxDtoAttribute.UNIQUENAME, objTroopVariant.getThiskey().toString());
-				dto.set(IBoxDtoAttribute.SUBTYPE,objTroopVariant.getSubtype());
-	
-				dto.set(IBoxDtoAttribute.VARIANT_IMAGE_URL_STRING,objTroopVariant.getImageUrlString());
-					
-				//20180630: Nun das Bild ausch direkt als byte[] gespeichert aus der Datenbank holen.
-				dto.set(IBoxDtoAttribute.VARIANT_IMAGE_IN_BYTE,objTroopVariant.getImage());
-											
-				//Diese sind alle auf den Katalog bezogen, darum nur in den 3 Zoomstufen des GUI
-				dto.set(IBoxDtoAttribute.VARIANT_IMAGEDIALOG_IN_BYTE_01,objTroopVariant.getImageCatalogDialog01());
-				dto.set(IBoxDtoAttribute.VARIANT_IMAGEDIALOG_IN_BYTE_02,objTroopVariant.getImageCatalogDialog02());
-				dto.set(IBoxDtoAttribute.VARIANT_IMAGEDIALOG_IN_BYTE_03,objTroopVariant.getImageCatalogDialog03());
-				
-				//Diese sind alle auf den Katalog bezogen, darum nur in den 3 Zoomstufen des GUI
-				dto.set(IBoxDtoAttribute.VARIANT_IMAGE_IN_BYTE_01,objTroopVariant.getImageCatalog01());
-				dto.set(IBoxDtoAttribute.VARIANT_IMAGE_IN_BYTE_02,objTroopVariant.getImageCatalog02());
-				dto.set(IBoxDtoAttribute.VARIANT_IMAGE_IN_BYTE_03,objTroopVariant.getImageCatalog03());
-				
-				//Diese sind auf die Hexmap bezogen (also vom Katalog in die HexMap ziehen), darum hier auch die 6 Zoomstufen der Hexmap
-				dto.set(IBoxDtoAttribute.VARIANT_IMAGEDRAG_IN_BYTE_01,objTroopVariant.getImageCatalogDrag01());
-				dto.set(IBoxDtoAttribute.VARIANT_IMAGEDRAG_IN_BYTE_02,objTroopVariant.getImageCatalogDrag02());
-				dto.set(IBoxDtoAttribute.VARIANT_IMAGEDRAG_IN_BYTE_03,objTroopVariant.getImageCatalogDrag03());
-				dto.set(IBoxDtoAttribute.VARIANT_IMAGEDRAG_IN_BYTE_04,objTroopVariant.getImageCatalogDrag04());
-				dto.set(IBoxDtoAttribute.VARIANT_IMAGEDRAG_IN_BYTE_05,objTroopVariant.getImageCatalogDrag05());
-				dto.set(IBoxDtoAttribute.VARIANT_IMAGEDRAG_IN_BYTE_06,objTroopVariant.getImageCatalogDrag06());
-
-			bReturn = true;
+			bReturn = super.fillTroopVariantDto(objTroopVariant, dto);
+			
+			// Besondere Eigenschaften, nur für Flotten hier dann noch hinzufügen....
 		}//end main:
 		return bReturn;
 	}
@@ -130,5 +105,15 @@ public class TroopFleetVariantDaoFacade extends TroopVariantDaoFacade{
 	@Override
 	public String getFacadeType() {
 		return TroopType.ARMY.name();
+	}
+
+	@Override
+	public TroopVariant getEntityUsed() {
+		return this.objTroopFleetVariant;
+	}
+	
+	@Override
+	public void setEntityUsed(TroopVariant objTroopFleetVariant){
+		this.objTroopFleetVariant =  (TroopFleetVariant) objTroopFleetVariant;
 	}
 }

@@ -18,6 +18,12 @@ public abstract class TileDaoFacade extends GeneralDaoFacadeZZZ implements IBack
 	
 	public abstract String getFacadeType();
 	
+	/* (non-Javadoc)
+	 * @see use.thm.persistence.interfaces.IBackendPersistenceFacadeTHM#computeUniquename()
+	 * 
+	 * 	 Anders als bei den Varianten im Katalog ist nicht der verwendete Thiskey Bestandteil des Schlüssels, sondern die Uhrzeit der Erzeugung.
+	 *  (vgl. TroopVariantDaoFacade...)
+	 */
 	public  String computeUniquename(){
 		String sReturn = new String("");
 		main:{

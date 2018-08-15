@@ -48,6 +48,7 @@ import use.thm.persistence.model.TileId;
 import use.thm.persistence.model.TroopArmy;
 import use.thm.persistence.model.TroopArmyVariant;
 import use.thm.persistence.model.TroopType;
+import use.thm.persistence.model.TroopVariant;
 import use.thm.rule.facade.TroopArmyRuleFacade;
 import use.thm.rule.model.TroopArmyRuleType;
 
@@ -694,4 +695,6 @@ public class TroopArmyDaoFacade extends TileDaoFacade{
 	public String getFacadeType() {
 		return TroopType.ARMY.name();
 	}
+	
+
 }

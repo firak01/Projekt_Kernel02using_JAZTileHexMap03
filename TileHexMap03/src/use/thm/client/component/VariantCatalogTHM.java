@@ -439,6 +439,7 @@ public class VariantCatalogTHM  extends KernelUseObjectZZZ implements IGhostGlas
 			KernelSingletonTHM objKernel = KernelSingletonTHM.getInstance();		
 			HibernateContextProviderSingletonTHM objContextHibernate = HibernateContextProviderSingletonTHM.getInstance(objKernel);					
 			TroopArmyVariantDaoFacade objTroopVariantDaoFacade = new TroopArmyVariantDaoFacade(objContextHibernate);
+			objTroopVariantDaoFacade.setEntityUsed(objEntity);
 			boolean bSuccess = objTroopVariantDaoFacade.fillTroopArmyVariantDto(objEntity, objDto);
 			if(!bSuccess) break main;
 					
@@ -465,6 +466,7 @@ public class VariantCatalogTHM  extends KernelUseObjectZZZ implements IGhostGlas
 			KernelSingletonTHM objKernel = KernelSingletonTHM.getInstance();		
 			HibernateContextProviderSingletonTHM objContextHibernate = HibernateContextProviderSingletonTHM.getInstance(objKernel);				
 			TroopFleetVariantDaoFacade objTroopVariantDaoFacade = new TroopFleetVariantDaoFacade(objContextHibernate);
+			objTroopVariantDaoFacade.setEntityUsed(objEntity);
 			boolean bSuccess = objTroopVariantDaoFacade.fillTroopFleetVariantDto(objEntity, objDto);
 			if(!bSuccess) break main;
 					

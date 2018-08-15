@@ -2,8 +2,10 @@ package basic.persistence.daoFacade;
 
 import org.hibernate.Session;
 
+import use.thm.persistence.model.TroopVariant;
 import basic.zBasic.ExceptionZZZ;
 import basic.zBasic.persistence.interfaces.IHibernateContextProviderZZZ;
+import basic.zBasic.persistence.interfaces.enums.IThiskeyImmutableZZZ;
 
 public class GeneralDaoFacadeZZZ implements IFacadeDtoZZZ{
 	private IHibernateContextProviderZZZ objContextHibernate = null;

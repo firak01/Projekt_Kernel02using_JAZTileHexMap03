@@ -37,6 +37,7 @@ import use.thm.persistence.model.AreaCellOcean;
 import use.thm.persistence.model.CellId;
 import use.thm.persistence.model.Tile;
 import use.thm.persistence.model.TileId;
+import use.thm.persistence.model.Troop;
 import use.thm.persistence.model.TroopArmy;
 import use.thm.persistence.model.TroopArmyVariant;
 import use.thm.persistence.model.TroopFleet;
@@ -55,7 +56,7 @@ import use.thm.rule.model.TroopFleetRuleType;
  *
  */
 public class TroopFleetDaoFacade extends TileDaoFacade{
-	//private HibernateContextProviderSingletonTHM objContextHibernate = null;
+	private TroopFleet objTroopFleet = null;
 
 	public TroopFleetDaoFacade(HibernateContextProviderZZZ objContextHibernate){
 		super(objContextHibernate);
@@ -219,15 +220,11 @@ public class TroopFleetDaoFacade extends TileDaoFacade{
 		boolean bReturn = false;
 		main:{
 			System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": START #### fillTroopFleetDto(objTroop)  ####################");
+			super.fillTroopDto(objTroop, dto);
+			
 			if(objTroop == null) break main;
 					
-			//FRAGE: FUNKTIONIERT HIERBEI CALL BY REFERENCE? JA. Es werden ja Werte in den Objekten gefüllt.		
-			dto.set(ITileDtoAttribute.UNIQUENAME, objTroop.getUniquename());
-			dto.set(ITileDtoAttribute.SUBTYPE,objTroop.getTroopType());
-			
-			dto.set(ITileDtoAttribute.INSTANCE_VARIANT_UNIQUENUMBER, objTroop.getInstanceVariantUniquenumber());
-			dto.set(ITileDtoAttribute.HEALTH, objTroop.getHealth());
-						
+			//FRAGE: FUNKTIONIERT HIERBEI CALL BY REFERENCE? JA. Es werden ja Werte in den Objekten gefüllt.					
 			if(objTroop.getTroopFleetVariantObject()!=null){
 				dto.set(ITileDtoAttribute.VARIANT_IMAGE_URL_STRING,objTroop.getTroopFleetVariantObject().getImageUrlString());
 				
@@ -725,5 +722,15 @@ public class TroopFleetDaoFacade extends TileDaoFacade{
 	@Override
 	public String getFacadeType() {
 		return TroopType.FLEET.name();
+	}
+	
+	@Override
+	public TroopFleet getEntityUsed() {
+		return this.objTroopFleet;
+	}
+	
+	@Override
+	public void setEntityUsed(Troop objTroopFleet){
+		this.objTroopFleet =  (TroopFleet) objTroopFleet;
 	}
 }

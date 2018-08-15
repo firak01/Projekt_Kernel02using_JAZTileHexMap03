@@ -4,9 +4,16 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
+import use.thm.persistence.dto.ITileDtoAttribute;
 import use.thm.persistence.interfaces.IBackendPersistenceFacadeTHM;
 import use.thm.persistence.model.Tile;
+import use.thm.persistence.model.Troop;
+import use.thm.persistence.model.TroopFleet;
+import use.thm.persistence.model.TroopVariant;
 import basic.persistence.daoFacade.GeneralDaoFacadeZZZ;
+import basic.persistence.dto.GenericDTO;
+import basic.zBasic.ExceptionZZZ;
+import basic.zBasic.ReflectCodeZZZ;
 import basic.zBasic.persistence.hibernate.DateMapping;
 import basic.zBasic.persistence.hibernate.HibernateContextProviderZZZ;
 import basic.zBasic.util.datatype.dateTime.DateTimeZZZ;
@@ -17,6 +24,8 @@ public abstract class TileDaoFacade extends GeneralDaoFacadeZZZ implements IBack
 	}
 	
 	public abstract String getFacadeType();
+	public abstract Troop getEntityUsed();
+	public abstract void setEntityUsed(Troop objTroop);
 	
 	/* (non-Javadoc)
 	 * @see use.thm.persistence.interfaces.IBackendPersistenceFacadeTHM#computeUniquename()
@@ -127,6 +136,27 @@ public abstract class TileDaoFacade extends GeneralDaoFacadeZZZ implements IBack
 			bReturn = true;
 		}//end main
 		return bReturn;				
+	}
+	
+	public boolean fillTroopDto(Troop objTroop, GenericDTO dto) throws ExceptionZZZ{
+		boolean bReturn = false;
+		main:{
+			System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": START #### fillTTileDto(objTile)  ####################");
+			if(objTroop == null){
+				objTroop = this.getEntityUsed();
+				if(objTroop == null) break main;
+			}						
+								
+			//FRAGE: FUNKTIONIERT HIERBEI CALL BY REFERENCE? JA. Es werden ja Werte in den Objekten gefüllt.		
+			dto.set(ITileDtoAttribute.UNIQUENAME, objTroop.getUniquename());
+			dto.set(ITileDtoAttribute.SUBTYPE,objTroop.getTroopType());
+			
+			dto.set(ITileDtoAttribute.INSTANCE_VARIANT_UNIQUENUMBER, objTroop.getInstanceVariantUniquenumber());
+			dto.set(ITileDtoAttribute.HEALTH, objTroop.getHealth());									
+				
+			bReturn = true;
+		}//end main:
+		return bReturn;
 	}
 	
 }

@@ -158,35 +158,39 @@ public abstract class TroopVariantDaoFacade extends GeneralDaoFacadeZZZ implemen
 		boolean bReturn = false;
 		main:{
 			System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": START #### fillTroopVariantDto(objTroopVariant)  ####################");
-			if(objTroopVariant == null) break main;
-					
+			if(objTroopVariant == null){
+				objTroopVariant = this.getEntityUsed();
+				if(objTroopVariant == null) break main;
+			}					
+			
+			
 				//FRAGE: FUNKTIONIERT HIERBEI CALL BY REFERENCE? JA. Es werden nämlich Werte in den Objekten gefüllt.		
 				//dto.set(IBoxDtoAttribute.UNIQUENAME, objTroopVariant.getThiskey().toString());
 				dto.set(IBoxDtoAttribute.UNIQUENAME, this.computeUniquename());
-				dto.set(IBoxDtoAttribute.SUBTYPE,this.getEntityUsed().getSubtype());
+				dto.set(IBoxDtoAttribute.SUBTYPE,objTroopVariant.getSubtype());
 	
-				dto.set(IBoxDtoAttribute.VARIANT_IMAGE_URL_STRING,this.getEntityUsed().getImageUrlString());
+				dto.set(IBoxDtoAttribute.VARIANT_IMAGE_URL_STRING,objTroopVariant.getImageUrlString());
 					
 				//20180630: Nun das Bild ausch direkt als byte[] gespeichert aus der Datenbank holen.
-				dto.set(IBoxDtoAttribute.VARIANT_IMAGE_IN_BYTE,this.getEntityUsed().getImage());
+				dto.set(IBoxDtoAttribute.VARIANT_IMAGE_IN_BYTE,objTroopVariant.getImage());
 											
 				//Diese sind alle auf den Katalog bezogen, darum nur in den 3 Zoomstufen des GUI
-				dto.set(IBoxDtoAttribute.VARIANT_IMAGEDIALOG_IN_BYTE_01,this.getEntityUsed().getImageCatalogDialog01());
-				dto.set(IBoxDtoAttribute.VARIANT_IMAGEDIALOG_IN_BYTE_02,this.getEntityUsed().getImageCatalogDialog02());
-				dto.set(IBoxDtoAttribute.VARIANT_IMAGEDIALOG_IN_BYTE_03,this.getEntityUsed().getImageCatalogDialog03());
+				dto.set(IBoxDtoAttribute.VARIANT_IMAGEDIALOG_IN_BYTE_01,objTroopVariant.getImageCatalogDialog01());
+				dto.set(IBoxDtoAttribute.VARIANT_IMAGEDIALOG_IN_BYTE_02,objTroopVariant.getImageCatalogDialog02());
+				dto.set(IBoxDtoAttribute.VARIANT_IMAGEDIALOG_IN_BYTE_03,objTroopVariant.getImageCatalogDialog03());
 				
 				//Diese sind alle auf den Katalog bezogen, darum nur in den 3 Zoomstufen des GUI
-				dto.set(IBoxDtoAttribute.VARIANT_IMAGE_IN_BYTE_01,this.getEntityUsed().getImageCatalog01());
-				dto.set(IBoxDtoAttribute.VARIANT_IMAGE_IN_BYTE_02,this.getEntityUsed().getImageCatalog02());
-				dto.set(IBoxDtoAttribute.VARIANT_IMAGE_IN_BYTE_03,this.getEntityUsed().getImageCatalog03());
+				dto.set(IBoxDtoAttribute.VARIANT_IMAGE_IN_BYTE_01,objTroopVariant.getImageCatalog01());
+				dto.set(IBoxDtoAttribute.VARIANT_IMAGE_IN_BYTE_02,objTroopVariant.getImageCatalog02());
+				dto.set(IBoxDtoAttribute.VARIANT_IMAGE_IN_BYTE_03,objTroopVariant.getImageCatalog03());
 				
 				//Diese sind auf die Hexmap bezogen (also vom Katalog in die HexMap ziehen), darum hier auch die 6 Zoomstufen der Hexmap
-				dto.set(IBoxDtoAttribute.VARIANT_IMAGEDRAG_IN_BYTE_01,this.getEntityUsed().getImageCatalogDrag01());
-				dto.set(IBoxDtoAttribute.VARIANT_IMAGEDRAG_IN_BYTE_02,this.getEntityUsed().getImageCatalogDrag02());
-				dto.set(IBoxDtoAttribute.VARIANT_IMAGEDRAG_IN_BYTE_03,this.getEntityUsed().getImageCatalogDrag03());
-				dto.set(IBoxDtoAttribute.VARIANT_IMAGEDRAG_IN_BYTE_04,this.getEntityUsed().getImageCatalogDrag04());
-				dto.set(IBoxDtoAttribute.VARIANT_IMAGEDRAG_IN_BYTE_05,this.getEntityUsed().getImageCatalogDrag05());
-				dto.set(IBoxDtoAttribute.VARIANT_IMAGEDRAG_IN_BYTE_06,this.getEntityUsed().getImageCatalogDrag06());
+				dto.set(IBoxDtoAttribute.VARIANT_IMAGEDRAG_IN_BYTE_01,objTroopVariant.getImageCatalogDrag01());
+				dto.set(IBoxDtoAttribute.VARIANT_IMAGEDRAG_IN_BYTE_02,objTroopVariant.getImageCatalogDrag02());
+				dto.set(IBoxDtoAttribute.VARIANT_IMAGEDRAG_IN_BYTE_03,objTroopVariant.getImageCatalogDrag03());
+				dto.set(IBoxDtoAttribute.VARIANT_IMAGEDRAG_IN_BYTE_04,objTroopVariant.getImageCatalogDrag04());
+				dto.set(IBoxDtoAttribute.VARIANT_IMAGEDRAG_IN_BYTE_05,objTroopVariant.getImageCatalogDrag05());
+				dto.set(IBoxDtoAttribute.VARIANT_IMAGEDRAG_IN_BYTE_06,objTroopVariant.getImageCatalogDrag06());
 
 			bReturn = true;
 		}//end main:

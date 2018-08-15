@@ -45,8 +45,10 @@ import use.thm.persistence.model.CellId;
 import use.thm.persistence.model.Tile;
 import use.thm.persistence.model.TileDefaulttext;
 import use.thm.persistence.model.TileId;
+import use.thm.persistence.model.Troop;
 import use.thm.persistence.model.TroopArmy;
 import use.thm.persistence.model.TroopArmyVariant;
+import use.thm.persistence.model.TroopFleetVariant;
 import use.thm.persistence.model.TroopType;
 import use.thm.persistence.model.TroopVariant;
 import use.thm.rule.facade.TroopArmyRuleFacade;
@@ -60,7 +62,8 @@ import use.thm.rule.model.TroopArmyRuleType;
  *
  */
 public class TroopArmyDaoFacade extends TileDaoFacade{
-		
+	private TroopArmy objTroopArmy = null;
+	
 	public TroopArmyDaoFacade(HibernateContextProviderZZZ objContextHibernate){
 		super(objContextHibernate);
 	}
@@ -245,6 +248,7 @@ public class TroopArmyDaoFacade extends TileDaoFacade{
 			}
 
 			//Falls alles glatt durchgeht....
+			this.setEntityUsed(objTroopTemp);
 			bReturn = true;
 		}//end validEntry:
 					
@@ -641,16 +645,12 @@ public class TroopArmyDaoFacade extends TileDaoFacade{
 	public boolean fillTroopArmyDto(TroopArmy objTroopArmy, GenericDTO dto) throws ExceptionZZZ{
 		boolean bReturn = false;
 		main:{
-			System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": START #### fillTroopArmyDto(objTroopArmy)  ####################");
-			if(objTroopArmy == null) break main;
-					
-			//FRAGE: FUNKTIONIERT HIERBEI CALL BY REFERENCE? JA. Es werden nämlich Werte in den Objekten gefüllt.		
-			dto.set(ITileDtoAttribute.UNIQUENAME, objTroopArmy.getUniquename());
-			dto.set(ITileDtoAttribute.SUBTYPE,objTroopArmy.getTroopType());
+			System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": START #### fillTroopArmyDto(objTroopArmy)  ####################");			
+			super.fillTroopDto(objTroopArmy, dto);
 			
-			dto.set(ITileDtoAttribute.INSTANCE_VARIANT_UNIQUENUMBER, objTroopArmy.getInstanceVariantUniquenumber());
-			dto.set(ITileDtoAttribute.HEALTH, objTroopArmy.getHealth());
+			if(objTroopArmy == null) break main;
 						
+			//FRAGE: FUNKTIONIERT HIERBEI CALL BY REFERENCE? JA. Es werden nämlich Werte in den Objekten gefüllt.	
 			if(objTroopArmy.getTroopArmyVariantObject()!=null){
 				dto.set(ITileDtoAttribute.VARIANT_IMAGE_URL_STRING,objTroopArmy.getTroopArmyVariantObject().getImageUrlString());
 				
@@ -694,6 +694,16 @@ public class TroopArmyDaoFacade extends TileDaoFacade{
 	@Override
 	public String getFacadeType() {
 		return TroopType.ARMY.name();
+	}
+	
+	@Override
+	public TroopArmy getEntityUsed() {
+		return this.objTroopArmy;
+	}
+	
+	@Override
+	public void setEntityUsed(Troop objTroopArmy){
+		this.objTroopArmy =  (TroopArmy) objTroopArmy;
 	}
 	
 

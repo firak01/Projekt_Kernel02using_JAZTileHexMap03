@@ -1,5 +1,7 @@
 package use.thm.client.component;
 
+import java.awt.Font;
+import java.awt.Graphics;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -521,21 +523,32 @@ public class VariantCatalogTHM  extends KernelUseObjectZZZ implements IGhostGlas
 	    	 	//String stest = objKernel.getFileConfigIni().getVariable("GuiZoomFactorUsed");
 	    	 	//System.out.println(ReflectCodeZZZ.getMethodCurrentNameLined(0) + ": GuiZoomFactorUsed als Variable = '" + stest + "'");
 	    	 	
-	    		//Modullnamen und Programnamen für die Position in der KernelKonfiguation  	 
-	    		String sModuleAlias =  this.getModuleUsed();// this.getModuleName();
-				String sProgramAlias = this.getProgramUsed(); //this.getProgramAlias(); //				
-				System.out.println(ReflectCodeZZZ.getMethodCurrentName() + ": Suche Modul: '" + sModuleAlias +"'/ Program: '" + sProgramAlias + "'/ Parameter: 'IconWidthOnDrag'");
+            //Merke: Das BoxTHM Objekt hat noch keine paint()-Methode. Also wird eine Schriftgröße/Font nur im übergeordneten PanelObjekt machbar sein
+	    	//Modullnamen und Programnamen für die Position in der KernelKonfiguation  	 
+	    	String sModuleAlias =  this.getModuleUsed();// this.getModuleName();
+			String sProgramAlias = this.getProgramUsed(); //this.getProgramAlias(); //				
+			System.out.println(ReflectCodeZZZ.getMethodCurrentName() + ": Suche Modul: '" + sModuleAlias +"'/ Program: '" + sProgramAlias + "'/ Parameter: 'IconLabelFontSize_float'");
 	
 				
+				String sIconLabelFontSize = objKernel.getParameterByProgramAlias(sModuleAlias, sProgramAlias, "IconLabelFontSize_float" );
+				if(StringZZZ.isEmpty(sIconLabelFontSize)){ sIconLabelFontSize="8.0"; }
+				Float fltIconLabelFontSize = new Float(sIconLabelFontSize);
+				
+				//Nun Graphics-Objekt holen, zum Font holen und Größe des Fonts einstellen.
+				//KernelJPanelCascadedZZZ objPanel = this.getPanelParent();				
+				//Graphics g = objPanel.getGraphics(); //!!! DAS GIBT IMMER NULL. Graphics Objekt steht nur in paint() Methode zur Verfügung.
+				
+				Font objFont = new Font("Verdana", Font.PLAIN, fltIconLabelFontSize.intValue());
+														
 			//20180807: Verwende zum Konkreten Erzeugen des Bildes das, welches dem aktuell eingestellten ZoomFaktor entspricht
 		    //Merke: Das muss zuvor in ein Dto-Objekt gefüllt worden sein, durch VariantCatalogDaoFacade.fillVariantCatalogDto(....)
 			// JLabel label = UIHelper.createLabelWithIconResized(sTileLabel, imageInByte, iIconWidth,iIconHeight);
 			byte[] imageInByteUsed = objReturn.getVariantCatalogImageUsedInByte();
 			JLabel label = null;
 			if(imageInByteUsed==null){
-				label = new JLabel(sTileLabel);
+				label = UIHelper.createLabel(sTileLabel, objFont);				
 			}else{
-				label = UIHelper.createLabelWithIcon(sTileLabel,  imageInByteUsed);
+				label = UIHelper.createLabelWithIcon(sTileLabel, objFont,  imageInByteUsed);
 			}
 		    objReturn.add(label);
 
@@ -552,18 +565,9 @@ public class VariantCatalogTHM  extends KernelUseObjectZZZ implements IGhostGlas
 		     GhostDropListener listenerForDropToHexMap = this.getGhostDropListener(); //.. und hier entscheidet sich  wie beim Fallenlassen gehandelt wird.
 		     
 		     //++++++++++
-	    	 //Die Größe der Icons beim Ziehen aus der KernelKonfiguration auslesen	  
-				
-				//TODO GOON FGL 20180630
-//				String sIconWidthOnDrag = this.getKernelObject().getParameterByProgramAlias(sModuleAlias, sProgramAlias, "IconWidthOnDrag" );						
-//				int iIconWidthOnDrag = StringZZZ.toInteger(sIconWidthOnDrag);
-//				String sIconHeightOnDrag = this.getKernelObject().getParameterByProgramAlias(sModuleAlias, sProgramAlias, "IconHeightOnDrag" );
-//				int iIconHeightOnDrag = StringZZZ.toInteger(sIconHeightOnDrag);
-//				GhostPictureAdapter pictureAdapter = new GhostPictureAdapter(glassPane, sCatalogVariantEntryId, imageInByteUsed, iIconWidthOnDrag, iIconHeightOnDrag);
-	    	 //+++++++++	  		    
-				
-				//Das per Dto bereitgestellte Bild für den passenden ZoomFaktor (HexMap!) holen
-				byte[] imageDragInByteUsed = objReturn.getVariantCatalogImageDragUsedInByte();
+	    	 //Die Größe der Icons beim Ziehen aus der KernelKonfiguration auslesen				
+			 //dazu das per Dto bereitgestellte Bild für den passenden ZoomFaktor (HexMap!) holen
+			 byte[] imageDragInByteUsed = objReturn.getVariantCatalogImageDragUsedInByte();
 				
 			 GhostPictureAdapter pictureAdapter = new GhostPictureAdapter(glassPane, sCatalogVariantEntryId, imageDragInByteUsed);
 			 pictureAdapter.addGhostDropListener(listenerForDropToHexMap);

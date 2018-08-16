@@ -1,9 +1,11 @@
 package use.thm.client;
 
 import java.awt.BorderLayout;
+import java.awt.Font;
 import java.io.File;
 import java.util.HashMap;
 
+import javax.swing.JLabel;
 import javax.swing.JScrollPane;
 
 import use.thm.client.component.HexMapTHM;

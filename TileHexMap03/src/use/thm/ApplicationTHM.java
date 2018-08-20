@@ -1,12 +1,16 @@
 package use.thm;
 
+import java.awt.Font;
 import java.io.File;
 import java.util.HashMap;
+import java.util.Set;
 
 import custom.zKernel.file.ini.FileIniZZZ;
 import basic.zBasic.ExceptionZZZ;
+import basic.zBasic.KernelSingletonTHM;
 import basic.zBasic.ReflectCodeZZZ;
 import basic.zBasic.persistence.SQLiteUtilZZZ;
+import basic.zBasic.util.datatype.string.StringArrayZZZ;
 import basic.zBasic.util.datatype.string.StringZZZ;
 import basic.zBasic.util.log.KernelReportContextProviderZZZ;
 import basic.zBasic.util.log.ReportLogZZZ;
@@ -34,7 +38,8 @@ public class ApplicationTHM extends KernelUseObjectZZZ{
 	private String sHexZoomFactorAliasCurrent = null;
 	private String sGuiZoomFactorAliasCurrent = null;
 	
-	
+	private Font objFontGuiCurrent = null;
+		
 	
 	public ApplicationTHM(KernelZZZ objKernel) throws ExceptionZZZ{
 		super(objKernel);
@@ -234,6 +239,158 @@ public class ApplicationTHM extends KernelUseObjectZZZ{
 		}
 		return this.sGuiZoomFactorAliasCurrent;		
 	}
+	public void setGuiZoomFactorAliasCurrent(String sZoomFactorAlias){
+		this.sGuiZoomFactorAliasCurrent = sZoomFactorAlias;
+	}
+	
+	public String getGuiZoomFactorAliasNext() throws ExceptionZZZ{
+		String sReturn = "";
+		main:{
+				String sZoomFactorAliasCurrent = this.getGuiZoomFactorAliasCurrent(); 
+				sReturn = this.getGuiZoomFactorAliasNext(sZoomFactorAliasCurrent);								
+		} // end main:
+		return sReturn;
+	}
+	
+	public String getGuiZoomFactorAliasNext(String sZoomFactorAliasStart) throws ExceptionZZZ{
+		String sReturn = "";
+		main:{
+				if(StringZZZ.isEmpty(sZoomFactorAliasStart)) break main;
+								
+				//+++++++++++++++++++++++++++++++
+				HashMap<String,String> hmZoomAlias = this.getHashMapGuiZoomFactorAlias();	
+				if(hmZoomAlias==null){
+					String stemp = "Keine HashMap der ZoomFaktor Aliaswerte gefunden.";
+					System.out.println(ReflectCodeZZZ.getMethodCurrentName() + ": " +stemp);
+					ExceptionZZZ ez = new ExceptionZZZ(stemp,ExceptionZZZ.iERROR_CONFIGURATION_MISSING, this,  ReflectCodeZZZ.getMethodCurrentName());
+					throw ez;		
+				}
+				if(hmZoomAlias.size()==0){
+					String stemp = "Keine Werte in HashMap der ZoomFaktor Aliaswerte gefunden.";
+					System.out.println(ReflectCodeZZZ.getMethodCurrentName() + ": " +stemp);
+					ExceptionZZZ ez = new ExceptionZZZ(stemp,ExceptionZZZ.iERROR_CONFIGURATION_VALUE, this,  ReflectCodeZZZ.getMethodCurrentName());
+					throw ez;		
+				}
+				
+				Set<String> setAlias = hmZoomAlias.keySet();
+				Object[] saAlias = (Object[]) setAlias.toArray();
+				String[] saAliasSorted = StringArrayZZZ.sort(saAlias);
+				long lIndex = StringArrayZZZ.searchIndexFirst(saAliasSorted, sZoomFactorAliasStart);
+				if(lIndex<0) break main;
+				
+				long lIndexReturn = lIndex+1;
+				if(saAliasSorted.length<=lIndexReturn){					
+					sReturn = StringArrayZZZ.getLast(saAliasSorted); //gib den letzten Aliaswert zurück		
+					break main;
+				}
+				
+				Long lngIndexReturn = new Long(lIndexReturn);
+				int iIndexReturn = lngIndexReturn.intValue();				
+				sReturn = saAliasSorted[iIndexReturn];																
+		} // end main:
+		return sReturn;
+	}
+	
+	public String getGuiZoomFactorAliasPrevious() throws ExceptionZZZ{
+		String sReturn = "";
+		main:{
+				String sZoomFactorAliasCurrent = this.getGuiZoomFactorAliasCurrent(); 
+				sReturn = this.getGuiZoomFactorAliasPrevious(sZoomFactorAliasCurrent);								
+		} // end main:
+		return sReturn;
+	}
+	public String getGuiZoomFactorAliasPrevious(String sZoomFactorAliasStart) throws ExceptionZZZ{
+		String sReturn = "";
+		main:{
+				if(StringZZZ.isEmpty(sZoomFactorAliasStart)) break main;
+								
+				//+++++++++++++++++++++++++++++++
+				HashMap<String,String> hmZoomAlias = this.getHashMapGuiZoomFactorAlias();	
+				if(hmZoomAlias==null){
+					String stemp = "Keine HashMap der ZoomFaktor Aliaswerte gefunden.";
+					System.out.println(ReflectCodeZZZ.getMethodCurrentName() + ": " +stemp);
+					ExceptionZZZ ez = new ExceptionZZZ(stemp,ExceptionZZZ.iERROR_CONFIGURATION_MISSING, this,  ReflectCodeZZZ.getMethodCurrentName());
+					throw ez;		
+				}
+				if(hmZoomAlias.size()==0){
+					String stemp = "Keine Werte in HashMap der ZoomFaktor Aliaswerte gefunden.";
+					System.out.println(ReflectCodeZZZ.getMethodCurrentName() + ": " +stemp);
+					ExceptionZZZ ez = new ExceptionZZZ(stemp,ExceptionZZZ.iERROR_CONFIGURATION_VALUE, this,  ReflectCodeZZZ.getMethodCurrentName());
+					throw ez;		
+				}
+				
+				Set<String> setAlias = hmZoomAlias.keySet();
+				Object[] saAlias = (Object[]) setAlias.toArray();
+				String[] saAliasSorted = StringArrayZZZ.sort(saAlias);
+				long lIndex = StringArrayZZZ.searchIndexFirst(saAliasSorted, sZoomFactorAliasStart);
+				if(lIndex<0) break main;
+								
+				long lIndexReturn = lIndex-1;
+				if(lIndexReturn<=0){					
+					sReturn = StringArrayZZZ.getFirst(saAliasSorted); //gib den ersten Aliaswert zurück		
+					break main;
+				}
+				
+				Long lngIndexReturn = new Long(lIndexReturn);
+				int iIndexReturn = lngIndexReturn.intValue();
+				sReturn = saAliasSorted[iIndexReturn];																
+		} // end main:
+		return sReturn;
+	}
+	
+	public String getGuiZoomFactorAliasLast() throws ExceptionZZZ{
+		String sReturn = "";
+		main:{
+			HashMap<String,String> hmZoomAlias = this.getHashMapGuiZoomFactorAlias();	
+			if(hmZoomAlias==null){
+				String stemp = "Keine HashMap der ZoomFaktor Aliaswerte gefunden.";
+				System.out.println(ReflectCodeZZZ.getMethodCurrentName() + ": " +stemp);
+				ExceptionZZZ ez = new ExceptionZZZ(stemp,ExceptionZZZ.iERROR_CONFIGURATION_MISSING, this,  ReflectCodeZZZ.getMethodCurrentName());
+				throw ez;		
+			}
+			if(hmZoomAlias.size()==0){
+				String stemp = "Keine Werte in HashMap der ZoomFaktor Aliaswerte gefunden.";
+				System.out.println(ReflectCodeZZZ.getMethodCurrentName() + ": " +stemp);
+				ExceptionZZZ ez = new ExceptionZZZ(stemp,ExceptionZZZ.iERROR_CONFIGURATION_VALUE, this,  ReflectCodeZZZ.getMethodCurrentName());
+				throw ez;		
+			}
+			
+			Set<String> setAlias = hmZoomAlias.keySet();
+			String[]saAlias = (String[]) setAlias.toArray();
+			
+			sReturn = StringArrayZZZ.getLast(saAlias);
+			
+		} // end main:
+		return sReturn;
+	}
+	
+	
+	public String getGuiZoomFactorAliasFirst() throws ExceptionZZZ{
+		String sReturn = "";
+		main:{
+			HashMap<String,String> hmZoomAlias = this.getHashMapGuiZoomFactorAlias();	
+			if(hmZoomAlias==null){
+				String stemp = "Keine HashMap der ZoomFaktor Aliaswerte gefunden.";
+				System.out.println(ReflectCodeZZZ.getMethodCurrentName() + ": " +stemp);
+				ExceptionZZZ ez = new ExceptionZZZ(stemp,ExceptionZZZ.iERROR_CONFIGURATION_MISSING, this,  ReflectCodeZZZ.getMethodCurrentName());
+				throw ez;		
+			}
+			if(hmZoomAlias.size()==0){
+				String stemp = "Keine Werte in HashMap der ZoomFaktor Aliaswerte gefunden.";
+				System.out.println(ReflectCodeZZZ.getMethodCurrentName() + ": " +stemp);
+				ExceptionZZZ ez = new ExceptionZZZ(stemp,ExceptionZZZ.iERROR_CONFIGURATION_VALUE, this,  ReflectCodeZZZ.getMethodCurrentName());
+				throw ez;		
+			}
+			
+			Set<String> setAlias = hmZoomAlias.keySet();
+			String[]saAlias = (String[]) setAlias.toArray();
+			
+			sReturn = StringArrayZZZ.getFirst(saAlias);
+			
+		} // end main:
+		return sReturn;
+	}
+	
 	public String getGuiZoomFactor(String sZoomFactorAlias) throws ExceptionZZZ{
 		String sReturn = "";
 		main:{
@@ -341,6 +498,55 @@ public class ApplicationTHM extends KernelUseObjectZZZ{
 	}	
 	public void setHashMapHexZoomFactorAlias(HashMap<String,String> hmZoomFactor){
 		this.hmHexZoomFactorAlias = hmZoomFactor;
+	}
+	
+	//=== Font basierende auf der Zoomeinstellung
+	public Font getGuiFontInitial() throws ExceptionZZZ{
+		Font objReturn = null;
+		{
+		KernelSingletonTHM objKernel = KernelSingletonTHM.getInstance();
+		FileIniZZZ objFileConfig = objKernel.getFileConfigIni();
+	
+		//0. Hole den initial in der Applikation für das GUI eingestellten ZoomFaktor. Diesen als Variable für die INI-Berechnungen zur Verfügung stellen
+		String sGuiZoomFactorCurrent = ApplicationSingletonTHM.getInstance().getGuiZoomFactor(sGuiZoomFactorAliasCurrent);							
+		objFileConfig.setVariable("GuiZoomFactorUsed", sGuiZoomFactorCurrent);
+	
+		//0. Hole den gerade in der Applikation für die Karte eingestellten ZoomFaktor. Diesen als Variable für die INI-Berechnungen zur Verfügung stellen
+//		String sHexZoomFactorCurrent = ApplicationSingletonTHM.getInstance().getHexZoomFactorCurrent();							
+//		objFileConfig.setVariable("HexZoomFactorUsed", sHexZoomFactorCurrent);
+
+ 	    //1. Hole den Font:
+    	String sModuleAlias =  this.getModuleUsed();// this.getModuleName();
+		String sProgramAlias = this.getProgramUsed(); //this.getProgramAlias(); //				
+		System.out.println(ReflectCodeZZZ.getMethodCurrentName() + ": Suche Modul: '" + sModuleAlias +"'/ Program: '" + sProgramAlias + "'/ Parameter: 'GuiLabelFontSize_float'");
+
+			
+			String sGuiLabelFontSize = objKernel.getParameterByProgramAlias(sModuleAlias, sProgramAlias, "GuiLabelFontSize_float" );
+			if(StringZZZ.isEmpty(sGuiLabelFontSize)){ sGuiLabelFontSize="8.0"; }
+			Float fltGuiLabelFontSize = new Float(sGuiLabelFontSize);
+			
+			//Nun Graphics-Objekt holen, zum Font holen und Größe des Fonts einstellen.
+			//KernelJPanelCascadedZZZ objPanel = this.getPanelParent();				
+			//Graphics g = objPanel.getGraphics(); //!!! DAS GIBT IMMER NULL. Graphics Objekt steht nur in paint() Methode zur Verfügung.
+			
+			objReturn = new Font("Verdana", Font.PLAIN, fltGuiLabelFontSize.intValue());
+		}//end main:
+		return objReturn;
+	}
+	
+	public Font getGuiFontCurrent() throws ExceptionZZZ{		
+		if(this.objFontGuiCurrent == null){
+			this.objFontGuiCurrent = this.getGuiFontInitial();	
+			if(this.objFontGuiCurrent==null){
+				//Falls im ini  nix definiert ist, einen Default-Font
+				Float fltGuiLabelFontSize = new Float("8.0");
+				return new Font("Verdana", Font.PLAIN, fltGuiLabelFontSize.intValue());				
+			}
+		}
+		return this.objFontGuiCurrent;
+	}
+	public void setGuiFontCurrent(Font font){
+		this.objFontGuiCurrent = font;
 	}
 	
 	//==== METHODEN DER ANWENDUNGSINITIALISIERUNG 

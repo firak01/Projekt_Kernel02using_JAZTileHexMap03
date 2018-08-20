@@ -74,6 +74,13 @@ public class PanelFrmMapSingletonTHM  extends KernelJPanelCascadedZZZ implements
 		this.setPanelSub("WEST", objPanelWest);       //Backend Hashtable hinzufügen
 		this.add(objPanelWest, BorderLayout.WEST); //Frontend hinzufügen
 		
+		//### PANEL NORTH füllen
+		HashMap<String, Boolean> hmFlagPanelNORTH = new HashMap<String, Boolean>();
+		hmFlagPanelNORTH.put(FLAGZ.COMPONENT_KERNEL_PROGRAM.name(), true);//Damit wird angezeigt, das es in der Kernel .ini - Konfigurationsdatei einen entsprechenden Abschnitt gibt, in dem Parameter hierfür hinterlegt sind.
+				
+		PanelMain_NORTHTHM objPanelNorth = new PanelMain_NORTHTHM(objKernel, this, hmFlagPanelNORTH);
+		this.setPanelSub("NORTH", objPanelNorth);       //Backend Hashtable hinzufügen
+		this.add(objPanelNorth, BorderLayout.NORTH); //Frontend hinzufügen
 	}
 	
 	//#### Interface Methoden #####################

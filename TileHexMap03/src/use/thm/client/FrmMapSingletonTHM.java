@@ -10,6 +10,7 @@ import javax.swing.BoxLayout;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JLayeredPane;
+import javax.swing.JMenuBar;
 import javax.swing.JPanel;
 
 import org.hibernate.Session;
@@ -126,6 +127,11 @@ public class FrmMapSingletonTHM  extends KernelJFrameCascadedZZZ implements IGho
 			ReportLogZZZ.write(ReportLogZZZ.ERROR, "ExceptionZZZ: " + e.getDetailAllLast());
 		}*/
 		return objPaneReturn;
+	}
+	
+	public JMenuBar getMenuContent() throws ExceptionZZZ{
+		MenuMainTHM menu = new MenuMainTHM(this.getKernelObject(), this);	
+		return menu;
 	}
 	
 	

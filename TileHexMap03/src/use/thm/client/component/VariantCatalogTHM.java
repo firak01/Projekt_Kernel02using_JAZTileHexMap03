@@ -494,7 +494,7 @@ public class VariantCatalogTHM  extends KernelUseObjectZZZ implements IGhostGlas
 			String sHexZoomFactorCurrent = ApplicationSingletonTHM.getInstance().getHexZoomFactorCurrent();							
 			objFileConfig.setVariable("HexZoomFactorUsed", sHexZoomFactorCurrent);
 		
-			objReturn = new BoxTHM (objDto);  //TODO GOON: 20180807: Hier das passende dto-Objetk übergeben, das zuvorerstellt werden muss					
+			objReturn = new BoxTHM (objDto);  //20180807: Verwende nun das passende dto-Objetk übergeben, das zuvorerstellt worden sein muss					
 			//###################################################################################################################
 						
 	    	 objReturn.setBorder(new EmptyBorder(0, 0, 0, 20)); //TODO: Größe gemäß Zoomfaktor
@@ -523,22 +523,13 @@ public class VariantCatalogTHM  extends KernelUseObjectZZZ implements IGhostGlas
 	    	 	//String stest = objKernel.getFileConfigIni().getVariable("GuiZoomFactorUsed");
 	    	 	//System.out.println(ReflectCodeZZZ.getMethodCurrentNameLined(0) + ": GuiZoomFactorUsed als Variable = '" + stest + "'");
 	    	 	
-            //Merke: Das BoxTHM Objekt hat noch keine paint()-Methode. Also wird eine Schriftgröße/Font nur im übergeordneten PanelObjekt machbar sein
-	    	//Modullnamen und Programnamen für die Position in der KernelKonfiguation  	 
-	    	String sModuleAlias =  this.getModuleUsed();// this.getModuleName();
-			String sProgramAlias = this.getProgramUsed(); //this.getProgramAlias(); //				
-			System.out.println(ReflectCodeZZZ.getMethodCurrentName() + ": Suche Modul: '" + sModuleAlias +"'/ Program: '" + sProgramAlias + "'/ Parameter: 'IconLabelFontSize_float'");
-	
-				
-				String sIconLabelFontSize = objKernel.getParameterByProgramAlias(sModuleAlias, sProgramAlias, "IconLabelFontSize_float" );
-				if(StringZZZ.isEmpty(sIconLabelFontSize)){ sIconLabelFontSize="8.0"; }
-				Float fltIconLabelFontSize = new Float(sIconLabelFontSize);
-				
+            	//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 				//Nun Graphics-Objekt holen, zum Font holen und Größe des Fonts einstellen.
 				//KernelJPanelCascadedZZZ objPanel = this.getPanelParent();				
 				//Graphics g = objPanel.getGraphics(); //!!! DAS GIBT IMMER NULL. Graphics Objekt steht nur in paint() Methode zur Verfügung.
-				
-				Font objFont = new Font("Verdana", Font.PLAIN, fltIconLabelFontSize.intValue());
+
+	    	 //Merke: Das BoxTHM Objekt hat noch keine paint()-Methode. Also wird eine Schriftgröße/Font nur im übergeordneten PanelObjekt machbar sein		    
+				Font objFont = ApplicationSingletonTHM.getInstance().getGuiFontCurrent();
 														
 			//20180807: Verwende zum Konkreten Erzeugen des Bildes das, welches dem aktuell eingestellten ZoomFaktor entspricht
 		    //Merke: Das muss zuvor in ein Dto-Objekt gefüllt worden sein, durch VariantCatalogDaoFacade.fillVariantCatalogDto(....)

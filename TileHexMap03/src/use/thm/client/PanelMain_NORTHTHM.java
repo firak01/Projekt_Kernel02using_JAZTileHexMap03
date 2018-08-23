@@ -33,6 +33,7 @@ import use.thm.client.component.HexMapTHM;
 import use.thm.client.component.HexagonalLayoutTHM;
 import use.thm.client.component.VariantCatalogTHM;
 import use.thm.client.dragDropTranslucent.GhostDropManagerHexMapPanelTHM;
+import use.zBasicUI.component.UIHelper_SwingWorker4ProgramGuiZoomTHM;
 import basic.zBasic.ExceptionZZZ;
 import basic.zBasic.IObjectZZZ;
 import basic.zBasic.KernelSingletonTHM;
@@ -190,32 +191,21 @@ public class PanelMain_NORTHTHM extends KernelJPanelCascadedZZZ{
 			//#### abstracte - Method aus SwingWorker
 			public Object construct() {
 				try{
-					//0. Dene GUI Zoom um +1 erhöhen
-				KernelSingletonTHM objKernel = KernelSingletonTHM.getInstance();
-				FileIniZZZ objFileConfig = objKernel.getFileConfigIni();
-			
-				//0. Hole den gerade in der Applikation für das GUI eingestellten ZoomFaktor. Diesen als Variable für die INI-Berechnungen zur Verfügung stellen
-				//String sGuiZoomFactorAliasCurrent = ApplicationSingletonTHM.getInstance().getGuiZoomFactorAliasCurrent();	
 				
-				//0. 20180819: Holen einen um +1 erhöhten ZoomFactorAlias
-				String sGuiZoomFactorAliasCurrent = ApplicationSingletonTHM.getInstance().getGuiZoomFactorAliasPrevious();						
-				ApplicationSingletonTHM.getInstance().setGuiZoomFactorAliasCurrent(sGuiZoomFactorAliasCurrent);
-				
-				String sGuiZoomFactorCurrent = ApplicationSingletonTHM.getInstance().getGuiZoomFactorCurrent();							
-				objFileConfig.setVariable("GuiZoomFactorUsed", sGuiZoomFactorCurrent);
-				
-					//1. TODO: STAUSZEILE: Ins Label schreiben, dass hier ein Update stattfindet
-				System.out.println("Updating Panel ...");
-				KernelJPanelCascadedZZZ objPanelParent = this.panel.getPanelParent();
-				updatePanelAll(objPanelParent); //20180819: Damit das klappt muss eine Komponentenliste über alle Panels zusammengesucht werden....						
-				//updatePanelCurrent(this.panel); //Findet nur Komponenten im aktuellen Panel
-					
+					UIHelper_SwingWorker4ProgramGuiZoomTHM.constructMinus();
+					System.out.println("Updating Panel ...");
+					KernelJPanelCascadedZZZ objPanelParent = this.panel.getPanelParent();
+					updatePanelAll(objPanelParent); //20180819: Damit das klappt muss eine Komponentenliste über alle Panels zusammengesucht werden....						
+					//updatePanelCurrent(this.panel); //Findet nur Komponenten im aktuellen Panel
+						
+					//Merke: Das wurde im VIA Projekt so genutzt, zum Auslesen einer externen Webseite
 					//2. IP Auslesen von der Webseite
 					//ProgramIPContentVIA objProg =new ProgramIPContentVIA(objKernel, this.panel, this.saFlag4Program);					
 					//String sIp = objProg.getIpExternal();
-					
+						
 					//3. Diesen Wert wieder ins Label schreiben.
 					//updateTextField(sIp);
+					
 				}catch(ExceptionZZZ ez){
 					System.out.println(ez.getDetailAllLast());
 					ReportLogZZZ.write(ReportLogZZZ.ERROR, ez.getDetailAllLast());					
@@ -308,36 +298,40 @@ public class PanelMain_NORTHTHM extends KernelJPanelCascadedZZZ{
 				Runnable runnerUpdatePanel= new Runnable(){
 
 					public void run(){
-						try {
-							ReportLogZZZ.write(ReportLogZZZ.DEBUG, "Updating Gui");	
+						try {							
+							ReportLogZZZ.write(ReportLogZZZ.DEBUG, "Updating Gui Font");	
 							ApplicationSingletonTHM.getInstance().setGuiFontCurrent(null);
-							
-														
-//								In das Textfeld den gefundenen Wert eintragen, der Wert ist ganz oben als private Variable deklariert
+																					
 							Font font = ApplicationSingletonTHM.getInstance().getGuiFontCurrent();
-							//JButton buttonTest = (JButton) panel.getComponent("buttonTest");	//Der wird so nur im aktuellen Panel gefunden, sonst nicht
-							JButton buttonPlus = (JButton) panel.searchComponent(PanelMain_NORTHTHM.sBUTTON_GUI_ZOOM_PLUS);
-							buttonPlus.setFont(font);
-							buttonPlus.repaint();
-							
-							JButton buttonMinus = (JButton) panel.searchComponent(PanelMain_NORTHTHM.sBUTTON_GUI_ZOOM_MINUS);
-							buttonMinus.setFont(font);
-							buttonMinus.repaint();
-							
+							panel.updateComponentFontAll(font);																					
 							panel.repaint();	
+							
+							//PROBLEM: Nachbarpanels updaten und neu zeichnen
+							PanelMain_WESTTHM panelCatalog = (PanelMain_WESTTHM) panel.searchPanelSub("WEST");
+							HashMapMultiZZZ hmCatalog = panelCatalog.getVariantCatalog().getMapCatalog();
+							 for (Iterator<String> iteratorVariantTypes = hmCatalog.getOuterKeySetIterator(); iteratorVariantTypes.hasNext();) {
+						    	 String sVariantType = (String) iteratorVariantTypes.next();
+						    	 System.out.println("XXXXXXXXXXXXXXXXXXXXXXXXXX String: '" + sVariantType + "'");
+
+						    	 for (Iterator<String> iteratorVariant = hmCatalog.getInnerKeySetIterator(sVariantType); iteratorVariant.hasNext();) {
+						    		 String sVariant = (String) iteratorVariant.next();
+						    		 System.out.println("XXXXXXXXXXXXXXXXXXXXXXXXXX String: '" + sVariant + "'");
+
+						    		 Box boxTemp = (Box) hmCatalog.get(sVariantType, sVariant);//z.B.: Box boxTemp = (Box) hmCatalog.get("ARMY","new_sale");		    		 		    		 		     
+								     //this.add(BorderLayout.CENTER, boxTemp);				    
+						    		 panel.add(boxTemp);
+						    	 }		    	 		    	
+						     }
+							panelCatalog.repaint();
+							
 						} catch (ExceptionZZZ e) {
-							// TODO Auto-generated catch block
 							e.printStackTrace();
 						}
 					}
 				};
 				
-				SwingUtilities.invokeLater(runnerUpdatePanel);	
-				
-//				In das Textfeld eintragen, das etwas passiert.								
-				//JTextField textField = (JTextField) panelParent.getComponent("text1");					
-				//textField.setText("Lese aktuellen Wert .....");
-				
+				SwingUtilities.invokeLater(runnerUpdatePanel);		
+				//Ggfs. nach dem Swing Worker eine Statuszeile etc. aktualisieren....
 			}
 			
 			
@@ -406,7 +400,7 @@ public class PanelMain_NORTHTHM extends KernelJPanelCascadedZZZ{
 //					try {
 					ReportLogZZZ.write(ReportLogZZZ.DEBUG, "Performing action: 'IP-Refresh'");
 														
-					String[] saFlag = {"useProxy"};					
+					String[] saFlag = null;			
 					KernelJPanelCascadedZZZ panelParent = (KernelJPanelCascadedZZZ) this.getPanelParent();
 																			
 					SwingWorker4ProgramGuiZoomPlus worker = new SwingWorker4ProgramGuiZoomPlus(objKernel, panelParent, saFlag);
@@ -451,32 +445,12 @@ public class PanelMain_NORTHTHM extends KernelJPanelCascadedZZZ{
 					//#### abstracte - Method aus SwingWorker
 					public Object construct() {
 						try{
-							//0. Dene GUI Zoom um +1 erhöhen
-						KernelSingletonTHM objKernel = KernelSingletonTHM.getInstance();
-						FileIniZZZ objFileConfig = objKernel.getFileConfigIni();
-					
-						//0. Hole den gerade in der Applikation für das GUI eingestellten ZoomFaktor. Diesen als Variable für die INI-Berechnungen zur Verfügung stellen
-						//String sGuiZoomFactorAliasCurrent = ApplicationSingletonTHM.getInstance().getGuiZoomFactorAliasCurrent();	
-						
-						//0. 20180819: Holen einen um +1 erhöhten ZoomFactorAlias
-						String sGuiZoomFactorAliasCurrent = ApplicationSingletonTHM.getInstance().getGuiZoomFactorAliasNext();						
-						ApplicationSingletonTHM.getInstance().setGuiZoomFactorAliasCurrent(sGuiZoomFactorAliasCurrent);
-						
-						String sGuiZoomFactorCurrent = ApplicationSingletonTHM.getInstance().getGuiZoomFactorCurrent();							
-						objFileConfig.setVariable("GuiZoomFactorUsed", sGuiZoomFactorCurrent);
-						
-							//1. TODO: STAUSZEILE: Ins Label schreiben, dass hier ein Update stattfindet
-						System.out.println("Updating Panel ...");
-						KernelJPanelCascadedZZZ objPanelParent = this.panel.getPanelParent();
-						updatePanelAll(objPanelParent); //20180819: Damit das klappt muss eine Komponentenliste über alle Panels zusammengesucht werden....						
-						//updatePanelCurrent(this.panel); //Findet nur Komponenten im aktuellen Panel
-							
-							//2. IP Auslesen von der Webseite
-							//ProgramIPContentVIA objProg =new ProgramIPContentVIA(objKernel, this.panel, this.saFlag4Program);					
-							//String sIp = objProg.getIpExternal();
-							
-							//3. Diesen Wert wieder ins Label schreiben.
-							//updateTextField(sIp);
+							UIHelper_SwingWorker4ProgramGuiZoomTHM.constructPlus();
+							System.out.println("Updating Panel ...");
+							KernelJPanelCascadedZZZ objPanelParent = this.panel.getPanelParent();
+							updatePanelAll(objPanelParent); //20180819: Damit das klappt muss eine Komponentenliste über alle Panels zusammengesucht werden....						
+							//updatePanelCurrent(this.panel); //Findet nur Komponenten im aktuellen Panel
+													
 						}catch(ExceptionZZZ ez){
 							System.out.println(ez.getDetailAllLast());
 							ReportLogZZZ.write(ReportLogZZZ.ERROR, ez.getDetailAllLast());					
@@ -484,75 +458,9 @@ public class PanelMain_NORTHTHM extends KernelJPanelCascadedZZZ{
 						return "all done";
 					}
 					
-					/**Aus dem Worker-Thread heraus wird ein Thread gestartet (der sich in die EventQueue von Swing einreiht.)
-					 *  Entspricht auch ProgramIPContext.updateLabel(..)
-					* @param stext
-					* 
-					* lindhaueradmin; 17.01.2007 12:09:17
-					 */
-					public void updateTextField(String stext){
-						this.sText2Update = stext;
-						
-//						Das Schreiben des Ergebnisses wieder an den EventDispatcher thread �bergeben
-						Runnable runnerUpdateLabel= new Runnable(){
-
-							public void run(){
-//								In das Textfeld den gefundenen Wert eintragen, der Wert ist ganz oben als private Variable deklariert			
-								ReportLogZZZ.write(ReportLogZZZ.DEBUG, "Writing '" + sText2Update + "' to the JTextField 'text1");				
-								JTextField textField = (JTextField) panel.getComponent("text1");					
-								textField.setText(sText2Update);
-								textField.setCaretPosition(0);   //Das soll bewirken, dass der Anfang jedes neu eingegebenen Textes sichtbar ist.  
-							}
-						};
-						
-						SwingUtilities.invokeLater(runnerUpdateLabel);	
-						
-//						In das Textfeld eintragen, das etwas passiert.								
-						//JTextField textField = (JTextField) panelParent.getComponent("text1");					
-						//textField.setText("Lese aktuellen Wert .....");
-						
-					}
+				
 					
-					/**Aus dem Worker-Thread heraus wird ein Thread gestartet (der sich in die EventQueue von Swing einreiht.)
-					 *  
-					* @param stext
-					* 					
-					 */
-					public void updatePanelCurrent(KernelJPanelCascadedZZZ panel2update){
-						this.panel = panel2update;
-						
-						
-						
-//						Das Schreiben des Ergebnisses wieder an den EventDispatcher thread �bergeben
-						Runnable runnerUpdatePanel= new Runnable(){
-
-							public void run(){
-								try {
-									ReportLogZZZ.write(ReportLogZZZ.DEBUG, "Updating Gui");	
-									ApplicationSingletonTHM.getInstance().setGuiFontCurrent(null);
-									
-																
-	//								In das Textfeld den gefundenen Wert eintragen, der Wert ist ganz oben als private Variable deklariert
-									Font font = ApplicationSingletonTHM.getInstance().getGuiFontCurrent();
-									JButton buttonTest = (JButton) panel.getComponent("buttonTest");	//Der wird so nur im aktuellen Panel gefunden, sonst nicht				
-									buttonTest.setFont(font);
-									buttonTest.repaint();
-									
-									panel.repaint();	
-								} catch (ExceptionZZZ e) {
-									// TODO Auto-generated catch block
-									e.printStackTrace();
-								}
-							}
-						};
-						
-						SwingUtilities.invokeLater(runnerUpdatePanel);	
-						
-//						In das Textfeld eintragen, das etwas passiert.								
-						//JTextField textField = (JTextField) panelParent.getComponent("text1");					
-						//textField.setText("Lese aktuellen Wert .....");
-						
-					}
+				
 
 					
 					/**Aus dem Worker-Thread heraus wird ein Thread gestartet (der sich in die EventQueue von Swing einreiht.)
@@ -562,43 +470,47 @@ public class PanelMain_NORTHTHM extends KernelJPanelCascadedZZZ{
 					 */
 					public void updatePanelAll(KernelJPanelCascadedZZZ panel2updateStart){
 						this.panel = panel2updateStart;
-						
-						
-						
+
 //						Das Schreiben des Ergebnisses wieder an den EventDispatcher thread �bergeben
 						Runnable runnerUpdatePanel= new Runnable(){
 
 							public void run(){
 								try {
-									ReportLogZZZ.write(ReportLogZZZ.DEBUG, "Updating Gui");	
+									ReportLogZZZ.write(ReportLogZZZ.DEBUG, "Updating Gui Font");	
 									ApplicationSingletonTHM.getInstance().setGuiFontCurrent(null);
-									
-																
-	//								In das Textfeld den gefundenen Wert eintragen, der Wert ist ganz oben als private Variable deklariert
+																							
 									Font font = ApplicationSingletonTHM.getInstance().getGuiFontCurrent();
-									//JButton buttonTest = (JButton) panel.getComponent("buttonTest");	//Der wird so nur im aktuellen Panel gefunden, sonst nicht
-									JButton buttonPlus= (JButton) panel.searchComponent(PanelMain_NORTHTHM.sBUTTON_GUI_ZOOM_PLUS);
-									buttonPlus.setFont(font);
-									buttonPlus.repaint();
-									
-									JButton buttonMinus= (JButton) panel.searchComponent(PanelMain_NORTHTHM.sBUTTON_GUI_ZOOM_MINUS);
-									buttonMinus.setFont(font);
-									buttonMinus.repaint();
-									
+									panel.updateComponentFontAll(font);								
 									panel.repaint();	
+									
+									//PROBLEM: Nachbarpanels updaten und neu zeichnen
+									PanelMain_WESTTHM panelCatalog = (PanelMain_WESTTHM) panel.searchPanelSub("WEST");
+									HashMapMultiZZZ hmCatalog = panelCatalog.getVariantCatalog().getMapCatalog();
+									 for (Iterator<String> iteratorVariantTypes = hmCatalog.getOuterKeySetIterator(); iteratorVariantTypes.hasNext();) {
+								    	 String sVariantType = (String) iteratorVariantTypes.next();
+								    	 System.out.println("XXXXXXXXXXXXXXXXXXXXXXXXXX String: '" + sVariantType + "'");
+
+								    	 for (Iterator<String> iteratorVariant = hmCatalog.getInnerKeySetIterator(sVariantType); iteratorVariant.hasNext();) {
+								    		 String sVariant = (String) iteratorVariant.next();
+								    		 System.out.println("XXXXXXXXXXXXXXXXXXXXXXXXXX String: '" + sVariant + "'");
+
+								    		 Box boxTemp = (Box) hmCatalog.get(sVariantType, sVariant);//z.B.: Box boxTemp = (Box) hmCatalog.get("ARMY","new_sale");		    		 		    		 		     
+										     //this.add(BorderLayout.CENTER, boxTemp);				    
+								    		 panel.add(boxTemp);
+								    	 }		    	 		    	
+								     }
+									
+									
+									panelCatalog.repaint();
+									
 								} catch (ExceptionZZZ e) {
-									// TODO Auto-generated catch block
 									e.printStackTrace();
 								}
 							}
 						};
 						
 						SwingUtilities.invokeLater(runnerUpdatePanel);	
-						
-//						In das Textfeld eintragen, das etwas passiert.								
-						//JTextField textField = (JTextField) panelParent.getComponent("text1");					
-						//textField.setText("Lese aktuellen Wert .....");
-						
+						//Ggfs. nach dem Swing Worker eine Statuszeile etc. aktualisieren....
 					}
 					
 					

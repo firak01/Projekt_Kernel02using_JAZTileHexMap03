@@ -17,9 +17,11 @@ import java.util.Set;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
+import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
+import javax.swing.UIManager;
 import javax.swing.border.EmptyBorder;
 
 import org.apache.commons.lang.builder.ReflectionToStringBuilder;
@@ -306,8 +308,37 @@ public class PanelMain_NORTHTHM extends KernelJPanelCascadedZZZ{
 							panel.updateComponentFontAll(font);																					
 							panel.repaint();	
 							
+							//Die Menüeinträge hinsichtlich des Fonts ändern, alle über den UIManager.
+							//siehe https://stackoverflow.com/questions/27318130/changing-a-jmenubars-font
+							UIManager.put("Menu.font", font);
+							UIManager.put("MenuItem.font", font);
+							//panel.getFrameParent().getMenuContent().repaint();
+							//KLAPPT ABER NICHT...
+							
+							//Noch hinzunehmen. siehe: https://stackoverflow.com/questions/38383694/update-jmenu-and-jmenu-font-after-jmenubar-is-visible
+							//SwingUtilities.updateComponentTreeUI(panel.getFrameParent().getMenuContent());
+							SwingUtilities.updateComponentTreeUI(panel.getFrameParent());
+						
+							
+//							JComponent[] menuComponents = (JComponent[]) panel.getFrameParent().getMenuContent().getComponents();
+//							for(JComponent menuComponent : menuComponents){
+//								menuComponent.setFont(font);
+//							}
+//							panel.getFrameParent().getMenuContent().repaint();
+//							
 							//PROBLEM: Nachbarpanels updaten und neu zeichnen
 							PanelMain_WESTTHM panelCatalog = (PanelMain_WESTTHM) panel.searchPanelSub("WEST");
+							
+							//Zuerst leeren
+							panelCatalog.removeAll();
+
+							VariantCatalogTHM objCatalog = panelCatalog.getVariantCatalog();
+						    objCatalog.fillCatalog(true);
+						    panelCatalog.setVariantCatalog(objCatalog);
+						    
+						    //+++++++++++++++++++++++++++++++++++++++
+							panelCatalog.setLayout((LayoutManager) new BoxLayout( panelCatalog, BoxLayout.Y_AXIS ) );
+						     									
 							HashMapMultiZZZ hmCatalog = panelCatalog.getVariantCatalog().getMapCatalog();
 							 for (Iterator<String> iteratorVariantTypes = hmCatalog.getOuterKeySetIterator(); iteratorVariantTypes.hasNext();) {
 						    	 String sVariantType = (String) iteratorVariantTypes.next();
@@ -319,9 +350,12 @@ public class PanelMain_NORTHTHM extends KernelJPanelCascadedZZZ{
 
 						    		 Box boxTemp = (Box) hmCatalog.get(sVariantType, sVariant);//z.B.: Box boxTemp = (Box) hmCatalog.get("ARMY","new_sale");		    		 		    		 		     
 								     //this.add(BorderLayout.CENTER, boxTemp);				    
-						    		 panel.add(boxTemp);
+						    		 panelCatalog.add(boxTemp);
 						    	 }		    	 		    	
 						     }
+							 
+							 //TODO GOON 20180824: Statt des Entfernen und Neuanlegen in den Box-Komponenten eine paint-Methode verwenden.
+							 //                                  Den Code des Entfernens und Neueinlesens in einen Button auslagern und dann ggfs. von dort aus Verwendbar machen. 
 							panelCatalog.repaint();
 							
 						} catch (ExceptionZZZ e) {
@@ -483,8 +517,36 @@ public class PanelMain_NORTHTHM extends KernelJPanelCascadedZZZ{
 									panel.updateComponentFontAll(font);								
 									panel.repaint();	
 									
+									//Die Menüeinträge hinsichtlich des Fonts ändern, alle über den UIManager.
+									//siehe https://stackoverflow.com/questions/27318130/changing-a-jmenubars-font
+									UIManager.put("Menu.font", font);
+									UIManager.put("MenuItem.font", font);
+									//panel.getFrameParent().getMenuContent().repaint();
+									//KLAPPT ABER NICHT...
+									
+									//Noch hinzunehmen. siehe: https://stackoverflow.com/questions/38383694/update-jmenu-and-jmenu-font-after-jmenubar-is-visible
+									//SwingUtilities.updateComponentTreeUI(panel.getFrameParent().getMenuContent());
+									SwingUtilities.updateComponentTreeUI(panel.getFrameParent());
+									
+//									JComponent[] menuComponents = (JComponent[]) panel.getFrameParent().getMenuContent().getComponents();
+//									for(JComponent menuComponent : menuComponents){
+//										menuComponent.setFont(font);
+//									}
+//									panel.getFrameParent().getMenuContent().repaint();
+//									
 									//PROBLEM: Nachbarpanels updaten und neu zeichnen
 									PanelMain_WESTTHM panelCatalog = (PanelMain_WESTTHM) panel.searchPanelSub("WEST");
+									
+									//Zuerst leeren
+									panelCatalog.removeAll();
+									
+									VariantCatalogTHM objCatalog = panelCatalog.getVariantCatalog();
+								    objCatalog.fillCatalog(true);
+								    panelCatalog.setVariantCatalog(objCatalog);
+								    
+								    //+++++++++++++++++++++++++++++++++++++++
+									panelCatalog.setLayout((LayoutManager) new BoxLayout( panelCatalog, BoxLayout.Y_AXIS ) );
+								     									
 									HashMapMultiZZZ hmCatalog = panelCatalog.getVariantCatalog().getMapCatalog();
 									 for (Iterator<String> iteratorVariantTypes = hmCatalog.getOuterKeySetIterator(); iteratorVariantTypes.hasNext();) {
 								    	 String sVariantType = (String) iteratorVariantTypes.next();
@@ -496,11 +558,12 @@ public class PanelMain_NORTHTHM extends KernelJPanelCascadedZZZ{
 
 								    		 Box boxTemp = (Box) hmCatalog.get(sVariantType, sVariant);//z.B.: Box boxTemp = (Box) hmCatalog.get("ARMY","new_sale");		    		 		    		 		     
 										     //this.add(BorderLayout.CENTER, boxTemp);				    
-								    		 panel.add(boxTemp);
+								    		 panelCatalog.add(boxTemp);
 								    	 }		    	 		    	
 								     }
 									
-									
+									 //TODO GOON 20180824: Statt des Entfernen und Neuanlegen in den Box-Komponenten eine paint-Methode verwenden.
+									 //                                  Den Code des Entfernens und Neueinlesens in einen Button auslagern und dann ggfs. von dort aus Verwendbar machen.
 									panelCatalog.repaint();
 									
 								} catch (ExceptionZZZ e) {

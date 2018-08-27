@@ -10,6 +10,7 @@ import javax.swing.BoxLayout;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JLayeredPane;
+import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JPanel;
 
@@ -34,7 +35,8 @@ import basic.zKernelUI.util.JFrameHelperZZZ;
 
 public class FrmMapSingletonTHM  extends KernelJFrameCascadedZZZ implements IGhostGlassPaneFrame{
 	private static FrmMapSingletonTHM dlgSingleton = null;  //muss static sein, wg. getInstance()!!!
-	private GhostGlassPane glassPane; //damit etwas, das per Drag/Drop bewegt wird dorthin als Bild kopiert wird.
+	private GhostGlassPane glassPane = null; //damit etwas, das per Drag/Drop bewegt wird dorthin als Bild kopiert wird.
+	private MenuMainTHM menuMain = null;
 	
 	/**Konstruktor ist private, wg. Singleton
 	 * @param objKernel
@@ -51,7 +53,7 @@ public class FrmMapSingletonTHM  extends KernelJFrameCascadedZZZ implements IGho
 	private FrmMapSingletonTHM(){
 		super(); 
 	
-	     //Todo: Den glassPane in die Klasse KernelJFrameCascadedZZZ �bernehmen, oder eine Unterklasse dafür zur Verfügung stellen.
+	     //Todo: Den glassPane in die Klasse KernelJFrameCascadedZZZ übernehmen, oder eine Unterklasse dafür zur Verfügung stellen.
 	     //Ohne diesen Glass Pane funktionieren die Ghost...Adapter nicht, z.B. der GhostMotionAdapter.
          setGhostGlassPane(new GhostGlassPane(this));		
 	}
@@ -130,8 +132,15 @@ public class FrmMapSingletonTHM  extends KernelJFrameCascadedZZZ implements IGho
 	}
 	
 	public JMenuBar getMenuContent() throws ExceptionZZZ{
-		MenuMainTHM menu = new MenuMainTHM(this.getKernelObject(), this);	
-		return menu;
+		if(this.menuMain==null){
+			MenuMainTHM menu = new MenuMainTHM(this.getKernelObject(), this);
+			this.menuMain = menu;
+		}
+		return this.menuMain;
+	}
+	
+	public void setMenuContent(JMenuBar menu){
+		this.menuMain = (MenuMainTHM) menu;
 	}
 	
 	
@@ -200,6 +209,10 @@ public class FrmMapSingletonTHM  extends KernelJFrameCascadedZZZ implements IGho
 		JFrameHelperZZZ.setSizeInScreenPercent(this, iPercent);
 		return true;
 	}
+	
+
+		
+	
 	
 	//#### GETTER SETTER
 	public GhostGlassPane getGhostGlassPane(){

@@ -4,6 +4,7 @@ package use.thm.client;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.Container;
 import java.awt.Font;
 import java.awt.LayoutManager;
@@ -19,6 +20,9 @@ import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
 import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
@@ -39,6 +43,7 @@ import use.zBasicUI.component.UIHelper_SwingWorker4ProgramGuiZoomTHM;
 import basic.zBasic.ExceptionZZZ;
 import basic.zBasic.IObjectZZZ;
 import basic.zBasic.KernelSingletonTHM;
+import basic.zBasic.ReflectCodeZZZ;
 import basic.zBasic.util.abstractList.HashMapMultiZZZ;
 import basic.zBasic.util.log.ReportLogZZZ;
 import basic.zBasicUI.component.UIHelper;
@@ -301,31 +306,14 @@ public class PanelMain_NORTHTHM extends KernelJPanelCascadedZZZ{
 
 					public void run(){
 						try {							
-							ReportLogZZZ.write(ReportLogZZZ.DEBUG, "Updating Gui Font");	
+							ReportLogZZZ.write(ReportLogZZZ.DEBUG, ReflectCodeZZZ.getMethodCurrentName() + ": Updating Gui Font - CATALOG IN NEIGHBORPANEL");
 							ApplicationSingletonTHM.getInstance().setGuiFontCurrent(null);
 																					
 							Font font = ApplicationSingletonTHM.getInstance().getGuiFontCurrent();
 							panel.updateComponentFontAll(font);																					
 							panel.repaint();	
 							
-							//Die Menüeinträge hinsichtlich des Fonts ändern, alle über den UIManager.
-							//siehe https://stackoverflow.com/questions/27318130/changing-a-jmenubars-font
-							UIManager.put("Menu.font", font);
-							UIManager.put("MenuItem.font", font);
-							//panel.getFrameParent().getMenuContent().repaint();
-							//KLAPPT ABER NICHT...
-							
-							//Noch hinzunehmen. siehe: https://stackoverflow.com/questions/38383694/update-jmenu-and-jmenu-font-after-jmenubar-is-visible
-							//SwingUtilities.updateComponentTreeUI(panel.getFrameParent().getMenuContent());
-							SwingUtilities.updateComponentTreeUI(panel.getFrameParent());
-						
-							
-//							JComponent[] menuComponents = (JComponent[]) panel.getFrameParent().getMenuContent().getComponents();
-//							for(JComponent menuComponent : menuComponents){
-//								menuComponent.setFont(font);
-//							}
-//							panel.getFrameParent().getMenuContent().repaint();
-//							
+																											
 							//PROBLEM: Nachbarpanels updaten und neu zeichnen
 							PanelMain_WESTTHM panelCatalog = (PanelMain_WESTTHM) panel.searchPanelSub("WEST");
 							
@@ -358,6 +346,15 @@ public class PanelMain_NORTHTHM extends KernelJPanelCascadedZZZ{
 							 //                                  Den Code des Entfernens und Neueinlesens in einen Button auslagern und dann ggfs. von dort aus Verwendbar machen. 
 							panelCatalog.repaint();
 							
+							//+++++++++++++++++++++++
+							ReportLogZZZ.write(ReportLogZZZ.DEBUG, ReflectCodeZZZ.getMethodCurrentName() + ": Updating Gui Font - COMPONENT (d.h. Buttons des aktuellen Panels)");														
+							panel.updateComponentFontAll(font);																					
+							panel.repaint();	
+
+							//+++++++++++++++++++++++
+							ReportLogZZZ.write(ReportLogZZZ.DEBUG, ReflectCodeZZZ.getMethodCurrentName() + ": Updating Gui Font - MENU (d.h. Menu des Parent Frames)");
+							panel.getFrameParent().updateMenuBarFontAll(font);
+								
 						} catch (ExceptionZZZ e) {
 							e.printStackTrace();
 						}
@@ -366,6 +363,7 @@ public class PanelMain_NORTHTHM extends KernelJPanelCascadedZZZ{
 				
 				SwingUtilities.invokeLater(runnerUpdatePanel);		
 				//Ggfs. nach dem Swing Worker eine Statuszeile etc. aktualisieren....
+
 			}
 			
 			
@@ -510,30 +508,13 @@ public class PanelMain_NORTHTHM extends KernelJPanelCascadedZZZ{
 
 							public void run(){
 								try {
-									ReportLogZZZ.write(ReportLogZZZ.DEBUG, "Updating Gui Font");	
+									ReportLogZZZ.write(ReportLogZZZ.DEBUG, ReflectCodeZZZ.getMethodCurrentName() + ": Updating Gui Font - CATALOG IN NEIGHBORPANEL");	
 									ApplicationSingletonTHM.getInstance().setGuiFontCurrent(null);
 																							
 									Font font = ApplicationSingletonTHM.getInstance().getGuiFontCurrent();
 									panel.updateComponentFontAll(font);								
 									panel.repaint();	
-									
-									//Die Menüeinträge hinsichtlich des Fonts ändern, alle über den UIManager.
-									//siehe https://stackoverflow.com/questions/27318130/changing-a-jmenubars-font
-									UIManager.put("Menu.font", font);
-									UIManager.put("MenuItem.font", font);
-									//panel.getFrameParent().getMenuContent().repaint();
-									//KLAPPT ABER NICHT...
-									
-									//Noch hinzunehmen. siehe: https://stackoverflow.com/questions/38383694/update-jmenu-and-jmenu-font-after-jmenubar-is-visible
-									//SwingUtilities.updateComponentTreeUI(panel.getFrameParent().getMenuContent());
-									SwingUtilities.updateComponentTreeUI(panel.getFrameParent());
-									
-//									JComponent[] menuComponents = (JComponent[]) panel.getFrameParent().getMenuContent().getComponents();
-//									for(JComponent menuComponent : menuComponents){
-//										menuComponent.setFont(font);
-//									}
-//									panel.getFrameParent().getMenuContent().repaint();
-//									
+																									
 									//PROBLEM: Nachbarpanels updaten und neu zeichnen
 									PanelMain_WESTTHM panelCatalog = (PanelMain_WESTTHM) panel.searchPanelSub("WEST");
 									
@@ -566,6 +547,16 @@ public class PanelMain_NORTHTHM extends KernelJPanelCascadedZZZ{
 									 //                                  Den Code des Entfernens und Neueinlesens in einen Button auslagern und dann ggfs. von dort aus Verwendbar machen.
 									panelCatalog.repaint();
 									
+									//+++++++++++++++++++++++
+									ReportLogZZZ.write(ReportLogZZZ.DEBUG, ReflectCodeZZZ.getMethodCurrentName() + ": Updating Gui Font - COMPONENT (d.h. Buttons des aktuellen Panels)");
+									panel.updateComponentFontAll(font);																					
+									panel.repaint();	
+
+									//+++++++++++++++++++++++
+									ReportLogZZZ.write(ReportLogZZZ.DEBUG, ReflectCodeZZZ.getMethodCurrentName() + ": Updating Gui Font - MENU (d.h. Menu des Parent Frames)");
+									panel.getFrameParent().updateMenuBarFontAll(font);
+									
+								
 								} catch (ExceptionZZZ e) {
 									e.printStackTrace();
 								}

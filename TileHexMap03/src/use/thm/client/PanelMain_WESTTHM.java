@@ -18,6 +18,7 @@ import javax.swing.JLabel;
 import javax.swing.border.EmptyBorder;
 
 import use.thm.IVariantCatalogUserTHM;
+import use.thm.client.component.BoxTHM;
 import use.thm.client.component.HexCellTHM;
 import use.thm.client.component.HexMapTHM;
 import use.thm.client.component.HexagonalLayoutTHM;
@@ -97,11 +98,13 @@ public class PanelMain_WESTTHM extends KernelJPanelCascadedZZZ implements IGhost
 		    		 String sVariant = (String) iteratorVariant.next();
 		    		 System.out.println("XXXXXXXXXXXXXXXXXXXXXXXXXX String: '" + sVariant + "'");
 
-		    		 Box boxTemp = (Box) hmCatalog.get(sVariantType, sVariant);//z.B.: Box boxTemp = (Box) hmCatalog.get("ARMY","new_sale");		    		 		    		 		     
-				     //this.add(BorderLayout.CENTER, boxTemp);				    
+		    		 BoxTHM boxTemp = (BoxTHM) hmCatalog.get(sVariantType, sVariant);//z.B.: Box boxTemp = (Box) hmCatalog.get("ARMY","new_sale");		    		 		    		 		     
+				     //this.add(BorderLayout.CENTER, boxTemp);
+		    		//boxTemp.repaint();
 		    		 this.add(boxTemp);
 		    	 }		    	 		    	
 		     }
+		     
 		        
 			
 		} catch (ExceptionZZZ ez) {				

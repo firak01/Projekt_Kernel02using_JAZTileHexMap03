@@ -277,7 +277,7 @@ public class VariantCatalogTHM  extends KernelUseObjectZZZ implements IGhostGlas
 			boxCreated = this.createBoxObject(objEntity, sCatalogVariantEntryId, sTileLabel, sGuiZoomFactorAliasCurrent);
 			if(boxCreated!=null){
 				this.getMapCatalog().put(sVariantId, sCatalogVariantEntryId, boxCreated);
-				iNrOfEntriesHere++; //Zelle zur Summe hinzufügen
+				iNrOfEntriesHere++; //Zelle zur Summe hinzufügen			
 			}
 		} //end for ... Variant
 		
@@ -318,8 +318,7 @@ public class VariantCatalogTHM  extends KernelUseObjectZZZ implements IGhostGlas
 		for(TroopFleetVariant objEntity : listaVariant){
 			System.out.println("TroopFleetVariant.toString(): " + objEntity.toString());
 
-			
-			/* DAS IST NOCH NICHT WICHTIG
+			/* DER CATEGORYTEXT IST NOCH NICHT WICHTIG, vielleicht mal, wenn man den Katalog in einem Baum darstellt, oder so.....
 			//Vergleich des gespeicherten Textes mit dem Defaulttext
 			Long lngThiskeyTemp = objEntity.getThiskey();
 			String sCategorytextStored = objEntity.getCategorytext();
@@ -481,69 +480,11 @@ public class VariantCatalogTHM  extends KernelUseObjectZZZ implements IGhostGlas
 	public BoxTHM createBoxObject(GenericDTO<IBoxDtoAttribute> objDto, String sCatalogVariantEntryId, String sTileLabel, String sGuiZoomFactorAliasCurrent) throws ExceptionZZZ{
 		BoxTHM objReturn = null;
 		main:{
-			if(objDto == null) break main;
-					
-			KernelSingletonTHM objKernel = KernelSingletonTHM.getInstance();
-			FileIniZZZ objFileConfig = objKernel.getFileConfigIni();
-		
-			//0. Hole den gerade in der Applikation für das GUI eingestellten ZoomFaktor. Diesen als Variable für die INI-Berechnungen zur Verfügung stellen
-			String sGuiZoomFactorCurrent = ApplicationSingletonTHM.getInstance().getGuiZoomFactor(sGuiZoomFactorAliasCurrent);							
-			objFileConfig.setVariable("GuiZoomFactorUsed", sGuiZoomFactorCurrent);
-		
-			//0. Hole den gerade in der Applikation für die Karte eingestellten ZoomFaktor. Diesen als Variable für die INI-Berechnungen zur Verfügung stellen
-			String sHexZoomFactorCurrent = ApplicationSingletonTHM.getInstance().getHexZoomFactorCurrent();							
-			objFileConfig.setVariable("HexZoomFactorUsed", sHexZoomFactorCurrent);
-		
-			objReturn = new BoxTHM (objDto);  //20180807: Verwende nun das passende dto-Objetk übergeben, das zuvorerstellt worden sein muss					
-			//###################################################################################################################
-						
-	    	 objReturn.setBorder(new EmptyBorder(0, 0, 0, 20)); //TODO: Größe gemäß Zoomfaktor
-	     
-	    				
-		   //++++++++++
-				 //Die Größe der Icons aus der KernelKonfiguration auslesen
-				//DAS IST IN DER ERSTELLUNG DES ENTITIES AUSGELAGERT UND WIRD EXTRA GESPEICHERT
-//				String sIconWidth = this.getKernelObject().getParameterByProgramAlias(sModuleAlias, sProgramAlias, "IconWidth" );
-//				int iIconWidth = Integer.parseInt(sIconWidth);				
-//				String sIconHeight = this.getKernelObject().getParameterByProgramAlias(sModuleAlias, sProgramAlias, "IconHeight" );
-//				int iIconHeight = Integer.parseInt(sIconHeight);
-	    	 //+++++++++	    	 
-	    	 		
-	    	 	
-	    	 	//... Zuerst den eingestellten ZoomFaktor holen UND als Variable hier speichern. Ansonsten wird ggfs. der zuletzt bei der Erstellung der Bilder (z.B bei der Variante) verwendete ZoomFaktor verwendet. //TODO GOON 20180727: Der wird noch aus der Ini.Datei ausgelesen. Demnächst aus Applikation-Einstellung.....
-	    	 	//Problem: IconWidtOnDrag bezieht sich auf eine Formel aus HexMap..
-	    	 	//               ABER: Die Variable in der Formel aus HexMap ist ggfs. noch nicht gefüllt....
-//	    	 	String sHexZoomFactorAlias = objKernel.getParameterByProgramAlias(sModuleAlias, sProgramAlias, "HexZoomFactorAliasStart" );
-//				HashMap<String,String>hmZoomFactor=ApplicationSingletonTHM.getInstance().getHashMapZoomFactorMap(sModuleAlias, sProgramAlias);
-//				String sHexZoomFactorUsed = hmZoomFactor.get(sHexZoomFactorAlias);	
-//				FileIniZZZ objIni = objKernel.getFileConfigIni();
-//				objIni.setVariable("HexZoomFactorUsed", sHexZoomFactorUsed);
-	    	 	
-	    	 	//Test: Hier schon definiert?
-	    	 	//String stest = objKernel.getFileConfigIni().getVariable("GuiZoomFactorUsed");
-	    	 	//System.out.println(ReflectCodeZZZ.getMethodCurrentNameLined(0) + ": GuiZoomFactorUsed als Variable = '" + stest + "'");
-	    	 	
-            	//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-				//Nun Graphics-Objekt holen, zum Font holen und Größe des Fonts einstellen.
-				//KernelJPanelCascadedZZZ objPanel = this.getPanelParent();				
-				//Graphics g = objPanel.getGraphics(); //!!! DAS GIBT IMMER NULL. Graphics Objekt steht nur in paint() Methode zur Verfügung.
-
-	    	 //Merke: Das BoxTHM Objekt hat noch keine paint()-Methode. Also wird eine Schriftgröße/Font nur im übergeordneten PanelObjekt machbar sein		    
-				Font objFont = ApplicationSingletonTHM.getInstance().getGuiFontCurrent();
-														
-			//20180807: Verwende zum Konkreten Erzeugen des Bildes das, welches dem aktuell eingestellten ZoomFaktor entspricht
-		    //Merke: Das muss zuvor in ein Dto-Objekt gefüllt worden sein, durch VariantCatalogDaoFacade.fillVariantCatalogDto(....)
-			// JLabel label = UIHelper.createLabelWithIconResized(sTileLabel, imageInByte, iIconWidth,iIconHeight);
-			byte[] imageInByteUsed = objReturn.getVariantCatalogImageUsedInByte();
-			JLabel label = null;
-			if(imageInByteUsed==null){
-				label = UIHelper.createLabel(sTileLabel, objFont);				
-			}else{
-				label = UIHelper.createLabelWithIcon(sTileLabel, objFont,  imageInByteUsed);
-			}
-		    objReturn.add(label);
-
-		     //### Funktionalität DRAG & DROP
+			if(objDto == null) break main;			
+			objReturn = new BoxTHM (objDto, sTileLabel);  //20180807: Verwende nun das passende dto-Objekt übergeben, das zuvorerstellt worden sein muss
+    	    
+			//###################################################################################################################			
+		     //### Funktionalität DRAG & DROP, HIER UND NICHT IN BoxTHM.paintComponent() oder im oxTHM Konstruktor !!!
 		     //Merke: Verwendet man hier den bisherigen Picture Adapter und hängt noch einen weitern dropListener an, 
 			 //       dann wird 2x ein drop durchgeführt. D.h. es wird 2x ein Entity erzeugt. Beim 2. Mal gibt es dann die Fehlermeldung:
 			 //       'Maximale Anzahl der Amreen / Flotten im Feld erreicht'. Darum ist es wichtig hier immer einen NEUEN picture Adapter zu erzeugen, pro Variante.			    			    			
@@ -556,18 +497,17 @@ public class VariantCatalogTHM  extends KernelUseObjectZZZ implements IGhostGlas
 		     GhostDropListener listenerForDropToHexMap = this.getGhostDropListener(); //.. und hier entscheidet sich  wie beim Fallenlassen gehandelt wird.
 		     
 		     //++++++++++
-	    	 //Die Größe der Icons beim Ziehen aus der KernelKonfiguration auslesen				
-			 //dazu das per Dto bereitgestellte Bild für den passenden ZoomFaktor (HexMap!) holen
+	    	 //Die Größe der Icons beim Ziehen aus der KernelKonfiguration auslesen, dazu das per Dto bereitgestellte Bild für den passenden ZoomFaktor (HexMap!) holen
+		     //bzw. jetzt, das was in dem Box-Objekt dafür vorgesehen ist.
 			 byte[] imageDragInByteUsed = objReturn.getVariantCatalogImageDragUsedInByte();
 				
 			 GhostPictureAdapter pictureAdapter = new GhostPictureAdapter(glassPane, sCatalogVariantEntryId, imageDragInByteUsed);
 			 pictureAdapter.addGhostDropListener(listenerForDropToHexMap);
 			 
-			 //Das DRAGGEN, ausgehend vom Label 			
-		     label.addMouseListener(pictureAdapter); //Beim Clicken wird das Bild vom pictureAdapter an die passende Stelle im glassPane gesetzt.
-		     label.addMouseMotionListener(new GhostMotionAdapter(glassPane));
-			 
-		     
+			 //Das DRAGGEN, ausgehend von der Box			
+			 objReturn.addMouseListener(pictureAdapter);//Beim Clicken wird das Bild vom pictureAdapter an die passende Stelle im glassPane gesetzt.
+			 objReturn.addMouseMotionListener(new GhostMotionAdapter(glassPane));
+			   
 	     }//end main:
 	     return objReturn;
 	}

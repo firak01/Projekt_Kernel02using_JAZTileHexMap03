@@ -254,39 +254,9 @@ public class ApplicationTHM extends KernelUseObjectZZZ{
 	
 	public String getGuiZoomFactorAliasNext(String sZoomFactorAliasStart) throws ExceptionZZZ{
 		String sReturn = "";
-		main:{
-				if(StringZZZ.isEmpty(sZoomFactorAliasStart)) break main;
-								
-				//+++++++++++++++++++++++++++++++
+		main:{				
 				HashMap<String,String> hmZoomAlias = this.getHashMapGuiZoomFactorAlias();	
-				if(hmZoomAlias==null){
-					String stemp = "Keine HashMap der ZoomFaktor Aliaswerte gefunden.";
-					System.out.println(ReflectCodeZZZ.getMethodCurrentName() + ": " +stemp);
-					ExceptionZZZ ez = new ExceptionZZZ(stemp,ExceptionZZZ.iERROR_CONFIGURATION_MISSING, this,  ReflectCodeZZZ.getMethodCurrentName());
-					throw ez;		
-				}
-				if(hmZoomAlias.size()==0){
-					String stemp = "Keine Werte in HashMap der ZoomFaktor Aliaswerte gefunden.";
-					System.out.println(ReflectCodeZZZ.getMethodCurrentName() + ": " +stemp);
-					ExceptionZZZ ez = new ExceptionZZZ(stemp,ExceptionZZZ.iERROR_CONFIGURATION_VALUE, this,  ReflectCodeZZZ.getMethodCurrentName());
-					throw ez;		
-				}
-				
-				Set<String> setAlias = hmZoomAlias.keySet();
-				Object[] saAlias = (Object[]) setAlias.toArray();
-				String[] saAliasSorted = StringArrayZZZ.sort(saAlias);
-				long lIndex = StringArrayZZZ.searchIndexFirst(saAliasSorted, sZoomFactorAliasStart);
-				if(lIndex<0) break main;
-				
-				long lIndexReturn = lIndex+1;
-				if(saAliasSorted.length<=lIndexReturn){					
-					sReturn = StringArrayZZZ.getLast(saAliasSorted); //gib den letzten Aliaswert zurück		
-					break main;
-				}
-				
-				Long lngIndexReturn = new Long(lIndexReturn);
-				int iIndexReturn = lngIndexReturn.intValue();				
-				sReturn = saAliasSorted[iIndexReturn];																
+				sReturn = this.getZoomFactorAliasNext_(hmZoomAlias, sZoomFactorAliasStart);														
 		} // end main:
 		return sReturn;
 	}
@@ -301,39 +271,9 @@ public class ApplicationTHM extends KernelUseObjectZZZ{
 	}
 	public String getGuiZoomFactorAliasPrevious(String sZoomFactorAliasStart) throws ExceptionZZZ{
 		String sReturn = "";
-		main:{
-				if(StringZZZ.isEmpty(sZoomFactorAliasStart)) break main;
-								
-				//+++++++++++++++++++++++++++++++
+		main:{				
 				HashMap<String,String> hmZoomAlias = this.getHashMapGuiZoomFactorAlias();	
-				if(hmZoomAlias==null){
-					String stemp = "Keine HashMap der ZoomFaktor Aliaswerte gefunden.";
-					System.out.println(ReflectCodeZZZ.getMethodCurrentName() + ": " +stemp);
-					ExceptionZZZ ez = new ExceptionZZZ(stemp,ExceptionZZZ.iERROR_CONFIGURATION_MISSING, this,  ReflectCodeZZZ.getMethodCurrentName());
-					throw ez;		
-				}
-				if(hmZoomAlias.size()==0){
-					String stemp = "Keine Werte in HashMap der ZoomFaktor Aliaswerte gefunden.";
-					System.out.println(ReflectCodeZZZ.getMethodCurrentName() + ": " +stemp);
-					ExceptionZZZ ez = new ExceptionZZZ(stemp,ExceptionZZZ.iERROR_CONFIGURATION_VALUE, this,  ReflectCodeZZZ.getMethodCurrentName());
-					throw ez;		
-				}
-				
-				Set<String> setAlias = hmZoomAlias.keySet();
-				Object[] saAlias = (Object[]) setAlias.toArray();
-				String[] saAliasSorted = StringArrayZZZ.sort(saAlias);
-				long lIndex = StringArrayZZZ.searchIndexFirst(saAliasSorted, sZoomFactorAliasStart);
-				if(lIndex<0) break main;
-								
-				long lIndexReturn = lIndex-1;
-				if(lIndexReturn<=0){					
-					sReturn = StringArrayZZZ.getFirst(saAliasSorted); //gib den ersten Aliaswert zurück		
-					break main;
-				}
-				
-				Long lngIndexReturn = new Long(lIndexReturn);
-				int iIndexReturn = lngIndexReturn.intValue();
-				sReturn = saAliasSorted[iIndexReturn];																
+				sReturn = this.getZoomFactorAliasPrevious_(hmZoomAlias, sZoomFactorAliasStart);												
 		} // end main:
 		return sReturn;
 	}
@@ -342,24 +282,7 @@ public class ApplicationTHM extends KernelUseObjectZZZ{
 		String sReturn = "";
 		main:{
 			HashMap<String,String> hmZoomAlias = this.getHashMapGuiZoomFactorAlias();	
-			if(hmZoomAlias==null){
-				String stemp = "Keine HashMap der ZoomFaktor Aliaswerte gefunden.";
-				System.out.println(ReflectCodeZZZ.getMethodCurrentName() + ": " +stemp);
-				ExceptionZZZ ez = new ExceptionZZZ(stemp,ExceptionZZZ.iERROR_CONFIGURATION_MISSING, this,  ReflectCodeZZZ.getMethodCurrentName());
-				throw ez;		
-			}
-			if(hmZoomAlias.size()==0){
-				String stemp = "Keine Werte in HashMap der ZoomFaktor Aliaswerte gefunden.";
-				System.out.println(ReflectCodeZZZ.getMethodCurrentName() + ": " +stemp);
-				ExceptionZZZ ez = new ExceptionZZZ(stemp,ExceptionZZZ.iERROR_CONFIGURATION_VALUE, this,  ReflectCodeZZZ.getMethodCurrentName());
-				throw ez;		
-			}
-			
-			Set<String> setAlias = hmZoomAlias.keySet();
-			String[]saAlias = (String[]) setAlias.toArray();
-			
-			sReturn = StringArrayZZZ.getLast(saAlias);
-			
+			sReturn = this.getZoomFactorAliasLast_(hmZoomAlias);
 		} // end main:
 		return sReturn;
 	}
@@ -369,24 +292,7 @@ public class ApplicationTHM extends KernelUseObjectZZZ{
 		String sReturn = "";
 		main:{
 			HashMap<String,String> hmZoomAlias = this.getHashMapGuiZoomFactorAlias();	
-			if(hmZoomAlias==null){
-				String stemp = "Keine HashMap der ZoomFaktor Aliaswerte gefunden.";
-				System.out.println(ReflectCodeZZZ.getMethodCurrentName() + ": " +stemp);
-				ExceptionZZZ ez = new ExceptionZZZ(stemp,ExceptionZZZ.iERROR_CONFIGURATION_MISSING, this,  ReflectCodeZZZ.getMethodCurrentName());
-				throw ez;		
-			}
-			if(hmZoomAlias.size()==0){
-				String stemp = "Keine Werte in HashMap der ZoomFaktor Aliaswerte gefunden.";
-				System.out.println(ReflectCodeZZZ.getMethodCurrentName() + ": " +stemp);
-				ExceptionZZZ ez = new ExceptionZZZ(stemp,ExceptionZZZ.iERROR_CONFIGURATION_VALUE, this,  ReflectCodeZZZ.getMethodCurrentName());
-				throw ez;		
-			}
-			
-			Set<String> setAlias = hmZoomAlias.keySet();
-			String[]saAlias = (String[]) setAlias.toArray();
-			
-			sReturn = StringArrayZZZ.getFirst(saAlias);
-			
+			sReturn = this.getZoomFactorAliasFirst_(hmZoomAlias);
 		} // end main:
 		return sReturn;
 	}
@@ -454,6 +360,9 @@ public class ApplicationTHM extends KernelUseObjectZZZ{
 		}
 		return this.sHexZoomFactorAliasCurrent;		
 	}
+	public void setHexZoomFactorAliasCurrent(String sZoomFactorAlias) throws ExceptionZZZ{
+		this.sHexZoomFactorAliasCurrent = sZoomFactorAlias;		
+	}
 	public String getHexZoomFactor(String sZoomFactorAlias) throws ExceptionZZZ{
 		String sReturn = "";
 		main:{
@@ -498,6 +407,183 @@ public class ApplicationTHM extends KernelUseObjectZZZ{
 	}	
 	public void setHashMapHexZoomFactorAlias(HashMap<String,String> hmZoomFactor){
 		this.hmHexZoomFactorAlias = hmZoomFactor;
+	}
+	
+	
+	public String getHexZoomFactorAliasNext() throws ExceptionZZZ{
+		String sReturn = "";
+		main:{
+				String sZoomFactorAliasCurrent = this.getHexZoomFactorAliasCurrent(); 
+				sReturn = this.getHexZoomFactorAliasNext(sZoomFactorAliasCurrent);								
+		} // end main:
+		return sReturn;
+	}
+	
+	public String getHexZoomFactorAliasNext(String sZoomFactorAliasStart) throws ExceptionZZZ{
+		String sReturn = "";
+		main:{				
+				HashMap<String,String> hmZoomAlias = this.getHashMapHexZoomFactorAlias();	
+				sReturn = this.getZoomFactorAliasNext_(hmZoomAlias, sZoomFactorAliasStart);										
+		} // end main:
+		return sReturn;
+	}
+	
+	public String getHexZoomFactorAliasPrevious() throws ExceptionZZZ{
+		String sReturn = "";
+		main:{
+				String sZoomFactorAliasCurrent = this.getHexZoomFactorAliasCurrent(); 
+				sReturn = this.getHexZoomFactorAliasPrevious(sZoomFactorAliasCurrent);								
+		} // end main:
+		return sReturn;
+	}
+	public String getHexZoomFactorAliasPrevious(String sZoomFactorAliasStart) throws ExceptionZZZ{
+		String sReturn = "";
+		main:{
+				HashMap<String,String> hmZoomAlias = this.getHashMapHexZoomFactorAlias();	
+				sReturn = this.getZoomFactorAliasPrevious_(hmZoomAlias, sZoomFactorAliasStart);															
+		} // end main:
+		return sReturn;
+	}
+	
+	public String getHexZoomFactorAliasLast() throws ExceptionZZZ{
+		String sReturn = "";
+		main:{
+			HashMap<String,String> hmZoomAlias = this.getHashMapHexZoomFactorAlias();	
+			sReturn = this.getZoomFactorAliasLast_(hmZoomAlias);
+		} // end main:
+		return sReturn;
+	}
+	
+	
+	public String getHexZoomFactorAliasFirst() throws ExceptionZZZ{
+		String sReturn = "";
+		main:{
+			HashMap<String,String> hmZoomAlias = this.getHashMapHexZoomFactorAlias();	
+		    sReturn = this.getZoomFactorAliasFirst_(hmZoomAlias);
+		} // end main:
+		return sReturn;
+	}
+	
+	//=== private Methoden, zur Reduzierung von Redundanz
+	private String getZoomFactorAliasFirst_(HashMap<String,String> hmZoomAlias) throws ExceptionZZZ{
+		String sReturn = "";
+		main:{
+			if(hmZoomAlias==null){
+				String stemp = "Keine HashMap der ZoomFaktor Aliaswerte gefunden.";
+				System.out.println(ReflectCodeZZZ.getMethodCurrentName() + ": " +stemp);
+				ExceptionZZZ ez = new ExceptionZZZ(stemp,ExceptionZZZ.iERROR_CONFIGURATION_MISSING, this,  ReflectCodeZZZ.getMethodCurrentName());
+				throw ez;		
+			}
+			if(hmZoomAlias.size()==0){
+				String stemp = "Keine Werte in HashMap der ZoomFaktor Aliaswerte gefunden.";
+				System.out.println(ReflectCodeZZZ.getMethodCurrentName() + ": " +stemp);
+				ExceptionZZZ ez = new ExceptionZZZ(stemp,ExceptionZZZ.iERROR_CONFIGURATION_VALUE, this,  ReflectCodeZZZ.getMethodCurrentName());
+				throw ez;		
+			}
+			
+			Set<String> setAlias = hmZoomAlias.keySet();
+			String[]saAlias = (String[]) setAlias.toArray();
+			
+			sReturn = StringArrayZZZ.getFirst(saAlias);
+		} // end main:
+		return sReturn;
+	}
+	
+	private String getZoomFactorAliasLast_(HashMap<String,String> hmZoomAlias) throws ExceptionZZZ{
+		String sReturn = "";
+		main:{			
+			if(hmZoomAlias==null){
+				String stemp = "Keine HashMap der ZoomFaktor Aliaswerte gefunden.";
+				System.out.println(ReflectCodeZZZ.getMethodCurrentName() + ": " +stemp);
+				ExceptionZZZ ez = new ExceptionZZZ(stemp,ExceptionZZZ.iERROR_CONFIGURATION_MISSING, this,  ReflectCodeZZZ.getMethodCurrentName());
+				throw ez;		
+			}
+			if(hmZoomAlias.size()==0){
+				String stemp = "Keine Werte in HashMap der ZoomFaktor Aliaswerte gefunden.";
+				System.out.println(ReflectCodeZZZ.getMethodCurrentName() + ": " +stemp);
+				ExceptionZZZ ez = new ExceptionZZZ(stemp,ExceptionZZZ.iERROR_CONFIGURATION_VALUE, this,  ReflectCodeZZZ.getMethodCurrentName());
+				throw ez;		
+			}
+			
+			Set<String> setAlias = hmZoomAlias.keySet();
+			String[]saAlias = (String[]) setAlias.toArray();
+			
+			sReturn = StringArrayZZZ.getLast(saAlias);
+			
+		} // end main:
+		return sReturn;
+	}
+	
+	private String getZoomFactorAliasPrevious_(HashMap<String,String> hmZoomAlias, String sZoomFactorAliasStart) throws ExceptionZZZ{
+		String sReturn = "";
+		main:{
+				if(StringZZZ.isEmpty(sZoomFactorAliasStart)) break main;												
+				if(hmZoomAlias==null){
+					String stemp = "Keine HashMap der ZoomFaktor Aliaswerte gefunden.";
+					System.out.println(ReflectCodeZZZ.getMethodCurrentName() + ": " +stemp);
+					ExceptionZZZ ez = new ExceptionZZZ(stemp,ExceptionZZZ.iERROR_CONFIGURATION_MISSING, this,  ReflectCodeZZZ.getMethodCurrentName());
+					throw ez;		
+				}
+				if(hmZoomAlias.size()==0){
+					String stemp = "Keine Werte in HashMap der ZoomFaktor Aliaswerte gefunden.";
+					System.out.println(ReflectCodeZZZ.getMethodCurrentName() + ": " +stemp);
+					ExceptionZZZ ez = new ExceptionZZZ(stemp,ExceptionZZZ.iERROR_CONFIGURATION_VALUE, this,  ReflectCodeZZZ.getMethodCurrentName());
+					throw ez;		
+				}
+				
+				Set<String> setAlias = hmZoomAlias.keySet();
+				Object[] saAlias = (Object[]) setAlias.toArray();
+				String[] saAliasSorted = StringArrayZZZ.sort(saAlias);
+				long lIndex = StringArrayZZZ.searchIndexFirst(saAliasSorted, sZoomFactorAliasStart);
+				if(lIndex<0) break main;
+								
+				long lIndexReturn = lIndex-1;
+				if(lIndexReturn<=0){					
+					sReturn = StringArrayZZZ.getFirst(saAliasSorted); //gib den ersten Aliaswert zurück		
+					break main;
+				}
+				
+				Long lngIndexReturn = new Long(lIndexReturn);
+				int iIndexReturn = lngIndexReturn.intValue();
+				sReturn = saAliasSorted[iIndexReturn];																
+		} // end main:
+		return sReturn;
+	}
+	
+	private String getZoomFactorAliasNext_(HashMap<String,String> hmZoomAlias, String sZoomFactorAliasStart) throws ExceptionZZZ{
+		String sReturn = "";
+		main:{
+				if(StringZZZ.isEmpty(sZoomFactorAliasStart)) break main;	
+				if(hmZoomAlias==null){
+					String stemp = "Keine HashMap der ZoomFaktor Aliaswerte gefunden.";
+					System.out.println(ReflectCodeZZZ.getMethodCurrentName() + ": " +stemp);
+					ExceptionZZZ ez = new ExceptionZZZ(stemp,ExceptionZZZ.iERROR_CONFIGURATION_MISSING, this,  ReflectCodeZZZ.getMethodCurrentName());
+					throw ez;		
+				}
+				if(hmZoomAlias.size()==0){
+					String stemp = "Keine Werte in HashMap der ZoomFaktor Aliaswerte gefunden.";
+					System.out.println(ReflectCodeZZZ.getMethodCurrentName() + ": " +stemp);
+					ExceptionZZZ ez = new ExceptionZZZ(stemp,ExceptionZZZ.iERROR_CONFIGURATION_VALUE, this,  ReflectCodeZZZ.getMethodCurrentName());
+					throw ez;		
+				}
+				
+				Set<String> setAlias = hmZoomAlias.keySet();
+				Object[] saAlias = (Object[]) setAlias.toArray();
+				String[] saAliasSorted = StringArrayZZZ.sort(saAlias);
+				long lIndex = StringArrayZZZ.searchIndexFirst(saAliasSorted, sZoomFactorAliasStart);
+				if(lIndex<0) break main;
+				
+				long lIndexReturn = lIndex+1;
+				if(saAliasSorted.length<=lIndexReturn){					
+					sReturn = StringArrayZZZ.getLast(saAliasSorted); //gib den letzten Aliaswert zurück		
+					break main;
+				}
+				
+				Long lngIndexReturn = new Long(lIndexReturn);
+				int iIndexReturn = lngIndexReturn.intValue();				
+				sReturn = saAliasSorted[iIndexReturn];																
+		} // end main:
+		return sReturn;
 	}
 	
 	//=== Font basierende auf der Zoomeinstellung

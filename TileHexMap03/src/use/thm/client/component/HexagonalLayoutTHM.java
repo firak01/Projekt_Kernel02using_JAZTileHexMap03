@@ -18,9 +18,9 @@ public class HexagonalLayoutTHM extends KernelUseObjectZZZ implements LayoutMana
 	private HexMapTHM objHexMap = null;
 
 	private int iPreferredWidth=0;  //wird berechnet: Die bevorzugte breite des darunterliegenden Panels
-	private int iPreferredHeigth=0; //dito
+	private int iPreferredHeight=0; //dito
 	private int iMinimalWidth = 0;
-	private int iMinimalHeigth = 0; //dito 
+	private int iMinimalHeight = 0; //dito 
 	
 	private int iGapLeftBase = 90; //Bundsteg. Eingef�hrt, damit die Karte richtig reagiert, wenn von aussen gezogene Objekte GEDROPPT werden. Basiswert, weil der Bundsteg ggf. verkleinert werden kann, wenn die Zellen kleiner werden, bzw. es mehr Zellen in einer Zeile gibt.
 	private int iGapDownBase = 10; //Bundsteg nach unten, eingef�hrt, damit die Spitzen der Hexecke in der untersten Reihe auch gezeichnet werden. 
@@ -41,7 +41,14 @@ public class HexagonalLayoutTHM extends KernelUseObjectZZZ implements LayoutMana
 			return 0;
 		}
 	}
-	public int getSideLength(){
+	
+	private void clearSize(){
+		this.iPreferredWidth=0;
+		this.iPreferredHeight=0;
+		this.iMinimalWidth=0;
+		this.iMinimalHeight=0;
+	}
+	public int getSideLength() throws ExceptionZZZ{
 		HexMapTHM objHexMap = this.getHexMap();
 		if(objHexMap!=null){
 			return objHexMap.getSideLength();
@@ -54,8 +61,9 @@ public class HexagonalLayoutTHM extends KernelUseObjectZZZ implements LayoutMana
 	* @param parent
 	* 
 	* lindhaueradmin; 11.09.2008 09:43:26
+	 * @throws ExceptionZZZ 
 	 */
-	public void computeSizes(Container parent){
+	public void computeSizes(Container parent) throws ExceptionZZZ{
 		//int iCompTotal = parent.getComponentCount(); //Gesamtzahl der Sechsecke im Panel
 		//!!! Achtung: Was tun, wenn die Spielfiguren auch hinzugefügt werden ??? Dann ggf. die Gesamtzahl im Konstruktor des Layout Managers mitgeben !!!
 		HexMapTHM objMap = this.getHexMap();
@@ -64,10 +72,7 @@ public class HexagonalLayoutTHM extends KernelUseObjectZZZ implements LayoutMana
 		Dimension d = null;
 		
 		//Reset preferred/minimum width/heigth
-		this.iPreferredWidth=0;
-		this.iPreferredHeigth=0;
-		this.iMinimalWidth = 0;
-		this.iMinimalHeigth = 0;
+		this.clearSize();
 		
  		for (int i = 0; i < iCompTotal; i++){
 			//!!! Vielleicht ist es eine Lösung auf den Namen der Komponente/ Classe der Komponente zuzugreifen und nur bestimmten Komponenten
@@ -90,7 +95,7 @@ public class HexagonalLayoutTHM extends KernelUseObjectZZZ implements LayoutMana
 			//Berechnung der Höhe über die Anzahl der Zeilen. Achtung: Es gibt einen Versatz			
 			int iRow = objMap.getRowTotal();
 			int iOffset = HexCellTHM.getRowHeightOffset(this.getSideLength()) * iRow;
-			this.iPreferredHeigth += (d.height*iRow)- iOffset + this.getGapDown();
+			this.iPreferredHeight += (d.height*iRow)- iOffset + this.getGapDown();
 		}
 		
 	}
@@ -98,7 +103,7 @@ public class HexagonalLayoutTHM extends KernelUseObjectZZZ implements LayoutMana
 		return this.iPreferredWidth;
 	}
 	public int getPreferredHeight(){
-		return this.iPreferredHeigth;
+		return this.iPreferredHeight;
 	}
 	
 	
@@ -172,15 +177,17 @@ public class HexagonalLayoutTHM extends KernelUseObjectZZZ implements LayoutMana
 	 */ 
 	public Dimension preferredLayoutSize(Container parent) {
 		Dimension dim = new Dimension(0,0);
-		
-		this.computeSizes(parent);
-		
-		
-		//Always add the container's insets !
-		Insets insets = parent.getInsets();
-		dim.width = this.getPreferredWidth() + insets.left + insets.right;
-		dim.height = this.getPreferredHeight() + insets.top + insets.bottom;
-		
+		try{
+			this.computeSizes(parent);
+			
+			
+			//Always add the container's insets !
+			Insets insets = parent.getInsets();
+			dim.width = this.getPreferredWidth() + insets.left + insets.right;
+			dim.height = this.getPreferredHeight() + insets.top + insets.bottom;
+		} catch (ExceptionZZZ e) {
+			ReportLogZZZ.write(ReportLogZZZ.ERROR, "ExceptionZZZ: " + e.getDetailAllLast());
+		}
 		return dim;		
 	}
 

@@ -158,10 +158,7 @@ public class TileTHM extends JPanel implements IMapPositionableTHM, IBackendPers
 			this.addMouseListener(objMotionHandler);
 			this.addMouseMotionListener(objMotionHandler);
 //			.addFocusListener()
-		} catch (Exception e) { 
-			// FGL: Anders als im Buch, werden hier die Klassen nicht als Bestandteil der anderen Klassen definiert, sondern müssen über Properties kommunizieren.
-			e.printStackTrace();
-		}
+		
 		
 		
 		this.setBackground(Color.green);
@@ -179,6 +176,11 @@ public class TileTHM extends JPanel implements IMapPositionableTHM, IBackendPers
 		//this.setBounds(30, 30, 30, 30); //Ziel: Es soll nicht in der linken oberen Ecke erscheinen ! //ABER: Es soll noch eine Layout Manger f�r die Zelle geben, der dann automatisch positioniert
 		this.setBounds(iTileSideLength, iTileSideLength,iTileSideLength, iTileSideLength);
 		this.setPreferredSize(dim);
+		
+		} catch (Exception e) { 
+			// FGL: Anders als im Buch, werden hier die Klassen nicht als Bestandteil der anderen Klassen definiert, sondern müssen über Properties kommunizieren.
+			e.printStackTrace();
+		}
 	}
 
 	public void paintComponent(Graphics g){
@@ -186,6 +188,9 @@ public class TileTHM extends JPanel implements IMapPositionableTHM, IBackendPers
 		
 		try{			
 			setOpaque(true);//Schaltet den default Hintergrund aus (normalerweise grau). // Dies auf false gesetzt "opaque heisst 'undurchsichtig' ").
+			
+			//20180901: Damit die intern gespeicherten Variablen wieder neu initialisiert werden können, z.B. durch eine Zoom-Änderung, diese hier "resetten"
+			this.clearSize();
 			
 			//0. Hole den gerade in der Applikation für die Karte eingestellten ZoomFaktor. Diesen als Variable für die INI-Berechnungen zur Verfügung stellen
 			String sHexZoomFactor = ApplicationSingletonTHM.getInstance().getHexZoomFactorCurrent();
@@ -381,16 +386,37 @@ public class TileTHM extends JPanel implements IMapPositionableTHM, IBackendPers
 	public TileMouseMotionHandlerTHM getMouseMotionHandler(){
 		return this.objTileMouseMotionHandler;
 	}		
+	
+	private void clearSize(){
+		this.iHexSideLength=0;
+		this.iTileLabelHeight=0;
+		this.iTileLabelWidth=0;
+		this.iTileSideHeight=0;
+		this.iTileSideLength=0;
+		this.iTileSideWidth=0;
+	}
 	private void setHexSideLength(int iHexSideLength){
 		this.iHexSideLength = iHexSideLength;
 	}
-	public int getHexSideLength(){
+	public int getHexSideLength() throws ExceptionZZZ{
+		//20180901: Wg. Zoombarketi nicht nur initial speichern....
+		//return this.iHexSideLength;
+		int iHexSideLength = ApplicationSingletonTHM.getInstance().getHexFieldSideLengthCurrent();
+		this.iHexSideLength = iHexSideLength;
 		return this.iHexSideLength;
 	}	
-	public int getHexSideHeight(){
+	public int getHexSideHeight() throws ExceptionZZZ{
+		//20180901: Wg. Zoombarketi nicht nur initial speichern....
+		//return this.iHexSideLength;		
+		int iHexSideLength = ApplicationSingletonTHM.getInstance().getHexFieldSideLengthCurrent();
+		this.iHexSideLength = iHexSideLength;
 		return this.iHexSideLength;
 	}
-	public int getHexSideWidth(){
+	public int getHexSideWidth() throws ExceptionZZZ{
+		//20180901: Wg. Zoombarketi nicht nur initial speichern....
+		//return this.iHexSideLength;
+		int iHexSideLength = ApplicationSingletonTHM.getInstance().getHexFieldSideLengthCurrent();
+		this.iHexSideLength = iHexSideLength;
 		return this.iHexSideLength;
 	}
 	
@@ -403,38 +429,38 @@ public class TileTHM extends JPanel implements IMapPositionableTHM, IBackendPers
 		return (int) dRadiusInner / iDivisor;
 	}
 	
-	private int getTileSideLength(){
+	private int getTileSideLength() throws ExceptionZZZ{
 		if(this.iTileSideLength==0){
 			this.iTileSideLength = this.computeTileSideLength(this.getHexSideLength(), 2); // 2 wäre der halbe Platz, 1 ist der ganze Platz
 		}
 		return this.iTileSideLength;
 	}
 	
-	private int getTileLabelHeight(){
+	private int getTileLabelHeight() throws ExceptionZZZ{
 		if(this.iTileLabelHeight==0){
 			this.iTileLabelHeight = this.computeTileSideLength(this.getHexSideLength(),6); // 2 wäre der halbe Platz, 1 ist der ganze Platz
 		}
 		return this.iTileLabelHeight;
 	}
-	private int getTileLabelWidth(){
+	private int getTileLabelWidth() throws ExceptionZZZ{
 		if(this.iTileLabelWidth==0){
 			this.iTileLabelWidth = this.computeTileSideLength(this.getHexSideLength(), 2); // 2 wäre der halbe Platz, 1 ist der ganze Platz
 		}
 		return this.iTileLabelWidth;
 	}
 	
-	private int getTileSideHeight(){
+	private int getTileSideHeight() throws ExceptionZZZ{
 		if(this.iTileSideHeight==0){
 			this.iTileSideHeight = this.computeTileSideLength(this.getHexSideLength(), 1); // 2 wäre der halbe Platz, 1 ist der ganze Platz
 		}
 		return this.iTileSideHeight;
 	}
 	
-	private int getTileSideWidth(){
-		if(this.iTileSideHeight==0){
-			this.iTileSideHeight = this.computeTileSideLength(this.getHexSideLength(), 2); // 2 wäre der halbe Platz, 1 ist der ganze Platz
+	private int getTileSideWidth() throws ExceptionZZZ{
+		if(this.iTileSideWidth==0){
+			this.iTileSideWidth = this.computeTileSideLength(this.getHexSideLength(), 2); // 2 wäre der halbe Platz, 1 ist der ganze Platz
 		}
-		return this.iTileSideHeight;
+		return this.iTileSideWidth;
 	}
 	
 	

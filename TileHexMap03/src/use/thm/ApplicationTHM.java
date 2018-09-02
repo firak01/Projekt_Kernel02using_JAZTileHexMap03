@@ -18,6 +18,7 @@ import basic.zBasicUI.glassPane.dragDropTranslucent.GhostGlassPane;
 import basic.zKernel.KernelUseObjectZZZ;
 import basic.zKernel.KernelZZZ;
 import use.thm.client.FrmMapSingletonTHM;
+import use.thm.client.component.HexMapTHM;
 import use.thm.persistence.dao.TileDefaulttextDao;
 import use.thm.persistence.dao.TileImmutabletextDao;
 import use.thm.persistence.dao.TroopArmyDao;
@@ -39,7 +40,7 @@ public class ApplicationTHM extends KernelUseObjectZZZ{
 	private String sGuiZoomFactorAliasCurrent = null;
 	
 	private Font objFontGuiCurrent = null;
-		
+	private int iHexFieldSideLengthCurrent = 0;
 	
 	public ApplicationTHM(KernelZZZ objKernel) throws ExceptionZZZ{
 		super(objKernel);
@@ -586,7 +587,7 @@ public class ApplicationTHM extends KernelUseObjectZZZ{
 		return sReturn;
 	}
 	
-	//=== Font basierende auf der Zoomeinstellung
+	//=== Font, basierende auf der Zoomeinstellung
 	public Font getGuiFontInitial() throws ExceptionZZZ{
 		Font objReturn = null;
 		{
@@ -594,6 +595,7 @@ public class ApplicationTHM extends KernelUseObjectZZZ{
 		FileIniZZZ objFileConfig = objKernel.getFileConfigIni();
 	
 		//0. Hole den initial in der Applikation für das GUI eingestellten ZoomFaktor. Diesen als Variable für die INI-Berechnungen zur Verfügung stellen
+		String sGuiZoomFactorAliasCurrent = this.getGuiZoomFactorAliasCurrent();
 		String sGuiZoomFactorCurrent = ApplicationSingletonTHM.getInstance().getGuiZoomFactor(sGuiZoomFactorAliasCurrent);							
 		objFileConfig.setVariable("GuiZoomFactorUsed", sGuiZoomFactorCurrent);
 	
@@ -633,6 +635,44 @@ public class ApplicationTHM extends KernelUseObjectZZZ{
 	}
 	public void setGuiFontCurrent(Font font){
 		this.objFontGuiCurrent = font;
+	}
+	
+	//==== Hexfeldgröße, basierende auf der Zoomstufe
+	public int getHexFieldSideLenghtInitial() throws ExceptionZZZ{
+		int iReturn = 0;
+		{
+		KernelSingletonTHM objKernel = KernelSingletonTHM.getInstance();
+		FileIniZZZ objFileConfig = objKernel.getFileConfigIni();
+	
+		//0. Hole den initial in der Applikation für das GUI eingestellten ZoomFaktor. Diesen als Variable für die INI-Berechnungen zur Verfügung stellen
+		String sHexZoomFactorAliasCurrent = this.getHexZoomFactorAliasCurrent();
+		String sHexZoomFactorCurrent = ApplicationSingletonTHM.getInstance().getHexZoomFactor(sHexZoomFactorAliasCurrent);							
+		objFileConfig.setVariable("HexZoomFactorUsed", sHexZoomFactorCurrent);
+	
+ 	    //1. Hole die Seitenlänge des Hexfelds, das basiert auf einer Formel in der Ini Datei:
+		//Für den Parameter "NumberOfColumn wird in Panel verwendet: Modul: 'use.thm.client.FrmMapSingletonTHM'/ Program: 'use.thm.client.PanelMain_CENTERTHM'/ 
+    	String sModuleAlias =  this.getKernelObject().getApplicationKey(); //this.getModuleUsed();// this.getModuleName();
+		String sProgramAlias = "HexMapCentral"; //this.getProgramUsed(); //this.getProgramAlias(); //				
+		System.out.println(ReflectCodeZZZ.getMethodCurrentName() + ": Suche Modul: '" + sModuleAlias +"'/ Program: '" + sProgramAlias + "'/ Parameter: 'HexSideLength'");
+			
+			String sHexSideLength = objKernel.getParameterByProgramAlias(sModuleAlias, sProgramAlias, "HexSideLength" );			
+			if(StringZZZ.isEmpty(sHexSideLength)){
+				iReturn=HexMapTHM.constSideLength;
+			}else{
+				iReturn = StringZZZ.toInteger(sHexSideLength);
+			}
+		}//end main:
+		return iReturn;
+	}
+	
+	public int getHexFieldSideLengthCurrent() throws ExceptionZZZ{		
+		if(this.iHexFieldSideLengthCurrent==0){
+			this.iHexFieldSideLengthCurrent = this.getHexFieldSideLenghtInitial();				
+		}
+		return this.iHexFieldSideLengthCurrent;
+	}
+	public void setHexFieldSideLengthCurrent(int iHexFieldSideLength){
+		this.iHexFieldSideLengthCurrent = iHexFieldSideLength;
 	}
 	
 	//==== METHODEN DER ANWENDUNGSINITIALISIERUNG 

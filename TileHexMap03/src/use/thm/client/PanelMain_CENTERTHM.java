@@ -8,6 +8,7 @@ import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
 import basic.zBasic.ExceptionZZZ;
+import basic.zBasic.ReflectCodeZZZ;
 import basic.zBasic.util.datatype.string.StringZZZ;
 import basic.zBasic.util.log.ReportLogZZZ;
 import basic.zKernel.KernelZZZ;
@@ -16,6 +17,7 @@ import basic.zKernelUI.component.KernelJPanelCascadedZZZ;
 
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Graphics;
 import java.util.HashMap;
 
 import javax.swing.JLabel;
@@ -57,14 +59,8 @@ public class PanelMain_CENTERTHM extends KernelJPanelCascadedZZZ implements IHex
 			String sNumberOfRow = this.getKernelObject().getParameterByProgramAlias(sModuleAlias, sProgramAlias, "NumberOfRow" );
 			int iNumberOfRow = Integer.parseInt(sNumberOfRow);
 			
-			String sHexSideLength = this.getKernelObject().getParameterByProgramAlias(sModuleAlias, sProgramAlias, "HexSideLength" );
-			int iHexSideLength = Integer.parseInt(sHexSideLength);
-			
-			//Merke: Beim Applikationsstart werden bestimmte ini-Variablen gefüllt.
-			String sHexZoomFactor = this.getKernelObject().getFileConfigIni().getVariable("HexZoomFactorUsed");//this.getKernelObject().getParameterByProgramAlias(sModuleAlias, sProgramAlias, "HexZoomFactorAliasStart" );
-			int iHexZoomFactor = StringZZZ.toInteger(sHexZoomFactor);
-			
-			int iHexSideLengthUsed = iHexSideLength * iHexZoomFactor;
+			String sHexSideLengthUsed = this.getKernelObject().getParameterByProgramAlias(sModuleAlias, sProgramAlias, "HexSideLength" );
+			int iHexSideLengthUsed = StringZZZ.toInteger(sHexSideLengthUsed);
 			
 			//Die Hexadimensionale Karte aufbauen.			
 			HexMapTHM objMap = new HexMapTHM(objKernel, this, iNumberOfColumn, iNumberOfRow, iHexSideLengthUsed);
@@ -120,5 +116,67 @@ public class PanelMain_CENTERTHM extends KernelJPanelCascadedZZZ implements IHex
 	public void setHexMap(HexMapTHM objMap) {
 		this.objHexMap = objMap;		
 	}
+	
+	/* FGL 20180901: Versuch die Karte Zoombar zu machen, Es fehlt noch das neue Zeichnen der Sechsecke */
+	public void paintComponent(Graphics g){
+		super.paintComponent(g);
+		
+//		try {
+			String stemp = ReflectCodeZZZ.getMethodCurrentName() + ": Zeichne alle Komponenten erneut.";
+			System.out.println(stemp);
+			ReportLogZZZ.write(ReportLogZZZ.DEBUG, stemp);
+							
+			/* PROBLEM DAS WIRD DANN PERMANENT NEU GEZEICHNET. IDEE: Beim Zoomen die Karte neu bauen...
+			 * 
+			 
+			//Werte für die Kartengröße auslesen			
+//			String sModuleAlias = this.getModuleName();
+//			String sProgramAlias = this.getProgramAlias();
+//		
+//			System.out.println("Suche Modul: '" + sModuleAlias +"'/ Program: '" + sProgramAlias + "'/ Parameter: 'NumberOfColumn'");
+//			String sNumberOfColumn = this.getKernelObject().getParameterByProgramAlias(sModuleAlias, sProgramAlias, "NumberOfColumn" );
+//			int iNumberOfColumn = Integer.parseInt(sNumberOfColumn);
+//			
+//			String sNumberOfRow = this.getKernelObject().getParameterByProgramAlias(sModuleAlias, sProgramAlias, "NumberOfRow" );
+//			int iNumberOfRow = Integer.parseInt(sNumberOfRow);
+//			
+//			String sHexSideLengthUsed = this.getKernelObject().getParameterByProgramAlias(sModuleAlias, sProgramAlias, "HexSideLength" );
+//			int iHexSideLengthUsed = StringZZZ.toInteger(sHexSideLengthUsed);
+			
+			//##########################
+			//### Zeichne das Kartenpanel
+			//### Merke: Die Zellen wurden zuvor im Konstruktor von HexMapTHM mit der Methode fillMap() erstellt, inklusive des persistierbaren Objekts.
+			//this.setLayout(null);   //Dadurch muss jede Komponente selbst seine "Bounds" setzen. Merke: Ohne Layout-Manger ist das Panel nicht in der Lage sein Größe korrekt zu initialisieren.
+//			HexMapTHM objMap = new HexMapTHM(objKernel, this, iNumberOfColumn, iNumberOfRow, iHexSideLengthUsed);
+//			this.setHexMap(objMap);
+			HexMapTHM objMap = this.getHexMap();
+//			HexagonalLayoutTHM layout = new HexagonalLayoutTHM(objKernel, objMap);
+//			this.setLayout(layout);
+			this.setBackground(Color.white);
+				
+			HashMapMultiZZZ hmCell = objMap.getMapCell();
+			
+			HexCellTHM cellTemp = null;
+			for(int iY=1; iY <= objMap.getRowMax(); iY++){			
+				Integer intY=new Integer(iY);
+				String sY = intY.toString();
+				
+				for(int iX=1; iX <= objMap.getColumnMax(); iX++){
+					Integer intX = new Integer(iX);
+					String sX = intX.toString();
+					
+					cellTemp = (HexCellTHM) hmCell.get(sX,sY);
+					if(cellTemp!=null){
+						cellTemp.setVisible(true);
+						cellTemp.repaint();
+					}
+				} //end for iX
+			} //end for iY
 
+		} catch (ExceptionZZZ e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		*/
+	}	
 }

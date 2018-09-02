@@ -35,7 +35,8 @@ public class UIHelper_SwingWorker4ProgramMapZoomTHM {
 		ApplicationSingletonTHM.getInstance().setHexZoomFactorAliasCurrent(sMapZoomFactorAliasCurrent);
 		
 		String sMapZoomFactorCurrent = ApplicationSingletonTHM.getInstance().getHexZoomFactorCurrent();							
-		objFileConfig.setVariable("MapZoomFactorUsed", sMapZoomFactorCurrent);
+		//objFileConfig.setVariable("MapZoomFactorUsed", sMapZoomFactorCurrent);
+		objFileConfig.setVariable("HexZoomFactorUsed", sMapZoomFactorCurrent);
 				
 	}
 }

@@ -158,13 +158,20 @@ public class HexMapTHM extends KernelUseObjectZZZ implements ITileEventUserTHM {
 	* @return
 	* 
 	* lindhaueradmin; 12.09.2008 08:18:06
+	 * @throws ExceptionZZZ 
 	 */
-	public int getSideLength(){
-		if(this.iSideLength<=0){
-			return HexMapTHM.constSideLength;
-		}else{
-			return this.iSideLength;
-		}
+	public int getSideLength() throws ExceptionZZZ{
+		//20180901: Wg. der Zoombarkeit die  Seitenlänge direkt aus dem Application-Objekt auslesen.
+		//               Damit ist sie flexibel und braucht hier nicht mehr gespeichert zu werden.
+//		if(this.iSideLength<=0){
+//			return HexMapTHM.constSideLength;
+//		}else{
+//			return this.iSideLength;
+//		}
+		
+		int iSideLength = ApplicationSingletonTHM.getInstance().getHexFieldSideLengthCurrent();
+		this.iSideLength = iSideLength;
+		return this.iSideLength;
 	}
 	
 	/**Bei fillMap() wird die Anzahl der erzeugten Zellen vermerkt. 

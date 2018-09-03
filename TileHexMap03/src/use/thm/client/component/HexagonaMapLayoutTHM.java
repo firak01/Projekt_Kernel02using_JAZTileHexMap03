@@ -14,7 +14,7 @@ import basic.zBasic.util.math.MathZZZ;
 import basic.zKernel.KernelUseObjectZZZ;
 import basic.zKernel.KernelZZZ;
 
-public class HexagonalLayoutTHM extends KernelUseObjectZZZ implements LayoutManager{
+public class HexagonaMapLayoutTHM extends KernelUseObjectZZZ implements LayoutManager{
 	private HexMapTHM objHexMap = null;
 
 	private int iPreferredWidth=0;  //wird berechnet: Die bevorzugte breite des darunterliegenden Panels
@@ -22,10 +22,10 @@ public class HexagonalLayoutTHM extends KernelUseObjectZZZ implements LayoutMana
 	private int iMinimalWidth = 0;
 	private int iMinimalHeight = 0; //dito 
 	
-	private int iGapLeftBase = 90; //Bundsteg. Eingef�hrt, damit die Karte richtig reagiert, wenn von aussen gezogene Objekte GEDROPPT werden. Basiswert, weil der Bundsteg ggf. verkleinert werden kann, wenn die Zellen kleiner werden, bzw. es mehr Zellen in einer Zeile gibt.
+	private int iGapLeftBase = 90; //Bundsteg. Eingeführt, damit die Karte richtig reagiert, wenn von aussen gezogene Objekte GEDROPPT werden. Basiswert, weil der Bundsteg ggf. verkleinert werden kann, wenn die Zellen kleiner werden, bzw. es mehr Zellen in einer Zeile gibt.
 	private int iGapDownBase = 10; //Bundsteg nach unten, eingef�hrt, damit die Spitzen der Hexecke in der untersten Reihe auch gezeichnet werden. 
 	
-	public HexagonalLayoutTHM(KernelZZZ objKernel, HexMapTHM map){
+	public HexagonaMapLayoutTHM(KernelZZZ objKernel, HexMapTHM map){
 		super(objKernel);
 		this.objHexMap=map;
 	}

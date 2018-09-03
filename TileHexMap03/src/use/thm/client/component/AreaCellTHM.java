@@ -351,6 +351,7 @@ public class AreaCellTHM  extends HexCellTHM implements IListenerTileMetaTHM{
 			//F�ge den neuen Spielstein in diese Zelle ein.	
 			if(bReturn){
 				this.add(eventTileCreated.getTile());
+				this.validate();
 				this.repaint();
 			}
 		}

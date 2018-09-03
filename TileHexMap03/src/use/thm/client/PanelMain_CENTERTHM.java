@@ -26,7 +26,7 @@ import use.thm.ApplicationSingletonTHM;
 import use.thm.IHexMapUserTHM;
 import use.thm.client.component.HexCellTHM;
 import use.thm.client.component.HexMapTHM;
-import use.thm.client.component.HexagonalLayoutTHM;
+import use.thm.client.component.HexagonaMapLayoutTHM;
 import use.thm.client.component.HexagonalCellLayoutTHM;
 import use.thm.persistence.model.HexCell;
 import basic.zBasic.util.abstractList.HashMapMultiZZZ;
@@ -74,7 +74,7 @@ public class PanelMain_CENTERTHM extends KernelJPanelCascadedZZZ implements IHex
 			//### Fülle das Kartenpanel
 			//### Merke: Die Zellen wurden zuvor im Konstruktor von HexMapTHM mit der Methode fillMap() erstellt, inklusive des persistierbaren Objekts.
 			//this.setLayout(null);   //Dadurch muss jede Komponente selbst seine "Bounds" setzen. Merke: Ohne Layout-Manger ist das Panel nicht in der Lage sein Größe korrekt zu initialisieren. 
-			HexagonalLayoutTHM layout = new HexagonalLayoutTHM(objKernel, objMap);
+			HexagonaMapLayoutTHM layout = new HexagonaMapLayoutTHM(objKernel, objMap);
 			this.setLayout(layout);
 			this.setBackground(Color.white);
 				
@@ -117,66 +117,21 @@ public class PanelMain_CENTERTHM extends KernelJPanelCascadedZZZ implements IHex
 		this.objHexMap = objMap;		
 	}
 	
-	/* FGL 20180901: Versuch die Karte Zoombar zu machen, Es fehlt noch das neue Zeichnen der Sechsecke */
+	/* 20180901: Die Karte Zoombar zu machen und dafür sorgen, dass die HexCell-Objekte aneinander gefügt bleiben. */
 	public void paintComponent(Graphics g){
 		super.paintComponent(g);
 		
-//		try {
 			String stemp = ReflectCodeZZZ.getMethodCurrentName() + ": Zeichne alle Komponenten erneut.";
 			System.out.println(stemp);
 			ReportLogZZZ.write(ReportLogZZZ.DEBUG, stemp);
-							
-			/* PROBLEM DAS WIRD DANN PERMANENT NEU GEZEICHNET. IDEE: Beim Zoomen die Karte neu bauen...
-			 * 
-			 
-			//Werte für die Kartengröße auslesen			
-//			String sModuleAlias = this.getModuleName();
-//			String sProgramAlias = this.getProgramAlias();
-//		
-//			System.out.println("Suche Modul: '" + sModuleAlias +"'/ Program: '" + sProgramAlias + "'/ Parameter: 'NumberOfColumn'");
-//			String sNumberOfColumn = this.getKernelObject().getParameterByProgramAlias(sModuleAlias, sProgramAlias, "NumberOfColumn" );
-//			int iNumberOfColumn = Integer.parseInt(sNumberOfColumn);
-//			
-//			String sNumberOfRow = this.getKernelObject().getParameterByProgramAlias(sModuleAlias, sProgramAlias, "NumberOfRow" );
-//			int iNumberOfRow = Integer.parseInt(sNumberOfRow);
-//			
-//			String sHexSideLengthUsed = this.getKernelObject().getParameterByProgramAlias(sModuleAlias, sProgramAlias, "HexSideLength" );
-//			int iHexSideLengthUsed = StringZZZ.toInteger(sHexSideLengthUsed);
+								
+			//20180903: Größe der HexCell - Objekte wird nun verändert, aber... die Postion der HexCell-Objekte nicht. Das sieht dann so aus, als gäbe es große Zwischen räume.
+			//                 Es hilft es den layout-Manager erneut aufzurufen, dann werden die Sechsecke wieder aneinander gefügt.
+			HexagonaMapLayoutTHM layout = (HexagonaMapLayoutTHM) this.getLayout();
+			if(layout!=null) layout.layoutContainer(this);
 			
-			//##########################
-			//### Zeichne das Kartenpanel
-			//### Merke: Die Zellen wurden zuvor im Konstruktor von HexMapTHM mit der Methode fillMap() erstellt, inklusive des persistierbaren Objekts.
-			//this.setLayout(null);   //Dadurch muss jede Komponente selbst seine "Bounds" setzen. Merke: Ohne Layout-Manger ist das Panel nicht in der Lage sein Größe korrekt zu initialisieren.
-//			HexMapTHM objMap = new HexMapTHM(objKernel, this, iNumberOfColumn, iNumberOfRow, iHexSideLengthUsed);
-//			this.setHexMap(objMap);
-			HexMapTHM objMap = this.getHexMap();
-//			HexagonalLayoutTHM layout = new HexagonalLayoutTHM(objKernel, objMap);
-//			this.setLayout(layout);
-			this.setBackground(Color.white);
-				
-			HashMapMultiZZZ hmCell = objMap.getMapCell();
-			
-			HexCellTHM cellTemp = null;
-			for(int iY=1; iY <= objMap.getRowMax(); iY++){			
-				Integer intY=new Integer(iY);
-				String sY = intY.toString();
-				
-				for(int iX=1; iX <= objMap.getColumnMax(); iX++){
-					Integer intX = new Integer(iX);
-					String sX = intX.toString();
-					
-					cellTemp = (HexCellTHM) hmCell.get(sX,sY);
-					if(cellTemp!=null){
-						cellTemp.setVisible(true);
-						cellTemp.repaint();
-					}
-				} //end for iX
-			} //end for iY
-
-		} catch (ExceptionZZZ e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		*/
+			//20180901 Problem: nach dem Aneinanderfügen der Sechsecke sind die Spielsteine auf ihrer alten Postion geblieben.
+			//20180901 Lösungsansatz: HexCellTHM-Objekte mit einem eigenen LayoutManager versehen. (HexagonalCellLayoutTHM).
+			//                Diesen jeweils in HexMapTHM.fillMap() hinzufügen und dann in wird beim repaint() automatisch HexagonalCellLayoutTHM.layoutcontainer(container) aufgerufen.
 	}	
 }

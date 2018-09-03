@@ -7,6 +7,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 import javax.persistence.Query;
+import javax.swing.BoxLayout;
 import javax.swing.JLayeredPane;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -361,7 +362,14 @@ public class HexMapTHM extends KernelUseObjectZZZ implements ITileEventUserTHM {
 			 */
 				
 				//TODO: Die Zelle soll ein eigenes Layout bekommen, das die Spielsteine automatisch anordnet.
-				objCellThmTemp.setLayout(null);
+				//objCellThmTemp.setLayout(null);
+				//20180903 Das Layout ist nun wichtig, damit die Spielsteine beim Zoomen nicht in ihrer Position verrutschen.
+				//BoxLayout layoutBox = new BoxLayout(objCellThmTemp, BoxLayout.X_AXIS);
+				//objCellThmTemp.setLayout(layoutBox);
+				
+				//TODO GOON 2018-09-03: Versuch mit einem eigenen CellLayout die Spielsteine auch richtig zu setzen, wenn gezoomt wird.
+				HexagonalCellLayoutTHM layoutHexCell = new HexagonalCellLayoutTHM(this.getKernelObject(), objCellThmTemp);
+				objCellThmTemp.setLayout(layoutHexCell);
 				
 				//Am MoveEventBroker registrieren
 				objTileMoveEventBroker.addListenerTileMoved(objCellThmTemp);
@@ -383,9 +391,12 @@ public class HexMapTHM extends KernelUseObjectZZZ implements ITileEventUserTHM {
 					objCeThmlTemp.setIcon(background);
 				 */
 				
-				//TODO: Die Zelle soll ein eigenes Layout bekommen, das die Spielsteine automatisch anordnet.
-				objCellThmTemp.setLayout(null);
-				
+				//20180903: Die Zelle bekommt ein eigenes Layout, das die Spielsteine automatisch anordnet.
+				//                 Damit wird der Spielstein auch richtig in der Karte gesetzt zu setzen, wenn durch Zoomen sie Areas kleiner werden.
+				//objCellThmTemp.setLayout(null);
+				HexagonalCellLayoutTHM layoutHexCell = new HexagonalCellLayoutTHM(this.getKernelObject(), objCellThmTemp);
+				objCellThmTemp.setLayout(layoutHexCell);
+							
 				//Am MoveEventBroker registrieren
 				objTileMoveEventBroker.addListenerTileMoved(objCellThmTemp);
 				
@@ -458,8 +469,6 @@ public class HexMapTHM extends KernelUseObjectZZZ implements ITileEventUserTHM {
 				objTroopDaoFacade.fillTroopArmyDto((TroopArmy) objTroop, dto);				
 				//dto.set(ITileDtoAttribute.UNIQUENAME, sUniquename);				
 				//dto.set(ITileDtoAttribute.VARIANT_SHORTTEXT, "NEUTEST");
-				
-		
 				
 				ArmyTileTHM objArmyTemp = new ArmyTileTHM(panelMap, objTileMoveEventBroker, dto, sX, sY, this.getSideLength());
 				EventTileCreatedInCellTHM objEventTileCreated = new EventTileCreatedInCellTHM(objArmyTemp, 1, sX, sY);
@@ -608,6 +617,12 @@ public class HexMapTHM extends KernelUseObjectZZZ implements ITileEventUserTHM {
 					
 					//TODO: Die Zelle soll ein eigenes Layout bekommen, das die Spielsteine automatisch anordnet.
 					objCellThmTemp.setLayout(null);
+					//20180903 Das Layout ist nun wichtig, damit die Spielsteine beim Zoomen nicht in ihrer Position verrutschen.
+//					BoxLayout layoutBox = new BoxLayout(objCellThmTemp, BoxLayout.X_AXIS);
+//					objCellThmTemp.setLayout(layoutBox);
+					
+//					HexagonalCellLayoutTHM layoutHexCell = new HexagonalCellLayoutTHM(this.getKernelObject(), objCellThmTemp);
+//					objCellThmTemp.setLayout(layoutHexCell);
 					
 					//Am MoveEventBroker registrieren
 					objTileMoveEventBroker.addListenerTileMoved(objCellThmTemp);
@@ -780,6 +795,12 @@ public class HexMapTHM extends KernelUseObjectZZZ implements ITileEventUserTHM {
 				
 				//TODO: Die Zelle soll ein eigenes Layout bekommen, das die Spielsteine automatisch anordnet.
 				objCellThmTemp.setLayout(null);
+				//20180903 Das Layout ist nun wichtig, damit die Spielsteine beim Zoomen nicht in ihrer Position verrutschen.
+//				BoxLayout layoutBox = new BoxLayout(objCellThmTemp, BoxLayout.X_AXIS);
+//				objCellThmTemp.setLayout(layoutBox);
+				
+				HexagonalCellLayoutTHM layoutHexCell = new HexagonalCellLayoutTHM(this.getKernelObject(), objCellThmTemp);
+				objCellThmTemp.setLayout(layoutHexCell);
 				
 				//Am MoveEventBroker registrieren
 				this.getTileMoveEventBroker().addListenerTileMoved(objCellThmTemp);
@@ -1129,6 +1150,12 @@ public class HexMapTHM extends KernelUseObjectZZZ implements ITileEventUserTHM {
 					
 					//TODO: Die Zelle soll ein eigenes Layout bekommen, das die Spielsteine automatisch anordnet.
 					objCellThmTemp.setLayout(null);
+					//20180903 Das Layout ist nun wichtig, damit die Spielsteine beim Zoomen nicht in ihrer Position verrutschen.
+//					BoxLayout layoutBox = new BoxLayout(objCellThmTemp, BoxLayout.X_AXIS);
+//					objCellThmTemp.setLayout(layoutBox);
+					
+//					HexagonalCellLayoutTHM layoutHexCell = new HexagonalCellLayoutTHM(this.getKernelObject(), objCellThmTemp);
+//					objCellThmTemp.setLayout(layoutHexCell);
 					
 					//Am MoveEventBroker registrieren
 					objTileMoveEventBroker.addListenerTileMoved(objCellThmTemp);

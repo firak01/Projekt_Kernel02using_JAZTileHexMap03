@@ -21,7 +21,7 @@ import use.thm.IVariantCatalogUserTHM;
 import use.thm.client.component.BoxTHM;
 import use.thm.client.component.HexCellTHM;
 import use.thm.client.component.HexMapTHM;
-import use.thm.client.component.HexagonalLayoutTHM;
+import use.thm.client.component.HexagonaMapLayoutTHM;
 import use.thm.client.component.VariantCatalogTHM;
 import use.thm.client.dragDropTranslucent.GhostDropManagerHexMapPanelTHM;
 import basic.zBasic.ExceptionZZZ;

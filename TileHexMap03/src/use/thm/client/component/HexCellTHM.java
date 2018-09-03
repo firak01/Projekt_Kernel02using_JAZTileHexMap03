@@ -19,7 +19,9 @@ import javax.persistence.Id;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.Table;
+import javax.swing.BoxLayout;
 
+import use.thm.ApplicationSingletonTHM;
 import use.thm.IMapFixedTHM;
 import use.thm.IMapPositionableTHM;
 import use.thm.client.event.EventCellAffectedTHM;
@@ -63,7 +65,7 @@ public class HexCellTHM extends KernelJPanelCascadedZZZ implements IMapFixedTHM,
 	 private Point[] paNeighbourCellAll = null;     //Die Koordianten aller unmittelbaren Nachbarzellen
 	
 	 
-	 private int iSideLength = 0;  //Das ist die Kantenl�nge des gleichseitigen Sechsecks
+	 private int iSideLength = 0;  //Das ist die Kantenlänge des gleichseitigen Sechsecks. Merke 20180901: Nun Änderbar beim Zoomen 
 
 	 private int iXLeftUpperCorner = 0; //Wichtig f�r das Zeichnen des Sechsecks
 	 private int iYLeftUpperCorner = 0;
@@ -123,13 +125,26 @@ public class HexCellTHM extends KernelJPanelCascadedZZZ implements IMapFixedTHM,
 	* @return
 	* 
 	* lindhaueradmin; 11.09.2008 09:21:12
+	 * @throws ExceptionZZZ 
 	 */
-	public int getSideLength(){
+	public int getSideLength() throws ExceptionZZZ{
+		//20180901: Wg. Zoombarketi nicht nur initial speichern....  return this.iSideLength;
+		if(iSideLength<=0){
+			int iHexSideLength = ApplicationSingletonTHM.getInstance().getHexFieldSideLengthCurrent();
+			this.setSideLength(iHexSideLength);
+		}
 		return this.iSideLength;
+	}
+	private void clearSize(){
+		this.iSideLength=0;		
+	}
+	private void setSideLength(int iSideLength){
+		this.iSideLength = iSideLength;
 	}
 	
 	 public Polygon DrawHex(Graphics g)
 	 {
+		 	try{
 		 	int[] xEcke=new int[6];
 		 	int[] yEcke=new int[6];
 		 	
@@ -147,7 +162,7 @@ public class HexCellTHM extends KernelJPanelCascadedZZZ implements IMapFixedTHM,
 		 	xEcke[1] = x0+x1-2;//-1 feinsteuerung
 		 	yEcke[1] = y0-y1-1; //minus, weil y=0 auf dem Bildschirm nach oben ist //-1 feinsteuereung
 		 	
-		 	//die Koordinaten der �brigen Ecken sind:
+		 	//die Koordinaten der übrigen Ecken sind:
 		 	xEcke[2] = x0+2*x1;
 		 	yEcke[2] = y0;
 		 	
@@ -165,17 +180,22 @@ public class HexCellTHM extends KernelJPanelCascadedZZZ implements IMapFixedTHM,
 		 	
 		 	this.po = new Polygon(xEcke, yEcke, 6);
 		 	g.drawPolygon(po);
-		 	return po;   //Damit kann dann weiteres gemacht werden, gef�llt etc.
+		 
 		 	
 		 	
 		 	
 		 	//zu Testzwecken ein Rechteck zeichnen, das angibt wie groß die JComponent ist.
-		 	/*
+		 	//*
 		 	this.setOpaque(true);
 		 	Rectangle re = po.getBounds();
 		 	g.drawRect((int)re.getX(), (int) re.getY(), re.width, re.height);
-		 	*/
-		 	// nicht sofrot f�llen, dies soll in den Unterklassen geschehen, wenn z.B. die Geländeart bekannt ist fillPolygon(xEcke, yEcke, 6);
+		 	//*/
+		 	// nicht sofrot füllen, dies soll in den Unterklassen geschehen, wenn z.B. die Geländeart bekannt ist fillPolygon(xEcke, yEcke, 6);
+		 	
+			} catch (ExceptionZZZ e) {
+				e.printStackTrace();
+			}
+		 	return this.po;   //Damit kann dann weiteres gemacht werden, gefüllt etc.
 	 }
 	 
 	 /** Die errechnete horizontale Breite eines auf einer Spitze stehenden gleichseitigen Sechsecks (also von Seite zu Seite).
@@ -253,11 +273,26 @@ public class HexCellTHM extends KernelJPanelCascadedZZZ implements IMapFixedTHM,
 	 }
 	
 	public void paintComponent(Graphics g){
-		setVisible(true);
-		setOpaque(false); //also doch auf false!! // Dies auf true gesetzt "opaque heisst 'undurchsichtig' ").
-		
-		Polygon po = DrawHex(g);
-		fillDetail(g, po);	 				
+		//super.paintComponent(g); //Dannn sehen die Hexfelder beim ersten Aufbau mit abgechnittenen Spitzen aus. Und beim ZOOM hilft das auch nicht.   
+		try{
+			//20180901: Damit die intern gespeicherten Variablen wieder neu initialisiert werden können, z.B. durch eine Zoom-Änderung, diese hier "resetten"
+			this.clearSize();
+			
+			int iSideLength = this.getSideLength();
+			int iWidth = HexCellTHM.getRectWidth(iSideLength) + 1;
+			int iHeigth = HexCellTHM.getRectHeight(iSideLength)+1;
+			Dimension dim = new Dimension(iWidth, iHeigth);
+			this.setPreferredSize(dim);
+			
+			setVisible(true);
+			setOpaque(false); //also doch auf false!! // Dies auf true gesetzt "opaque heisst 'undurchsichtig' ").
+			
+			Polygon po = DrawHex(g);
+			fillDetail(g, po);	 				
+
+		} catch (ExceptionZZZ e) {
+			e.printStackTrace();
+		}
 	}
 	
 	/** Fülle Details in die Zelle, 
@@ -328,6 +363,7 @@ public class HexCellTHM extends KernelJPanelCascadedZZZ implements IMapFixedTHM,
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
+			this.validate();
 			this.repaint();
 			
 			Cursor objCursor = new Cursor(Cursor.CROSSHAIR_CURSOR);
@@ -347,6 +383,7 @@ public class HexCellTHM extends KernelJPanelCascadedZZZ implements IMapFixedTHM,
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
+			this.validate();
 			this.repaint();
 		}
 		return true;
@@ -373,6 +410,7 @@ public class HexCellTHM extends KernelJPanelCascadedZZZ implements IMapFixedTHM,
 			bRepaint = true;
 		}
 		if(bRepaint==true){
+			this.validate();
 			this.repaint();
 		}
 		return true;
@@ -392,6 +430,7 @@ public class HexCellTHM extends KernelJPanelCascadedZZZ implements IMapFixedTHM,
 		} catch (ExceptionZZZ e) {			
 			e.printStackTrace();
 		}
+		this.validate();
 		this.repaint(); //da diese Zelle ggf. weder eine Zelle ist, die gerade verlassen oder betreten wird, sorgt kein Event daf�r, das neu gezeichnet wird. Also hier neu zeichnen.
 		
 		Cursor objCursor = new Cursor(Cursor.DEFAULT_CURSOR);

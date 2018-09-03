@@ -36,7 +36,7 @@ import use.thm.ApplicationSingletonTHM;
 import use.thm.IVariantCatalogUserTHM;
 import use.thm.client.component.HexCellTHM;
 import use.thm.client.component.HexMapTHM;
-import use.thm.client.component.HexagonalLayoutTHM;
+import use.thm.client.component.HexagonaMapLayoutTHM;
 import use.thm.client.component.VariantCatalogTHM;
 import use.thm.client.dragDropTranslucent.GhostDropManagerHexMapPanelTHM;
 import use.zBasicUI.component.UIHelper_SwingWorker4ProgramGuiZoomTHM;
@@ -263,7 +263,8 @@ public class PanelMain_NORTHTHM extends KernelJPanelCascadedZZZ{
 							ApplicationSingletonTHM.getInstance().setGuiFontCurrent(null);
 																					
 							Font font = ApplicationSingletonTHM.getInstance().getGuiFontCurrent();
-							panel.updateComponentFontAll(font);																					
+							panel.updateComponentFontAll(font);	
+							panel.validate();
 							panel.repaint();	
 							
 																											
@@ -296,11 +297,13 @@ public class PanelMain_NORTHTHM extends KernelJPanelCascadedZZZ{
 						     }
 							 
 							 //Merke 20180828: Erst einmal daran Gescheitert. Die Idee war: "Statt des Entfernen und Neuanlegen in den Box-Komponenten eine paint-Methode verwenden."
+							 panelCatalog.validate();
 							panelCatalog.repaint();
 							
 							//+++++++++++++++++++++++
 							ReportLogZZZ.write(ReportLogZZZ.DEBUG, ReflectCodeZZZ.getMethodCurrentName() + ": Updating Gui Font - COMPONENT (d.h. Buttons des aktuellen Panels)");														
-							panel.updateComponentFontAll(font);																					
+							panel.updateComponentFontAll(font);
+							panel.validate();
 							panel.repaint();	
 
 							//+++++++++++++++++++++++
@@ -640,7 +643,8 @@ public class PanelMain_NORTHTHM extends KernelJPanelCascadedZZZ{
 									ApplicationSingletonTHM.getInstance().setHexFieldSideLengthCurrent(0); //20180901: Damit sich auch die Größe der Sechsecke ändert. Deren Seitenlänge aus der ini-Formel neu Berechnen lassen.
 									
 									//PROBLEM: Nachbarpanels updaten und neu zeichnen
-									PanelMain_CENTERTHM panelMap = (PanelMain_CENTERTHM) panel.searchPanelSub("CENTER");																		
+									PanelMain_CENTERTHM panelMap = (PanelMain_CENTERTHM) panel.searchPanelSub("CENTER");		
+									panelMap.validate();
 									panelMap.repaint();
 																	
 								} catch (ExceptionZZZ e) {
@@ -784,7 +788,8 @@ public class PanelMain_NORTHTHM extends KernelJPanelCascadedZZZ{
 											ApplicationSingletonTHM.getInstance().setHexFieldSideLengthCurrent(0); //20180901: Damit sich auch die Größe der Sechsecke ändert. Deren Seitenlänge aus der ini-Formel neu Berechnen lassen.
 											
 											//PROBLEM: Nachbarpanels updaten und neu zeichnen
-											PanelMain_CENTERTHM panelMap = (PanelMain_CENTERTHM) panel.searchPanelSub("CENTER");																		
+											PanelMain_CENTERTHM panelMap = (PanelMain_CENTERTHM) panel.searchPanelSub("CENTER");		
+											panelMap.validate();
 											panelMap.repaint();
 																													
 										} catch (ExceptionZZZ e) {

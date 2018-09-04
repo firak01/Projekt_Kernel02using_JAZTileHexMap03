@@ -189,7 +189,15 @@ public class TileTHM extends JPanel implements IMapPositionableTHM, IBackendPers
 			//2. Der Hintergrund des Spielsteins: Der Labelkasten (über das Bild, darum erst nach dem Bild malen!!!)
 			int iTileLabelWidth = this.getTileLabelWidth();
 			int iTileLabelHeight = this.getTileLabelHeight();
-			
+	      
+			//+++ Versuch die Prefered Size für den LayoutManager der HexCell zur Verfügung zu stellen.
+			int iTileWidthTotal =  iTileLabelWidth;
+			//int iTileHeightTotal = iTileSideLength + iTileLabelHeight + iFontOffsetUsed;
+			int iTileHeightTotal = iTileSideLength - iTileLabelHeight - iFontOffsetUsed;
+			Dimension dimTileTotal = new Dimension();
+			dimTileTotal.setSize(iTileWidthTotal, iTileHeightTotal);
+			this.setPreferredSize(dimTileTotal);
+			//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 			//++++ Den Labelkasten als Rechteck über dem Spielstein, mit einem schmalen Rand. Diesen dann mit GRÜN auffüllen, dabei  die HEALTH des Spielsteins beachten.
 			//Verwende dafür Graphics2D. Merke: Graphics Object can always be cast Graphics2D g2d = (Graphics2D)g;

@@ -10,6 +10,7 @@ import javax.swing.JComponent;
 import javax.swing.JLayeredPane;
 import javax.swing.JOptionPane;
 
+import use.thm.ApplicationSingletonTHM;
 import basic.zBasic.ExceptionZZZ;
 import basic.zBasic.ReflectCodeZZZ;
 import basic.zBasic.util.abstractList.HashMapMultiZZZ;
@@ -41,6 +42,7 @@ public class HexagonalCellLayoutTHM extends KernelUseObjectZZZ implements Layout
 	 */
 	public void layoutContainer(Container parent) {
 		main:{
+//			try {
 			String stemp = ReflectCodeZZZ.getMethodCurrentName() + ": Zeichne alle Komponenten INNERHALB DER ZELLE erneut.";
 			System.out.println(stemp);
 			ReportLogZZZ.write(ReportLogZZZ.DEBUG, stemp);
@@ -54,12 +56,33 @@ public class HexagonalCellLayoutTHM extends KernelUseObjectZZZ implements Layout
 
 			Component[] objaComponent = (Component[]) parent.getComponents();
 			if(objaComponent.length>=1){
+				Component objComponent = objaComponent[0];				
 				stemp = ReflectCodeZZZ.getMethodCurrentName() + ": Positioniere Komponenten innerhalb der Zelle  Map (X/Y): " + cell.getMapX() + "/ " + cell.getMapY() + "| Pixel (X/Y): " + cell.getX() + "/" + cell.getY();
 				System.out.println(stemp);
 				ReportLogZZZ.write(ReportLogZZZ.DEBUG, stemp);
-				objaComponent[0].setLocation(50, 50);//TODO GOON 20180903: Hier irgendwie die Mitte der Zelle ausrechnen... dies muss auch beim Zoomen verändert werden.
+				
+//				int iComponentWidth = objComponent.getWidth(); //Die ursprüngliche Größe der Component bleibt auch beim Zoomen immer gleich.... 
+//				int iComponentHeight = objComponent.getHeight();
+				Dimension dim = objComponent.getPreferredSize();
+				int iComponentPreferredWidth = (int) dim.getWidth();
+				int iComponentPreferredHeight = (int) dim.getHeight();
+				
+//				String sZoomFactorAlias = ApplicationSingletonTHM.getInstance().getHexZoomFactorAliasCurrent();
+//				String sZoomFactor = ApplicationSingletonTHM.getInstance().getHexZoomFactorCurrent();
+				
+				int iCellWidth = parent.getWidth(); //Die Größe des Parents bleibt beim Zoomen nicht gleich, sie wird angepasst.
+				int iCellHeight = parent.getHeight();
+				
+				int iComponentWidth = iComponentPreferredWidth; //objComponent.getWidth(); //Die ursprüngliche Größe der Component bleibt auch beim Zoomen immer gleich.... 
+				int iComponentHeight = iComponentPreferredHeight; //objComponent.getHeight();
+				int iPositionHeight = (iCellHeight - iComponentHeight) / 2;
+				int iPositionWidth = (iCellWidth - iComponentWidth) / 2;
+				objaComponent[0].setLocation(iPositionWidth, iPositionHeight);//TODO GOON 20180903: Hier irgendwie die Mitte der Zelle ausrechnen... dies muss auch beim Zoomen verändert werden.
 				//... Hier gäbe es dann die Möglichkeit weitere Komponenten in der Zelle an einer anderen Stellen zu positionieren.
 			}
+//			} catch (ExceptionZZZ e) {				
+//				e.printStackTrace();
+//			}
 		}//end main:
 	}
 

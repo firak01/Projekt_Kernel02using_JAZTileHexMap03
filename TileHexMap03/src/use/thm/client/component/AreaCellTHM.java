@@ -172,6 +172,7 @@ public class AreaCellTHM  extends HexCellTHM implements IListenerTileMetaTHM{
 	 	}else{
 	 		g.setColor(c);
 	 	}
+		
 		g.fillPolygon(po);
 	}
 	

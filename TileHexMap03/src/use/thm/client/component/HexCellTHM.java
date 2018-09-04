@@ -180,17 +180,14 @@ public class HexCellTHM extends KernelJPanelCascadedZZZ implements IMapFixedTHM,
 		 	
 		 	this.po = new Polygon(xEcke, yEcke, 6);
 		 	g.drawPolygon(po);
-		 
-		 	
-		 	
-		 	
+
 		 	//zu Testzwecken ein Rechteck zeichnen, das angibt wie groß die JComponent ist.
-		 	//*
+		 	/*
 		 	this.setOpaque(true);
 		 	Rectangle re = po.getBounds();
 		 	g.drawRect((int)re.getX(), (int) re.getY(), re.width, re.height);
-		 	//*/
-		 	// nicht sofrot füllen, dies soll in den Unterklassen geschehen, wenn z.B. die Geländeart bekannt ist fillPolygon(xEcke, yEcke, 6);
+		 	*/
+		 	// nicht sofort füllen, dies soll in den Unterklassen geschehen, wenn z.B. die Geländeart bekannt ist fillPolygon(xEcke, yEcke, 6);
 		 	
 			} catch (ExceptionZZZ e) {
 				e.printStackTrace();
@@ -264,7 +261,7 @@ public class HexCellTHM extends KernelJPanelCascadedZZZ implements IMapFixedTHM,
 	 
 	 /** Das Polygon, als graphische Grundlage für das Sechseck.
 	  *   In dieser Klasse wird es nur gezeichnet, d.h. mit einem Schwarzen Rand versehen. 
-	  *   In Unterklassen soll das wieder aufgeriffen werden k�nnen und so z.B. mit einer anderen Farbe gef�llt werden. 
+	  *   In Unterklassen soll das wieder aufgeriffen werden können und so z.B. mit einer anderen Farbe gefüllt werden. 
 	* @return
 	* lindhaueradmin; 11.09.2008 08:18:51
 	 */
@@ -287,6 +284,11 @@ public class HexCellTHM extends KernelJPanelCascadedZZZ implements IMapFixedTHM,
 			setVisible(true);
 			setOpaque(false); //also doch auf false!! // Dies auf true gesetzt "opaque heisst 'undurchsichtig' ").
 			
+			//201800904 ALSO: Beim Neuanlegen des Objekts wird im Konstruktor die YUpperLeftCorner gesetzt.
+			//                 Wenn das nicht passiert, ist es der Grund für den Fehler, dass die untere Spitze nicht gesetzt wird.
+			//Die Koordinaten, mit denen das Hexagon in die Komponente gezeichnet wird
+			this.iXLeftUpperCorner = 0;		this.iYLeftUpperCorner = HexCellTHM.getYUpperLeftCorner(iSideLength);  //JAAA, das hat noch gefehlt.....
+			
 			Polygon po = DrawHex(g);
 			fillDetail(g, po);	 				
 
@@ -304,23 +306,26 @@ public class HexCellTHM extends KernelJPanelCascadedZZZ implements IMapFixedTHM,
 	* 
 	* lindhaueradmin; 04.10.2008 13:56:32
 	 */
-	public void fillDetail(Graphics g, Polygon po){
-		//Falls per DragDrop eine Spielfigur auf die Zelle gezogen wird
-		//Merke: Bei Areas wird mit der AreaEffectTHM-Klasse und deren static - Methoden gearbeitet
-	 	//if (this.getFlag("effectDragTile")){
-		if (this.getFlagZ(FLAGZ.EFFECT_DRAG_TILE.name())){
-	 		g.setColor(Color.LIGHT_GRAY);
-	 		g.fillPolygon(po);
-	 	}
-	 	//if(this.getFlag("effectPathTile")){
-		if(this.getFlagZ(FLAGZ.EFFECT_PATH_TILE.name())){
-	 		g.setColor(Color.GRAY);
-	 		g.fillPolygon(po);
-	 	}
+	public void fillDetail(Graphics g, Polygon po){		
+		main:{
+			//Falls per DragDrop eine Spielfigur auf die Zelle gezogen wird
+			//Merke: Bei Areas wird mit der AreaEffectTHM-Klasse und deren static - Methoden gearbeitet
+		    //dann wird diese Methode überschreiben.
+		
+		 	//if (this.getFlag("effectDragTile")){
+			if (this.getFlagZ(FLAGZ.EFFECT_DRAG_TILE.name())){
+		 		g.setColor(Color.LIGHT_GRAY);
+		 		g.fillPolygon(po);
+		 		break main;
+		 	}
+		 	//if(this.getFlag("effectPathTile")){
+			if(this.getFlagZ(FLAGZ.EFFECT_PATH_TILE.name())){
+		 		g.setColor(Color.GRAY);
+		 		g.fillPolygon(po);
+		 		break main;
+		 	}			
+		}//end main:
 	}
-	
-	
-	
 	
 	//### Interface: IMapPositionable ####################################
 	public String getMapX(){

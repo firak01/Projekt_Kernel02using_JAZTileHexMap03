@@ -29,7 +29,9 @@ import use.thm.client.event.EventCellEnteredTHM;
 import use.thm.client.event.EventCellLeavedTHM;
 import use.thm.client.event.EventTileDroppedToCellTHM;
 import use.thm.client.event.IListenerTileMovedTHM;
+import use.thm.persistence.dto.ITileDtoAttribute;
 import use.thm.persistence.model.HexCell;
+import basic.persistence.dto.GenericDTO;
 import basic.zBasic.ExceptionZZZ;
 import basic.zBasic.ReflectCodeZZZ;
 import basic.zBasic.util.datatype.string.StringZZZ;
@@ -47,9 +49,10 @@ import basic.zKernelUI.component.KernelJPanelCascadedZZZ;
  */
 
 //TODO GOON: Die für die HexCelle als POJO Objekt benötigten Felder in einer eigenen Klasse auslagern und das Objekt hier übenehmen!!!
-//Fehlermeldung, wenn nicht alle Eigenschaften einer Java Klasse mit JPA-Annotations versehen sind:
-//Exception in thread "main" org.hibernate.MappingException: Could not determine type for: use.thm.client.component.HexMapTHM, at table: HEXCELL, for columns: [org.hibernate.mapping.Column(mapParent)]
+//                      siehe TileTHM :   private GenericDTO<ITileDtoAttribute>objDto = null;
 
+//Merke: Fehlermeldung, wenn nicht alle Eigenschaften einer Java Klasse mit JPA-Annotations versehen sind:
+//Exception in thread "main" org.hibernate.MappingException: Could not determine type for: use.thm.client.component.HexMapTHM, at table: HEXCELL, for columns: [org.hibernate.mapping.Column(mapParent)]
 public class HexCellTHM extends KernelJPanelCascadedZZZ implements IMapFixedTHM, IListenerTileMovedTHM{  //Probleme mit dem Ziehen des ganzen Frames, wenn hier der FramePArent nicht bekannt ist.
 	 
 	/**

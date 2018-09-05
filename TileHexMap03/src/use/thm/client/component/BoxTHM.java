@@ -34,6 +34,7 @@ import basic.zBasicUI.glassPane.dragDropTranslucent.GhostMotionAdapter;
 import basic.zBasicUI.glassPane.dragDropTranslucent.GhostPictureAdapter;
 
 public class BoxTHM extends Box{
+	private static final long serialVersionUID = 5244639803783507826L;
 	private GenericDTO<IBoxDtoAttribute>objDto = null;
 	private String sTileLabel = null;
 	public static int iBOX_LAYOUT_AXIS = BoxLayout.Y_AXIS; //Y = von top to bottom

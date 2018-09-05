@@ -45,6 +45,7 @@ import use.thm.persistence.model.TroopFleet;
 import use.thm.persistence.model.TroopFleetVariant;
 import use.thm.util.datatype.enums.EnumSetTroopVariantUtilTHM;
 import use.zBasicUI.component.UIHelperTHM;
+import use.zBasicUI.glassPane.dragDropTranslucent.GhostPictureAdapter4BoxTHM;
 import basic.persistence.dto.GenericDTO;
 import basic.persistence.dto.IDTOAttributeGroup;
 import basic.zBasic.ExceptionZZZ;
@@ -501,7 +502,13 @@ public class VariantCatalogTHM  extends KernelUseObjectZZZ implements IGhostGlas
 		     //bzw. jetzt, das was in dem Box-Objekt dafür vorgesehen ist.
 			 byte[] imageDragInByteUsed = objReturn.getVariantCatalogImageDragUsedInByte();
 				
-			 GhostPictureAdapter pictureAdapter = new GhostPictureAdapter(glassPane, sCatalogVariantEntryId, imageDragInByteUsed);
+			 
+			 //GhostPictureAdapter pictureAdapter = new GhostPictureAdapter(glassPane, sCatalogVariantEntryId, imageDragInByteUsed);
+			 //20180905: An dieser Stelle nicht mehr ein bei der Erstellung übergebenes Bild verwendet.
+		     //                Das Problem ist, dass dieses Bild hinsichtlich des ZoomLevels der HexMap nicht aktuell sein kann.
+		     //                Eigentlich müsste auf das DTO des BoxTHM Objekts zugegriffen werden. Erst so kann das "aktuell" passende Bild geholt werden.
+			 //                Darum für BoxTHM in diesem Projekt einen eigenen GhostPictureAdapter zur Verfügung stellen.  		       		     
+			 GhostPictureAdapter4BoxTHM pictureAdapter = new GhostPictureAdapter4BoxTHM(glassPane, sCatalogVariantEntryId);
 			 pictureAdapter.addGhostDropListener(listenerForDropToHexMap);
 			 
 			 //Das DRAGGEN, ausgehend von der Box			

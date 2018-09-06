@@ -120,7 +120,8 @@ public class TileTHM extends JPanel implements IMapPositionableTHM, IBackendPers
 		Dimension dim = new Dimension(iTileSideLength, iTileSideLength);
 		
 		//Bounds ausrechnen anhand der Seitenlänge des Sechsecks !!!!
-		//this.setBounds(30, 30, 30, 30); //Ziel: Es soll nicht in der linken oberen Ecke erscheinen ! //ABER: Es soll noch eine Layout Manger f�r die Zelle geben, der dann automatisch positioniert
+		//this.setBounds(30, 30, 30, 30); //Ziel: Es soll nicht in der linken oberen Ecke erscheinen ! //ABER: Es gib nun einen Layout Manager für die HexCell, der den Spielstein automatisch positioniert
+		//20180905 Problem: Hineingezogeen Spielsteine bleiben nach dem Zoomen klein... also das im Spielstein paintComponent() erneut setzen.
 		this.setBounds(iTileSideLength, iTileSideLength,iTileSideLength, iTileSideLength);
 		this.setPreferredSize(dim);
 		
@@ -151,7 +152,6 @@ public class TileTHM extends JPanel implements IMapPositionableTHM, IBackendPers
 		    //Die Größe der Icons aus der KernelKonfiguration auslesen
 			String sModuleAlias = this.getMapPanel().getModuleName();
 			String sProgramAlias = this.getMapPanel().getProgramAlias();				
-			
 			
 			//... Nun können die Formeln wieder korrekt arbeiten.		
 			System.out.println(ReflectCodeZZZ.getMethodCurrentName() + ": Suche Modul: '" + sModuleAlias +"'/ Program: '" + sProgramAlias + "'/ Parameter: 'IconWidth'");			
@@ -190,9 +190,14 @@ public class TileTHM extends JPanel implements IMapPositionableTHM, IBackendPers
 			int iTileLabelWidth = this.getTileLabelWidth();
 			int iTileLabelHeight = this.getTileLabelHeight();
 	      
+			//+++ Bounds ausrechnen anhand der Seitenlänge des Sechsecks !!!!
+			//this.setBounds(30, 30, 30, 30); //Ziel: Es soll nicht in der linken oberen Ecke erscheinen ! //ABER: Es gib nun einen Layout Manager für die HexCell, der den Spielstein automatisch positioniert
+			//20180905: Problem: Hineingezogene Spielsteine bleiben nach dem Zoomen klein... also das im Spielstein hier im paintComponent() erneut setzen.
+			this.setBounds(iTileSideLength, iTileSideLength,iTileSideLength, iTileSideLength);
+			
 			//+++ Versuch die Prefered Size für den LayoutManager der HexCell zur Verfügung zu stellen.
+			//TODO: Also ganz optimal ist die "Neupositionierung" nach dem Zoomen noch nicht.
 			int iTileWidthTotal =  iTileLabelWidth;
-			//int iTileHeightTotal = iTileSideLength + iTileLabelHeight + iFontOffsetUsed;
 			int iTileHeightTotal = iTileSideLength - iTileLabelHeight - iFontOffsetUsed;
 			Dimension dimTileTotal = new Dimension();
 			dimTileTotal.setSize(iTileWidthTotal, iTileHeightTotal);
@@ -209,7 +214,6 @@ public class TileTHM extends JPanel implements IMapPositionableTHM, IBackendPers
 			g2.setColor(Color.red); //TODO: Der Kasten sollte irgendwie die "Spielerfarbe sein".
 			g2.drawRect(0,0,iTileLabelWidth,iTileLabelHeight);
 			g2.setStroke(oldStroke);
-			
 			
 			//... und darüber dann den Kasten. Hier die optiemierten Weiten und Höhenangaben
 			//Das Problem ist, dass die Ränder beim 100%igen Überlappen ausfransen. 

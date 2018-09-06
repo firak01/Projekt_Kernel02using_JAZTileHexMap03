@@ -79,6 +79,7 @@ public class HexagonalCellLayoutTHM extends KernelUseObjectZZZ implements Layout
 				int iPositionWidth = (iCellWidth - iComponentWidth) / 2;
 				objaComponent[0].setLocation(iPositionWidth, iPositionHeight);//TODO GOON 20180903: Hier irgendwie die Mitte der Zelle ausrechnen... dies muss auch beim Zoomen verändert werden.
 				//... Hier gäbe es dann die Möglichkeit weitere Komponenten in der Zelle an einer anderen Stellen zu positionieren.
+				
 			}
 //			} catch (ExceptionZZZ e) {				
 //				e.printStackTrace();

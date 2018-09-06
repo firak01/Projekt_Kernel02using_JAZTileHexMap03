@@ -35,6 +35,7 @@ import basic.persistence.dto.GenericDTO;
 import basic.zBasic.ExceptionZZZ;
 import basic.zBasic.ReflectCodeZZZ;
 import basic.zBasic.util.datatype.string.StringZZZ;
+import basic.zBasic.util.log.ReportLogZZZ;
 import basic.zBasic.util.math.MathZZZ;
 import basic.zKernel.KernelZZZ;
 import basic.zKernelUI.component.KernelJPanelCascadedZZZ;
@@ -293,8 +294,8 @@ public class HexCellTHM extends KernelJPanelCascadedZZZ implements IMapFixedTHM,
 			this.iXLeftUpperCorner = 0;		this.iYLeftUpperCorner = HexCellTHM.getYUpperLeftCorner(iSideLength);  //JAAA, das hat noch gefehlt.....
 			
 			Polygon po = DrawHex(g);
-			fillDetail(g, po);	 				
-
+			fillDetail(g, po);	 	
+			
 		} catch (ExceptionZZZ e) {
 			e.printStackTrace();
 		}

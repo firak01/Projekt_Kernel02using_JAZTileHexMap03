@@ -782,7 +782,6 @@ public class PanelMain_NORTHTHM extends KernelJPanelCascadedZZZ{
 																					
 							SwingWorker4ProgramMapZoomPlus worker = new SwingWorker4ProgramMapZoomPlus(objKernel, panelParent, saFlag);
 							worker.start();  //Merke: Das Setzen des Label Felds geschieht durch einen extra Thread, der mit SwingUtitlities.invokeLater(runnable) gestartet wird.
-							//TODO GOON 20180911: Überprüfe hier, ob ein Minimum / Maximum der Zoomstufe erreicht ist. Dann disable den Button, bzw. enable die anderen oder alle.
 							
 							//20180911: Überprüfe hier, ob ein Minimum der Zoomstufe erreicht ist. Dann disable den Button, bzw. enable die anderen oder alle.
 							String sZoomFactorAlias = ApplicationSingletonTHM.getInstance().getHexZoomFactorAliasCurrent(); //.getHexZoomFactorAliasCurrent();

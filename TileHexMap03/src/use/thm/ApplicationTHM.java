@@ -2,6 +2,7 @@ package use.thm;
 
 import java.awt.Font;
 import java.io.File;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Set;
 
@@ -483,9 +484,10 @@ public class ApplicationTHM extends KernelUseObjectZZZ{
 			}
 			
 			Set<String> setAlias = hmZoomAlias.keySet();
-			String[]saAlias = (String[]) setAlias.toArray();
-			
-			sReturn = StringArrayZZZ.getFirst(saAlias);
+			//String[]saAlias = (String[]) setAlias.toArray();//CAST FEHLER???								
+			Object[] saAlias = (Object[]) setAlias.toArray();	
+			String[] saAliasSorted = StringArrayZZZ.sort(saAlias);
+			sReturn = StringArrayZZZ.getFirst(saAliasSorted);
 		} // end main:
 		return sReturn;
 	}
@@ -507,10 +509,10 @@ public class ApplicationTHM extends KernelUseObjectZZZ{
 			}
 			
 			Set<String> setAlias = hmZoomAlias.keySet();
-			String[]saAlias = (String[]) setAlias.toArray();
-			
-			sReturn = StringArrayZZZ.getLast(saAlias);
-			
+			//String[]saAlias = (String[]) setAlias.toArray();//CAST FEHLER???						
+			Object[] saAlias = (Object[]) setAlias.toArray();
+			String[] saAliasSorted = StringArrayZZZ.sort(saAlias);
+			sReturn = StringArrayZZZ.getLast(saAliasSorted);
 		} // end main:
 		return sReturn;
 	}

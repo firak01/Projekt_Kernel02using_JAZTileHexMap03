@@ -15,6 +15,7 @@ import java.util.Iterator;
 import java.util.Map.Entry;
 import java.util.Set;
 
+import javax.swing.AbstractButton;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
@@ -59,6 +60,7 @@ import basic.zBasicUI.thread.SwingWorker;
 import basic.zKernel.IKernelUserZZZ;
 import basic.zKernel.KernelZZZ;
 import basic.zKernelUI.component.KernelActionCascadedZZZ;
+import basic.zKernelUI.component.KernelButtonGroupZZZ;
 import basic.zKernelUI.component.KernelJPanelCascadedZZZ;
 
 public class PanelMain_NORTHTHM extends KernelJPanelCascadedZZZ{
@@ -81,6 +83,10 @@ public class PanelMain_NORTHTHM extends KernelJPanelCascadedZZZ{
 			//Die Buttons in ener Box - Hinzufügen. Damit man mit "glue Komponente" arbeiten kann
 			Box b = Box.createHorizontalBox();
 			
+			//ButtonGroups
+			KernelButtonGroupZZZ<String,AbstractButton> groupButtonHex = new KernelButtonGroupZZZ<String,AbstractButton>();
+			KernelButtonGroupZZZ<String,AbstractButton> groupButtonGui = new KernelButtonGroupZZZ<String,AbstractButton>();
+						
 			//GUI Font holen		
 			Font objFontGui = ApplicationSingletonTHM.getInstance().getGuiFontCurrent();
 			
@@ -88,14 +94,15 @@ public class PanelMain_NORTHTHM extends KernelJPanelCascadedZZZ{
 			//A) Button für GUI +++++++++++++++++++
 			JButton buttonGuiMinus = new JButton(" - ");
 			buttonGuiMinus.setFont(objFontGui);
-			
-			
+						
 			ActionGuiZoomMinusTHM actionGuiZoomMinus = new ActionGuiZoomMinusTHM(objKernel, this);
 			buttonGuiMinus.addActionListener(actionGuiZoomMinus);		
 			this.setComponent(PanelMain_NORTHTHM.sBUTTON_GUI_ZOOM_MINUS, buttonGuiMinus);
-			//this.add(buttonGuiMinus);
+			groupButtonGui.add(PanelMain_NORTHTHM.sBUTTON_GUI_ZOOM_MINUS, buttonGuiMinus);
+			
 			b.add(buttonGuiMinus);
 		
+			
 			//++++++++++++++++++++
 			JButton buttonGuiPlus = new JButton(" + ");
 			buttonGuiPlus.setFont(objFontGui);
@@ -104,7 +111,8 @@ public class PanelMain_NORTHTHM extends KernelJPanelCascadedZZZ{
 			ActionGuiZoomPlusTHM actionGuiZoomPlus = new ActionGuiZoomPlusTHM(objKernel, this);
 			buttonGuiPlus.addActionListener(actionGuiZoomPlus);		
 			this.setComponent(PanelMain_NORTHTHM.sBUTTON_GUI_ZOOM_PLUS, buttonGuiPlus);
-			//this.add(buttonGuiPlus);
+			groupButtonGui.add(PanelMain_NORTHTHM.sBUTTON_GUI_ZOOM_PLUS, buttonGuiPlus);
+			
 			b.add(buttonGuiPlus);
 			
 			//+++++++++++++++++++++++++++++
@@ -165,7 +173,7 @@ public class PanelMain_NORTHTHM extends KernelJPanelCascadedZZZ{
 			ActionMapZoomMinusTHM actionMapZoomMinus = new ActionMapZoomMinusTHM(objKernel, this);
 			buttonMapMinus.addActionListener(actionMapZoomMinus);		
 			this.setComponent(PanelMain_NORTHTHM.sBUTTON_MAP_ZOOM_MINUS, buttonMapMinus);
-			//this.add(buttonMapMinus);
+			groupButtonHex.add(PanelMain_NORTHTHM.sBUTTON_MAP_ZOOM_MINUS, buttonMapMinus);
 			b.add(buttonMapMinus);
 		
 			//++++++++++++++++++++
@@ -175,10 +183,12 @@ public class PanelMain_NORTHTHM extends KernelJPanelCascadedZZZ{
 			ActionMapZoomPlusTHM actionMapZoomPlus = new ActionMapZoomPlusTHM(objKernel, this);
 			buttonMapPlus.addActionListener(actionMapZoomPlus);		
 			this.setComponent(PanelMain_NORTHTHM.sBUTTON_MAP_ZOOM_PLUS, buttonMapPlus);
-			//this.add(buttonMapPlus);
+			groupButtonHex.add(PanelMain_NORTHTHM.sBUTTON_MAP_ZOOM_PLUS, buttonMapPlus);
 			b.add(buttonMapPlus);
 			
 			//+++++++++++++++++++++++++++++
+			this.getHashtableButtonGroup().put("GUI", groupButtonGui);
+			this.getHashtableButtonGroup().put("MAP", groupButtonHex);
 			this.add(b);
 	}		
 			
@@ -192,13 +202,27 @@ public class PanelMain_NORTHTHM extends KernelJPanelCascadedZZZ{
 		
 		public boolean actionPerformCustom(ActionEvent ae, boolean bQueryResult) throws ExceptionZZZ {
 			ReportLogZZZ.write(ReportLogZZZ.DEBUG, "Performing action: 'GUI Zoom: Minus'");
-												
+			UIHelper_SwingWorker4ProgramGuiZoomTHM.zoomMinus();
+			
 			String[] saFlag = null;			
 			KernelJPanelCascadedZZZ panelParent = (KernelJPanelCascadedZZZ) this.getPanelParent();
 																	
 			SwingWorker4ProgramGuiZoomMinus worker = new SwingWorker4ProgramGuiZoomMinus(objKernel, panelParent, saFlag);
-			worker.start();  //Merke: Das Setzen des Label Felds geschieht durch einen extra Thread, der mit SwingUtitlities.invokeLater(runnable) gestartet wird.
-		
+			worker.start();  //Merke: Das Setzen des Label Felds geschieht durch einen extra Thread, der mit SwingUtitlities.invokeLater(runnable) gestartet wird.			
+			//20180911: Überprüfe hier, ob ein Minimum / Maximum der Zoomstufe erreicht ist. Dann disable den Button, bzw. enable die anderen oder alle.
+			String sZoomFactorAlias = ApplicationSingletonTHM.getInstance().getGuiZoomFactorAliasCurrent(); //.getHexZoomFactorAliasCurrent();
+			String sZoomFactorAliasMin = ApplicationSingletonTHM.getInstance().getGuiZoomFactorAliasFirst(); //.getHexZoomFactorAliasLast()
+			if(sZoomFactorAlias.equals(sZoomFactorAliasMin)){
+				//MINUS Button abstellen, alle anderen Buttons anstellen..
+				JButton button = (JButton) ae.getSource();
+				KernelButtonGroupZZZ<String,AbstractButton>group = panelParent.getHashtableButtonGroup().get("GUI");
+				group.disable(button);
+				group.enableOther(button);
+			}else{
+				//Alle Buttons anstellen
+				KernelButtonGroupZZZ<String,AbstractButton>group = panelParent.getHashtableButtonGroup().get("GUI");
+				group.enableAll();
+			}
 			return true;
 		}
 
@@ -384,14 +408,29 @@ public class PanelMain_NORTHTHM extends KernelJPanelCascadedZZZ{
 				}
 				
 				public boolean actionPerformCustom(ActionEvent ae, boolean bQueryResult) throws ExceptionZZZ {
-					ReportLogZZZ.write(ReportLogZZZ.DEBUG, "Performing action: 'IP-Refresh'");
-														
+					ReportLogZZZ.write(ReportLogZZZ.DEBUG, "Performing action: 'GUI ZOOM PLUS'");
+					UIHelper_SwingWorker4ProgramGuiZoomTHM.zoomPlus();
+					
 					String[] saFlag = null;			
 					KernelJPanelCascadedZZZ panelParent = (KernelJPanelCascadedZZZ) this.getPanelParent();
 																			
 					SwingWorker4ProgramGuiZoomPlus worker = new SwingWorker4ProgramGuiZoomPlus(objKernel, panelParent, saFlag);
 					worker.start();  //Merke: Das Setzen des Label Felds geschieht durch einen extra Thread, der mit SwingUtitlities.invokeLater(runnable) gestartet wird.
-	
+
+					//20180911: Überprüfe hier, ob ein  Maximum der Zoomstufe erreicht ist. Dann disable den Button, bzw. enable die anderen oder alle.
+					String sZoomFactorAlias = ApplicationSingletonTHM.getInstance().getGuiZoomFactorAliasCurrent(); //.getHexZoomFactorAliasCurrent();
+					String sZoomFactorAliasMax = ApplicationSingletonTHM.getInstance().getGuiZoomFactorAliasLast(); //.getHexZoomFactorAliasLast()
+					if(sZoomFactorAlias.equals(sZoomFactorAliasMax)){
+						//PLUS Button abstellen, alle anderen Buttons anstellen..
+						JButton button = (JButton) ae.getSource();
+						KernelButtonGroupZZZ<String,AbstractButton>group = panelParent.getHashtableButtonGroup().get("GUI");
+						group.disable(button);
+						group.enableOther(button);
+					}else{
+						//Alle Buttons anstellen
+						KernelButtonGroupZZZ<String,AbstractButton>group = panelParent.getHashtableButtonGroup().get("GUI");
+						group.enableAll();
+					}
 					return true;
 				}
 
@@ -491,7 +530,9 @@ public class PanelMain_NORTHTHM extends KernelJPanelCascadedZZZ{
 									
 									//+++++++++++++++++++++++
 									ReportLogZZZ.write(ReportLogZZZ.DEBUG, ReflectCodeZZZ.getMethodCurrentName() + ": Updating Gui Font - COMPONENT (d.h. Buttons des aktuellen Panels)");
-									panel.updateComponentFontAll(font);																					
+									panel.updateComponentFontAll(font);			
+									
+									//TODO GOON 20180911: Überprüfe hier, ob ein Minimum / Maximum der Zoomstufe erreicht ist. Dann disable den Button, bzw. enable die anderen oder alle.
 									panel.repaint();	
 
 									//+++++++++++++++++++++++
@@ -572,12 +613,28 @@ public class PanelMain_NORTHTHM extends KernelJPanelCascadedZZZ{
 				
 				public boolean actionPerformCustom(ActionEvent ae, boolean bQueryResult) throws ExceptionZZZ {
 					ReportLogZZZ.write(ReportLogZZZ.DEBUG, "Performing action: 'MAP Zoom: Minus'");
-														
+					UIHelper_SwingWorker4ProgramMapZoomTHM.zoomMinus();
+					
 					String[] saFlag = null;			
 					KernelJPanelCascadedZZZ panelParent = (KernelJPanelCascadedZZZ) this.getPanelParent();
 																			
 					SwingWorker4ProgramMapZoomMinus worker = new SwingWorker4ProgramMapZoomMinus(objKernel, panelParent, saFlag);
 					worker.start();  //Merke: Das Setzen des Label Felds geschieht durch einen extra Thread, der mit SwingUtitlities.invokeLater(runnable) gestartet wird.
+					
+					//20180911: Überprüfe hier, ob ein Minimum der Zoomstufe erreicht ist. Dann disable den Button, bzw. enable die anderen oder alle.
+					String sZoomFactorAlias = ApplicationSingletonTHM.getInstance().getHexZoomFactorAliasCurrent(); //.getHexZoomFactorAliasCurrent();
+					String sZoomFactorAliasMin = ApplicationSingletonTHM.getInstance().getHexZoomFactorAliasFirst(); //.getHexZoomFactorAliasFirst()
+					if(sZoomFactorAlias.equals(sZoomFactorAliasMin)){
+						//MINUS Button abstellen, alle anderen Buttons anstellen..
+						JButton button = (JButton) ae.getSource();
+						KernelButtonGroupZZZ<String,AbstractButton>group = panelParent.getHashtableButtonGroup().get("MAP");
+						group.disable(button);
+						group.enableOther(button);
+					}else{
+						//Alle Buttons anstellen
+						KernelButtonGroupZZZ<String,AbstractButton>group = panelParent.getHashtableButtonGroup().get("MAP");
+						group.enableAll();
+					}
 					
 					return true;
 				}
@@ -616,8 +673,7 @@ public class PanelMain_NORTHTHM extends KernelJPanelCascadedZZZ{
 							UIHelper_SwingWorker4ProgramMapZoomTHM.constructMinus();
 							System.out.println("Updating Panel ...");
 							KernelJPanelCascadedZZZ objPanelParent = this.panel.getPanelParent();
-							updatePanelMap(objPanelParent); //20180819: Damit das klappt muss eine Komponentenliste über alle Panels zusammengesucht werden....						
-							
+							updatePanelMap(objPanelParent); //20180819: Damit das klappt muss eine Komponentenliste über alle Panels zusammengesucht werden....												
 						}catch(ExceptionZZZ ez){
 							System.out.println(ez.getDetailAllLast());
 							ReportLogZZZ.write(ReportLogZZZ.ERROR, ez.getDetailAllLast());					
@@ -718,13 +774,30 @@ public class PanelMain_NORTHTHM extends KernelJPanelCascadedZZZ{
 						}
 						
 						public boolean actionPerformCustom(ActionEvent ae, boolean bQueryResult) throws ExceptionZZZ {
-							ReportLogZZZ.write(ReportLogZZZ.DEBUG, "Performing action: 'IP-Refresh'");
+							ReportLogZZZ.write(ReportLogZZZ.DEBUG, "Performing action: 'MAP ZOOM PLUS'");
+							UIHelper_SwingWorker4ProgramMapZoomTHM.zoomPlus();
 																
 							String[] saFlag = null;			
 							KernelJPanelCascadedZZZ panelParent = (KernelJPanelCascadedZZZ) this.getPanelParent();
 																					
 							SwingWorker4ProgramMapZoomPlus worker = new SwingWorker4ProgramMapZoomPlus(objKernel, panelParent, saFlag);
 							worker.start();  //Merke: Das Setzen des Label Felds geschieht durch einen extra Thread, der mit SwingUtitlities.invokeLater(runnable) gestartet wird.
+							//TODO GOON 20180911: Überprüfe hier, ob ein Minimum / Maximum der Zoomstufe erreicht ist. Dann disable den Button, bzw. enable die anderen oder alle.
+							
+							//20180911: Überprüfe hier, ob ein Minimum der Zoomstufe erreicht ist. Dann disable den Button, bzw. enable die anderen oder alle.
+							String sZoomFactorAlias = ApplicationSingletonTHM.getInstance().getHexZoomFactorAliasCurrent(); //.getHexZoomFactorAliasCurrent();
+							String sZoomFactorAliasMax = ApplicationSingletonTHM.getInstance().getHexZoomFactorAliasLast(); //.getHexZoomFactorAliasFirst()
+							if(sZoomFactorAlias.equals(sZoomFactorAliasMax)){
+								//MINUS Button abstellen, alle anderen Buttons anstellen..
+								JButton button = (JButton) ae.getSource();
+								KernelButtonGroupZZZ<String,AbstractButton>group = panelParent.getHashtableButtonGroup().get("MAP");
+								group.disable(button);
+								group.enableOther(button);
+							}else{
+								//Alle Buttons anstellen
+								KernelButtonGroupZZZ<String,AbstractButton>group = panelParent.getHashtableButtonGroup().get("MAP");
+								group.enableAll();
+							}
 							
 							return true;
 						}
@@ -762,8 +835,7 @@ public class PanelMain_NORTHTHM extends KernelJPanelCascadedZZZ{
 									UIHelper_SwingWorker4ProgramMapZoomTHM.constructPlus();
 									System.out.println("Updating Panel ...");
 									KernelJPanelCascadedZZZ objPanelParent = this.panel.getPanelParent();
-									updatePanelMap(objPanelParent); //20180819: Damit das klappt muss eine Komponentenliste über alle Panels zusammengesucht werden....						
-															
+									updatePanelMap(objPanelParent); //20180819: Damit das klappt muss eine Komponentenliste über alle Panels zusammengesucht werden....																							
 								}catch(ExceptionZZZ ez){
 									System.out.println(ez.getDetailAllLast());
 									ReportLogZZZ.write(ReportLogZZZ.ERROR, ez.getDetailAllLast());					

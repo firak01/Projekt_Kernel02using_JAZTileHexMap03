@@ -46,6 +46,7 @@ import basic.zKernelUI.component.KernelJPanelCascadedZZZ;
 import use.thm.ApplicationSingletonTHM;
 import use.thm.IMapPositionableTHM;
 import use.thm.client.event.TileMoveEventBrokerTHM;
+import use.thm.client.handler.TileMouseContextMenuHandlerTHM;
 import use.thm.client.handler.TileMouseMotionHandlerTHM;
 import use.thm.persistence.dto.DtoFactoryGenerator;
 import use.thm.persistence.dto.ITileDtoAttribute;
@@ -67,6 +68,7 @@ public class TileTHM extends JPanel implements IMapPositionableTHM, IBackendPers
 	
 	private KernelJPanelCascadedZZZ panelMap;
 	private  TileMouseMotionHandlerTHM objTileMouseMotionHandler;
+	private  TileMouseContextMenuHandlerTHM objTileMouseContextMenuHandler;
 	
 	private boolean bDragModeStarted = false; //Hiermit erkennt man, ob über der Componente eine Maustaste "einmal" gedrückt worden ist.
 	
@@ -95,7 +97,7 @@ public class TileTHM extends JPanel implements IMapPositionableTHM, IBackendPers
 			this.setMapPanel(panelMap);
 			this.setHexSideLength(iHexSideLength);
 			
-			//Klasse, die alle Maus Events vereint
+			//Klasse, die alle Maus Events vereint (Linksclick)
 			TileMouseMotionHandlerTHM objMotionHandler = new TileMouseMotionHandlerTHM(this, objEventBroker);
 			this.setMouseMotionHandler(objMotionHandler);
 			
@@ -106,6 +108,10 @@ public class TileTHM extends JPanel implements IMapPositionableTHM, IBackendPers
 			this.addMouseMotionListener(objMotionHandler);
 //			.addFocusListener()
 		
+			//Klasse, die alle Maus Events vereit (Rechtsclick)
+			TileMouseContextMenuHandlerTHM objContextMenuHandler = new TileMouseContextMenuHandlerTHM(this);
+			this.setMouseContextMenuHandler(objContextMenuHandler);
+			this.addMouseListener(objContextMenuHandler);
 		
 		
 		this.setBackground(Color.green);
@@ -344,7 +350,14 @@ public class TileTHM extends JPanel implements IMapPositionableTHM, IBackendPers
 	}
 	public TileMouseMotionHandlerTHM getMouseMotionHandler(){
 		return this.objTileMouseMotionHandler;
-	}		
+	}	
+	
+	private void setMouseContextMenuHandler(TileMouseContextMenuHandlerTHM objHandler){
+		this.objTileMouseContextMenuHandler = objHandler;
+	}
+	public TileMouseContextMenuHandlerTHM getMouseContextMenuHandler(){
+		return this.objTileMouseContextMenuHandler;
+	}	
 	
 	private void clearSize(){
 		this.iHexSideLength=0;

@@ -23,6 +23,7 @@ import basic.persistence.dto.GenericDTO;
 import basic.zBasic.ExceptionZZZ;
 import basic.zBasic.KernelSingletonTHM;
 import basic.zBasic.ReflectCodeZZZ;
+import basic.zBasic.util.abstractList.ArrayListZZZ;
 import basic.zBasic.util.datatype.string.StringZZZ;
 import basic.zBasicUI.component.UIHelper;
 import basic.zKernel.IKernelModuleUserZZZ;
@@ -32,6 +33,7 @@ import basic.zKernelUI.component.KernelJPanelCascadedZZZ;
 import use.thm.ApplicationSingletonTHM;
 import use.thm.client.component.HexCellTHM;
 import use.thm.client.component.TileTHM;
+import use.thm.client.component.menu.TilePopupMenuTHM;
 import use.thm.client.event.EventCellEnteredTHM;
 import use.thm.client.event.EventCellLeavedTHM;
 import use.thm.client.event.EventTileDroppedToCellTHM;
@@ -120,7 +122,8 @@ public class TileMouseMotionHandlerTHM extends MouseAdapter implements MouseMoti
 	}
 	
 	/** Verkürzt den bisher zurückgelegten Weg bis zu der angegebenen Zelle
-	 * 
+	 *    Merke: Wird nur gemacht, wenn die neue Zelle schon auf dem Weg liegt
+	 *    
 	* @param objCell, Feld, das auf dem Weg liegen muss
 	* @return Anzahl der Felder, die eingespart wurden.
 	* 
@@ -147,14 +150,10 @@ public class TileMouseMotionHandlerTHM extends MouseAdapter implements MouseMoti
 				HexCellTHM objCell2Remove =(HexCellTHM)  alCellEntered.get(iCount);
 				objCell2Remove.removeFromPathTile();
 			}
-			
-			//TODO als static Methode in ArrayListExtendedZZZ aufnehmen ArrayListExtendedZZZ.removeLast(ArrayList, iNumberOfElements2Remove);
+						
 			//b) nun erst aus der Liste entfernen
 			int iNrToRemove = iPosLast - iPosNow;
-			for(int iCount = 0; iCount <= iNrToRemove; iCount++){
-				int iLast = alCellEntered.size() - 1; //-1 da der Index mit 0 anf�ngt
-				alCellEntered.remove(iLast);
-			}
+			ArrayListZZZ.removeLast(alCellEntered, iNrToRemove);
 			iReturn = iNrToRemove;
 		}//end main:
 		return iReturn;
@@ -293,91 +292,13 @@ public class TileMouseMotionHandlerTHM extends MouseAdapter implements MouseMoti
 	
 //	 ###########Die Events aus dem MOUSEADAPTER #######################
 	public void mouseClicked(MouseEvent arg0) {
-		
-		//TODO: Vom objTile aus kann man auf den TileStore zugreifen.
-		//             Daraus können dann Informationen entnommen werden, Truppenstärke, etc.
+		//Merke: Das Anclicken des Spielsteins wird im TileMouseContextMenuHandler behandelt
 		main:{
-		try{
-		//Momentan beim Doppelclick nur die Position anzeigen lassen
-		int iCount =arg0.getClickCount();
-		int iErg = 0; 
-		switch(iCount){
-		case 1:
-			break;
-		case 2:
-			//TODO: Dies als eigene Dialogbox mit einem Customizbaren Panel, in dem z.B. eine Aktion "Auflösen" eingebaut wird.
-			//TODO GOON 20180324: Das wird immer aktueller, zumal jetzt aus dem DTO weitere Angaben aus der Datenbank geholte werden können.
-			/*
-			// +++ Nicht einfach Löschen, sondern mal abfragen
-			iErg = JOptionPane.showConfirmDialog(this.getTile(), "Would you realy like to remove this square ?", "Remove square ?", JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE);
-			if(iErg == JOptionPane.YES_OPTION){
-				// Löschen
-				panelCurrent.removeSquare(objRect2D);
-			}
-			*/
-			
-			
-			//++++++++++++++++++++++++++++++++++++++++++++++++++++
-			String sMessage = new String();
-			
-			//Hole weitere Informationen aus dem DTO:
-			GenericDTO<ITileDtoAttribute> objDto = this.getTile().getDto();
-			String sShorttext = objDto.get(ITileDtoAttribute.VARIANT_SHORTTEXT);
-			Integer intVariantUniquenumber = objDto.get(ITileDtoAttribute.INSTANCE_VARIANT_UNIQUENUMBER);
-			sMessage = sShorttext + "_" + intVariantUniquenumber.toString(); 
-			
-								
-			//Anzeige der Koordinaten
-			Point p = arg0.getPoint();
-			String sCoordinates = "X=" + this.getTile().getMapX() + "; Y=" + this.getTile().getMapY()  + " (" + p.getX() + "/" + p.getY() + ")";
-			sMessage = sMessage + StringZZZ.crlf() + sCoordinates;
-			//Trennzeile
-			sMessage = sMessage + StringZZZ.crlf();
-			Float fltHealth = objDto.get(ITileDtoAttribute.HEALTH);
-			float fHealthNormed = fltHealth.floatValue() * 100;
-			Float fltHealthNormed = new Float(fHealthNormed);
-			String sHealth = "Health: " + StringZZZ.left(fltHealthNormed.toString(),6)+"%";
-			sMessage = sMessage + StringZZZ.crlf() + sHealth;
-			
-			//Trennzeile
-			sMessage = sMessage + StringZZZ.crlf();
-						
-			String sUniquename = objDto.get(ITileDtoAttribute.UNIQUENAME);
-			sMessage = sMessage + StringZZZ.crlf() + sUniquename;
-			
-			
-			//+++++++++++++++++++++++++++++
-			//Das ICON
-			//+++++++++++++++++++++++++++++
-			//TODO GOON 20180725: Das Bild passend zur Eingestellten Zoom Größe in der Applikation auswählen 
-			byte[] imageInByte = (byte[]) objDto.get(ITileDtoAttribute.VARIANT_IMAGEDIALOG_IN_BYTE_01); //Das unveränderte Bild aus der Datenbank, wird hier angezeigt.
-			BufferedImage objBufferedImage = UIHelper.toBufferedImage(imageInByte);
-			
-			//Erst jetzt ein größenverändetes ImageIcon aus dem BufferedImage machen. Merke: Ein Image oder ein BufferedImage funktioniert in der JOptionPane nicht
-			ImageIcon objImageIcon = new ImageIcon(objBufferedImage);
-   		 					
-			//+++ AUSGABE +++++++++++++++++++++
-			JOptionPane.showMessageDialog(this.getTile(), sMessage, "Detailangaben....", JOptionPane.INFORMATION_MESSAGE, objImageIcon);
-			
-			break;
-		} //END Switch
-		
-		/*
-		//aktuelles Quadrat entfernen, wenn Doppelclick
-		Rectangle2D objRect2D = panelCurrent.findSquare(arg0.getPoint());
-				
-		if(objRect2D != null){
-			
-		
-		}
-			*/
-		}catch(ExceptionZZZ ez){
-			System.out.println("ExceptionZZZ Detail: " + ez.getDetailAllLast());
-			ez.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+			if(SwingUtilities.isLeftMouseButton(arg0)){
+				System.out.println(ReflectCodeZZZ.getPositionCurrent()+": Linksclick...");		
+			}else if(SwingUtilities.isRightMouseButton(arg0)){
+				System.out.println(ReflectCodeZZZ.getPositionCurrent()+": Rechtsclick...");				
+			}//end if SwingUtiilities.is...MouseButton(...)
 		}//End main:
 		
 	}
@@ -414,7 +335,8 @@ public class TileMouseMotionHandlerTHM extends MouseAdapter implements MouseMoti
 
 	public void mouseReleased(MouseEvent arg0) {
 		super.mouseReleased(arg0);
-				
+			
+		if(SwingUtilities.isLeftMouseButton(arg0)){
 		//Im MouseDrag des MouseMotionHandlers wird ein Flag gesetzt.
 		//Hierüber bekommt man mit, ob die Maustaste losgelassen worden ist "AM ENDE DER DRAG - BEWEGUNG"
 		if(this.getTile().isDragModeStarted()){
@@ -601,6 +523,10 @@ public class TileMouseMotionHandlerTHM extends MouseAdapter implements MouseMoti
 			//TODO: Für die Undo-Funktionalität an dieser Stelle die Werte in einer anderen ArrayList speichern (falls man einzelne Schritte rückgängig machen will).
 			this.getCellValidPreviousAll().clear(); //sonst wird beim Folgezug ggf. eine docCutShort(...) durchgeführt, nur weil hier mal drübergezogen worden ist.
 		}
+		}else if(SwingUtilities.isRightMouseButton(arg0)){
+			System.out.println(ReflectCodeZZZ.getMethodCurrentName() + ": Rechstclick... ");
+			//Merke: Der Rechtsclick wird im TileMouseContextMenuHandlerTHM behandelt.
+		}//end if (SwingUtilities.is...Button(...)
 	}
 	
 	 /* Finds the component corresponding to the given SCREEN-coordinates.
@@ -681,6 +607,4 @@ return c;
 	}
 	
 	//##########################################
-
-	
 }//end class

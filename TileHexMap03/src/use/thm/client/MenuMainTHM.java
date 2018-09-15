@@ -52,6 +52,7 @@ public class MenuMainTHM extends JMenuBar implements IConstantZZZ, IObjectZZZ, I
 		this.add(menuHelp);			
 	}
 	
+	//#### GETTER / SETTER 
 	public KernelJFrameCascadedZZZ getFrameParent(){
 		return this.frameParent;
 	}

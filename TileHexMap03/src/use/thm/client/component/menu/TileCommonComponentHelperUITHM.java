@@ -10,15 +10,27 @@ import java.io.IOException;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
+import javax.swing.SwingUtilities;
 
+import org.apache.commons.lang.builder.ReflectionToStringBuilder;
+
+import custom.zKernel.LogZZZ;
 import use.thm.ApplicationSingletonTHM;
+import use.thm.client.PanelMain_CENTERTHM;
 import use.thm.client.component.TileTHM;
 import use.thm.persistence.dto.ITileDtoAttribute;
 import use.zBasicUI.component.UIHelperTHM;
 import basic.persistence.dto.GenericDTO;
 import basic.zBasic.ExceptionZZZ;
+import basic.zBasic.IObjectZZZ;
+import basic.zBasic.ReflectCodeZZZ;
 import basic.zBasic.util.datatype.string.StringZZZ;
+import basic.zBasic.util.log.ReportLogZZZ;
 import basic.zBasicUI.component.UIHelper;
+import basic.zBasicUI.thread.SwingWorker;
+import basic.zKernel.IKernelUserZZZ;
+import basic.zKernel.KernelZZZ;
+import basic.zKernelUI.component.KernelJPanelCascadedZZZ;
 
 public class TileCommonComponentHelperUITHM {
 	public static void showTileDetailDialog(TileTHM objTile, MouseEvent arg0) throws IOException, ExceptionZZZ{
@@ -68,7 +80,6 @@ public static void showTileDetailDialog(TileTHM objTile, ActionEvent arg0) throw
 		e.printStackTrace();
 	}
 	}
-
 
 /**Hole per Reflection aus der DTO-Attribut Klasse das Bild, welches zur Auflösung passt.
 	 * Hier: Übergebener HexMapZoomFactor-ALIAS.
@@ -150,7 +161,5 @@ private static void _showTileDetailDialog(TileTHM objTile, String sMessage, Imag
 	label.setFont(objFontGui);
 	JOptionPane.showMessageDialog(objTile, label, "Detailangaben....", JOptionPane.INFORMATION_MESSAGE, objImageIcon);
 	
-}
-	
-	
+}					
 }

@@ -382,11 +382,31 @@ public class DateMappingCustomTypeTimestampString extends AbstractDateMapping{
         }
 
         try {
+        	//20180916: Vor dem Löschen eines Spielsteins im Backend hat das gereicht...
             Date instance = (Date) value;
             return dateType.deepCopy(instance);
         } catch (ClassCastException e) {
-            throw new HibernateException("Could not save '" + value + "' as it could not be casted to '" + RETURNED_CLASS.getCanonicalName() + "'.");
+            //throw new HibernateException("Could not save '" + value + "' as it could not be casted to '" + RETURNED_CLASS.getCanonicalName() + "'. (" + e.getMessage() + ")");
         }
+        
+        try{
+        
+        	//20180916: Falls es eine ClassCastException gibt
+        	String sValue = value.toString();
+        			
+        	SimpleDateFormat objSimpleDateFormat  = new SimpleDateFormat(DateMappingCustomTypeTimestampString.DATE_FORMAT_SIMPLE_FULL_FGL);
+        	Date dateValue = objSimpleDateFormat.parse(sValue);        	
+        	return dateType.deepCopy(dateValue);
+        	
+        } catch (ClassCastException e) {
+            throw new HibernateException("Could not save '" + value + "' as it could not be casted to '" + RETURNED_CLASS.getCanonicalName() + "'. (" + e.getMessage() + ")");
+        } catch (ParseException e) {			
+        	//throw new HibernateException("Could not save '" + value + "' as it could not be parsed to become a value of '" + RETURNED_CLASS.getCanonicalName() + "'. (" + e.getMessage() + ")");
+		}
+        
+        //20180916: Falls das Datum immer noch nicht erkannt worden ist, handelt es sich vielleicht um ein Datum mit einem Kommentarstring.
+        String sValue = value.toString();
+        return sValue;        
     }
 
     @Override

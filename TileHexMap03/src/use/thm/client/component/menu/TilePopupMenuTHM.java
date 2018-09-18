@@ -17,10 +17,14 @@ import use.thm.client.DlgAboutTHM;
 import use.thm.client.PanelMain_CENTERTHM;
 import use.thm.client.component.HexCellTHM;
 import use.thm.client.component.TileTHM;
+import use.thm.persistence.daoFacade.TroopArmyDaoFacade;
+import use.thm.persistence.daoFacade.TroopFleetDaoFacade;
+import use.thm.persistence.hibernate.HibernateContextProviderSingletonTHM;
 import use.zBasicUI.component.UIHelper_SwingWorker4ProgramMapZoomTHM;
 import basic.zBasic.ExceptionZZZ;
 import basic.zBasic.IConstantZZZ;
 import basic.zBasic.IObjectZZZ;
+import basic.zBasic.KernelSingletonTHM;
 import basic.zBasic.ReflectCodeZZZ;
 import basic.zBasic.util.log.ReportLogZZZ;
 import basic.zBasicUI.thread.SwingWorker;
@@ -289,13 +293,34 @@ public class TilePopupMenuTHM extends JPopupMenu implements IConstantZZZ, IObjec
 										Runnable runnerUpdatePanel= new Runnable(){
 
 											public void run(){
-//												try {
+												try {
 													ReportLogZZZ.write(ReportLogZZZ.DEBUG, ReflectCodeZZZ.getMethodCurrentName() + ": Removing Tile: BACKEND");
-													//TODO GOON 20180916: Den Spielstein im Backen löschen!!!
+													//20180916: Den Spielstein im Backend löschen!!!
+													//Der HibernateContext ist ein Singleton Objekt, darum braucht man ihn nicht als Parameter im Methodenaufruf weitergeben.
+													KernelSingletonTHM objKernel = KernelSingletonTHM.getInstance();
+													HibernateContextProviderSingletonTHM objContextHibernate = HibernateContextProviderSingletonTHM.getInstance(objKernel);
 													
+												  //TODO GOON 20180918: Entwickle eine TileDaoFacadeFactory, die dann ein Objekt von GeneralDaoFacadeZZZ zurückliefert
+												  //FALLUNTERSCHEIDUNG: Je nach Truppentyp eine andere DAOFACADE wählen.
+													String sSubtype = objTile.getSubtype();
+													if(sSubtype.equalsIgnoreCase("ar")){
+														ReportLogZZZ.write(ReportLogZZZ.DEBUG, ReflectCodeZZZ.getMethodCurrentName() + ": Removing Tile Army: BACKEND");
+														TroopArmyDaoFacade objTroopDaoFacade = new TroopArmyDaoFacade(objContextHibernate);
+														
+														String sUniqueName = objTile.getUniquename();
+														objTroopDaoFacade.deleteTroopArmy(sUniqueName);														
+													}else if(sSubtype.equalsIgnoreCase("fl")){
+														ReportLogZZZ.write(ReportLogZZZ.DEBUG, ReflectCodeZZZ.getMethodCurrentName() + ": Removing Tile Fleet: BACKEND");
+														TroopFleetDaoFacade objTroopDaoFacade = new TroopFleetDaoFacade(objContextHibernate);
+														
+														String sUniqueName = objTile.getUniquename();
+														objTroopDaoFacade.deleteTroopFleet(sUniqueName);	
+														
+													}
 													ReportLogZZZ.write(ReportLogZZZ.DEBUG, ReflectCodeZZZ.getMethodCurrentName() + ": Removing Tile: FRONTEND");
 													HexCellTHM objCell = (HexCellTHM) objTile.getParent();													
 													objCell.remove(objTile); //reicht das im Frontend aus?
+													
 													
 													ReportLogZZZ.write(ReportLogZZZ.DEBUG, ReflectCodeZZZ.getMethodCurrentName() + ": Updating HEXCELL in MAP");
 																																							
@@ -310,9 +335,9 @@ public class TilePopupMenuTHM extends JPopupMenu implements IConstantZZZ, IObjec
 										            objCell.repaint();
 										            
 																															
-//												} catch (ExceptionZZZ e) {
-//													e.printStackTrace();
-//												}
+												} catch (ExceptionZZZ e) {
+													e.printStackTrace();
+												}
 											}
 										};
 										

@@ -62,6 +62,9 @@ public class TroopFleetDaoFacade extends TileDaoFacade{
 		super(objContextHibernate);
 	}
 	
+	public boolean delete(String sUniqueName) throws ExceptionZZZ{
+		return deleteTroopFleet(sUniqueName);
+	}
 	public boolean deleteTroopFleet(String sUniqueName) throws ExceptionZZZ{
 		boolean bReturn = false;
 		main:{

@@ -17,6 +17,8 @@ import use.thm.client.DlgAboutTHM;
 import use.thm.client.PanelMain_CENTERTHM;
 import use.thm.client.component.HexCellTHM;
 import use.thm.client.component.TileTHM;
+import use.thm.persistence.daoFacade.TileDaoFacade;
+import use.thm.persistence.daoFacade.TileDaoFacadeFactoryTHM;
 import use.thm.persistence.daoFacade.TroopArmyDaoFacade;
 import use.thm.persistence.daoFacade.TroopFleetDaoFacade;
 import use.thm.persistence.hibernate.HibernateContextProviderSingletonTHM;
@@ -301,22 +303,26 @@ public class TilePopupMenuTHM extends JPopupMenu implements IConstantZZZ, IObjec
 													HibernateContextProviderSingletonTHM objContextHibernate = HibernateContextProviderSingletonTHM.getInstance(objKernel);
 													
 												  //TODO GOON 20180918: Entwickle eine TileDaoFacadeFactory, die dann ein Objekt von GeneralDaoFacadeZZZ zurückliefert
-												  //FALLUNTERSCHEIDUNG: Je nach Truppentyp eine andere DAOFACADE wählen.
-													String sSubtype = objTile.getSubtype();
-													if(sSubtype.equalsIgnoreCase("ar")){
-														ReportLogZZZ.write(ReportLogZZZ.DEBUG, ReflectCodeZZZ.getMethodCurrentName() + ": Removing Tile Army: BACKEND");
-														TroopArmyDaoFacade objTroopDaoFacade = new TroopArmyDaoFacade(objContextHibernate);
-														
-														String sUniqueName = objTile.getUniquename();
-														objTroopDaoFacade.deleteTroopArmy(sUniqueName);														
-													}else if(sSubtype.equalsIgnoreCase("fl")){
-														ReportLogZZZ.write(ReportLogZZZ.DEBUG, ReflectCodeZZZ.getMethodCurrentName() + ": Removing Tile Fleet: BACKEND");
-														TroopFleetDaoFacade objTroopDaoFacade = new TroopFleetDaoFacade(objContextHibernate);
-														
-														String sUniqueName = objTile.getUniquename();
-														objTroopDaoFacade.deleteTroopFleet(sUniqueName);	
-														
-													}
+													TileDaoFacadeFactoryTHM daoFacadeFactory = TileDaoFacadeFactoryTHM.getInstance(objKernel);
+													TileDaoFacade objDaoFacade = (TileDaoFacade) daoFacadeFactory.createDaoFacade(objTile);
+													
+													String sUniqueName = objTile.getUniquename();
+													objDaoFacade.delete(sUniqueName);
+													
+													
+//												  //FALLUNTERSCHEIDUNG: Je nach Truppentyp eine andere DAOFACADE wählen.
+//													String sSubtype = objTile.getSubtype();
+//													if(sSubtype.equalsIgnoreCase("ar")){
+//														ReportLogZZZ.write(ReportLogZZZ.DEBUG, ReflectCodeZZZ.getMethodCurrentName() + ": Removing Tile Army: BACKEND");
+//														TroopArmyDaoFacade objTroopDaoFacade = new TroopArmyDaoFacade(objContextHibernate);
+//																												
+//														objTroopDaoFacade.deleteTroopArmy(sUniqueName);														
+//													}else if(sSubtype.equalsIgnoreCase("fl")){
+//														ReportLogZZZ.write(ReportLogZZZ.DEBUG, ReflectCodeZZZ.getMethodCurrentName() + ": Removing Tile Fleet: BACKEND");
+//														TroopFleetDaoFacade objTroopDaoFacade = new TroopFleetDaoFacade(objContextHibernate);
+//
+//														objTroopDaoFacade.deleteTroopFleet(sUniqueName);														
+//													}
 													ReportLogZZZ.write(ReportLogZZZ.DEBUG, ReflectCodeZZZ.getMethodCurrentName() + ": Removing Tile: FRONTEND");
 													HexCellTHM objCell = (HexCellTHM) objTile.getParent();													
 													objCell.remove(objTile); //reicht das im Frontend aus?

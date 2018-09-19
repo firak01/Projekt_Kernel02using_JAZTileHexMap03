@@ -488,6 +488,10 @@ public class TroopArmyDaoFacade extends TileDaoFacade{
 		return bReturn;
 	}
 	
+	public boolean delete(String sUniquename) throws ExceptionZZZ{
+		return this.deleteTroopArmy(sUniquename);
+	}
+	
 	public boolean deleteTroopArmy(String sUniqueName) throws ExceptionZZZ{
 		boolean bReturn = false;
 		main:{

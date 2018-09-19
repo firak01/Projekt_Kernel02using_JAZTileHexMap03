@@ -27,6 +27,9 @@ public abstract class TileDaoFacade extends GeneralDaoFacadeZZZ implements IBack
 	public abstract Troop getEntityUsed();
 	public abstract void setEntityUsed(Troop objTroop);
 	
+	public abstract boolean delete(String sUniquename)  throws ExceptionZZZ;
+	
+	
 	/* (non-Javadoc)
 	 * @see use.thm.persistence.interfaces.IBackendPersistenceFacadeTHM#computeUniquename()
 	 * 

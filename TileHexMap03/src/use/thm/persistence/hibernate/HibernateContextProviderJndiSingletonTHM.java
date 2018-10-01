@@ -18,6 +18,7 @@ import use.thm.persistence.model.TroopArmy;
 import use.thm.persistence.model.TroopArmyVariant;
 import use.thm.persistence.model.TroopFleet;
 import basic.zBasic.ExceptionZZZ;
+import basic.zBasic.KernelSingletonTHM;
 import basic.zBasic.ReflectCodeZZZ;
 import basic.zBasic.persistence.hibernate.HibernateContextProviderJndiZZZ;
 import basic.zBasic.persistence.hibernate.HibernateContextProviderZZZ;
@@ -37,7 +38,11 @@ public class HibernateContextProviderJndiSingletonTHM extends HibernateContextPr
 
 	public static HibernateContextProviderJndiSingletonTHM getInstance() throws ExceptionZZZ{
 		//TODO: Irgendwie (aus dem Kernel?) an diesen Jndi-String kommen.
-		return HibernateContextProviderJndiSingletonTHM.getInstance("jdbc/ServicePortal");
+		//return HibernateContextProviderJndiSingletonTHM.getInstance("jdbc/ServicePortal");
+		
+		KernelSingletonTHM objKernelSingleton = KernelSingletonTHM.getInstance();
+		String sDatabaseRemoteNameJNDI = objKernelSingleton.getParameter("DatabasesRemoteNameJNDI");
+		return HibernateContextProviderJndiSingletonTHM.getInstance(sDatabaseRemoteNameJNDI);
 	}
 	public static  HibernateContextProviderJndiSingletonTHM getInstance(String sContextJndi) throws ExceptionZZZ{
 		HibernateContextProviderJndiSingletonTHM objContextHibernateReturn = null;

@@ -20,6 +20,7 @@ import use.thm.persistence.model.TroopArmyVariant;
 import use.thm.persistence.model.TroopFleet;
 import use.thm.persistence.model.TroopFleetVariant;
 import basic.zBasic.ExceptionZZZ;
+import basic.zBasic.KernelSingletonTHM;
 import basic.zBasic.persistence.hibernate.HibernateConfigurationProviderZZZ;
 import basic.zBasic.persistence.interfaces.IHibernateConfigurationProviderZZZ;
 
@@ -73,7 +74,23 @@ create-drop: drop the schema when the SessionFactory is closed explicitly, typic
 	@Override
 	public boolean fillConfigurationLocalDb() throws ExceptionZZZ {
 		this.getConfiguration().setProperty("hibernate.connection.driver_class", "org.sqlite.JDBC");
-		this.getConfiguration().setProperty("hibernate.connection.url", "jdbc:sqlite:c:\\server\\SQLite\\TileHexMap03.sqlite");
+		//20180929: Den Pfad aus der Kernel-Konfiguration auslesen....
+		//String sDatabaseLocalPath="c:\\server\\SQLite\\TileHexMap03.sqlite";
+		KernelSingletonTHM objKernelSingleton = KernelSingletonTHM.getInstance();
+		String sDatabaseLocalPath = objKernelSingleton.getParameter("DatabaseLocalPath");
+		this.getConfiguration().setProperty("hibernate.connection.url", "jdbc:sqlite:"+sDatabaseLocalPath);
+		
+		
+		//20180928 Merke: Derzeit ist es nicht möglich, dass sich der WebService und die Swing-Applikation die gleiche SQLite Datenbank teilen.
+		//         Der Lesezugriff klappt über die Swing Applikation auch wenn der WebServer läuft.
+		//         Der Schreibzugriff scheitert (hier beim Löschen einer Armee).
+		//         Fehlermeldung Caused by: org.sqlite.SQLiteException: [SQLITE_BUSY]  The database file is locked (database is locked)
+		//Wenn der Webserver dann beendet ist, klappt´s auch schreibend, ohne die Swing-Applikatio neu zu starten.
+        //
+		//Umgekehrt funktioniert der (Lese-) Zugriff über SOAP wenn die Swing - Applikation noch läuft
+		//this.getConfiguration().setProperty("hibernate.connection.url", "jdbc:sqlite:c:\\server\\SQLite\\TileHexMap03JndiTest.sqlite");
+		
+		
 		return true;
 	}
 

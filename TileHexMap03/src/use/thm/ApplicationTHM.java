@@ -16,6 +16,7 @@ import basic.zBasic.util.datatype.string.StringZZZ;
 import basic.zBasic.util.log.KernelReportContextProviderZZZ;
 import basic.zBasic.util.log.ReportLogZZZ;
 import basic.zBasicUI.glassPane.dragDropTranslucent.GhostGlassPane;
+import basic.zKernel.IKernelZZZ;
 import basic.zKernel.KernelUseObjectZZZ;
 import basic.zKernel.KernelZZZ;
 import use.thm.client.FrmMapSingletonTHM;
@@ -43,7 +44,7 @@ public class ApplicationTHM extends KernelUseObjectZZZ{
 	private Font objFontGuiCurrent = null;
 	private int iHexFieldSideLengthCurrent = 0;
 	
-	public ApplicationTHM(KernelZZZ objKernel) throws ExceptionZZZ{
+	public ApplicationTHM(IKernelZZZ objKernel) throws ExceptionZZZ{
 		super(objKernel);
 	}
 	public ApplicationTHM(){
@@ -53,7 +54,7 @@ public class ApplicationTHM extends KernelUseObjectZZZ{
 	public boolean launchIt() throws ExceptionZZZ {
 		ReportLogZZZ.write(ReportLogZZZ.DEBUG, "launch - thread: " + ". ApplicationSingleton....");
 		main:{
-			KernelZZZ objKernel = this.getKernelObject();
+			IKernelZZZ objKernel = this.getKernelObject();
 			boolean bSuccessFillVariableIniInitial = fillVariableIniInitial();//Setze bestimmte, für die Applikation (in <z:math>) verwendeten Variablen der Ini Datei, initial an dieser Stelle, damit sie immer zur Verfügung stehen.			
 			FrmMapSingletonTHM frameInfo = FrmMapSingletonTHM.getInstance(objKernel, null);
 				
@@ -684,7 +685,7 @@ public class ApplicationTHM extends KernelUseObjectZZZ{
 		main:{
 			
 			//Kernel Objekt
-			KernelZZZ objKernel = this.getKernelObject();
+			IKernelZZZ objKernel = this.getKernelObject();
 			FileIniZZZ objIni = objKernel.getFileConfigIni();
 			
 			
@@ -730,7 +731,7 @@ public class ApplicationTHM extends KernelUseObjectZZZ{
 				boolean bFillDatabaseNew = true;
 				
 				//Kernel Objekt
-				KernelZZZ objKernel = this.getKernelObject();
+				IKernelZZZ objKernel = this.getKernelObject();
 							
 				//Der HibernateContext ist ein Singleton Objekt, darum braucht man ihn nicht als Parameter im Methodenaufruf weitergeben.
 				HibernateContextProviderSingletonTHM objContextHibernate = HibernateContextProviderSingletonTHM.getInstance(this.getKernelObject());			
@@ -788,7 +789,7 @@ public class ApplicationTHM extends KernelUseObjectZZZ{
 				boolean bFillDatabaseNew = true;
 				
 				//Kernel Objekt
-				KernelZZZ objKernel = this.getKernelObject();
+				IKernelZZZ objKernel = this.getKernelObject();
 							
 				//Der HibernateContext ist ein Singleton Objekt, darum braucht man ihn nicht als Parameter im Methodenaufruf weitergeben.
 				HibernateContextProviderSingletonTHM objContextHibernate = HibernateContextProviderSingletonTHM.getInstance(this.getKernelObject());			
@@ -1013,7 +1014,7 @@ public class ApplicationTHM extends KernelUseObjectZZZ{
 				boolean bFillDatabaseNew = true;
 				
 				//Kernel Objekt
-				KernelZZZ objKernel = this.getKernelObject();
+				IKernelZZZ objKernel = this.getKernelObject();
 							
 				//Der HibernateContext ist ein Singleton Objekt, darum braucht man ihn nicht als Parameter im Methodenaufruf weitergeben.
 				HibernateContextProviderSingletonTHM objContextHibernate = HibernateContextProviderSingletonTHM.getInstance(this.getKernelObject());			
@@ -1073,7 +1074,7 @@ public class ApplicationTHM extends KernelUseObjectZZZ{
 				boolean bFillDatabaseNew = true;
 				
 				//Kernel Objekt
-				KernelZZZ objKernel = this.getKernelObject();
+				IKernelZZZ objKernel = this.getKernelObject();
 							
 				//Der HibernateContext ist ein Singleton Objekt, darum braucht man ihn nicht als Parameter im Methodenaufruf weitergeben.
 				HibernateContextProviderSingletonTHM objContextHibernate = HibernateContextProviderSingletonTHM.getInstance(this.getKernelObject());			

@@ -41,12 +41,13 @@ import basic.zBasic.util.log.ReportLogZZZ;
 import basic.zBasicUI.glassPane.dragDropTranslucent.AbstractGhostDropManager;
 import basic.zBasicUI.glassPane.dragDropTranslucent.GhostDropEvent;
 import basic.zKernel.IKernelUserZZZ;
+import basic.zKernel.IKernelZZZ;
 import basic.zKernel.KernelZZZ;
 import basic.zKernelUI.util.JScrollPaneHelperZZZ;
 
 public class GhostDropManagerHexMapPanelTHM extends AbstractGhostDropManager implements IKernelUserZZZ, IHexMapUserTHM{
     private JComponent target;
-    private KernelZZZ objKernel; 
+    private IKernelZZZ objKernel; 
     private LogZZZ objLog;
     
     private HexMapTHM objMap; //Die HexMap ist der Speicher der einzelnen Zellen UND aller EventBroker. 
@@ -65,7 +66,7 @@ public class GhostDropManagerHexMapPanelTHM extends AbstractGhostDropManager imp
      * @param objMap: Die Hex-Karte, als Speicher der einzelnen Zellen. 
      *                Diese sind in einer HashMapMultiZZZ gespeichert und �ber die Koordinatenstrings X und Y abrufbar.  
      */
-    public GhostDropManagerHexMapPanelTHM(KernelZZZ objKernel, JComponent target, HexMapTHM objMap) {
+    public GhostDropManagerHexMapPanelTHM(IKernelZZZ objKernel, JComponent target, HexMapTHM objMap) {
         super(target);
         this.setKernelObject(objKernel);
         this.setLogObject(objLog);
@@ -253,11 +254,11 @@ public class GhostDropManagerHexMapPanelTHM extends AbstractGhostDropManager imp
 		this.objMap = objMap;
 	}
 
-	public KernelZZZ getKernelObject() {
+	public IKernelZZZ getKernelObject() {
 		return this.objKernel;
 	}
 
-	public void setKernelObject(KernelZZZ objKernel) {
+	public void setKernelObject(IKernelZZZ objKernel) {
 		this.objKernel = objKernel;
 	}
 

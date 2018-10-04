@@ -67,6 +67,7 @@ import basic.zBasic.util.datatype.enums.EnumSetDefaulttextUtilZZZ;
 import basic.zBasic.util.datatype.enums.EnumZZZ;
 import basic.zBasic.util.datatype.string.StringZZZ;
 import basic.zBasicUI.glassPane.dragDropTranslucent.GhostDropListener;
+import basic.zKernel.IKernelZZZ;
 import basic.zKernel.KernelUseObjectZZZ;
 import basic.zKernel.KernelZZZ;
 import basic.zKernelUI.component.KernelJFrameCascadedZZZ;
@@ -97,7 +98,7 @@ public class HexMapTHM extends KernelUseObjectZZZ implements ITileEventUserTHM {
 	private TileMoveEventBrokerTHM objTileMoveEventBroker = null;
 	private TileMetaEventBrokerTHM objTileMetaEventBroker = null; 
 		
-	public HexMapTHM(KernelZZZ objKernel, KernelJPanelCascadedZZZ panelParent, int iColumnMax, int iRowMax, int iSideLength) throws ExceptionZZZ{
+	public HexMapTHM(IKernelZZZ objKernel, KernelJPanelCascadedZZZ panelParent, int iColumnMax, int iRowMax, int iSideLength) throws ExceptionZZZ{
 		super(objKernel);
 		if(panelParent==null){
 			ExceptionZZZ ez = new ExceptionZZZ("No ParentPanel provided", iERROR_PARAMETER_MISSING, this.getClass().getName(), ReflectCodeZZZ.getMethodCurrentName());
@@ -216,7 +217,7 @@ public class HexMapTHM extends KernelUseObjectZZZ implements ITileEventUserTHM {
 			this.iNrOfHexes = 0;  //Die Gesamtzahl der Hexes wird hochgezählt beim Füllen UND IST DER RÜCKGABEWERT.
 			
 			//Kernel Objekt
-			KernelZZZ objKernel = this.getKernelObject();
+			IKernelZZZ objKernel = this.getKernelObject();
 			
 			//MoveEventBroker für die Bewegung von einer Zelle zur anderen
 			TileMoveEventBrokerTHM objTileMoveEventBroker = new TileMoveEventBrokerTHM(objKernel);

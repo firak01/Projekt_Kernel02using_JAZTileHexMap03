@@ -5,6 +5,7 @@ import java.awt.Frame;
 import basic.zKernelUI.component.KernelJDialogExtendedZZZ;
 import basic.zKernelUI.component.KernelJFrameCascadedZZZ;
 import basic.zKernelUI.component.KernelJPanelCascadedZZZ;
+import basic.zKernel.IKernelZZZ;
 import basic.zKernel.KernelZZZ;
 
 /**Dialogbox "Help/About". Wird aus dem Men� des Hauptframes gestartet.
@@ -19,7 +20,7 @@ public class DlgAboutTHM extends KernelJDialogExtendedZZZ {
 	 * @param bSnappedToScreen
 	 * @param panelCenter
 	 */
-	public DlgAboutTHM(KernelZZZ objKernel, KernelJFrameCascadedZZZ frameOwner) {		
+	public DlgAboutTHM(IKernelZZZ objKernel, KernelJFrameCascadedZZZ frameOwner) {		
 		super(objKernel, frameOwner, true, null);  //true, d.h. modal, gehtl leider nur im Konstruktor zu �bergeben, weil JDialog diesen Parameter im Konstruktor braucht und Super(...) kann keinen Code beinhalten, der auf eigene Properties etc. zugreift.
 	}
 	public boolean isCentered(){

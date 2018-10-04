@@ -11,6 +11,7 @@ import basic.zBasic.ReflectCodeZZZ;
 import basic.zBasic.util.abstractList.HashMapMultiZZZ;
 import basic.zBasic.util.log.ReportLogZZZ;
 import basic.zBasic.util.math.MathZZZ;
+import basic.zKernel.IKernelZZZ;
 import basic.zKernel.KernelUseObjectZZZ;
 import basic.zKernel.KernelZZZ;
 
@@ -25,7 +26,7 @@ public class HexagonaMapLayoutTHM extends KernelUseObjectZZZ implements LayoutMa
 	private int iGapLeftBase = 90; //Bundsteg. Eingeführt, damit die Karte richtig reagiert, wenn von aussen gezogene Objekte GEDROPPT werden. Basiswert, weil der Bundsteg ggf. verkleinert werden kann, wenn die Zellen kleiner werden, bzw. es mehr Zellen in einer Zeile gibt.
 	private int iGapDownBase = 10; //Bundsteg nach unten, eingef�hrt, damit die Spitzen der Hexecke in der untersten Reihe auch gezeichnet werden. 
 	
-	public HexagonaMapLayoutTHM(KernelZZZ objKernel, HexMapTHM map){
+	public HexagonaMapLayoutTHM(IKernelZZZ objKernel, HexMapTHM map){
 		super(objKernel);
 		this.objHexMap=map;
 	}

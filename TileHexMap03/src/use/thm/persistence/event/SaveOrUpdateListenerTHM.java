@@ -17,6 +17,7 @@ import use.thm.rule.facade.TroopFleetRuleFacade;
 import basic.zBasic.ExceptionZZZ;
 import basic.zBasic.ReflectCodeZZZ;
 import basic.zKernel.IKernelUserZZZ;
+import basic.zKernel.IKernelZZZ;
 import basic.zKernel.KernelZZZ;
 import custom.zKernel.LogZZZ;
 
@@ -27,7 +28,7 @@ import custom.zKernel.LogZZZ;
  */
 public class SaveOrUpdateListenerTHM extends DefaultSaveOrUpdateEventListener implements IKernelUserZZZ, IVetoFlagZZZ{ //das klappt nicht  implements SaveOrUpdateEventListener,IKernelUserZZZ {
 	private static final long serialVersionUID = 1L;
-	private KernelZZZ objKernel;
+	private IKernelZZZ objKernel;
 	private LogZZZ objLog; 
 	
 	private VetoFlag4ListenerZZZ objLastResult=new VetoFlag4ListenerZZZ();
@@ -226,10 +227,10 @@ public class SaveOrUpdateListenerTHM extends DefaultSaveOrUpdateEventListener im
 
 	//#######################################
 		//Methods implemented by additional Interface
-		public KernelZZZ getKernelObject() {
+		public IKernelZZZ getKernelObject() {
 			return this.objKernel;
 		}
-		public void setKernelObject(KernelZZZ objKernel) {
+		public void setKernelObject(IKernelZZZ objKernel) {
 			this.objKernel = objKernel;
 		}
 			

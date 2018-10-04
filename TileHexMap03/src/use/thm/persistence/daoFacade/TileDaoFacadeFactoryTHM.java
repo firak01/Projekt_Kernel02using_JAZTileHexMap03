@@ -9,6 +9,7 @@ import basic.zBasic.ExceptionZZZ;
 import basic.zBasic.KernelSingletonTHM;
 import basic.zBasic.ReflectCodeZZZ;
 import basic.zBasic.util.log.ReportLogZZZ;
+import basic.zKernel.IKernelZZZ;
 import basic.zKernel.KernelZZZ;
 
 public class TileDaoFacadeFactoryTHM extends AbstractDaoFacadeFactoryZZZ{
@@ -19,7 +20,7 @@ private static TileDaoFacadeFactoryTHM objFacadeFactory = null;  //muss static s
 	 * @param objKernel
 	 * @throws ExceptionZZZ
 	 */
-	private TileDaoFacadeFactoryTHM(KernelZZZ objKernel) throws ExceptionZZZ{
+	private TileDaoFacadeFactoryTHM(IKernelZZZ objKernel) throws ExceptionZZZ{
 		super(objKernel);
 	}
 	private TileDaoFacadeFactoryTHM(){

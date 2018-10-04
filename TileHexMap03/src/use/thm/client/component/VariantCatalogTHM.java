@@ -66,6 +66,7 @@ import basic.zBasicUI.glassPane.dragDropTranslucent.GhostMotionAdapter;
 import basic.zBasicUI.glassPane.dragDropTranslucent.GhostPictureAdapter;
 import basic.zBasicUI.glassPane.dragDropTranslucent.IGhostDropListenerUser;
 import basic.zBasicUI.glassPane.dragDropTranslucent.IGhostGlassPanePanelUser;
+import basic.zKernel.IKernelZZZ;
 import basic.zKernel.KernelUseObjectZZZ;
 import basic.zKernel.KernelZZZ;
 import basic.zKernelUI.component.KernelJPanelCascadedZZZ;
@@ -80,7 +81,7 @@ public class VariantCatalogTHM  extends KernelUseObjectZZZ implements IGhostGlas
 	private GhostGlassPane glassPane; //etwas, das per Drag/Drop bewegt wird, wird dorthin als Bild kopiert.
 	private GhostDropListener listenerForDropToTarget; //
 		
-	public VariantCatalogTHM(KernelZZZ objKernel, KernelJPanelCascadedZZZ panelParent, GhostGlassPane glassPane, GhostDropListener listenerForDropToHexMap) throws ExceptionZZZ{
+	public VariantCatalogTHM(IKernelZZZ objKernel, KernelJPanelCascadedZZZ panelParent, GhostGlassPane glassPane, GhostDropListener listenerForDropToHexMap) throws ExceptionZZZ{
 		super(objKernel);
 		if(panelParent==null){
 			ExceptionZZZ ez = new ExceptionZZZ("No ParentPanel provided", iERROR_PARAMETER_MISSING, this.getClass().getName(), ReflectCodeZZZ.getMethodCurrentName());
@@ -134,7 +135,7 @@ public class VariantCatalogTHM  extends KernelUseObjectZZZ implements IGhostGlas
 			boolean bFillDatabaseNew = true;
 						
 			//Kernel Objekt
-			KernelZZZ objKernel = this.getKernelObject();
+			IKernelZZZ objKernel = this.getKernelObject();
 			
 //			//MoveEventBroker für die Bewegung von einer Zelle zur anderen
 //			TileMoveEventBrokerTHM objTileMoveEventBroker = new TileMoveEventBrokerTHM(objKernel);

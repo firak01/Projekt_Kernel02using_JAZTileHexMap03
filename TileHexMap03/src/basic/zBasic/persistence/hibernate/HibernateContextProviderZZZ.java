@@ -43,6 +43,7 @@ import basic.zBasic.persistence.interfaces.IHibernateListenerProviderUserZZZ;
 import basic.zBasic.persistence.interfaces.IHibernateListenerProviderZZZ;
 import basic.zBasic.util.abstractList.HashMapExtendedZZZ;
 import basic.zBasic.util.datatype.string.StringZZZ;
+import basic.zKernel.IKernelZZZ;
 import basic.zKernel.KernelUseObjectZZZ;
 import basic.zKernel.KernelZZZ;
 import basic.zKernelUI.component.KernelJFrameCascadedZZZ;
@@ -82,7 +83,7 @@ public abstract class HibernateContextProviderZZZ  extends KernelUseObjectZZZ im
 			}
 		}
 		
-	public HibernateContextProviderZZZ(KernelZZZ objKernel) throws ExceptionZZZ{
+	public HibernateContextProviderZZZ(IKernelZZZ objKernel) throws ExceptionZZZ{
 		super(objKernel);
 		boolean bErg = this.fillConfiguration();
 		if(!bErg){

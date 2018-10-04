@@ -14,6 +14,7 @@ import basic.zBasic.IConstantZZZ;
 import basic.zBasic.IObjectZZZ;
 import basic.zBasic.util.log.ReportLogZZZ;
 import basic.zKernel.IKernelUserZZZ;
+import basic.zKernel.IKernelZZZ;
 import basic.zKernelUI.component.KernelActionJMenuZZZ;
 import basic.zKernelUI.component.KernelJFrameCascadedZZZ;
 import basic.zKernel.KernelZZZ;
@@ -27,11 +28,11 @@ import custom.zKernel.LogZZZ;
  *
  */
 public class MenuMainTHM extends JMenuBar implements IConstantZZZ, IObjectZZZ, IKernelUserZZZ {
-	private KernelZZZ objKernel;
+	private IKernelZZZ objKernel;
 	private LogZZZ objLog;
 	private KernelJFrameCascadedZZZ frameParent;
 	
-	public MenuMainTHM(KernelZZZ objKernel, KernelJFrameCascadedZZZ frameParent) throws ExceptionZZZ{
+	public MenuMainTHM(IKernelZZZ objKernel, KernelJFrameCascadedZZZ frameParent) throws ExceptionZZZ{
 		super();
 		this.setKernelObject(objKernel);
 		this.setLogObject(this.getKernelObject().getLogObject());
@@ -80,14 +81,14 @@ public class MenuMainTHM extends JMenuBar implements IConstantZZZ, IObjectZZZ, I
 	/* (non-Javadoc)
 	 * @see basic.zKernel.IKernelZZZ#getKernelObject()
 	 */
-	public KernelZZZ getKernelObject() {
+	public IKernelZZZ getKernelObject() {
 		return this.objKernel;
 	}
 
 	/* (non-Javadoc)
 	 * @see basic.zKernel.IKernelZZZ#setKernelObject(custom.zKernel.KernelZZZ)
 	 */
-	public void setKernelObject(KernelZZZ objKernel) {
+	public void setKernelObject(IKernelZZZ objKernel) {
 		this.objKernel = objKernel;
 	}
 
@@ -111,7 +112,7 @@ public class MenuMainTHM extends JMenuBar implements IConstantZZZ, IObjectZZZ, I
 	private class ActionMenuHelpAboutTHM extends KernelActionJMenuZZZ{
 		private DlgAboutTHM dlgAbout=null;
 		
-		public ActionMenuHelpAboutTHM(KernelZZZ objKernel, KernelJFrameCascadedZZZ frmParent) {
+		public ActionMenuHelpAboutTHM(IKernelZZZ objKernel, KernelJFrameCascadedZZZ frmParent) {
 			super(objKernel, frmParent);			
 		}
 		

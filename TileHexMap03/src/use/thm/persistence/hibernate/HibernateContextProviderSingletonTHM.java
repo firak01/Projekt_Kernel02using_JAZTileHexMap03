@@ -19,6 +19,7 @@ import basic.zBasic.ExceptionZZZ;
 import basic.zBasic.persistence.hibernate.HibernateContextProviderZZZ;
 import basic.zBasic.persistence.interfaces.IHibernateConfigurationProviderZZZ;
 import basic.zBasic.persistence.interfaces.IHibernateListenerProviderZZZ;
+import basic.zKernel.IKernelZZZ;
 import basic.zKernel.KernelZZZ;
 
 public class HibernateContextProviderSingletonTHM extends HibernateContextProviderZZZ{
@@ -31,7 +32,7 @@ public class HibernateContextProviderSingletonTHM extends HibernateContextProvid
 		return objContextHibernate;		
 	}
 	
-	public static  HibernateContextProviderSingletonTHM getInstance(KernelZZZ objKernel) throws ExceptionZZZ{
+	public static  HibernateContextProviderSingletonTHM getInstance(IKernelZZZ objKernel) throws ExceptionZZZ{
 		if(objContextHibernate==null){
 			objContextHibernate = new HibernateContextProviderSingletonTHM(objKernel);
 		}
@@ -44,7 +45,7 @@ public class HibernateContextProviderSingletonTHM extends HibernateContextProvid
 	}
 	
 	//Die Konstruktoren nun verbergen, wg. Singleton
-	private HibernateContextProviderSingletonTHM(KernelZZZ objKernel) throws ExceptionZZZ{
+	private HibernateContextProviderSingletonTHM(IKernelZZZ objKernel) throws ExceptionZZZ{
 		super(objKernel);
 	}
 			

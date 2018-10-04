@@ -31,6 +31,7 @@ import basic.zBasic.ReflectCodeZZZ;
 import basic.zBasic.util.log.ReportLogZZZ;
 import basic.zBasicUI.thread.SwingWorker;
 import basic.zKernel.IKernelUserZZZ;
+import basic.zKernel.IKernelZZZ;
 import basic.zKernel.KernelZZZ;
 import basic.zKernelUI.component.KernelActionCascadedZZZ;
 import basic.zKernelUI.component.KernelActionJMenuZZZ;
@@ -39,7 +40,7 @@ import basic.zKernelUI.component.KernelJFrameCascadedZZZ;
 import basic.zKernelUI.component.KernelJPanelCascadedZZZ;
 
 public class TilePopupMenuTHM extends JPopupMenu implements IConstantZZZ, IObjectZZZ, IKernelUserZZZ {
-	private KernelZZZ objKernel;
+	private IKernelZZZ objKernel;
 	private LogZZZ objLog;
 	private KernelJFrameCascadedZZZ frameParent;
 	private KernelJPanelCascadedZZZ panelParent;
@@ -49,7 +50,7 @@ public class TilePopupMenuTHM extends JPopupMenu implements IConstantZZZ, IObjec
     JMenuItem itemAbout;
     JMenuItem itemDetail;
     JMenuItem itemDelete;
-    public TilePopupMenuTHM(KernelZZZ objKernel, KernelJFrameCascadedZZZ frameParent, KernelJPanelCascadedZZZ panelParent, TileTHM objTile){
+    public TilePopupMenuTHM(IKernelZZZ objKernel, KernelJFrameCascadedZZZ frameParent, KernelJPanelCascadedZZZ panelParent, TileTHM objTile){
     	super();
     	try {
     		this.setKernelObject(objKernel);
@@ -115,14 +116,14 @@ public class TilePopupMenuTHM extends JPopupMenu implements IConstantZZZ, IObjec
 	/* (non-Javadoc)
 	 * @see basic.zKernel.IKernelZZZ#getKernelObject()
 	 */
-	public KernelZZZ getKernelObject() {
+	public IKernelZZZ getKernelObject() {
 		return this.objKernel;
 	}
 
 	/* (non-Javadoc)
 	 * @see basic.zKernel.IKernelZZZ#setKernelObject(custom.zKernel.KernelZZZ)
 	 */
-	public void setKernelObject(KernelZZZ objKernel) {
+	public void setKernelObject(IKernelZZZ objKernel) {
 		this.objKernel = objKernel;
 	}
 
@@ -162,7 +163,7 @@ public class TilePopupMenuTHM extends JPopupMenu implements IConstantZZZ, IObjec
 	private class ActionMenuHelpAboutTHM extends KernelActionJMenuZZZ{
 		private DlgAboutTHM dlgAbout=null;
 		
-		public ActionMenuHelpAboutTHM(KernelZZZ objKernel, KernelJFrameCascadedZZZ frmParent) {
+		public ActionMenuHelpAboutTHM(IKernelZZZ objKernel, KernelJFrameCascadedZZZ frmParent) {
 			super(objKernel, frmParent);			
 		}
 		
@@ -188,7 +189,7 @@ public class TilePopupMenuTHM extends JPopupMenu implements IConstantZZZ, IObjec
 	//TILE DETAIL Innere Klassen, welche eine Action behandelt. (Merke in den ZOOM-Buttons wird dann auch noch ein Swing Worker gestartet. Den brauchts hier nicht.)	
 	class ActionMenuTileDetailTHM extends  KernelActionCascadedZZZ{ //KernelUseObjectZZZ implements ActionListener{
 		
-		public ActionMenuTileDetailTHM(KernelZZZ objKernel, KernelJPanelCascadedZZZ panelParent){
+		public ActionMenuTileDetailTHM(IKernelZZZ objKernel, KernelJPanelCascadedZZZ panelParent){
 			super(objKernel, panelParent);			
 		}
 		
@@ -218,14 +219,14 @@ public class TilePopupMenuTHM extends JPopupMenu implements IConstantZZZ, IObjec
 		//TILE DETAIL Innere Klassen, welche eine Action behandelt. (Merke in den ZOOM-Buttons wird dann auch noch ein Swing Worker gestartet. Den verwenden wir hier auch.)	
 		class ActionMenuTileDeleteTHM extends  KernelActionCascadedZZZ{ //KernelUseObjectZZZ implements ActionListener{
 			
-			public ActionMenuTileDeleteTHM(KernelZZZ objKernel, KernelJPanelCascadedZZZ panelParent){
+			public ActionMenuTileDeleteTHM(IKernelZZZ objKernel, KernelJPanelCascadedZZZ panelParent){
 				super(objKernel, panelParent);			
 			}
 			
 			public boolean actionPerformCustom(ActionEvent ae, boolean bQueryResult) throws ExceptionZZZ {
 				ReportLogZZZ.write(ReportLogZZZ.DEBUG, "Performing action: 'Tile Delete'");
 				
-				KernelZZZ objKernel = this.getKernelObject();				
+				IKernelZZZ objKernel = this.getKernelObject();				
 				SwingWorker4ProgramTileDelete worker = new SwingWorker4ProgramTileDelete(objKernel, objTile, null);
 				worker.start();  //Merke: Das Setzen des Label Felds geschieht durch einen extra Thread, der mit SwingUtitlities.invokeLater(runnable) gestartet wird.
 				
@@ -247,7 +248,7 @@ public class TilePopupMenuTHM extends JPopupMenu implements IConstantZZZ, IObjec
 			//############################################
 		    //### PRIVATE KLASSEN #############################
 			class SwingWorker4ProgramTileDelete extends SwingWorker implements IObjectZZZ, IKernelUserZZZ{
-									private KernelZZZ objKernel;
+									private IKernelZZZ objKernel;
 									private LogZZZ objLog;
 									private KernelJPanelCascadedZZZ panel;
 									private String[] saFlag4Program;
@@ -256,7 +257,7 @@ public class TilePopupMenuTHM extends JPopupMenu implements IConstantZZZ, IObjec
 												
 									protected ExceptionZZZ objException = null;    // diese Exception hat jedes Objekt
 									
-									public SwingWorker4ProgramTileDelete(KernelZZZ objKernel, TileTHM objTile, String[] saFlag4Program){
+									public SwingWorker4ProgramTileDelete(IKernelZZZ objKernel, TileTHM objTile, String[] saFlag4Program){
 										super();
 										
 										this.objKernel = objKernel;
@@ -352,11 +353,11 @@ public class TilePopupMenuTHM extends JPopupMenu implements IConstantZZZ, IObjec
 									}
 									
 									
-									public KernelZZZ getKernelObject() {
+									public IKernelZZZ getKernelObject() {
 										return this.objKernel;
 									}
 
-									public void setKernelObject(KernelZZZ objKernel) {
+									public void setKernelObject(IKernelZZZ objKernel) {
 										this.objKernel = objKernel;
 									}
 

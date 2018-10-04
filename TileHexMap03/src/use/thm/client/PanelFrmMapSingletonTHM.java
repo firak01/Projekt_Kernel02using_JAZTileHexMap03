@@ -17,6 +17,7 @@ import basic.zBasicUI.glassPane.dragDropTranslucent.GhostPictureAdapter;
 import basic.zBasicUI.glassPane.dragDropTranslucent.IGhostGlassPaneFrame;
 import basic.zBasicUI.glassPane.dragDropTranslucent.IGhostGlassPanePanel;
 import basic.zBasicUI.glassPane.dragDropTranslucent.IGhostGlassPanePanelUser;
+import basic.zKernel.IKernelZZZ;
 import basic.zKernel.KernelZZZ;
 import basic.zKernelUI.component.KernelJFrameCascadedZZZ;
 import basic.zKernelUI.component.KernelJPanelCascadedZZZ;
@@ -25,7 +26,7 @@ public class PanelFrmMapSingletonTHM  extends KernelJPanelCascadedZZZ implements
 	//GhostDragDrop Interface
 	private GhostGlassPane glassPane; //etwas, das per Drag/Drop bewegt wird, wird dorthin als Bild kopiert.
 
-	public PanelFrmMapSingletonTHM(KernelZZZ objKernel, KernelJFrameCascadedZZZ frameParent) throws ExceptionZZZ{
+	public PanelFrmMapSingletonTHM(IKernelZZZ objKernel, KernelJFrameCascadedZZZ frameParent) throws ExceptionZZZ{
 		super(objKernel, frameParent);
 		this.enableGhostGlassPane((FrmMapSingletonTHM)frameParent);
 		

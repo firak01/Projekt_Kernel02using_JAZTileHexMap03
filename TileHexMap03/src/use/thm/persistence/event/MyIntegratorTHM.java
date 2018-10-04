@@ -18,6 +18,7 @@ import basic.zBasic.KernelSingletonTHM;
 import basic.zBasic.persistence.interfaces.IHibernateContextProviderZZZ;
 import basic.zBasic.persistence.interfaces.IHibernateListenerProviderZZZ;
 import basic.zKernel.IKernelUserZZZ;
+import basic.zKernel.IKernelZZZ;
 import basic.zKernel.KernelZZZ;
 
 /**Es muss in META-INF\services die Datei org.hibernate.integrator.spi.Integrator vorhanden sein.
@@ -27,7 +28,7 @@ import basic.zKernel.KernelZZZ;
  *
  */
 public class MyIntegratorTHM implements Integrator, IKernelUserZZZ {
-	private KernelZZZ objKernel;
+	private IKernelZZZ objKernel;
 	private LogZZZ objLog; 
 	
         public void integrate(
@@ -93,10 +94,10 @@ public class MyIntegratorTHM implements Integrator, IKernelUserZZZ {
 				
 		//#######################################
 		//Methods implemented by Interface
-		public KernelZZZ getKernelObject() {
+		public IKernelZZZ getKernelObject() {
 			return this.objKernel;
 		}
-		public void setKernelObject(KernelZZZ objKernel) {
+		public void setKernelObject(IKernelZZZ objKernel) {
 			this.objKernel = objKernel;
 		}
 			

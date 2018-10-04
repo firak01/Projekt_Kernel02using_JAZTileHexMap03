@@ -38,6 +38,7 @@ import basic.zBasic.persistence.interfaces.IHibernateContextProviderJndiZZZ;
 import basic.zBasic.persistence.interfaces.IHibernateContextProviderZZZ;
 import basic.zBasic.util.abstractList.HashMapExtendedZZZ;
 import basic.zBasic.util.datatype.string.StringZZZ;
+import basic.zKernel.IKernelZZZ;
 import basic.zKernel.KernelUseObjectZZZ;
 import basic.zKernel.KernelZZZ;
 import basic.zKernelUI.component.KernelJFrameCascadedZZZ;
@@ -80,7 +81,7 @@ public abstract class HibernateContextProviderJndiZZZ  extends HibernateContextP
 		}
 		
 		
-	private HibernateContextProviderJndiZZZ(KernelZZZ objKernel) throws ExceptionZZZ{
+	private HibernateContextProviderJndiZZZ(IKernelZZZ objKernel) throws ExceptionZZZ{
 		super(objKernel);
 //		boolean bErg = this.fillConfiguration(); //wird schon in der Elternklasse gemacht
 //		if(!bErg){
@@ -89,7 +90,7 @@ public abstract class HibernateContextProviderJndiZZZ  extends HibernateContextP
 //		}
 	}
 	
-	public HibernateContextProviderJndiZZZ(KernelZZZ objKernel, String sContextJndi) throws ExceptionZZZ{
+	public HibernateContextProviderJndiZZZ(IKernelZZZ objKernel, String sContextJndi) throws ExceptionZZZ{
 		this(objKernel);
 		this.setContextJndiString(sContextJndi);
 //		boolean bErg = this.fillConfiguration(); //wird schon in der Elternklasse gemacht

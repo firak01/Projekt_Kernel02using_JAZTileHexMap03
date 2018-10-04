@@ -35,6 +35,7 @@ import basic.zBasicUI.glassPane.dragDropTranslucent.GhostMotionAdapter;
 import basic.zBasicUI.glassPane.dragDropTranslucent.GhostPictureAdapter;
 import basic.zBasicUI.glassPane.dragDropTranslucent.IGhostGlassPaneFrame;
 import basic.zBasicUI.glassPane.dragDropTranslucent.IGhostGlassPanePanel;
+import basic.zKernel.IKernelZZZ;
 import basic.zKernel.KernelZZZ;
 import basic.zKernelUI.component.KernelJPanelCascadedZZZ;
 
@@ -49,7 +50,7 @@ public class PanelMain_WESTTHM extends KernelJPanelCascadedZZZ implements IGhost
 	//Default Konstruktor, damit die Klasse per Refelction einfachmit newInstance erzeugt werden kann.
 	public PanelMain_WESTTHM(){		
 	}	
-	public PanelMain_WESTTHM(KernelZZZ objKernel, KernelJPanelCascadedZZZ panelParent, GhostDropListener listenerForDropToHexMap,HashMap<String, Boolean>hmFlag) throws ExceptionZZZ  {
+	public PanelMain_WESTTHM(IKernelZZZ objKernel, KernelJPanelCascadedZZZ panelParent, GhostDropListener listenerForDropToHexMap,HashMap<String, Boolean>hmFlag) throws ExceptionZZZ  {
 		super(objKernel, panelParent,hmFlag);
 		this.enableGhostGlassPane((FrmMapSingletonTHM)this.getFrameParent()); //Das Draggen als Bild über den GlassPane. Der wird dann bei der BOX-ERSTELLUNG gebraucht.
 		try{				

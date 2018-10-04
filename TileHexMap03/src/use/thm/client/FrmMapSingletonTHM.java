@@ -28,6 +28,7 @@ import basic.zBasic.util.log.KernelReportContextProviderZZZ;
 import basic.zBasic.util.log.ReportLogZZZ;
 import basic.zBasicUI.glassPane.dragDropTranslucent.GhostGlassPane;
 import basic.zBasicUI.glassPane.dragDropTranslucent.IGhostGlassPaneFrame;
+import basic.zKernel.IKernelZZZ;
 import basic.zKernel.KernelZZZ;
 import basic.zKernelUI.component.KernelJFrameCascadedZZZ;
 import basic.zKernelUI.component.KernelJPanelCascadedZZZ;
@@ -43,7 +44,7 @@ public class FrmMapSingletonTHM  extends KernelJFrameCascadedZZZ implements IGho
 	 * @param objFrame
 	 * @throws ExceptionZZZ
 	 */
-	private FrmMapSingletonTHM(KernelZZZ objKernel, KernelJFrameCascadedZZZ objFrame) throws ExceptionZZZ{
+	private FrmMapSingletonTHM(IKernelZZZ objKernel, KernelJFrameCascadedZZZ objFrame) throws ExceptionZZZ{
 		super(objKernel, objFrame);
 		
 		//Todo: Den glassPane in die Klasse KernelJFrameCascadedZZZ �bernehmen, oder eine Unterklasse dafür zur Verfügung stellen.
@@ -65,7 +66,7 @@ public class FrmMapSingletonTHM  extends KernelJFrameCascadedZZZ implements IGho
 		return dlgSingleton;		
 	}
 	
-	public static FrmMapSingletonTHM getInstance(KernelZZZ objKernel, KernelJFrameCascadedZZZ frameParent) throws ExceptionZZZ{
+	public static FrmMapSingletonTHM getInstance(IKernelZZZ objKernel, KernelJFrameCascadedZZZ frameParent) throws ExceptionZZZ{
 		if(dlgSingleton==null){
 			dlgSingleton = new FrmMapSingletonTHM(objKernel, frameParent);
 		}

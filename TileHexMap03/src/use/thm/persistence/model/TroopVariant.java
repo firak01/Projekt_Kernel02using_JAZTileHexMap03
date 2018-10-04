@@ -55,6 +55,7 @@ import basic.zBasic.util.datatype.string.StringZZZ;
 import basic.zBasic.util.file.FileEasyZZZ;
 import basic.zBasicUI.component.UIHelper;
 import basic.zBasicUI.component.UIHelperTransparencyRange;
+import basic.zKernel.IKernelZZZ;
 import basic.zKernel.KernelZZZ;
 
 /**Klasse für die Werte der TroopVarianten - SO NICHT persistierbar.
@@ -369,7 +370,7 @@ public abstract class TroopVariant  extends KeyImmutable implements ITroopVarian
 		 //Das Bild wird zuvor noch bearbeitet.
 		 //... noch weitere Infos
 		 try{
-			 KernelZZZ objKernel = ApplicationSingletonTHM.getInstance().getKernelObject();
+			 IKernelZZZ objKernel = ApplicationSingletonTHM.getInstance().getKernelObject();
 		 	 
 			 
 			 //+++++++++++++++++++++++++++++++

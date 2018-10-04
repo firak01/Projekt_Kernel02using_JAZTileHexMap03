@@ -21,6 +21,7 @@ import use.thm.persistence.model.AreaCellType;
 import basic.zBasic.ExceptionZZZ;
 import basic.zBasic.ReflectCodeZZZ;
 import basic.zBasic.util.datatype.string.StringZZZ;
+import basic.zKernel.IKernelZZZ;
 import basic.zKernel.KernelZZZ;
 
 /**Eine Zelle, die weitere Spezialisierte Eigenschaften hat, die beim Setzen der Spielsteine zu ber�cksichtigen sind.
@@ -47,7 +48,7 @@ public class AreaCellTHM  extends HexCellTHM implements IListenerTileMetaTHM{
 	 */
 	public AreaCellTHM(){	
 	}
-	public AreaCellTHM(KernelZZZ objKernel, HexMapTHM mapParent, AreaCell objAreaCell, int iSideLength) throws ExceptionZZZ {
+	public AreaCellTHM(IKernelZZZ objKernel, HexMapTHM mapParent, AreaCell objAreaCell, int iSideLength) throws ExceptionZZZ {
 		super(objKernel, mapParent, objAreaCell, iSideLength);
 		this.setAreaCellObject(objAreaCell);
 	} 

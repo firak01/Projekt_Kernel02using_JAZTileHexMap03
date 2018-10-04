@@ -58,6 +58,7 @@ import basic.zBasicUI.glassPane.dragDropTranslucent.IGhostGlassPaneFrame;
 import basic.zBasicUI.glassPane.dragDropTranslucent.IGhostGlassPanePanel;
 import basic.zBasicUI.thread.SwingWorker;
 import basic.zKernel.IKernelUserZZZ;
+import basic.zKernel.IKernelZZZ;
 import basic.zKernel.KernelZZZ;
 import basic.zKernelUI.component.KernelActionCascadedZZZ;
 import basic.zKernelUI.component.KernelButtonGroupZZZ;
@@ -73,7 +74,7 @@ public class PanelMain_NORTHTHM extends KernelJPanelCascadedZZZ{
 	//Default Konstruktor, damit die Klasse per Refelction einfachmit newInstance erzeugt werden kann.
 	public PanelMain_NORTHTHM(){		
 	}	
-	public PanelMain_NORTHTHM(KernelZZZ objKernel, KernelJPanelCascadedZZZ panelParent, HashMap<String, Boolean>hmFlag) throws ExceptionZZZ  {
+	public PanelMain_NORTHTHM(IKernelZZZ objKernel, KernelJPanelCascadedZZZ panelParent, HashMap<String, Boolean>hmFlag) throws ExceptionZZZ  {
 		super(objKernel, panelParent,hmFlag);
 		
 //		try{				
@@ -196,7 +197,7 @@ public class PanelMain_NORTHTHM extends KernelJPanelCascadedZZZ{
 			//######################################
 	//MINUS BUTTON GUI - Innere Klassen, welche eine Action behandelt	
 	class ActionGuiZoomMinusTHM extends  KernelActionCascadedZZZ{ //KernelUseObjectZZZ implements ActionListener{						
-		public ActionGuiZoomMinusTHM(KernelZZZ objKernel, KernelJPanelCascadedZZZ panelParent){
+		public ActionGuiZoomMinusTHM(IKernelZZZ objKernel, KernelJPanelCascadedZZZ panelParent){
 			super(objKernel, panelParent);			
 		}
 		
@@ -234,7 +235,7 @@ public class PanelMain_NORTHTHM extends KernelJPanelCascadedZZZ{
 		}			 							
 		
 		class SwingWorker4ProgramGuiZoomMinus extends SwingWorker implements IObjectZZZ, IKernelUserZZZ{
-			private KernelZZZ objKernel;
+			private IKernelZZZ objKernel;
 			private LogZZZ objLog;
 			private KernelJPanelCascadedZZZ panel;
 			private String[] saFlag4Program;
@@ -245,7 +246,7 @@ public class PanelMain_NORTHTHM extends KernelJPanelCascadedZZZ{
 						
 			protected ExceptionZZZ objException = null;    // diese Exception hat jedes Objekt
 			
-			public SwingWorker4ProgramGuiZoomMinus(KernelZZZ objKernel, KernelJPanelCascadedZZZ panel, String[] saFlag4Program){
+			public SwingWorker4ProgramGuiZoomMinus(IKernelZZZ objKernel, KernelJPanelCascadedZZZ panel, String[] saFlag4Program){
 				super();
 				this.objKernel = objKernel;
 				this.objLog = objKernel.getLogObject();
@@ -346,11 +347,11 @@ public class PanelMain_NORTHTHM extends KernelJPanelCascadedZZZ{
 			}
 			
 			
-			public KernelZZZ getKernelObject() {
+			public IKernelZZZ getKernelObject() {
 				return this.objKernel;
 			}
 
-			public void setKernelObject(KernelZZZ objKernel) {
+			public void setKernelObject(IKernelZZZ objKernel) {
 				this.objKernel = objKernel;
 			}
 
@@ -403,7 +404,7 @@ public class PanelMain_NORTHTHM extends KernelJPanelCascadedZZZ{
 //			#######################################
 			//PLUS BUTTON -GUI Innere Klassen, welche eine Action behandelt	
 			class ActionGuiZoomPlusTHM extends  KernelActionCascadedZZZ{ //KernelUseObjectZZZ implements ActionListener{						
-				public ActionGuiZoomPlusTHM(KernelZZZ objKernel, KernelJPanelCascadedZZZ panelParent){
+				public ActionGuiZoomPlusTHM(IKernelZZZ objKernel, KernelJPanelCascadedZZZ panelParent){
 					super(objKernel, panelParent);			
 				}
 				
@@ -442,7 +443,7 @@ public class PanelMain_NORTHTHM extends KernelJPanelCascadedZZZ{
 				}			 							
 				
 				class SwingWorker4ProgramGuiZoomPlus extends SwingWorker implements IObjectZZZ, IKernelUserZZZ{
-					private KernelZZZ objKernel;
+					private IKernelZZZ objKernel;
 					private LogZZZ objLog;
 					private KernelJPanelCascadedZZZ panel;
 					private String[] saFlag4Program;
@@ -453,7 +454,7 @@ public class PanelMain_NORTHTHM extends KernelJPanelCascadedZZZ{
 								
 					protected ExceptionZZZ objException = null;    // diese Exception hat jedes Objekt
 					
-					public SwingWorker4ProgramGuiZoomPlus(KernelZZZ objKernel, KernelJPanelCascadedZZZ panel, String[] saFlag4Program){
+					public SwingWorker4ProgramGuiZoomPlus(IKernelZZZ objKernel, KernelJPanelCascadedZZZ panel, String[] saFlag4Program){
 						super();
 						this.objKernel = objKernel;
 						this.objLog = objKernel.getLogObject();
@@ -551,11 +552,11 @@ public class PanelMain_NORTHTHM extends KernelJPanelCascadedZZZ{
 					}
 					
 					
-					public KernelZZZ getKernelObject() {
+					public IKernelZZZ getKernelObject() {
 						return this.objKernel;
 					}
 
-					public void setKernelObject(KernelZZZ objKernel) {
+					public void setKernelObject(IKernelZZZ objKernel) {
 						this.objKernel = objKernel;
 					}
 
@@ -607,7 +608,7 @@ public class PanelMain_NORTHTHM extends KernelJPanelCascadedZZZ{
 			
 			//MINUS BUTTON MAP - Innere Klassen, welche eine Action behandelt	
 			class ActionMapZoomMinusTHM extends  KernelActionCascadedZZZ{ //KernelUseObjectZZZ implements ActionListener{						
-				public ActionMapZoomMinusTHM(KernelZZZ objKernel, KernelJPanelCascadedZZZ panelParent){
+				public ActionMapZoomMinusTHM(IKernelZZZ objKernel, KernelJPanelCascadedZZZ panelParent){
 					super(objKernel, panelParent);			
 				}
 				
@@ -647,7 +648,7 @@ public class PanelMain_NORTHTHM extends KernelJPanelCascadedZZZ{
 				}			 							
 				
 				class SwingWorker4ProgramMapZoomMinus extends SwingWorker implements IObjectZZZ, IKernelUserZZZ{
-					private KernelZZZ objKernel;
+					private IKernelZZZ objKernel;
 					private LogZZZ objLog;
 					private KernelJPanelCascadedZZZ panel;
 					private String[] saFlag4Program;
@@ -658,7 +659,7 @@ public class PanelMain_NORTHTHM extends KernelJPanelCascadedZZZ{
 								
 					protected ExceptionZZZ objException = null;    // diese Exception hat jedes Objekt
 					
-					public SwingWorker4ProgramMapZoomMinus(KernelZZZ objKernel, KernelJPanelCascadedZZZ panel, String[] saFlag4Program){
+					public SwingWorker4ProgramMapZoomMinus(IKernelZZZ objKernel, KernelJPanelCascadedZZZ panel, String[] saFlag4Program){
 						super();
 						this.objKernel = objKernel;
 						this.objLog = objKernel.getLogObject();
@@ -715,11 +716,11 @@ public class PanelMain_NORTHTHM extends KernelJPanelCascadedZZZ{
 					}
 					
 					
-					public KernelZZZ getKernelObject() {
+					public IKernelZZZ getKernelObject() {
 						return this.objKernel;
 					}
 
-					public void setKernelObject(KernelZZZ objKernel) {
+					public void setKernelObject(IKernelZZZ objKernel) {
 						this.objKernel = objKernel;
 					}
 
@@ -769,7 +770,7 @@ public class PanelMain_NORTHTHM extends KernelJPanelCascadedZZZ{
 //					#######################################
 					//PLUS BUTTON - MAP Innere Klassen, welche eine Action behandelt	
 					class ActionMapZoomPlusTHM extends  KernelActionCascadedZZZ{ //KernelUseObjectZZZ implements ActionListener{						
-						public ActionMapZoomPlusTHM(KernelZZZ objKernel, KernelJPanelCascadedZZZ panelParent){
+						public ActionMapZoomPlusTHM(IKernelZZZ objKernel, KernelJPanelCascadedZZZ panelParent){
 							super(objKernel, panelParent);			
 						}
 						
@@ -809,7 +810,7 @@ public class PanelMain_NORTHTHM extends KernelJPanelCascadedZZZ{
 						}			 							
 						
 						class SwingWorker4ProgramMapZoomPlus extends SwingWorker implements IObjectZZZ, IKernelUserZZZ{
-							private KernelZZZ objKernel;
+							private IKernelZZZ objKernel;
 							private LogZZZ objLog;
 							private KernelJPanelCascadedZZZ panel;
 							private String[] saFlag4Program;
@@ -820,7 +821,7 @@ public class PanelMain_NORTHTHM extends KernelJPanelCascadedZZZ{
 										
 							protected ExceptionZZZ objException = null;    // diese Exception hat jedes Objekt
 							
-							public SwingWorker4ProgramMapZoomPlus(KernelZZZ objKernel, KernelJPanelCascadedZZZ panel, String[] saFlag4Program){
+							public SwingWorker4ProgramMapZoomPlus(IKernelZZZ objKernel, KernelJPanelCascadedZZZ panel, String[] saFlag4Program){
 								super();
 								this.objKernel = objKernel;
 								this.objLog = objKernel.getLogObject();
@@ -874,11 +875,11 @@ public class PanelMain_NORTHTHM extends KernelJPanelCascadedZZZ{
 							}
 							
 							
-							public KernelZZZ getKernelObject() {
+							public IKernelZZZ getKernelObject() {
 								return this.objKernel;
 							}
 
-							public void setKernelObject(KernelZZZ objKernel) {
+							public void setKernelObject(IKernelZZZ objKernel) {
 								this.objKernel = objKernel;
 							}
 

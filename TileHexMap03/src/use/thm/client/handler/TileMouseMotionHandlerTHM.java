@@ -27,6 +27,7 @@ import basic.zBasic.util.abstractList.ArrayListZZZ;
 import basic.zBasic.util.datatype.string.StringZZZ;
 import basic.zBasicUI.component.UIHelper;
 import basic.zKernel.IKernelModuleUserZZZ;
+import basic.zKernel.IKernelZZZ;
 import basic.zKernel.KernelZZZ;
 import basic.zKernelUI.KernelUIZZZ;
 import basic.zKernelUI.component.KernelJPanelCascadedZZZ;
@@ -393,7 +394,7 @@ public class TileMouseMotionHandlerTHM extends MouseAdapter implements MouseMoti
 						boolean bGoon = false;					   					   
 						//Die in eine Methode gekapselte (DAO Klasse) Vorgehensweise verwenden. //Der Code stammt aus HexMapTH.fillMap_createNewTiles(...)
 						//Allerdings müssen erst einmal alle Voraussetzungen erfüllt werden. KernelObjekt..., HibernateContext..., PrimaryKey..., AreaCell Objekt...,
-						KernelZZZ objKernel = this.getTile().getMapPanel().getKernelObject();
+						IKernelZZZ objKernel = this.getTile().getMapPanel().getKernelObject();
 						HibernateContextProviderSingletonTHM objContextHibernate;
 						try {
 							objContextHibernate = HibernateContextProviderSingletonTHM.getInstance(objKernel);						

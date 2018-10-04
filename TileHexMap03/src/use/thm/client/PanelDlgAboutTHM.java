@@ -3,6 +3,7 @@ package use.thm.client;
 import javax.swing.JLabel;
 
 import basic.zBasic.ExceptionZZZ;
+import basic.zKernel.IKernelZZZ;
 import basic.zKernel.KernelZZZ;
 import basic.zKernelUI.component.KernelJDialogExtendedZZZ;
 import basic.zKernelUI.component.KernelJFrameCascadedZZZ;
@@ -15,7 +16,7 @@ public class PanelDlgAboutTHM extends KernelJPanelCascadedZZZ{
 	 * @param objKernel
 	 * @param dialogExtended
 	 */
-	public PanelDlgAboutTHM(KernelZZZ objKernel, KernelJDialogExtendedZZZ dialogExtended) {
+	public PanelDlgAboutTHM(IKernelZZZ objKernel, KernelJDialogExtendedZZZ dialogExtended) {
 		super(objKernel, dialogExtended);
 		
 		//TODO GOON: Hier das Panel weiter ausgestalten
@@ -23,7 +24,7 @@ public class PanelDlgAboutTHM extends KernelJPanelCascadedZZZ{
 		this.add(label1);		
 	}
 	
-	public PanelDlgAboutTHM(KernelZZZ objKernel, KernelJFrameCascadedZZZ frameCascaded) throws ExceptionZZZ {
+	public PanelDlgAboutTHM(IKernelZZZ objKernel, KernelJFrameCascadedZZZ frameCascaded) throws ExceptionZZZ {
 		super(objKernel, frameCascaded);
 		
 		//TODO GOON: Hier das Panel weiter ausgestalten

@@ -37,6 +37,7 @@ import basic.zBasic.ReflectCodeZZZ;
 import basic.zBasic.util.datatype.string.StringZZZ;
 import basic.zBasic.util.log.ReportLogZZZ;
 import basic.zBasic.util.math.MathZZZ;
+import basic.zKernel.IKernelZZZ;
 import basic.zKernel.KernelZZZ;
 import basic.zKernelUI.component.KernelJPanelCascadedZZZ;
 
@@ -98,7 +99,7 @@ public class HexCellTHM extends KernelJPanelCascadedZZZ implements IMapFixedTHM,
 		 * @param iSideLength: Die Seitenlänge des Hexagons. Sie ist grundlage für alle anderen mathematisch zu berechneneden Punkte.
 		 * @throws ExceptionZZZ 
 		 */
-	 public HexCellTHM(KernelZZZ objKernel, HexMapTHM mapParent, HexCell objHexCell, int iSideLength) throws ExceptionZZZ{
+	 public HexCellTHM(IKernelZZZ objKernel, HexMapTHM mapParent, HexCell objHexCell, int iSideLength) throws ExceptionZZZ{
 			//super(objKernel, frameParent);
 			 super(objKernel, mapParent.getPanelParent());
 			

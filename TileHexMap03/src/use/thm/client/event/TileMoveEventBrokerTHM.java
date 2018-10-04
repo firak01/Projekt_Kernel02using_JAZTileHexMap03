@@ -10,6 +10,7 @@ import javax.swing.JOptionPane;
 import use.thm.IMapPositionableTHM;
 import use.thm.client.component.TileTHM;
 import basic.zBasic.ReflectCodeZZZ;
+import basic.zKernel.IKernelZZZ;
 import basic.zKernel.KernelUseObjectZZZ;
 import basic.zKernel.KernelZZZ;
 import basic.zKernelUI.component.model.EventComponentSelectionResetZZZ;
@@ -17,7 +18,7 @@ import basic.zKernelUI.component.model.IListenerSelectionResetZZZ;
 import basic.zKernelUI.component.model.ISenderSelectionResetZZZ;
 
 public class TileMoveEventBrokerTHM extends KernelUseObjectZZZ implements ISenderTileMovedTHM{
-	public TileMoveEventBrokerTHM(KernelZZZ objKernel){
+	public TileMoveEventBrokerTHM(IKernelZZZ objKernel){
 		super(objKernel);
 	}
 	

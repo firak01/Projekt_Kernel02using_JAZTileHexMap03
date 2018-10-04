@@ -8,6 +8,7 @@ import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 
 import basic.zBasic.ExceptionZZZ;
+import basic.zKernel.IKernelZZZ;
 import basic.zKernel.KernelZZZ;
 import basic.zKernelUI.component.KernelActionCascadedZZZ;
 import basic.zKernelUI.component.KernelJDialogExtendedZZZ;
@@ -21,7 +22,7 @@ import basic.zKernelUI.component.KernelJPanelDialogButtonDefaultZZZ;
  *
  */
 public class PanelDlgAboutButtonAlternativeTHM extends KernelJPanelDialogButtonDefaultZZZ{
-	public PanelDlgAboutButtonAlternativeTHM(KernelZZZ objKernel, KernelJDialogExtendedZZZ dialogExtended, boolean bIsButtonOkAvailable, boolean bIsButtonCancelAvailable){
+	public PanelDlgAboutButtonAlternativeTHM(IKernelZZZ objKernel, KernelJDialogExtendedZZZ dialogExtended, boolean bIsButtonOkAvailable, boolean bIsButtonCancelAvailable){
 		super(objKernel, dialogExtended, bIsButtonOkAvailable, bIsButtonCancelAvailable);
 	}
 	
@@ -31,7 +32,7 @@ public class PanelDlgAboutButtonAlternativeTHM extends KernelJPanelDialogButtonD
 		return new ActionListenerDlgAboutButtonOk(this.getKernelObject(), panelButton);
 	}	
 	class ActionListenerDlgAboutButtonOk extends KernelActionCascadedZZZ implements ActionListener {
-		public ActionListenerDlgAboutButtonOk(KernelZZZ objKernel, KernelJPanelCascadedZZZ panelParent) {
+		public ActionListenerDlgAboutButtonOk(IKernelZZZ objKernel, KernelJPanelCascadedZZZ panelParent) {
 			super(objKernel, panelParent);
 		}
 		

@@ -16,6 +16,7 @@ import basic.zBasic.ReflectCodeZZZ;
 import basic.zBasic.util.abstractList.HashMapMultiZZZ;
 import basic.zBasic.util.log.ReportLogZZZ;
 import basic.zBasic.util.math.MathZZZ;
+import basic.zKernel.IKernelZZZ;
 import basic.zKernel.KernelUseObjectZZZ;
 import basic.zKernel.KernelZZZ;
 
@@ -27,7 +28,7 @@ import basic.zKernel.KernelZZZ;
 public class HexagonalCellLayoutTHM extends KernelUseObjectZZZ implements LayoutManager{
 	private HexCellTHM objHexCell = null;
 	
-	public HexagonalCellLayoutTHM(KernelZZZ objKernel, HexCellTHM cell) {
+	public HexagonalCellLayoutTHM(IKernelZZZ objKernel, HexCellTHM cell) {
 		super(objKernel);
 		this.objHexCell = cell;
 	}

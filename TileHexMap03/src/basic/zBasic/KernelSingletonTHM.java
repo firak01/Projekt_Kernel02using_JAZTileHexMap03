@@ -3,9 +3,10 @@ package basic.zBasic;
 import use.thm.ApplicationSingletonTHM;
 import basic.zBasic.util.datatype.string.StringZZZ;
 import basic.zKernel.IKernelConfigZZZ;
+import basic.zKernel.KernelKernelZZZ;
 import basic.zKernel.KernelZZZ;
 
-public class KernelSingletonTHM extends KernelZZZ{
+public class KernelSingletonTHM extends KernelKernelZZZ{
 	private static KernelSingletonTHM objKernelSingelton; //muss als Singleton static sein
 	private static String sFILE_CONFIG_DEFAULT = "ZKernelConfigTileHexMap02Client.ini";  //muss static sein, wg. getInstance()!!!
 	private static String sKEY_APPLICATION_DEFAULT = "THM";

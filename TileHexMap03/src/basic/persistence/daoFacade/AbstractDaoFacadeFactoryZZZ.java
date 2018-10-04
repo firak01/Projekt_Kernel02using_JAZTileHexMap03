@@ -3,6 +3,7 @@ package basic.persistence.daoFacade;
 import basic.persistence.dto.IFacadeDtoZZZ;
 import basic.zBasic.ExceptionZZZ;
 import basic.zBasic.ObjectZZZ;
+import basic.zKernel.IKernelZZZ;
 import basic.zKernel.KernelUseObjectZZZ;
 import basic.zKernel.KernelZZZ;
 
@@ -12,7 +13,7 @@ public abstract class AbstractDaoFacadeFactoryZZZ extends KernelUseObjectZZZ imp
 	 * @param objKernel
 	 * @throws ExceptionZZZ
 	 */
-	protected AbstractDaoFacadeFactoryZZZ(KernelZZZ objKernel) throws ExceptionZZZ{
+	protected AbstractDaoFacadeFactoryZZZ(IKernelZZZ objKernel) throws ExceptionZZZ{
 		super(objKernel);
 	}
 	protected AbstractDaoFacadeFactoryZZZ(){

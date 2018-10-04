@@ -28,6 +28,7 @@ import basic.zBasic.ExceptionZZZ;
 import basic.zBasic.KernelSingletonTHM;
 import basic.zBasic.ReflectCodeZZZ;
 import basic.zKernel.IKernelUserZZZ;
+import basic.zKernel.IKernelZZZ;
 import basic.zKernel.KernelZZZ;
 
 /**
@@ -39,7 +40,7 @@ import basic.zKernel.KernelZZZ;
 public class PreUpdateListenerTHM  implements PreUpdateEventListener,IKernelUserZZZ, IVetoFlagZZZ {
 //DAS geht nicht public class PreUpdateListenerTHM extends DefaultPreUpdateEventListener implements PreUpdateEventListener,IKernelUserZZZ, IVetoFlagZZZ {
 	private static final long serialVersionUID = 1L;
-	private KernelZZZ objKernel;
+	private IKernelZZZ objKernel;
 	private LogZZZ objLog; 
 	
 	private VetoFlag4ListenerZZZ objLastResult=new VetoFlag4ListenerZZZ();
@@ -252,10 +253,10 @@ public class PreUpdateListenerTHM  implements PreUpdateEventListener,IKernelUser
 
 	//#######################################
 		//Methods implemented by additional Interface
-		public KernelZZZ getKernelObject() {
+		public IKernelZZZ getKernelObject() {
 			return this.objKernel;
 		}
-		public void setKernelObject(KernelZZZ objKernel) {
+		public void setKernelObject(IKernelZZZ objKernel) {
 			this.objKernel = objKernel;
 		}
 			

@@ -30,6 +30,7 @@ import basic.zBasic.util.log.KernelReportContextProviderZZZ;
 import basic.zBasic.util.log.ReportLogZZZ;
 import basic.zBasicUI.glassPane.dragDropTranslucent.GhostGlassPane;
 import basic.zBasicUI.glassPane.dragDropTranslucent.IGhostGlassPaneFrame;
+import basic.zKernel.IKernelZZZ;
 import basic.zKernel.KernelUseObjectZZZ;
 import basic.zKernel.KernelZZZ;
 import basic.zKernelUI.component.KernelJFrameCascadedZZZ;
@@ -45,7 +46,7 @@ public class ApplicationSingletonTHM  extends ApplicationTHM{
 	 * @param objFrame
 	 * @throws ExceptionZZZ
 	 */
-	private ApplicationSingletonTHM(KernelZZZ objKernel) throws ExceptionZZZ{
+	private ApplicationSingletonTHM(IKernelZZZ objKernel) throws ExceptionZZZ{
 		super(objKernel);
 	}
 	private ApplicationSingletonTHM(){
@@ -63,7 +64,7 @@ public class ApplicationSingletonTHM  extends ApplicationTHM{
 		return objApplicationSingleton;		
 	}
 	
-	public static ApplicationSingletonTHM getInstance(KernelZZZ objKernel) throws ExceptionZZZ{
+	public static ApplicationSingletonTHM getInstance(IKernelZZZ objKernel) throws ExceptionZZZ{
 		if(objApplicationSingleton==null){
 			objApplicationSingleton = new ApplicationSingletonTHM(objKernel);
 		}

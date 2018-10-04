@@ -27,6 +27,7 @@ import basic.zBasic.persistence.interfaces.IHibernateContextProviderZZZ;
 import basic.zBasic.persistence.interfaces.IHibernateListenerProviderZZZ;
 import basic.zBasic.util.abstractList.HashMapExtendedZZZ;
 import basic.zBasic.util.abstractList.HashMapIndexedZZZ;
+import basic.zKernel.IKernelZZZ;
 import basic.zKernel.KernelZZZ;
 
 public class HibernateContextProviderJndiSingletonTHM extends HibernateContextProviderJndiZZZ{
@@ -73,7 +74,7 @@ public class HibernateContextProviderJndiSingletonTHM extends HibernateContextPr
 		return objContextHibernateReturn;	
 	}
 	
-	public static  HibernateContextProviderJndiSingletonTHM getInstance(KernelZZZ objKernel, String sContextJndi) throws ExceptionZZZ{
+	public static  HibernateContextProviderJndiSingletonTHM getInstance(IKernelZZZ objKernel, String sContextJndi) throws ExceptionZZZ{
 		HibernateContextProviderJndiSingletonTHM objContextHibernateReturn = null;
 		main:{
 		if(objContextHibernateFirst==null){			
@@ -119,12 +120,12 @@ public class HibernateContextProviderJndiSingletonTHM extends HibernateContextPr
 		HibernateContextProviderJndiNew_(objKernel, sContextJndi);		
 	}
 	
-	public HibernateContextProviderJndiSingletonTHM(KernelZZZ objKernel, String sContextJndi) throws ExceptionZZZ{
+	public HibernateContextProviderJndiSingletonTHM(IKernelZZZ objKernel, String sContextJndi) throws ExceptionZZZ{
 		super(objKernel, sContextJndi);
 		HibernateContextProviderJndiNew_(objKernel, sContextJndi);					
 	}
 	
-	private boolean HibernateContextProviderJndiNew_(KernelZZZ objKernel, String sContextJndi) throws ExceptionZZZ{
+	private boolean HibernateContextProviderJndiNew_(IKernelZZZ objKernel, String sContextJndi) throws ExceptionZZZ{
 		boolean bReturn = false;
 		main:{
 			

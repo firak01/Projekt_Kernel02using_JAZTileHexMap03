@@ -7,11 +7,12 @@ import use.thm.IMapPositionableTHM;
 import use.thm.client.component.TileTHM;
 import basic.zBasic.ReflectCodeZZZ;
 import basic.zKernel.IKernelUserZZZ;
+import basic.zKernel.IKernelZZZ;
 import basic.zKernel.KernelUseObjectZZZ;
 import basic.zKernel.KernelZZZ;
 
 public class TileMetaEventBrokerTHM extends KernelUseObjectZZZ implements ISenderTileMetaTHM{
-	public TileMetaEventBrokerTHM(KernelZZZ objKernel){
+	public TileMetaEventBrokerTHM(IKernelZZZ objKernel){
 		super(objKernel);
 	}
 	
@@ -19,14 +20,14 @@ public class TileMetaEventBrokerTHM extends KernelUseObjectZZZ implements ISende
 	 * @see use.via.client.module.export.ISenderEventComponentReset#fireEvent(basic.zKernelUI.component.model.KernelEventComponentSelectionResetZZZ)
 	 */
 	private ArrayList listaLISTENER_REGISTERED = new ArrayList();  //Das ist die Arrayliste, in welche  die registrierten Komponenten eingetragen werden 
-																							  //wichtig: Sie muss private sein und kann nicht im Interace global definiert werden, weil es sonst nicht möglich ist 
-	                                                                                          //             mehrere Events, an verschiedenen Komponenten, unabhängig voneinander zu verwalten.
+																							  //wichtig: Sie muss private sein und kann nicht im Interace global definiert werden, weil es sonst nicht mï¿½glich ist 
+	                                                                                          //             mehrere Events, an verschiedenen Komponenten, unabhï¿½ngig voneinander zu verwalten.
 	private ArrayList listaEVENT_STOPPER = new ArrayList();   //TODO: Als Interface ISenderFeedback
-																								//Wenn hierin Einträge vorhanden sind, dann sind die objInterfaceUser (also die angemeldenent Listener) 
-	                                                                                           //nicht mit der Fortführung des Events einverstanden.
+																								//Wenn hierin Eintrï¿½ge vorhanden sind, dann sind die objInterfaceUser (also die angemeldenent Listener) 
+	                                                                                           //nicht mit der Fortfï¿½hrung des Events einverstanden.
 	
 	public final void fireEvent(EventTileCreatedInCellTHM event){	
-	//nur für SPIELSTEINE if(event.getSource() instanceof IMapPositionableTHM){
+	//nur fï¿½r SPIELSTEINE if(event.getSource() instanceof IMapPositionableTHM){
 		boolean bQuery=false;
 		this.getListenerEventStopper().clear(); //Am Anfang die Feedback-Liste leeren
 		
@@ -48,11 +49,11 @@ public class TileMetaEventBrokerTHM extends KernelUseObjectZZZ implements ISende
 			
 			for(int i = 0 ; i < this.getListenerRegisteredAll().size(); i++){
 				////  IListenerSelectionResetZZZ l = (IListenerSelectionResetZZZ) this.getListenerRegisteredAll().get(i);				
-				//System.out.println(ReflectCodeZZZ.getMethodCurrentName() + "# EventCellEnteredTHM by " + this.getClass().getName() + " - object !!!!! Das ist zwar beweglich aber kein Spielstein !!!! Es passiert nix weiter, vollkommen überflüssig  !!!!");
+				//System.out.println(ReflectCodeZZZ.getMethodCurrentName() + "# EventCellEnteredTHM by " + this.getClass().getName() + " - object !!!!! Das ist zwar beweglich aber kein Spielstein !!!! Es passiert nix weiter, vollkommen ï¿½berflï¿½ssig  !!!!");
 				//?????   l.doMove(event);
 			}
 		}else{
-			//System.out.println(ReflectCodeZZZ.getMethodCurrentName() + "# EventCellEnteredTHM by " + this.getClass().getName() + " - object !!!!! Das ist nicht beweglich und  kein Spielstein !!!! Es passiert nix weiter, vollkommen überflüssig  !!!!");
+			//System.out.println(ReflectCodeZZZ.getMethodCurrentName() + "# EventCellEnteredTHM by " + this.getClass().getName() + " - object !!!!! Das ist nicht beweglich und  kein Spielstein !!!! Es passiert nix weiter, vollkommen ï¿½berflï¿½ssig  !!!!");
 		}
 	}
 	
@@ -71,7 +72,7 @@ public class TileMetaEventBrokerTHM extends KernelUseObjectZZZ implements ISende
 	}
 	
 	
-	/** Listener Objekte werden der Array Liste hinzugefügt.
+	/** Listener Objekte werden der Array Liste hinzugefï¿½gt.
 	 *   Damit sind in der ArrayListe diejenigen, die den Event "ablehnen"
 	* @param eventListener
 	* @param bValue

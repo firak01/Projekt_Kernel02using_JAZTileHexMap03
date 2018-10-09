@@ -38,11 +38,11 @@ public class HibernateContextProviderJndiSingletonTHM extends HibernateContextPr
 	private static HashMapIndexedZZZ<String, HibernateContextProviderJndiSingletonTHM> hmContextProvider = new HashMapIndexedZZZ<String, HibernateContextProviderJndiSingletonTHM>();
 
 	public static HibernateContextProviderJndiSingletonTHM getInstance() throws ExceptionZZZ{
-		//TODO: Irgendwie (aus dem Kernel?) an diesen Jndi-String kommen.
+		//20181008: Aus der Kernelkonfiguration an diesen Jndi-String kommen.... und das als WebService!
 		//return HibernateContextProviderJndiSingletonTHM.getInstance("jdbc/ServicePortal");
 		
 		KernelSingletonTHM objKernelSingleton = KernelSingletonTHM.getInstance();
-		String sDatabaseRemoteNameJNDI = objKernelSingleton.getParameter("DatabasesRemoteNameJNDI");
+		String sDatabaseRemoteNameJNDI = objKernelSingleton.getParameter("DatabaseRemoteNameJNDI");
 		return HibernateContextProviderJndiSingletonTHM.getInstance(sDatabaseRemoteNameJNDI);
 	}
 	public static  HibernateContextProviderJndiSingletonTHM getInstance(String sContextJndi) throws ExceptionZZZ{

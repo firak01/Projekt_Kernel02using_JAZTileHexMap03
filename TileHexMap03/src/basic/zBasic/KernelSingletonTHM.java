@@ -1,5 +1,6 @@
 package basic.zBasic;
 
+import custom.zKernel.ConfigZZZ;
 import use.thm.ApplicationSingletonTHM;
 import basic.zBasic.util.datatype.string.StringZZZ;
 import basic.zKernel.IKernelConfigZZZ;
@@ -7,9 +8,7 @@ import basic.zKernel.KernelKernelZZZ;
 import basic.zKernel.KernelZZZ;
 
 public class KernelSingletonTHM extends KernelKernelZZZ{
-	private static KernelSingletonTHM objKernelSingelton; //muss als Singleton static sein
-	private static String sFILE_CONFIG_DEFAULT = "ZKernelConfigTileHexMap02Client.ini";  //muss static sein, wg. getInstance()!!!
-	private static String sKEY_APPLICATION_DEFAULT = "THM";
+	private static KernelSingletonTHM objKernelSingelton; //muss als Singleton static sein	
 	public static KernelSingletonTHM getInstance() throws ExceptionZZZ{
 		if(objKernelSingelton==null){
 			String[] saFlagZ={"init"};
@@ -69,20 +68,20 @@ public class KernelSingletonTHM extends KernelKernelZZZ{
 			super(sApplicationKey, sSystemNumber, sFileConfigPath, sFileConfigName, saFlagControl);
 		}		
 		
-		public String getFileConfigKernelName(){
-			String sFileConfigKernelName = super.getFileConfigKernelName();
-			if(StringZZZ.isEmpty(sFileConfigKernelName)){
-				sFileConfigKernelName=KernelSingletonTHM.sFILE_CONFIG_DEFAULT;
-				super.setFileConfigKernelName(sFileConfigKernelName);
-			}
+		public String getFileConfigKernelName() throws ExceptionZZZ{			
 			return super.getFileConfigKernelName();
 		}
-		public String getApplicationKey(){
-			String sApplicationKey = super.getApplicationKey();
-			if(StringZZZ.isEmpty(sApplicationKey)){
-				sApplicationKey = KernelSingletonTHM.sKEY_APPLICATION_DEFAULT;
-				super.setApplicationKey(sApplicationKey);
+		public String getApplicationKey() throws ExceptionZZZ{			
+			return super.getApplicationKey();
+		}
+		
+		
+		//#### Interfaces
+		public IKernelConfigZZZ getConfigObject() throws ExceptionZZZ{
+			IKernelConfigZZZ objConfig = super.getConfigObject();
+			if(objConfig==null){
+				objConfig = new ConfigTHM();			
 			}
-			return sApplicationKey;
+			return objConfig;
 		}
 }

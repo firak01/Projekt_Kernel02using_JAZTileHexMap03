@@ -66,10 +66,9 @@ public abstract class HibernateSessionFactoryTomcatFactoryZZZ implements ObjectF
 			 //HibernateContextProviderSingletonTHM objContextHibernate = HibernateContextProviderSingletonTHM.getInstance();
 			 //Nach Umstellung auf den ConfigurationProvider gibt es für JNDI ein einges Singleton, das man hier verwenden sollte. Ansonsten wird einfach die Konfiguration erneut gefüllt  und dann auch noch die falsche!
 			 
-			 //TODO GOON 20171207: Den JNDI String irgendwoher holen, damit es dynamisch ist und nicht hart verdrahtet.
-			 //HibernateContextProviderJndiSingletonTHM objContextHibernate = HibernateContextProviderJndiSingletonTHM.getInstance("service/portal");
-			 //HibernateContextProviderJndiSingletonTHM 
-			 IHibernateContextProviderZZZ objContextHibernate = this.getHibernateContextProvider();//HibernateContextProviderJndiSingletonTHM.getInstance(); //Hole die "Erste Instanz"
+			 //20171207: Den JNDI String aus der Kernel Konfiguration holen.
+			 //HibernateContextProviderJndiSingletonTHM objContextHibernate = HibernateContextProviderJndiSingletonTHM.getInstance("service/portal"); 
+			 IHibernateContextProviderZZZ objContextHibernate = this.getHibernateContextProvider();
 			 
 			 if(objContextHibernate.hasSessionFactory_open()){
 				 System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": Es gibt eine offene SessionFactory.");

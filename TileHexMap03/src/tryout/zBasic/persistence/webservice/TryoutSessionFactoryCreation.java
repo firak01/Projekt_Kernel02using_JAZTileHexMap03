@@ -110,9 +110,10 @@ public class TryoutSessionFactoryCreation {
 	public boolean tryoutGetSessionFactoryByJndiContextProvider(){
 		boolean bReturn = false;
 		main:{			
-				String sContextJndi = "jdbc/ServicePortal";
-				bReturn = this.tryoutGetSessionFactoryByJndiContextProvider(sContextJndi);
-			}//end main:
+			//TODO GOON 20181010: Den JNDI-String nun aus der Kernel-Konfiguration holen
+			String sContextJndi = "jdbc/ServicePortal";
+			bReturn = this.tryoutGetSessionFactoryByJndiContextProvider(sContextJndi);
+		}//end main:
 		return bReturn;		
 	}
 	

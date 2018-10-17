@@ -13,6 +13,8 @@ import java.io.Serializable;
 
 
 
+
+
 import javax.naming.InitialContext;
 
 
@@ -28,6 +30,8 @@ import tryout.zBasic.persistence.dao.TryoutGeneralDaoZZZ;
 import use.thm.persistence.hibernate.HibernateContextProviderSingletonTHM;
 import use.thm.persistence.hibernate.HibernateContextProviderJndiSingletonTHM;
 import basic.zBasic.ExceptionZZZ;
+import basic.zBasic.KernelSingletonTHM;
+import basic.zKernel.IKernelZZZ;
 import basic.zKernel.KernelZZZ;
 
 public class TryoutSessionFactoryCreation {
@@ -110,9 +114,15 @@ public class TryoutSessionFactoryCreation {
 	public boolean tryoutGetSessionFactoryByJndiContextProvider(){
 		boolean bReturn = false;
 		main:{			
-			//TODO GOON 20181010: Den JNDI-String nun aus der Kernel-Konfiguration holen
-			String sContextJndi = "jdbc/ServicePortal";
-			bReturn = this.tryoutGetSessionFactoryByJndiContextProvider(sContextJndi);
+			try {
+				//20181010: Den JNDI-String nun aus der Kernel-Konfiguration holen
+				KernelSingletonTHM objKernelSingleton = KernelSingletonTHM.getInstance();								
+				String sContextJndi = objKernelSingleton.getParameter("DatabaseRemoteNameJNDI");//String sContextJndi = "jdbc/ServicePortal";
+				bReturn = this.tryoutGetSessionFactoryByJndiContextProvider(sContextJndi);
+			} catch (ExceptionZZZ e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}//end main:
 		return bReturn;		
 	}
@@ -122,10 +132,9 @@ public class TryoutSessionFactoryCreation {
 		main:{
 			try {
 				//HOLE DIE SESSIONFACTORY PER JNDI:
-				//Merke: DAS FUNKTIONIERT NUR, WENN DIE ANWENDUNG IN EINEM SERVER (z.B. Tomcat läuft).
-				
-				KernelZZZ objKernel = new KernelZZZ(); //Merke: Die Service Klasse selbst kann wohl nicht das KernelObjekt extenden!				
-				HibernateContextProviderJndiSingletonTHM objContextHibernate = HibernateContextProviderJndiSingletonTHM.getInstance(objKernel, sContextJndi);					
+				//Merke: DAS FUNKTIONIERT NUR, WENN DIE ANWENDUNG IN EINEM SERVER (z.B. Tomcat läuft).				
+				KernelSingletonTHM objKernelSingleton = KernelSingletonTHM.getInstance();//Merke: Die Service Klasse selbst kann wohl nicht das KernelObjekt extenden!				
+				HibernateContextProviderJndiSingletonTHM objContextHibernate = HibernateContextProviderJndiSingletonTHM.getInstance(objKernelSingleton, sContextJndi);					
 				objContextHibernate.getConfiguration().setProperty("hibernate.hbm2ddl.auto", "update");  //! Jetzt erst wird jede Tabelle über den Anwendungsstart hinaus gespeichert UND auch wiedergeholt.				
 				
 				//############################

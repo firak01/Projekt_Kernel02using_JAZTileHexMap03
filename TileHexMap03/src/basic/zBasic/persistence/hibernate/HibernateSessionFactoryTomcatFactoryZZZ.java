@@ -134,12 +134,13 @@ public abstract class HibernateSessionFactoryTomcatFactoryZZZ implements ObjectF
 			 				 								 
 					 System.out.println(ReflectCodeZZZ.getPositionCurrent()+ ": Verwende als Url: '" + cfgNew.getProperty("url") + "'");
 					 System.out.println(ReflectCodeZZZ.getPositionCurrent()+ ": Verwende als hibernate.hbm2ddl.auto (noch): '" + cfgNew.getProperty("hibernate.hbm2ddl.auto") + "'");
-					 System.out.println(ReflectCodeZZZ.getPositionCurrent()+ ": Verwende als hibernate.connection.url noch (wird sofort geändert): '" + cfgNew.getProperty("hibernate.connection.url") + "'");
+					 System.out.println(ReflectCodeZZZ.getPositionCurrent()+ ": Verwende als hibernate.connection.url noch (wird sofort geaendert): '" + cfgNew.getProperty("hibernate.connection.url") + "'");
 					 					 
 					 //Durch die Eingeschaften aus der Context.xml Datei, wird hibernate.connection.url nicht definiert. Sondern nur URL.
 					 //Man muss daher an dieser Stelle die konfigurierte URL nehmen und damit die für eine Standalone Konfigurierte Datei überschreiben.
 					 cfgNew.setProperty("hibernate.connection.url",  cfgNew.getProperty("url"));
-					 				 
+					 System.out.println(ReflectCodeZZZ.getPositionCurrent()+ ": Verwende als hibernate.connection.url jetzt (nach Aenderung): '" + cfgNew.getProperty("hibernate.connection.url") + "'");
+					  				 
 					 //So wird bisher die SessionFactory geholt. Merke: Das ist anlalog aus meiner HibernateContextProviderZZZ - Klasse
 	                  //Methode: public SessionFactoryImpl getSessionFactory(){				
 					 //Hier nicht verwenden: SessionFactory sf = objContextHibernate.getSessionFactory();//ACHTUNG: ENDLOSSCHLEIFENGEFAHR, DARIN RUFT BUILD FACTORY WIEDER DIESE FACTORY AUF.

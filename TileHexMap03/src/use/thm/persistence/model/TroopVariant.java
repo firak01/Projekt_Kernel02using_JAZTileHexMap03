@@ -85,7 +85,8 @@ import basic.zKernel.KernelZZZ;
 //Merke: Bei InheritanceType.SINGLE_TABLE) gilt: Voraussetzung für DiscriminatorValue in der AreaCell-Klasse. //Wird es wg. der Vererbung von HEXCell zu AreaType immer geben. Ohne Annotation ist das DTYPE und der wert ist gleich dem Klassennamen.
 //@DiscriminatorColumn(name="Entityclass", discriminatorType = DiscriminatorType.STRING) 
 //
-@Table(name="troopvariant")
+//@Table(name="troopvariant") //Description	Resource	Path	Location	Type
+//Merke: No table should be defined for abstract entity "TroopVariant" using table-per-concrete-class inheritance	TroopVariant.java	/JAZTileHexMap03/src/use/thm/persistence/model	line 88	JPA Problem
 public abstract class TroopVariant  extends KeyImmutable implements ITroopVariantTHM, ICategoryProviderZZZ, Serializable, IOptimisticLocking{
 	private static final long serialVersionUID = 1113434456411176970L;
 	

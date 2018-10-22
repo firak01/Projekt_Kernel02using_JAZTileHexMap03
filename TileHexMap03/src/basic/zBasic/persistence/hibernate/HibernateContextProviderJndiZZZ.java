@@ -38,6 +38,7 @@ import basic.zBasic.persistence.interfaces.IHibernateContextProviderJndiZZZ;
 import basic.zBasic.persistence.interfaces.IHibernateContextProviderZZZ;
 import basic.zBasic.util.abstractList.HashMapExtendedZZZ;
 import basic.zBasic.util.datatype.string.StringZZZ;
+import basic.zBasic.util.server.tomcat.ServerContextUtilZZZ;
 import basic.zKernel.IKernelZZZ;
 import basic.zKernel.KernelUseObjectZZZ;
 import basic.zKernel.KernelZZZ;
@@ -331,11 +332,11 @@ public abstract class HibernateContextProviderJndiZZZ  extends HibernateContextP
 	public String getContextJndiLookupPath(){
 		String sReturn = null;
 		main:{
-			String sContextJndi = this.getContextJndiString();
-			if(StringZZZ.isEmpty(sContextJndi)){
+			String sJndi = this.getContextJndiString();
+			if(StringZZZ.isEmpty(sJndi)){
 				
 			}else{
-				sReturn = "java:comp/env/" + sContextJndi;
+				sReturn = ServerContextUtilZZZ.computeContextJndiLookupPath(sJndi);
 			}
 			
 		}//end main:

@@ -295,7 +295,7 @@ public class TroopFleetDaoFacade extends TileDaoFacade{
 				//TODO GOON 20180322: Integer intVariantUniqueNumber = objTroopDao.findColumnValueMaxForVariant("instanceVariantUniquenumber", intThisIdOfVariantUsed); 
 				Integer intVariantUniqueNumber = objTroopDao.findColumnValueMax("instanceSubtypeUniquenumber"); 
 				if(intVariantUniqueNumber==null){
-					intVariantUniqueNumberUsed = new Integer(1);
+					intSubtypeUniqueNumberUsed = new Integer(1);
 				}else{
 					int itemp = intVariantUniqueNumber.intValue() + 1;
 					intSubtypeUniqueNumberUsed = new Integer(itemp);

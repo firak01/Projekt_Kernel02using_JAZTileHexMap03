@@ -64,7 +64,7 @@ import use.thm.rule.model.TroopArmyRuleType;
 public class TroopArmyDaoFacade extends TileDaoFacade{
 	private TroopArmy objTroopArmy = null;
 	
-	public TroopArmyDaoFacade(HibernateContextProviderZZZ objContextHibernate){
+	public TroopArmyDaoFacade(IHibernateContextProviderZZZ objContextHibernate){
 		super(objContextHibernate);
 	}
 	public boolean insertTroopArmy(String sUniqueName, TroopArmyVariant objTroopArmyVariant, AreaCell objArea) throws ExceptionZZZ{
@@ -166,8 +166,13 @@ public class TroopArmyDaoFacade extends TileDaoFacade{
 				
 				//bGoon = HibernateUtil.wasCommitSuccessful(objContextHibernate,"save",session.getTransaction());//EventType.PRE_INSERT
 				VetoFlag4ListenerZZZ objResult = HibernateUtil.getCommitResult(this.getHibernateContext(),"save",session.getTransaction());
-				sMessage = objResult.getVetoMessage();
-				bGoon = !objResult.isVeto();
+				if(objResult!=null){
+					sMessage = objResult.getVetoMessage();
+					bGoon = !objResult.isVeto();
+				}else{
+					//also... wenn kein Veto, dann immer true, auch wenn nicht committed!
+					bGoon = true;
+				}
 			}
 			if(!bGoon){
 				//Mache die Ausgabe im UI nicht selbst, sondern stelle lediglich die Daten zur Verfügung. Grund: Hier stehen u.a. die UI Komponenten nicht zur Verfügung
@@ -194,8 +199,13 @@ public class TroopArmyDaoFacade extends TileDaoFacade{
 					session.getTransaction().commit();///SaveAndUpdate-Listener NICHT ausgeführt. //TODO GOON: Probiere ob 'AbstractFlushingEventListener' ausgeführt würde.
 					//bGoon = HibernateUtil.wasCommitSuccessful(objContextHibernate,"update",session.getTransaction());
 					VetoFlag4ListenerZZZ objResult = HibernateUtil.getCommitResult(this.getHibernateContext(),"update",session.getTransaction());					
-					sMessage = objResult.getVetoMessage();
-					bGoon = !objResult.isVeto();
+					if(objResult!=null){
+						sMessage = objResult.getVetoMessage();
+						bGoon = !objResult.isVeto();
+					}else{
+						//also... wenn kein Veto, dann immer true, auch wenn nicht committed!
+						bGoon = true;
+					}
 				}
 			}
 			if(!bGoon){
@@ -238,8 +248,13 @@ public class TroopArmyDaoFacade extends TileDaoFacade{
 				
 				//bGoon = HibernateUtil.wasCommitSuccessful(objContextHibernate,"update",session.getTransaction());
 				VetoFlag4ListenerZZZ objResult = HibernateUtil.getCommitResult(this.getHibernateContext(),"update",session.getTransaction());					
-				sMessage = objResult.getVetoMessage();
-				bGoon = !objResult.isVeto();
+				if(objResult!=null){
+					sMessage = objResult.getVetoMessage();
+					bGoon = !objResult.isVeto();
+				}else{
+					//also... wenn kein Veto, dann immer true, auch wenn nicht committed!
+					bGoon = true;
+				}
 			}
 			if(!bGoon){
 				//Mache die Ausgabe im UI nicht selbst, sondern stelle lediglich die Daten zur Verfügung. Grund: Hier stehen u.a. die UI Komponenten nicht zur Verfügung
@@ -330,8 +345,13 @@ public class TroopArmyDaoFacade extends TileDaoFacade{
 					
 					//bGoon = HibernateUtil.wasCommitSuccessful(objContextHibernate,"save",session.getTransaction());//EventType.PRE_INSERT
 					VetoFlag4ListenerZZZ objResult = HibernateUtil.getCommitResult(this.getHibernateContext(),"update",session.getTransaction());
-					sMessage = objResult.getVetoMessage();
-					bGoon = !objResult.isVeto();
+					if(objResult!=null){
+						sMessage = objResult.getVetoMessage();
+						bGoon = !objResult.isVeto();
+					}else{
+						//also... wenn kein Veto, dann immer true, auch wenn nicht committed!
+						bGoon = true;
+					}
 				}			
 				if(!bGoon){
 					//Mache die Ausgabe im UI nicht selbst, sondern stelle lediglich die Daten zur Verfügung. Grund: Hier stehen u.a. die UI Komponenten nicht zur Verfügung
@@ -376,8 +396,13 @@ public class TroopArmyDaoFacade extends TileDaoFacade{
 				
 				//bGoon = HibernateUtil.wasCommitSuccessful(objContextHibernate,"save",session.getTransaction());//EventType.PRE_INSERT
 				VetoFlag4ListenerZZZ objResult = HibernateUtil.getCommitResult(this.getHibernateContext(),"update",session.getTransaction());
-				sMessage = objResult.getVetoMessage();
-				bGoon = !objResult.isVeto();
+				if(objResult!=null){
+					sMessage = objResult.getVetoMessage();
+					bGoon = !objResult.isVeto();
+				}else{
+					//also... wenn kein Veto, dann immer true, auch wenn nicht committed!
+					bGoon = true;
+				}
 			}
 			if(!bGoon){
 				//Mache die Ausgabe im UI nicht selbst, sondern stelle lediglich die Daten zur Verfügung. Grund: Hier stehen u.a. die UI Komponenten nicht zur Verfügung
@@ -452,8 +477,13 @@ public class TroopArmyDaoFacade extends TileDaoFacade{
 				//session.flush(); //versuch folgendes zu 
 				//bGoon = HibernateUtil.wasCommitSuccessful(objContextHibernate,"update",session.getTransaction());
 				VetoFlag4ListenerZZZ objResult = HibernateUtil.getCommitResult(this.getHibernateContext(),"update",session.getTransaction());					
-				sMessage = objResult.getVetoMessage();
-				bGoon = !objResult.isVeto();
+				if(objResult!=null){
+					sMessage = objResult.getVetoMessage();
+					bGoon = !objResult.isVeto();
+				}else{
+					//also... wenn kein Veto, dann immer true, auch wenn nicht committed!
+					bGoon = true;
+				}
 			}
 			
 			
@@ -492,138 +522,173 @@ public class TroopArmyDaoFacade extends TileDaoFacade{
 		return this.deleteTroopArmy(sUniquename);
 	}
 	
+	@Override
+	public boolean delete(Troop objTroop) throws ExceptionZZZ {
+		TroopArmy objTroopArmy = (TroopArmy) objTroop;
+		return this.deleteTroopArmy(objTroopArmy);
+	}
+	
 	public boolean deleteTroopArmy(String sUniqueName) throws ExceptionZZZ{
 		boolean bReturn = false;
 		main:{
-		  System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": START #### DELETE TROOP ####################");
+		  System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": START #### DELETE TROOP: Uniquename '" + sUniqueName + "' ####################");
 			
-			validEntry:{
-			boolean bGoon = false;
-			String sMessage = new String("");
-			
-			//###################
+		  //###################
 			//1. Hole die TroopArmy, füge die neue Area der TroopArmy hinzu, damit sie weiss in welchem neuen Feld sie steht.
 			//####################								
 			HibernateContextProviderSingletonTHM objContextHibernate = (HibernateContextProviderSingletonTHM) this.getHibernateContext();
 			TroopArmyDao objTroopArmyDao = new TroopArmyDao(objContextHibernate);
-
+			
 			//HQL verwenden, um die TroopArmy anhand des Uniquename zu bekommen. 
 			TroopArmy objTroopArmy = objTroopArmyDao.searchTroopArmyByUniquename(sUniqueName);
-			
-			
-			//#############################
-			//2. Hole die Backendentsprechung der Ausgangszelle, daraus muss die TroopArmy entfernt werden.
-			//############################# 
-			AreaCellDao objAreaDaoSource = new AreaCellDao(objContextHibernate);
-			int iXStarted = objTroopArmy.getMapX();
-			int iYStarted = objTroopArmy.getMapY();
-			CellId primaryKeyCellStarted = new CellId("EINS", Integer.toString(iXStarted), Integer.toString(iYStarted));
-			AreaCell objCellStarted = objAreaDaoSource.findByKey(primaryKeyCellStarted);//Spannend. Eine Transaction = Eine Session, d.h. es müsste dann wieder eine neue Session gemacht werden, beim zweiten DAO Aufruf.
-			
-			System.out.println("Ausgangszelle. Anzahl Tiles=" + objCellStarted.getTileBag().size());
-			Session session = this.getSession();	//Vesuch eine neue Session zu bekommen. Merke: Die Session wird hier nicht gespeichert! Wg. 1 Transaktion ==> 1 Session
-			if(session == null) break main;			
-			session.getTransaction().begin();//Ein zu persistierendes Objekt - eine Transaction, auch wenn mehrere in einer Transaction abzuhandeln wären, aber besser um Fehler abfangen zu können.
-			System.out.println("Ausgangszelle. Anzahl Tiles=" + objCellStarted.getTileBag().size());
-			
-			//ALSO: Ich bin mir nicht sicher, ob objTroopArmy in der TileBag gefunden wird.
-			//1. VErsuch: Darum nicht so einfach, statt dessen versuchen wieder ein Objekt im persistant state zu bekommen:
-			//Merke: session.lock(object, lock_option) ist deprecated... 
-			//LockRequest lockRequest = session.buildLockRequest(LockOptions.NONE);//versuch das hinzubekommen. Idee ist, das das Objetk jetzt keine PErsistant State mehr hat.   session2.lock(entity, LockMode.NONE);
-			//lockRequest.lock(objTroopArmy);
-			//boolean bSuccessfulRemoved = objCellStarted.getTileBag().remove(objTroopArmy);
-			
-			
-			//2. Versuch: Aber damit das funktioniert war eigentlich das Überschreiben der equals() MEthode in Troop - Entity wichtig und notwendig
-			PersistentBag pbag = new PersistentBag((SessionImplementor) session, objCellStarted.getTileBag());
-			boolean bSuccessfulRemoved = pbag.remove(objTroopArmy);
-			System.out.println("Ergebnis des Entfernenversuchs: " + bSuccessfulRemoved);
-			
-			//sondern als Notlösung: 
-			//objCellStarted.getTileBag().clear();
-			
-//			session.saveOrUpdate(objCellStarted); //Hibernate Interceptor wird aufgerufen
-			session.update(objCellStarted); //Hibernate Interceptor wird aufgerufen
-			System.out.println("Ausgangszelle. Anzahl Tiles nach UPDATE =" + objCellStarted.getTileBag().size());
-			session.getTransaction().commit();
-			if (!session.getTransaction().wasCommitted()) {
-				
-				//VErsuch die Werte der neuen xSpalte yZeile in der Datenbank zu aktualisiere, mit flush()... 
-				//session.flush(); //Datenbank synchronisation, d.h. Inserts und Updates werden gemacht. ABER es wird noch nix committed.
-				//session.getTransaction().commit(); //onPreInsertListener wird ausgeführt   //!!! TODO: WARUM WIRD wg. des FLUSH NIX MEHR AUSGEFÜHRT AN LISTENERN, ETC ???
-				
-				//bGoon = HibernateUtil.wasCommitSuccessful(objContextHibernate,"save",session.getTransaction());//EventType.PRE_INSERT
-				VetoFlag4ListenerZZZ objResult = HibernateUtil.getCommitResult(this.getHibernateContext(),"update",session.getTransaction());
-				sMessage = objResult.getVetoMessage();
-				bGoon = !objResult.isVeto();
-			}
-			if(!bGoon){
-				//Mache die Ausgabe im UI nicht selbst, sondern stelle lediglich die Daten zur Verfügung. Grund: Hier stehen u.a. die UI Komponenten nicht zur Verfügung
-				this.getFacadeResult().setMessage(sMessage);
-				break validEntry;
-			}
-			
-			//############################
-			//3. Lösche die eigentliche TroopArmy
-			//############################
-			
-			//+++ Datenbankoperationen		
-			session = this.getSession();	//Vesuch eine neue Session zu bekommen. Merke: Die Session wird hier nicht gespeichert! Wg. 1 Transaktion ==> 1 Session
-			if(session == null) break main;			
-			session.getTransaction().begin();//Ein zu persistierendes Objekt - eine Transaction, auch wenn mehrere in einer Transaction abzuhandeln wären, aber besser um Fehler abfangen zu können.
-			
-			session.delete(objTroopArmy);
-			
-			//FLUSH IST HIER NOTWENDIG, UM DIE JOIN-Tabelle HEXCELL_TILE um den Eintrag zu reduzieren, ansonsten habe ich es nicht hinbekommen.
-			session.flush(); //Datenbank ynchronisation, d.h. Inserts und Updates werden gemacht. ABER es wird noch nix committed.
+		    bReturn = this.deleteTroopArmy(objTroopArmy);
+		    if(bReturn){
+		    	System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": Armee gelöscht '" + sUniqueName + "'");
+		    }else{
+		    	System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": Armee NICHT gelöscht '" + sUniqueName + "'");
+		    }
+		  }//end main:
+		  return bReturn;
+		}
 		
-			session.getTransaction().commit();
-			if (!session.getTransaction().wasCommitted()) {
+		public boolean deleteTroopArmy(TroopArmy objTroopArmy) throws ExceptionZZZ{
+			boolean bReturn = false;
+			main:{
+				boolean bGoon = false;
+				String sMessage = new String("");
+			
+				//#############################
+				//2. Hole die Backendentsprechung der Ausgangszelle, daraus muss die TroopArmy entfernt werden.
+				//############################# 
+				//HibernateContextProviderSingletonTHM objContextHibernate = (HibernateContextProviderSingletonTHM) this.getHibernateContext();
+				IHibernateContextProviderZZZ objContextHibernate = this.getHibernateContext();
+				Session session = null;
+				AreaCellDao objAreaDaoSource = new AreaCellDao(objContextHibernate);
+				int iXStarted = objTroopArmy.getMapX();
+				int iYStarted = objTroopArmy.getMapY();
+				CellId primaryKeyCellStarted = new CellId("EINS", Integer.toString(iXStarted), Integer.toString(iYStarted));
+				AreaCell objCellStarted = objAreaDaoSource.findByKey(primaryKeyCellStarted);//Spannend. Eine Transaction = Eine Session, d.h. es müsste dann wieder eine neue Session gemacht werden, beim zweiten DAO Aufruf.
 				
-				//Versuch die Werte der neuen xSpalte yZeile in der Datenbank zu aktualisiere, mit flush()... 
-				//session.flush(); //Datenbank synchronisation, d.h. Inserts und Updates werden gemacht. ABER es wird noch nix committed.
-				//session.getTransaction().commit(); //onPreInsertListener wird ausgeführt   //!!! TODO: WARUM WIRD wg. des FLUSH NIX MEHR AUSGEFÜHRT AN LISTENERN, ETC ???
-				
-				//bGoon = HibernateUtil.wasCommitSuccessful(objContextHibernate,"save",session.getTransaction());//EventType.PRE_INSERT
-				VetoFlag4ListenerZZZ objResult = HibernateUtil.getCommitResult(this.getHibernateContext(),"update",session.getTransaction());
-				sMessage = objResult.getVetoMessage();
-				bGoon = !objResult.isVeto();
-			}
-			if(!bGoon){
-				//Mache die Ausgabe im UI nicht selbst, sondern stelle lediglich die Daten zur Verfügung. Grund: Hier stehen u.a. die UI Komponenten nicht zur Verfügung
-				this.getFacadeResult().setMessage(sMessage);
-				break validEntry;
-			}
-			System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": Armee gelöscht '" + sUniqueName + "'");
-			
-			
-			
-			/*
-			//ABER: ES BLEIBT IMMER ETWAS IN DER HEXCELL_TILE TABELLE ZURUECK...
-			//###VERZEWEIFELUNG 
-			session = this.getSession();			//Vesuch eine neue Session zu bekommen. Merke: Die Session wird hier nicht gespeichert! Wg. 1 Transaktion ==> 1 Session
-			if(session == null) break main;			
-			session.getTransaction().begin();
-			session.flush(); //versuch folgendes zu 
-			if (!session.getTransaction().wasCommitted()) {
-				VetoFlag4ListenerZZZ objResult = HibernateUtil.getCommitResult(this.getHibernateContext(),"update",session.getTransaction());					
-				sMessage = objResult.getVetoMessage();
-				bGoon = !objResult.isVeto();
-			}
-			if(!bGoon){
-				//Mache die Ausgabe im UI nicht selbst, sondern stelle lediglich die Daten zur Verfügung. Grund: Hier stehen u.a. die UI Komponenten nicht zur Verfügung
-				this.getFacadeResult().setMessage(sMessage);
-				break validEntry;
-			}
-			*/
-			
-			//Falls alles glatt durchgeht....
-			bReturn = true;
-		}//end validEntry:
+				System.out.println("Ausgangszelle. Anzahl Tiles=" + objCellStarted.getTileBag().size());
+				if(objCellStarted.getTileBag().size()>=1){				
+					//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+					session = this.getSession();	//Vesuch eine neue Session zu bekommen. Merke: Die Session wird hier nicht gespeichert! Wg. 1 Transaktion ==> 1 Session
+					if(session == null) break main;			
+					session.getTransaction().begin();//Ein zu persistierendes Objekt - eine Transaction, auch wenn mehrere in einer Transaction abzuhandeln wären, aber besser um Fehler abfangen zu können.
+					System.out.println("Ausgangszelle. Anzahl Tiles=" + objCellStarted.getTileBag().size());
 					
-		}//end main:
-		return bReturn;
-	}
+					//ALSO: Ich bin mir nicht sicher, ob objTroopArmy in der TileBag gefunden wird.
+					//1. VErsuch: Darum nicht so einfach, statt dessen versuchen wieder ein Objekt im persistant state zu bekommen:
+					//Merke: session.lock(object, lock_option) ist deprecated... 
+					//LockRequest lockRequest = session.buildLockRequest(LockOptions.NONE);//versuch das hinzubekommen. Idee ist, das das Objetk jetzt keine PErsistant State mehr hat.   session2.lock(entity, LockMode.NONE);
+					//lockRequest.lock(objTroopArmy);
+					//boolean bSuccessfulRemoved = objCellStarted.getTileBag().remove(objTroopArmy);
+					
+					
+					//2. Versuch: Aber damit das funktioniert war eigentlich das Überschreiben der equals() MEthode in Troop - Entity wichtig und notwendig
+					PersistentBag pbag = new PersistentBag((SessionImplementor) session, objCellStarted.getTileBag());
+					boolean bSuccessfulRemoved = pbag.remove(objTroopArmy);
+					System.out.println("Ergebnis des Entfernenversuchs: " + bSuccessfulRemoved);
+					
+					//sondern als Notlösung: 
+					//objCellStarted.getTileBag().clear();
+					
+	//				session.saveOrUpdate(objCellStarted); //Hibernate Interceptor wird aufgerufen
+					session.update(objCellStarted); //Hibernate Interceptor wird aufgerufen
+					System.out.println("Ausgangszelle. Anzahl Tiles nach UPDATE =" + objCellStarted.getTileBag().size());
+					session.getTransaction().commit();
+					if (!session.getTransaction().wasCommitted()) {
+						
+						//VErsuch die Werte der neuen xSpalte yZeile in der Datenbank zu aktualisiere, mit flush()... 
+						//session.flush(); //Datenbank synchronisation, d.h. Inserts und Updates werden gemacht. ABER es wird noch nix committed.
+						//session.getTransaction().commit(); //onPreInsertListener wird ausgeführt   //!!! TODO: WARUM WIRD wg. des FLUSH NIX MEHR AUSGEFÜHRT AN LISTENERN, ETC ???
+						
+						//bGoon = HibernateUtil.wasCommitSuccessful(objContextHibernate,"save",session.getTransaction());//EventType.PRE_INSERT
+						VetoFlag4ListenerZZZ objResult = HibernateUtil.getCommitResult(this.getHibernateContext(),"update",session.getTransaction());
+						if(objResult!=null){
+							sMessage = objResult.getVetoMessage();
+							bGoon = !objResult.isVeto();
+						}else{
+							//also... wenn kein Veto, dann immer true, auch wenn nicht committed!
+							bGoon = true;
+						}
+					}
+					if(!bGoon){
+						//Mache die Ausgabe im UI nicht selbst, sondern stelle lediglich die Daten zur Verfügung. Grund: Hier stehen u.a. die UI Komponenten nicht zur Verfügung
+						this.getFacadeResult().setMessage(sMessage);
+						break main;
+					}
+				}//end if: (objCellStarted.getTileBag().size()>=1)
+				
+				//############################
+				//3. Lösche die eigentliche TroopArmy
+				//############################
+				
+				//+++ Datenbankoperationen		
+				session = this.getSession();	//Vesuch eine neue Session zu bekommen. Merke: Die Session wird hier nicht gespeichert! Wg. 1 Transaktion ==> 1 Session
+				if(session == null) break main;			
+				session.getTransaction().begin();//Ein zu persistierendes Objekt - eine Transaction, auch wenn mehrere in einer Transaction abzuhandeln wären, aber besser um Fehler abfangen zu können.
+				
+				session.delete(objTroopArmy);
+				
+				//FLUSH IST HIER NOTWENDIG, UM DIE JOIN-Tabelle HEXCELL_TILE um den Eintrag zu reduzieren, ansonsten habe ich es nicht hinbekommen.
+				session.flush(); //Datenbank ynchronisation, d.h. Inserts und Updates werden gemacht. ABER es wird noch nix committed.
+			
+				session.getTransaction().commit();
+				if (!session.getTransaction().wasCommitted()) {
+					
+					//Versuch die Werte der neuen xSpalte yZeile in der Datenbank zu aktualisiere, mit flush()... 
+					//session.flush(); //Datenbank synchronisation, d.h. Inserts und Updates werden gemacht. ABER es wird noch nix committed.
+					//session.getTransaction().commit(); //onPreInsertListener wird ausgeführt   //!!! TODO: WARUM WIRD wg. des FLUSH NIX MEHR AUSGEFÜHRT AN LISTENERN, ETC ???
+					
+					//bGoon = HibernateUtil.wasCommitSuccessful(objContextHibernate,"save",session.getTransaction());//EventType.PRE_INSERT
+					VetoFlag4ListenerZZZ objResult = HibernateUtil.getCommitResult(this.getHibernateContext(),"update",session.getTransaction());
+					if(objResult!=null){
+						sMessage = objResult.getVetoMessage();
+						bGoon = !objResult.isVeto();
+					}else{
+						//also... wenn kein Veto, dann immer true, auch wenn nicht committed!
+						bGoon = true;
+					}
+				}
+				if(!bGoon){
+					//Mache die Ausgabe im UI nicht selbst, sondern stelle lediglich die Daten zur Verfügung. Grund: Hier stehen u.a. die UI Komponenten nicht zur Verfügung
+					this.getFacadeResult().setMessage(sMessage);
+					break main;
+				}
+				System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": Armee gelöscht.");
+				
+				
+				
+				/*
+				//ABER: ES BLEIBT IMMER ETWAS IN DER HEXCELL_TILE TABELLE ZURUECK...
+				//###VERZEWEIFELUNG 
+				session = this.getSession();			//Vesuch eine neue Session zu bekommen. Merke: Die Session wird hier nicht gespeichert! Wg. 1 Transaktion ==> 1 Session
+				if(session == null) break main;			
+				session.getTransaction().begin();
+				session.flush(); //versuch folgendes zu 
+				if (!session.getTransaction().wasCommitted()) {
+					VetoFlag4ListenerZZZ objResult = HibernateUtil.getCommitResult(this.getHibernateContext(),"update",session.getTransaction());					
+					sMessage = objResult.getVetoMessage();
+					bGoon = !objResult.isVeto();
+				}
+				if(!bGoon){
+					//Mache die Ausgabe im UI nicht selbst, sondern stelle lediglich die Daten zur Verfügung. Grund: Hier stehen u.a. die UI Komponenten nicht zur Verfügung
+					this.getFacadeResult().setMessage(sMessage);
+					break validEntry;
+				}
+				*/
+				
+				//Falls alles glatt durchgeht....
+				bReturn = true;	
+			}//end main:
+			return bReturn;
+		}
+
+		
+		
+		
+			
 	
 	public boolean fillTroopArmyDto(String sUniqueName, GenericDTO<IDTOAttributeGroup> dto) throws ExceptionZZZ{
 		boolean bReturn = false;
@@ -709,6 +774,7 @@ public class TroopArmyDaoFacade extends TileDaoFacade{
 	public void setEntityUsed(Troop objTroopArmy){
 		this.objTroopArmy =  (TroopArmy) objTroopArmy;
 	}
+	
 	
 
 }

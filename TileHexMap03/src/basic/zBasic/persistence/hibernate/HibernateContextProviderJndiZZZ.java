@@ -64,41 +64,21 @@ public abstract class HibernateContextProviderJndiZZZ  extends HibernateContextP
 	
 		private HibernateContextProviderJndiZZZ() throws ExceptionZZZ{
 			super();
-//			boolean bErg = this.fillConfiguration();  //wird schon in der Elternklasse gemacht
-//			if(!bErg){
-//				ExceptionZZZ ez = new ExceptionZZZ("Configuration not successfully filled.", iERROR_RUNTIME, this, ReflectCodeZZZ.getMethodCurrentName());
-//				throw ez;
-//			}
 		}
 		
 		public HibernateContextProviderJndiZZZ(String sContextJndi) throws ExceptionZZZ{
 			super();
 			this.setContextJndiString(sContextJndi);
-//			boolean bErg = this.fillConfiguration();  //wird schon in der Elternklasse gemacht
-//			if(!bErg){
-//				ExceptionZZZ ez = new ExceptionZZZ("Configuration not successfully filled.", iERROR_RUNTIME, this, ReflectCodeZZZ.getMethodCurrentName());
-//				throw ez;
-//			}
 		}
 		
 		
 	private HibernateContextProviderJndiZZZ(IKernelZZZ objKernel) throws ExceptionZZZ{
 		super(objKernel);
-//		boolean bErg = this.fillConfiguration(); //wird schon in der Elternklasse gemacht
-//		if(!bErg){
-//			ExceptionZZZ ez = new ExceptionZZZ("Configuration not successfully filled.", iERROR_RUNTIME, this, ReflectCodeZZZ.getMethodCurrentName());
-//			throw ez;
-//		}
 	}
 	
 	public HibernateContextProviderJndiZZZ(IKernelZZZ objKernel, String sContextJndi) throws ExceptionZZZ{
 		this(objKernel);
 		this.setContextJndiString(sContextJndi);
-//		boolean bErg = this.fillConfiguration(); //wird schon in der Elternklasse gemacht
-//		if(!bErg){
-//			ExceptionZZZ ez = new ExceptionZZZ("Configuration not successfully filled.", iERROR_RUNTIME, this, ReflectCodeZZZ.getMethodCurrentName());
-//			throw ez;
-//		}
 	}
 	
 	public SessionFactoryImpl getSessionFactory(){

@@ -16,10 +16,11 @@ import basic.zBasic.ExceptionZZZ;
 import basic.zBasic.ReflectCodeZZZ;
 import basic.zBasic.persistence.hibernate.DateMapping;
 import basic.zBasic.persistence.hibernate.HibernateContextProviderZZZ;
+import basic.zBasic.persistence.interfaces.IHibernateContextProviderZZZ;
 import basic.zBasic.util.datatype.dateTime.DateTimeZZZ;
 
 public abstract class TileDaoFacade extends GeneralDaoFacadeZZZ implements IBackendPersistenceFacadeTHM{
-	public TileDaoFacade(HibernateContextProviderZZZ objContextHibernate){
+	public TileDaoFacade(IHibernateContextProviderZZZ objContextHibernate){
 		super(objContextHibernate);
 	}
 	
@@ -28,7 +29,7 @@ public abstract class TileDaoFacade extends GeneralDaoFacadeZZZ implements IBack
 	public abstract void setEntityUsed(Troop objTroop);
 	
 	public abstract boolean delete(String sUniquename)  throws ExceptionZZZ;
-	
+	public abstract boolean delete(Troop objTroop) throws ExceptionZZZ;
 	
 	/* (non-Javadoc)
 	 * @see use.thm.persistence.interfaces.IBackendPersistenceFacadeTHM#computeUniquename()

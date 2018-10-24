@@ -77,7 +77,9 @@ public class MyIntegratorTHM implements Integrator, IKernelUserZZZ {
 //			            eventListenerRegistry.prependListeners(EventType.PRE_INSERT, listener);
 			            //eventListenerRegistry.appendListeners(EventType.POST_UPDATE, listener );			          
 					}
-            	}//end if objKernel.getFlagZ("init")            	
+            	}//end if !objKernel.getFlagZ("init")  
+            	System.out.println("XXX MyIntegratorTHM.java beendet");     
+                
 			} catch (ExceptionZZZ e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -88,7 +90,8 @@ public class MyIntegratorTHM implements Integrator, IKernelUserZZZ {
         }
 
         public void integrate(MetadataImplementor arg0,SessionFactoryImplementor arg1, SessionFactoryServiceRegistry arg2) {
-        	System.out.println("YYY In MyIntegrator.java");
+        	System.out.println("YYY In MyIntegratorTHM.java");
+        	System.out.println("YYY MyIntegratorTHM.java beendet");  
         }
 
 				

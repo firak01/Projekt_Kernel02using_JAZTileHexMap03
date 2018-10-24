@@ -136,7 +136,7 @@ public class TroopArmyDao<T> extends TroopDao<T> {
 			//Query query = session.createQuery("from Tile as tableTile where tableTile.objHexCell.id.mapAlias = :mapAlias");
 			//Query query = session.createQuery("from Tile as tableTile where tableTile.objHexCell.id.mapAlias = :mapAlias AND tableTile.objHexCell.id.mapX = :mapX AND tableTile.objHexCell.id.mapY = :mapY");
 			//Query query = session.createQuery("from TroopArmy as tableTile where tableTile.objHexCell.id.mapAlias = :mapAlias AND tableTile.objHexCell.id.mapX = :mapX AND tableTile.objHexCell.id.mapY = :mapY");
-			
+			session.getTransaction().begin();//Ein zu persistierendes Objekt - eine Transaction, auch wenn mehrere in einer Transaction abzuhandeln wären, aber besser um Fehler abfangen zu können.
 			Query query = session.createQuery("from TroopArmy as tableTile where tableTile.tileIdObject.uniquename = :uniqueName");//Merke: In TroopArmy ist der uniquename transient. Also kommt man über das Objekt daran.
 			query.setString("uniqueName", sUniquename);
 
@@ -144,6 +144,7 @@ public class TroopArmyDao<T> extends TroopDao<T> {
 			Object objResult = query.uniqueResult();//für einen einzelwert		
 			//listReturn = query.list(); //Für meherer Werte
 			
+			session.getTransaction().commit();
 			objReturn = (TroopArmy) objResult;
 			return objReturn;
 		}

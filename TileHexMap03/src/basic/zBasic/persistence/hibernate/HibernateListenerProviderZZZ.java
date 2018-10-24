@@ -21,7 +21,7 @@ public abstract class HibernateListenerProviderZZZ implements IHibernateListener
 		
 	public HibernateListenerProviderZZZ() throws ExceptionZZZ{
 		//NEIN: Sonst wird die Konfiguration 2x gefüllt. fillConfiguration();
-		//      Grund: HibernateContextPRoviderZZZ.fillConfiguration() ruft explizit fillConfiguration() auf.
+		//      Grund: HibernateContextProviderZZZ.fillConfiguration() ruft explizit fillConfiguration() auf.
 	}
 	
 	public abstract boolean fillListener() throws ExceptionZZZ;

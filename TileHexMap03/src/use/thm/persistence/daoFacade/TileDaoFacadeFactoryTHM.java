@@ -1,7 +1,10 @@
 package use.thm.persistence.daoFacade;
 
 import use.thm.client.component.TileTHM;
+import use.thm.persistence.hibernate.HibernateContextProviderJndiSingletonTHM;
 import use.thm.persistence.hibernate.HibernateContextProviderSingletonTHM;
+import use.thm.persistence.model.Tile;
+import use.thm.persistence.model.Troop;
 import basic.persistence.daoFacade.AbstractDaoFacadeFactoryZZZ;
 import basic.persistence.daoFacade.GeneralDaoFacadeZZZ;
 import basic.persistence.daoFacade.IDaoFacadeFactoryZZZ;
@@ -56,6 +59,44 @@ private static TileDaoFacadeFactoryTHM objFacadeFactory = null;  //muss static s
 	}
 	
 	@Override
+	public GeneralDaoFacadeZZZ createDaoFacade(Troop objTroopEntity) throws ExceptionZZZ {
+		  //FALLUNTERSCHEIDUNG: Je nach Truppentyp eine andere DAOFACADE wählen.		
+		String sSubtype = objTroopEntity.getTroopType();
+		
+		HibernateContextProviderSingletonTHM objContextHibernate = HibernateContextProviderSingletonTHM.getInstance(objKernel);
+				
+		if(sSubtype.equalsIgnoreCase("ar")){
+			ReportLogZZZ.write(ReportLogZZZ.DEBUG, ReflectCodeZZZ.getMethodCurrentName() + ": Creating TroopArmyDaoFacade");
+			TroopArmyDaoFacade objTroopDaoFacade = new TroopArmyDaoFacade(objContextHibernate);		
+			return objTroopDaoFacade;
+		}else if(sSubtype.equalsIgnoreCase("fl")){
+			ReportLogZZZ.write(ReportLogZZZ.DEBUG, ReflectCodeZZZ.getMethodCurrentName() + ": Creating TroopFleetDaoFacade");
+			TroopFleetDaoFacade objTroopDaoFacade = new TroopFleetDaoFacade(objContextHibernate);
+			return objTroopDaoFacade;
+		}
+		return null;
+	}
+	
+	@Override
+	public GeneralDaoFacadeZZZ createDaoFacadeJndi(Troop objTroopEntity) throws ExceptionZZZ {
+		  //FALLUNTERSCHEIDUNG: Je nach Truppentyp eine andere DAOFACADE wählen.		
+		String sSubtype = objTroopEntity.getTroopType();
+		
+		HibernateContextProviderJndiSingletonTHM objContextHibernate = HibernateContextProviderJndiSingletonTHM.getInstance();
+				
+		if(sSubtype.equalsIgnoreCase("ar")){
+			ReportLogZZZ.write(ReportLogZZZ.DEBUG, ReflectCodeZZZ.getMethodCurrentName() + ": Creating TroopArmyDaoFacade");
+			TroopArmyDaoFacade objTroopDaoFacade = new TroopArmyDaoFacade(objContextHibernate);		
+			return objTroopDaoFacade;
+		}else if(sSubtype.equalsIgnoreCase("fl")){
+			ReportLogZZZ.write(ReportLogZZZ.DEBUG, ReflectCodeZZZ.getMethodCurrentName() + ": Creating TroopFleetDaoFacade");
+			TroopFleetDaoFacade objTroopDaoFacade = new TroopFleetDaoFacade(objContextHibernate);
+			return objTroopDaoFacade;
+		}
+		return null;
+	}
+	
+	@Override
 	public GeneralDaoFacadeZZZ createDaoFacade(Object objWithDto) throws ExceptionZZZ {
 		  //FALLUNTERSCHEIDUNG: Je nach Truppentyp eine andere DAOFACADE wählen.
 		TileTHM objTile = (TileTHM) objWithDto;
@@ -74,6 +115,23 @@ private static TileDaoFacadeFactoryTHM objFacadeFactory = null;  //muss static s
 		}
 		return null;
 	}
-	
-	
+	@Override
+	public GeneralDaoFacadeZZZ createDaoFacadeJndi(Object objectWithDto) throws ExceptionZZZ {
+		  //FALLUNTERSCHEIDUNG: Je nach Truppentyp eine andere DAOFACADE wählen.
+				TileTHM objTile = (TileTHM) objectWithDto;
+				String sSubtype = objTile.getSubtype();
+				
+				HibernateContextProviderJndiSingletonTHM objContextHibernate = HibernateContextProviderJndiSingletonTHM.getInstance();
+						
+				if(sSubtype.equalsIgnoreCase("ar")){
+					ReportLogZZZ.write(ReportLogZZZ.DEBUG, ReflectCodeZZZ.getMethodCurrentName() + ": Creating TroopArmyDaoFacade");
+					TroopArmyDaoFacade objTroopDaoFacade = new TroopArmyDaoFacade(objContextHibernate);		
+					return objTroopDaoFacade;
+				}else if(sSubtype.equalsIgnoreCase("fl")){
+					ReportLogZZZ.write(ReportLogZZZ.DEBUG, ReflectCodeZZZ.getMethodCurrentName() + ": Creating TroopFleetDaoFacade");
+					TroopFleetDaoFacade objTroopDaoFacade = new TroopFleetDaoFacade(objContextHibernate);
+					return objTroopDaoFacade;
+				}
+				return null;
+	}
 }

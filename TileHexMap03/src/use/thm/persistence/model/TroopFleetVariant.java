@@ -46,7 +46,8 @@ import basic.zBasic.util.datatype.string.StringZZZ;
 //Vgl. Buch "Java Persistence API 2", Seite 34ff. für @Table, @UniqueConstraint
 @Entity  //Vererbung: Falls es Vererbung gibt, kann man die Elternklasse wohl nicht vermeiden. DAS WILL ICH ABER NICHT
 @Access(AccessType.PROPERTY)
-@org.hibernate.annotations.Immutable //Ziel: Performancesteigerung. Siehe Buch "Java Persistance with Hibernate", S. 107. Dafür dürfen die POJOs aber keine public Setter-Methoden haben.
+//@org.hibernate.annotations.Immutable //Ziel: Performancesteigerung. Siehe Buch "Java Persistance with Hibernate", S. 107. Dafür dürfen die POJOs aber keine public Setter-Methoden haben.
+//ABER: @Immutable used on a non root entity: ignored for use.thm.persistence.model.TroopArmyVariant
 
 //VERERBUNG...
 //ZIEL: Nur bestimmte Entities in einer eigenen Klasse 

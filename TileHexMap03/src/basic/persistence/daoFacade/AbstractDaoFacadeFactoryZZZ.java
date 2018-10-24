@@ -1,5 +1,7 @@
 package basic.persistence.daoFacade;
 
+import use.thm.persistence.model.Tile;
+import use.thm.persistence.model.Troop;
 import basic.persistence.dto.IFacadeDtoZZZ;
 import basic.zBasic.ExceptionZZZ;
 import basic.zBasic.ObjectZZZ;
@@ -22,5 +24,14 @@ public abstract class AbstractDaoFacadeFactoryZZZ extends KernelUseObjectZZZ imp
 	
 	@Override
 	public abstract GeneralDaoFacadeZZZ createDaoFacade(Object objectWithDto) throws ExceptionZZZ;
+	
+	@Override
+	public abstract GeneralDaoFacadeZZZ createDaoFacade(Troop objectTroopEntity) throws ExceptionZZZ;
+
+	@Override
+	public abstract GeneralDaoFacadeZZZ createDaoFacadeJndi(Object objectWithDto) throws ExceptionZZZ;
+	
+	@Override
+	public abstract GeneralDaoFacadeZZZ createDaoFacadeJndi(Troop objectTroopEntity) throws ExceptionZZZ;
 
 }

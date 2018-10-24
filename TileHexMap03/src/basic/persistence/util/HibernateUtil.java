@@ -22,6 +22,7 @@ import use.thm.persistence.event.VetoFlag4ListenerZZZ;
 import use.thm.persistence.hibernate.HibernateContextProviderSingletonTHM;
 import basic.zBasic.ReflectCodeZZZ;
 import basic.zBasic.persistence.interfaces.IHibernateContextProviderZZZ;
+import basic.zBasic.persistence.interfaces.IHibernateListenerProviderZZZ;
  
 public class HibernateUtil {
  
@@ -153,18 +154,20 @@ public class HibernateUtil {
 		    	 EventListenerGroup eg = x.getEventListenerGroup(EventType.PRE_INSERT);
 		    	for(Object objtemp : eg.listeners()){
 		    		System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": Listener der Klasse '"+ objtemp.getClass().getName() +"'");
-		    		PreInsertListenerTHM  myListener = (PreInsertListenerTHM) objtemp;
-		    		
-		    		String sDateTime = "(ohne Datum)";
-		    		Calendar cal = myListener.getVetoDate();	
-		    		if(cal!=null){
-			    		SimpleDateFormat format1 = new SimpleDateFormat("yyyy-MM-dd - hh:mm:ss");			    			    
-			    		sDateTime = format1.format(cal.getTime());
-		    		}		
-		    		System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": Letztes Ergebnis des Listeners isVeto() = " + myListener.isVeto() + " vom: " + sDateTime);
-		    		objReturn = myListener.getCommitResult();
-		    		//AUF GAR KEINE FALL myListener.resetVeto(); //Nachdem man hier den Status abgefragt hat, diesen auf "nicht ausgeführt" zurücksetzen.
-		    		System.out.println("xx2xx2xx2xx2xx2xx2xx2xx2xx2xx2xxx");
+		    		if(objtemp instanceof IHibernateListenerProviderZZZ){
+			    		PreInsertListenerTHM  myListener = (PreInsertListenerTHM) objtemp;
+			    		
+			    		String sDateTime = "(ohne Datum)";
+			    		Calendar cal = myListener.getVetoDate();	
+			    		if(cal!=null){
+				    		SimpleDateFormat format1 = new SimpleDateFormat("yyyy-MM-dd - hh:mm:ss");			    			    
+				    		sDateTime = format1.format(cal.getTime());
+			    		}		
+			    		System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": Letztes Ergebnis des Listeners isVeto() = " + myListener.isVeto() + " vom: " + sDateTime);
+			    		objReturn = myListener.getCommitResult();
+			    		//AUF GAR KEINE FALL myListener.resetVeto(); //Nachdem man hier den Status abgefragt hat, diesen auf "nicht ausgeführt" zurücksetzen.
+			    		System.out.println("xx2xx2xx2xx2xx2xx2xx2xx2xx2xx2xxx");
+		    		}
 		    	}
 	    	}else if(sCommitedType.equalsIgnoreCase("update")){
 	    		 EventListenerGroup eg = x.getEventListenerGroup(EventType.SAVE_UPDATE);
@@ -173,26 +176,24 @@ public class HibernateUtil {
 			    		//Klappt nicht SaveOrUpdateListenerTHM  myListener = (SaveOrUpdateListenerTHM) objtemp;
 			    		
 			    		//DefaultSaveOrUpdateEventListener  myListenerX = (DefaultSaveOrUpdateEventListener) objtemp;//aber da fehlt meine IVetoZZZ erweiterung
-			    		SaveOrUpdateListenerTHM  myListener = (SaveOrUpdateListenerTHM) objtemp;
-			    		
-			    		String sDateTime = "(ohne Datum)";
-			    		Calendar cal = myListener.getVetoDate();	
-			    		if(cal!=null){
-				    		SimpleDateFormat format1 = new SimpleDateFormat("yyyy-MM-dd - hh:mm:ss");			    			    
-				    		sDateTime = format1.format(cal.getTime());
-			    		}			    		
-			    		System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": Letztes Ergebnis des Listeners hasVeto() = " + myListener.isVeto() + " vom: " + sDateTime);
-			    		objReturn = myListener.getCommitResult();
-			    		//AUF GAR KEINE FALL myListener.resetVeto(); //Nachdem man hier den Status abgefragt hat, diesen auf "nicht ausgeführt" zurücksetzen.
-			    		System.out.println("yy2yy2yy2yy2yy2yy2yy2yy2yy2yy2yy2yy2yy");
-			    	}
+			    		if(objtemp instanceof IHibernateListenerProviderZZZ){
+				    		SaveOrUpdateListenerTHM  myListener = (SaveOrUpdateListenerTHM) objtemp;
+				    		
+				    		String sDateTime = "(ohne Datum)";
+				    		Calendar cal = myListener.getVetoDate();	
+				    		if(cal!=null){
+					    		SimpleDateFormat format1 = new SimpleDateFormat("yyyy-MM-dd - hh:mm:ss");			    			    
+					    		sDateTime = format1.format(cal.getTime());
+				    		}			    		
+				    		System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": Letztes Ergebnis des Listeners hasVeto() = " + myListener.isVeto() + " vom: " + sDateTime);
+				    		objReturn = myListener.getCommitResult();
+				    		//AUF GAR KEINE FALL myListener.resetVeto(); //Nachdem man hier den Status abgefragt hat, diesen auf "nicht ausgeführt" zurücksetzen.
+				    		System.out.println("yy2yy2yy2yy2yy2yy2yy2yy2yy2yy2yy2yy2yy");
+			    		}
+			    	}//end for
 	    		
-	    	}
-	    		
-	    		
-	    	//final SessionFactoryServiceRegistry serviceRegistry = hibernateConfiguration
-	    	
-	    	
+	    	}	    		    	
+	    	//final SessionFactoryServiceRegistry serviceRegistry = hibernateConfiguration	
     	}//end main:
     	return objReturn;   
     }

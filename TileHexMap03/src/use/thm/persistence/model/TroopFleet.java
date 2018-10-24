@@ -18,7 +18,7 @@ import basic.persistence.model.IOptimisticLocking;
 //Merke: Neue Entities immer auch in HibernateContextProviderSingletonTHM hinzufügen (in HibernateConfigurationProviderTHM.fillConfigurationMapping() ). In hibernate.cfg.xml reicht nicht.
 @Entity
 @DiscriminatorValue("fleet") //Wird es wg. der Vererbung(!) von Tile zu Troop immer geben. Ohne Annotation ist das DTYPE und der wert ist gleich dem Klassennamen.  //Das muss in dem Root Entity, also in Tile defniert werden. @DiscriminatorColumn(name="Disc", discriminatorType = DiscriminatorType.STRING)
-@Table(name="FLEET")
+//@Table(name="FLEET") //Illegal use of @Table in a subclass of a SINGLE_TABLE hierarchy: use.thm.persistence.model.TroopFleet
 //@EntityListeners(PersistListenerTHM.class)//Versuch JPA Callback/ListenerMethoden, aber hier funktionieren nur Hibernate EventListener
 public class TroopFleet extends Troop{
 	private static final long serialVersionUID = 1L;

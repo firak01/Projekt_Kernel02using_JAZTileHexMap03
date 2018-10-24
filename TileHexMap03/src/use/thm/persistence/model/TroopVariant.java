@@ -70,7 +70,7 @@ import basic.zKernel.KernelZZZ;
 @Entity  //Vererbung: Falls es Vererbung gibt, kann man die Elternklasse wohl nicht vermeiden. DAS WILL ICH ABER NICHT
 @Access(AccessType.PROPERTY)
 @org.hibernate.annotations.Immutable //Ziel: Performancesteigerung. Siehe Buch "Java Persistance with Hibernate", S. 107. Dafür dürfen die POJOs aber keine public Setter-Methoden haben.
-
+//Merke: Da das das Root-Entity ist, funktioniert es. In daraus erbenden Klassen funktioniert es nicht. Warning: @Immutable used on a non root entity: ignored for use.thm.persistence.model.TroopArmyVariant
 //VERERBUNG und STRATEGIEN:
 //ZIEL: Nur bestimmte Entities in einer eigenen Klasse 
 //@Inheritance(strategy =  InheritanceType.JOINED )

@@ -20,7 +20,7 @@ import use.thm.persistence.listener.TroopArmyListener;
 //Merke: Neue Entities immer auch in HibernateContextProviderSingletonTHM hinzufügen (in HibernateConfigurationProviderTHM.fillConfigurationMapping() ). In hibernate.cfg.xml reicht nicht.
 @Entity
 @DiscriminatorValue("army") //Wird es wg. der Vererbung(!) von Tile zu Troop immer geben. Ohne Annotation ist das DTYPE und der wert ist gleich dem Klassennamen.  //Das muss in dem Root Entity, also in Tile defniert werden. @DiscriminatorColumn(name="Disc", discriminatorType = DiscriminatorType.STRING)
-@Table(name="ARMY") 
+//@Table(name="ARMY") //Illegal use of @Table in a subclass of a SINGLE_TABLE hierarchy: use.thm.persistence.model.TroopArmy
 //@EntityListeners(PersistListenerTHM.class)//Versuch JPA Callback/ListenerMethoden, aber hier funktionieren nur Hibernate EventListener
 public class TroopArmy extends Troop{
 	private static final long serialVersionUID = 1L;

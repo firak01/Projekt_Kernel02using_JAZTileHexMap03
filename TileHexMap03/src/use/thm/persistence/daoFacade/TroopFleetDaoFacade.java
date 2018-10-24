@@ -65,15 +65,18 @@ public class TroopFleetDaoFacade extends TileDaoFacade{
 	public boolean delete(String sUniqueName) throws ExceptionZZZ{
 		return deleteTroopFleet(sUniqueName);
 	}
+	
+	@Override
+	public boolean delete(Troop objTroop) throws ExceptionZZZ {
+		TroopFleet objTroopFleet = (TroopFleet) objTroop;
+		return this.deleteTroopFleet(objTroopFleet);
+	}
+	
 	public boolean deleteTroopFleet(String sUniqueName) throws ExceptionZZZ{
 		boolean bReturn = false;
 		main:{
 		  System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": START #### DELETE TROOPFLEET ####################");
-			
-			validEntry:{
-			boolean bGoon = false;
-			String sMessage = new String("");
-			
+						
 			//###################
 			//1. Hole die TroopArmy, füge die neue Area der TroopArmy hinzu, damit sie weiss in welchem neuen Feld sie steht.
 			//####################								
@@ -82,11 +85,28 @@ public class TroopFleetDaoFacade extends TileDaoFacade{
 
 			//HQL verwenden, um die TroopArmy anhand des Uniquename zu bekommen. 
 			TroopFleet objTroopFleet = objTroopFleetDao.searchTroopFleetByUniquename(sUniqueName);
+			bReturn = this.deleteTroopFleet(objTroopFleet);
+		    if(bReturn){
+		    	System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": Flotte gelöscht '" + sUniqueName + "'");
+		    }else{
+		    	System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": Flotte NICHT gelöscht '" + sUniqueName + "'");
+		    }
+		  }//end main:
+		  return bReturn;
+		}
+		
+		public boolean deleteTroopFleet(TroopFleet objTroopFleet) throws ExceptionZZZ{
+			boolean bReturn = false;
+			main:{
+				boolean bGoon = false;
+				String sMessage = new String("");
 			
+				//#############################
 			
 			//#############################
 			//2. Hole die Backendentsprechung der Ausgangszelle, daraus muss die TroopArmy entfernt werden.
 			//############################# 
+			HibernateContextProviderSingletonTHM objContextHibernate = (HibernateContextProviderSingletonTHM) this.getHibernateContext();
 			AreaCellDao objAreaDaoSource = new AreaCellDao(objContextHibernate);
 			int iXStarted = objTroopFleet.getMapX();
 			int iYStarted = objTroopFleet.getMapY();
@@ -127,13 +147,18 @@ public class TroopFleetDaoFacade extends TileDaoFacade{
 				
 				//bGoon = HibernateUtil.wasCommitSuccessful(objContextHibernate,"save",session.getTransaction());//EventType.PRE_INSERT
 				VetoFlag4ListenerZZZ objResult = HibernateUtil.getCommitResult(this.getHibernateContext(),"update",session.getTransaction());
-				sMessage = objResult.getVetoMessage();
-				bGoon = !objResult.isVeto();
+				if(objResult!=null){
+					sMessage = objResult.getVetoMessage();
+					bGoon = !objResult.isVeto();
+				}else{
+					//also... wenn kein Veto, dann immer true, auch wenn nicht committed!
+					bGoon = true;
+				}
 			}
 			if(!bGoon){
 				//Mache die Ausgabe im UI nicht selbst, sondern stelle lediglich die Daten zur Verfügung. Grund: Hier stehen u.a. die UI Komponenten nicht zur Verfügung
 				this.getFacadeResult().setMessage(sMessage);
-				break validEntry;
+				break main;
 			}
 			
 			//############################
@@ -159,15 +184,20 @@ public class TroopFleetDaoFacade extends TileDaoFacade{
 				
 				//bGoon = HibernateUtil.wasCommitSuccessful(objContextHibernate,"save",session.getTransaction());//EventType.PRE_INSERT
 				VetoFlag4ListenerZZZ objResult = HibernateUtil.getCommitResult(this.getHibernateContext(),"update",session.getTransaction());
-				sMessage = objResult.getVetoMessage();
-				bGoon = !objResult.isVeto();
+				if(objResult!=null){
+					sMessage = objResult.getVetoMessage();
+					bGoon = !objResult.isVeto();
+				}else{
+					//also... wenn kein Veto, dann immer true, auch wenn nicht committed!
+					bGoon = true;
+				}
 			}
 			if(!bGoon){
 				//Mache die Ausgabe im UI nicht selbst, sondern stelle lediglich die Daten zur Verfügung. Grund: Hier stehen u.a. die UI Komponenten nicht zur Verfügung
 				this.getFacadeResult().setMessage(sMessage);
-				break validEntry;
+				break main;
 			}
-			System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": Flotte gelöscht '" + sUniqueName + "'");
+			System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": Flotte gelöscht.");
 			
 			
 			
@@ -192,8 +222,6 @@ public class TroopFleetDaoFacade extends TileDaoFacade{
 			
 			//Falls alles glatt durchgeht....
 			bReturn = true;
-		}//end validEntry:
-					
 		}//end main:
 		return bReturn;
 	}
@@ -362,8 +390,13 @@ public class TroopFleetDaoFacade extends TileDaoFacade{
 				
 				//bGoon = HibernateUtil.wasCommitSuccessful(this.getHibernateContext(),"save",session.getTransaction());
 				VetoFlag4ListenerZZZ objResult = HibernateUtil.getCommitResult(this.getHibernateContext(),"save",session.getTransaction());
-				sMessage = objResult.getVetoMessage();
-				bGoon = !objResult.isVeto();
+				if(objResult!=null){
+					sMessage = objResult.getVetoMessage();
+					bGoon = !objResult.isVeto();
+				}else{
+					//also... wenn kein Veto, dann immer true, auch wenn nicht committed!
+					bGoon = true;
+				}
 			}
 			if(!bGoon){
 				//Mache die Ausgabe im UI nicht selbst, sondern stelle lediglich die Daten zur Verfügung.
@@ -428,8 +461,13 @@ public class TroopFleetDaoFacade extends TileDaoFacade{
 				session.getTransaction().commit();///SaveAndUpdate-Listener wir ausgeführt, FÜR EIN TROOPARMY OBJEKT!!!
 				//bGoon = HibernateUtil.wasCommitSuccessful(objContextHibernate,"update",session.getTransaction());				
 				VetoFlag4ListenerZZZ objResult = HibernateUtil.getCommitResult(this.getHibernateContext(),"save",session.getTransaction());
-				sMessage = objResult.getVetoMessage();
-				bGoon = !objResult.isVeto();
+				if(objResult!=null){
+					sMessage = objResult.getVetoMessage();
+					bGoon = !objResult.isVeto();
+				}else{
+					//also... wenn kein Veto, dann immer true, auch wenn nicht committed!
+					bGoon = true;
+				}
 			}
 			if(!bGoon){
 				//Mache die Ausgabe im UI nicht selbst, sondern stelle lediglich die Daten zur Verfügung. Grund: Hier stehen u.a. die UI Komponenten nicht zur Verfügung
@@ -564,8 +602,13 @@ public class TroopFleetDaoFacade extends TileDaoFacade{
 					
 					//bGoon = HibernateUtil.wasCommitSuccessful(objContextHibernate,"save",session.getTransaction());//EventType.PRE_INSERT
 					VetoFlag4ListenerZZZ objResult = HibernateUtil.getCommitResult(this.getHibernateContext(),"update",session.getTransaction());
-					sMessage = objResult.getVetoMessage();
-					bGoon = !objResult.isVeto();
+					if(objResult!=null){
+						sMessage = objResult.getVetoMessage();
+						bGoon = !objResult.isVeto();
+					}else{
+						//also... wenn kein Veto, dann immer true, auch wenn nicht committed!
+						bGoon = true;
+					}
 				}			
 				if(!bGoon){
 					//Mache die Ausgabe im UI nicht selbst, sondern stelle lediglich die Daten zur Verfügung. Grund: Hier stehen u.a. die UI Komponenten nicht zur Verfügung
@@ -610,8 +653,13 @@ public class TroopFleetDaoFacade extends TileDaoFacade{
 				
 				//bGoon = HibernateUtil.wasCommitSuccessful(objContextHibernate,"save",session.getTransaction());//EventType.PRE_INSERT
 				VetoFlag4ListenerZZZ objResult = HibernateUtil.getCommitResult(this.getHibernateContext(),"update",session.getTransaction());
-				sMessage = objResult.getVetoMessage();
-				bGoon = !objResult.isVeto();
+				if(objResult!=null){
+					sMessage = objResult.getVetoMessage();
+					bGoon = !objResult.isVeto();
+				}else{
+					//also... wenn kein Veto, dann immer true, auch wenn nicht committed!
+					bGoon = true;
+				}
 			}
 			if(!bGoon){
 				//Mache die Ausgabe im UI nicht selbst, sondern stelle lediglich die Daten zur Verfügung. Grund: Hier stehen u.a. die UI Komponenten nicht zur Verfügung
@@ -686,8 +734,13 @@ public class TroopFleetDaoFacade extends TileDaoFacade{
 				//session.flush(); //versuch folgendes zu 
 				//bGoon = HibernateUtil.wasCommitSuccessful(objContextHibernate,"update",session.getTransaction());
 				VetoFlag4ListenerZZZ objResult = HibernateUtil.getCommitResult(this.getHibernateContext(),"update",session.getTransaction());					
-				sMessage = objResult.getVetoMessage();
-				bGoon = !objResult.isVeto();
+				if(objResult!=null){
+					sMessage = objResult.getVetoMessage();
+					bGoon = !objResult.isVeto();
+				}else{
+					//also... wenn kein Veto, dann immer true, auch wenn nicht committed!
+					bGoon = true;
+				}
 			}
 			
 			

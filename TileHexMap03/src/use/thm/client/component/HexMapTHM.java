@@ -31,6 +31,7 @@ import use.thm.persistence.dao.TroopArmyDao;
 import use.thm.persistence.dao.TroopArmyVariantDao;
 import use.thm.persistence.dao.TroopDao;
 import use.thm.persistence.dao.TroopFleetVariantDao;
+import use.thm.persistence.dao.TroopVariantDao;
 import use.thm.persistence.daoFacade.TroopArmyDaoFacade;
 import use.thm.persistence.daoFacade.TroopFleetDaoFacade;
 import use.thm.persistence.dto.DtoFactoryGenerator;
@@ -56,6 +57,7 @@ import use.thm.persistence.model.TroopArmy;
 import use.thm.persistence.model.TroopArmyVariant;
 import use.thm.persistence.model.TroopFleet;
 import use.thm.persistence.model.TroopFleetVariant;
+import use.thm.web.webservice.axis2.tile.TroopVariantDaoFactoryTHM;
 import basic.persistence.dto.GenericDTO;
 import basic.persistence.util.HibernateUtil;
 import basic.zBasic.ExceptionZZZ;
@@ -850,6 +852,14 @@ public class HexMapTHM extends KernelUseObjectZZZ implements ITileEventUserTHM {
 			//###################
 			//Hole das passende TroopVariant-Objekt
 			//###################
+			
+			//TODO GOON 2018: Hole aus einem Array an Thiskeys das neutrale TroopVariantDao-Objekt.
+			//                Verwende dazu eine Factory
+			long lngTroopVariant_Thiskeyid = 11; //"Infanterie".
+			TroopVariantDaoFactoryTHM objVariantDaoFactory = TroopVariantDaoFactoryTHM.getInstance(objKernelSingleton);
+			TroopVariantDao daoVariant = (TroopVariantDao) objVariantDaoFactory.createDaoVariant(lngTroopVariant_Thiskeyid);
+			
+			
 		    long lngTroopArmyVariant_Thiskeyid = 11; //"Infanterie". TODO GOON 20180311: Aus dem GhostDropEvent (via GhostpictureAdapter) die im PANEL_WEST ausgewählte Variante holen.			
 			TroopArmyVariantDao daoKeyArmy = new TroopArmyVariantDao(objContextHibernate);
 			TroopArmyVariant objTroopArmyVariant = (TroopArmyVariant) daoKeyArmy.searchKey("TROOPARMYVARIANT", lngTroopArmyVariant_Thiskeyid );

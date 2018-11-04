@@ -206,6 +206,5 @@ private static TileDaoFacadeFactoryTHM objFacadeFactory = null;  //muss static s
 					ExceptionZZZ ez = new ExceptionZZZ(stemp,ExceptionZZZ.iERROR_PARAMETER_VALUE, TileDaoFacadeFactoryTHM.class,  ReflectCodeZZZ.getMethodCurrentName());
 					throw ez;
 				}
-				return null;
 	}
 }

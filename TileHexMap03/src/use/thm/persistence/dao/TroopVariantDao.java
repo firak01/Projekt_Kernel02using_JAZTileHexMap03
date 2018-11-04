@@ -11,6 +11,7 @@ import org.hibernate.Session;
 
 import use.thm.persistence.event.VetoFlag4ListenerZZZ;
 import use.thm.persistence.hibernate.HibernateContextProviderSingletonTHM;
+import use.thm.persistence.interfaces.ITroopVariantDaoTHM;
 import use.thm.persistence.interfaces.ITroopVariantTHM;
 import use.thm.persistence.interfaces.enums.IEnumSetTextTHM;
 import use.thm.persistence.interfaces.enums.IEnumSetTroopArmyVariantTHM;
@@ -48,7 +49,7 @@ import basic.zKernel.KernelZZZ;
  *
  * @param <T>
  */
-public abstract class TroopVariantDao<T> extends AbstractKeyImmutableDao<T> {
+public abstract class TroopVariantDao<T> extends AbstractKeyImmutableDao<T> implements ITroopVariantDaoTHM {
 	private static final long serialVersionUID = 1L;
 
 	/* Constructor
@@ -146,6 +147,37 @@ protected <T> void _fillValueImmutableByEnumAlias(ITroopVariantTHM objValue,Stri
 	System.out.println("Gefundener ThisKeyImmutabletext: " + lngThisKeyImmutabletext);	
 	objlngThisidTextImmutable.set(lngThisKeyImmutabletext); //Damit wird CALL_BY_VALUE quasi gemacht....		
 }
+
+//Interface 
+public List<TroopVariant> searchTroopTypeVariantsAll() throws ExceptionZZZ{ //TODO GOON: Sortierung... , int iSortedDirection, boolean bAscending){
+	List<TroopVariant> listReturn = new ArrayList<TroopVariant>();
+	
+	Session session = this.getSession();
+	
+	String sKeyType = this.getKeyTypeUsed();
+	String sTable = this.getDaoTableName();  //z.B. TroopArmyVariant
+	String sQuery = "from " + sTable + " as tableVariant where tableVariant.keyType = :keyType";
+	Query query = session.createQuery(sQuery); // AND tableTile.objHexCell.id.mapX = :mapX AND tableTile.objHexCell.id.mapY = :mapY");
+	
+	query.setString("keyType", sKeyType);
+	//query.setString("mapX", sX);
+	//query.setString("mapY", sY);
+	
+	//Object objResult = query.uniqueResult(); //Das sind aber ggfs. mehrere Werte		
+	listReturn = query.list(); 
+	System.out.println("Ergebnis der Query. Es wurden " + listReturn.size() + " Datensätze gefunden.");
+	
+	//3. Beispiel
+	//TODO: Nicht den statischen HQL Ansatz, sondern über die Criteria API, d.h. die Where - Bedingung zur Laufzeit zusammensetzen
+			
+	//TODO GOON 20171127: Nach dem Update soll mit dem UI weitergearbeitet werden können			
+	this.getHibernateContextProvider().closeAll();
+	System.out.println("SessionFactory über den HibernateContextProvider geschlossen.... Nun wieder bearbeitbar im Java Swing Client?");
+	return listReturn;
+}
+
+
+//#### Interface IThiskeyUser
 @Override
 public String getKeyTypeUsed() {
 	return "TROOPVARIANT";

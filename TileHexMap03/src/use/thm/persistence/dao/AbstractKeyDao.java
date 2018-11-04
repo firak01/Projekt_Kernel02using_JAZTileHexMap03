@@ -36,6 +36,7 @@ import basic.zBasic.util.datatype.string.StringZZZ;
  */
 public abstract class AbstractKeyDao<T> extends GeneralDaoZZZ<T> implements IThiskeyUserDaoZZZ {
 	private static final long serialVersionUID = 1L;
+	private Long lngThiskey = null;
 
 	/* Constructor 
 	 * WICHTIG: Der hier angegebenen Name der Entity-Klasse wird von den GeneralDAO - Klassen verwendet.
@@ -230,9 +231,18 @@ public abstract class AbstractKeyDao<T> extends GeneralDaoZZZ<T> implements IThi
 		return objReturn;
 	}
 			
+	//### INTERFACE: IThisKeyUser
 	//Das kann dann z.B. zum gezielteren Löschen ausgeführt werden.
 	public abstract String getKeyTypeUsed();
 	
+	public void setThiskeyUsed(Long lngThiskey){
+		this.lngThiskey = lngThiskey;
+	}
+	public Long getThiskeyUsed(){
+		return this.lngThiskey;
+	}
+	
+	//### INTERFACE: ...............
 	@Override
 	public int count(){
 		int iReturn = -1;

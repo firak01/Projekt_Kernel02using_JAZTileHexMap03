@@ -448,4 +448,30 @@ public boolean isVariantStandard(long lngThisIdKey) {
 	return bReturn;
 }
 			
+public List<TroopFleetVariant> searchTroopFleetVariantsAll() throws ExceptionZZZ{ //TODO GOON: Sortierung... , int iSortedDirection, boolean bAscending){
+	List<TroopFleetVariant> listReturn = new ArrayList<TroopFleetVariant>();
+	
+	Session session = this.getSession();
+	
+	String sKeyType = this.getKeyTypeUsed(); //z.B. "TROOPARMYVARIANT" , "TROOPFLEETVARIANT"
+	String sTable = this.getDaoTableName();  //z.B. TroopArmyVariant
+	String sQuery = "from " + sTable + " as tableVariant where tableVariant.keyType = :keyType";
+	Query query = session.createQuery(sQuery); // AND tableTile.objHexCell.id.mapX = :mapX AND tableTile.objHexCell.id.mapY = :mapY");
+	
+	query.setString("keyType", sKeyType);
+	//query.setString("mapX", sX);
+	//query.setString("mapY", sY);
+	
+	//Object objResult = query.uniqueResult(); //Das sind aber ggfs. mehrere Werte		
+	listReturn = query.list(); 
+	System.out.println("Ergebnis der Query. Es wurden " + listReturn.size() + " Datensätze gefunden.");
+	
+	//3. Beispiel
+	//TODO: Nicht den statischen HQL Ansatz, sondern über die Criteria API, d.h. die Where - Bedingung zur Laufzeit zusammensetzen
+			
+	//TODO GOON 20171127: Nach dem Update soll mit dem UI weitergearbeitet werden können			
+	this.getHibernateContextProvider().closeAll();
+	System.out.println("SessionFactory über den HibernateContextProvider geschlossen.... Nun wieder bearbeitbar im Java Swing Client?");
+	return listReturn;
+}
 }//end class

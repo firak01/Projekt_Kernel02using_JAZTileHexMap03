@@ -272,9 +272,22 @@ public boolean delete(Defaulttext objText) {
 	return bReturn;
 }
 
+
+//### INTERFACE IThiskeyUser 
 @Override
 public String getKeyTypeUsed() {	
 	return "DEFAULTTEXT";
+}
+
+@Override
+public Long getThiskeyUsed() {
+	// TODO Auto-generated method stub
+	return null;
+}
+@Override
+public void setThiskeyUsed(Long lngThiskey) {
+	// TODO Auto-generated method stub
+	
 }
 	
 	//####### EIGENE METHODEN ###########

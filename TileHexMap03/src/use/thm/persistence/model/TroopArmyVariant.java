@@ -170,6 +170,8 @@ public class TroopArmyVariant  extends TroopVariant implements ITroopArmyVariant
 		//#######################################################
 		public enum EnumTroopArmyVariant implements IEnumSetTroopArmyVariantTHM,  ICategoryProviderZZZ, IThiskeyProviderZZZ<Long>{//Folgendes geht nicht, da alle Enums schon von einer Java BasisKlasse erben... extends EnumSetMappedBaseZZZ{
 			//Werte für alle Spielsteine:
+			//lKey : Der thiskey - Merke: Hierüber wird in der Klasse TroopVariantDaoFactory gesteuert, welches DAO Objekt geholt wird.
+			//                                         Konvention dabei ist (monetan): 10-19 Sind Armeeeinheiten, 20-29 sind Flotten
 			//lKey / sUniquetext / sCategorytext (Merke: "Land Unit" wird als hart verdrahteter Wert  im Konstruktor von TroopVariant verwendet, zur Steuerung der Bildverarbeitung)
 			                                                       //TODO GOON 20180703: Hier soll kein String mehr rein (z.B. 'Infantry Unit', sondern die ThisKey-Id einer entsprechenden CategoryText Tabelle.
 			//			/ iMoveRange / fHealthInitial /sImageUrl / 

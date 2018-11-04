@@ -37,7 +37,8 @@ import basic.zBasic.util.datatype.string.StringZZZ;
  */
 public abstract class AbstractKeyImmutableDao<T> extends GeneralDaoZZZ<T>  implements IThiskeyUserDaoZZZ {
 	private static final long serialVersionUID = 1L;
-
+	private Long lngThiskey = null;
+	
 	/* Constructor 
 	 * WICHTIG: Der hier angegebenen Name der Entity-Klasse wird von den GeneralDAO - Klassen verwendet.
 	 *                Daher unbedingt beim Einsatz von Vererbung korrekt anpassen.
@@ -111,7 +112,7 @@ public abstract class AbstractKeyImmutableDao<T> extends GeneralDaoZZZ<T>  imple
 	}
 	
 	
-	//####### EIGENE METHODEN ###########
+	//####### EIGENE METHODEN ###########		
 	//....
 	public KeyImmutable searchThiskey(Long lngThiskey){
 		KeyImmutable objReturn = null;
@@ -121,40 +122,9 @@ public abstract class AbstractKeyImmutableDao<T> extends GeneralDaoZZZ<T>  imple
 				
 			session.getTransaction().begin();//Ein zu persistierendes Objekt - eine Transaction, auch wenn mehrere in einer Transaction abzuhandeln wären, aber besser um Fehler abfangen zu können.
 
-//			select mate
-//			from Cat as cat
-//			    inner join cat.mate as mate
-			    
-			//1. Beispiel: wenn man aber die WHERE Parameter so als String reinprogrammiert, ist das anfällig für SQL injection.
-			//String sHql = "SELECT id from Tile as tableTile";								
-			//listReturn = this.findByHQL(sHql, 0, 0);//start ist indexwert also 0 = erster Wert, Danach folgt maximale Anzahl von Objekten.
-			
-			//2. Beispiel: Etwas sicherer ist es die Parameter mit Platzhaltern zu füllen
-			//Session session = this.getSession();
-			//liefert die ID Spalte als Integer zurück, also nicht das TileId Objekt...  Query query = session.createQuery("SELECT id from Tile as tableTile");
-			//                                                       wird nicht gefunden Query query = session.createQuery("SELECT TileIdObject from Tile as tableTile");
-						
-			//Beispiele:
-			//Das liefert die HEXCELL-Objekte zurück
-			//Query query = session.createQuery("SELECT objHexCell from Tile as tableTile");
-							
-			//Liefert die CellId-Objekte der Hexcell zurück
-			//Query query = session.createQuery("SELECT objHexCell.id from Tile as tableTile");
-			
-			//Liefert die Alias Map-Werte zurück
-			//Query query = session.createQuery("SELECT objHexCell.id.mapAlias from Tile as tableTile");
-			
-			//Abfrage mit Parametern
-			//Query query = session.createQuery("SELECT objHexCell from Tile as tableTile where tableTile.objHexCell.Id.MapAlias IN (:mapAlias)");	
-			//Query query = session.createQuery("from TroopArmy as tableTile where tableTile.objHexCell.id.mapAlias = :mapAlias AND tableTile.objHexCell.id.mapX = :mapX AND tableTile.objHexCell.id.mapY = :mapY");
-//			query.setString("mapAlias", sMapAlias);
-//			query.setString("mapX", sX);
-//			query.setString("mapY", sY);
-			 						
 		String sTableNameHql = this.getDaoTableName();
 		Query query = session.createQuery("from " + sTableNameHql + " as tableKey where tableKey.thiskey = :thiskey");
 		query.setLong("thiskey", lngThiskey);
-
 		
 		Object objResult = query.uniqueResult();//für einen einzelwert, darum ist es wichtig, das der uniquename beim Einfügen eines Spielsteins auch wirklich unique ist... Bei 2 gefundenen Werten kammt es hier zum begründeten Fehler. 		
 		//listReturn = query.list(); //Für meherer Werte
@@ -176,6 +146,25 @@ public abstract class AbstractKeyImmutableDao<T> extends GeneralDaoZZZ<T>  imple
 //			break validEntry;
 //		}
 		
+		}//end main:
+		return objReturn;
+	}
+	
+	//....
+	public KeyImmutable searchKey(){
+		KeyImmutable objReturn = null;
+		main:{
+			Long lngThiskey = this.getThiskeyUsed();
+			objReturn = this.searchKey(lngThiskey);
+		}//end main:
+		return objReturn;
+	}
+	
+	public KeyImmutable searchKey(Long lngThiskey){
+		KeyImmutable objReturn = null;
+		main:{
+			String sKeyType = this.getKeyTypeUsed();
+			objReturn = this.searchKey(sKeyType, lngThiskey);
 		}//end main:
 		return objReturn;
 	}
@@ -232,10 +221,20 @@ public abstract class AbstractKeyImmutableDao<T> extends GeneralDaoZZZ<T>  imple
 		}//end main:
 		return objReturn;
 	}
-			
+				
+   //### INTERFACE: IThiskeyUserDAO
 	//Das kann dann z.B. zum gezielteren Löschen ausgeführt werden.
 	public abstract String getKeyTypeUsed();	
 	
+	public void setThiskeyUsed(Long lngThiskey){
+		this.lngThiskey = lngThiskey;
+	}
+	public Long getThiskeyUsed(){
+		return this.lngThiskey;
+	}
+	
+	
+	//### INTERFACE: .........
 	@Override
 	public int count(){
 		int iReturn = -1;

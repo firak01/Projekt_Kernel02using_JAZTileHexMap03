@@ -852,8 +852,7 @@ public class HexMapTHM extends KernelUseObjectZZZ implements ITileEventUserTHM {
 			//###################
 			//Hole das passende TroopVariant-Objekt
 			//###################
-		   			
-			//TODO GOON 20181103:
+
 			//20181103: Verwende eine Factory, um die passende Dao-Klasse zu holen und daraus dann das passende Varianten-Objekt.
 		    TroopVariantDaoFactory objDaoVariantFactory = TroopVariantDaoFactory.getInstance();
 		    

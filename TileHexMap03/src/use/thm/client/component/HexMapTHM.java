@@ -31,6 +31,8 @@ import use.thm.persistence.dao.TroopArmyDao;
 import use.thm.persistence.dao.TroopArmyVariantDao;
 import use.thm.persistence.dao.TroopDao;
 import use.thm.persistence.dao.TroopFleetVariantDao;
+import use.thm.persistence.dao.TroopVariantDao;
+import use.thm.persistence.dao.TroopVariantDaoFactory;
 import use.thm.persistence.daoFacade.TroopArmyDaoFacade;
 import use.thm.persistence.daoFacade.TroopFleetDaoFacade;
 import use.thm.persistence.dto.DtoFactoryGenerator;
@@ -850,14 +852,22 @@ public class HexMapTHM extends KernelUseObjectZZZ implements ITileEventUserTHM {
 			//###################
 			//Hole das passende TroopVariant-Objekt
 			//###################
-		    long lngTroopArmyVariant_Thiskeyid = 11; //"Infanterie". TODO GOON 20180311: Aus dem GhostDropEvent (via GhostpictureAdapter) die im PANEL_WEST ausgewählte Variante holen.			
-			TroopArmyVariantDao daoKeyArmy = new TroopArmyVariantDao(objContextHibernate);
-			TroopArmyVariant objTroopArmyVariant = (TroopArmyVariant) daoKeyArmy.searchKey("TROOPARMYVARIANT", lngTroopArmyVariant_Thiskeyid );
-						
+		   			
+			//20181103: Verwende eine Factory, um die passende Dao-Klasse zu holen und daraus dann das passende Varianten-Objekt.
+		    TroopVariantDaoFactory objDaoVariantFactory = TroopVariantDaoFactory.getInstance();
+		    
+		    long lngTroopArmyVariant_Thiskeyid = 11; //"Infanterie". TODO GOON 20180311: Aus dem GhostDropEvent (via GhostpictureAdapter) die im PANEL_WEST ausgewählte Variante holen.						
+//		    TroopArmyVariantDao daoKeyArmy = new TroopArmyVariantDao(objContextHibernate);
+//			TroopArmyVariant objTroopArmyVariant = (TroopArmyVariant) daoKeyArmy.searchKey("TROOPARMYVARIANT", lngTroopArmyVariant_Thiskeyid );					   
+			TroopVariantDao daoKey = objDaoVariantFactory.createDaoVariant(lngTroopArmyVariant_Thiskeyid);
+			TroopArmyVariant objTroopArmyVariant = (TroopArmyVariant) daoKey.searchKey();
+			
 			 long lngTroopFleetVariant_Thiskeyid = 21; //"Destroyer". TODO GOON 20180311: Aus dem GhostDropEvent (via GhostpictureAdapter) die im PANEL_WEST ausgewählte Variante holen.			
-			TroopFleetVariantDao daoKeyFleet = new TroopFleetVariantDao(objContextHibernate);
-			TroopFleetVariant objTroopFleetVariant = (TroopFleetVariant) daoKeyFleet.searchKey("TROOPFLEETVARIANT", lngTroopFleetVariant_Thiskeyid );
-				
+//			TroopFleetVariantDao daoKeyFleet = new TroopFleetVariantDao(objContextHibernate);
+//			TroopFleetVariant objTroopFleetVariant = (TroopFleetVariant) daoKeyFleet.searchKey("TROOPFLEETVARIANT", lngTroopFleetVariant_Thiskeyid );
+			daoKey = objDaoVariantFactory.createDaoVariant(lngTroopFleetVariant_Thiskeyid);			
+			TroopFleetVariant objTroopFleetVariant = (TroopFleetVariant) daoKey.searchKey();
+					
 			
 			//##################
 			//Hole die Areas
@@ -993,11 +1003,10 @@ public class HexMapTHM extends KernelUseObjectZZZ implements ITileEventUserTHM {
 					bGoon = objFleetDaoFacade.insertTroopFleet(sUniquename, objTroopFleetVariant, objCellTemp);										
 					if(bGoon){
 						//TEST: DIESER CODE DARF NICHT AUSGEFÜHRT WERDEN, DER onPreInsert-Listener muss das verhindert haben und zurückgeliefert haben.
-						String sMessage = "FALSCHES TESTERGEBNIS: HIER DARF NIX ERZEUGT WERDEN, WG. PASSENDES GEBIET REGEL.";			
+						String sMessage = "UNERWARTETES TESTERGEBNIS: HIER DARF NIX ERZEUGT WERDEN, WG. PASSENDES GEBIET REGEL. SOLLTE ABER IM BACKEND SCHON ABGEFANGEN WRODEN SEIN!";			
 						JOptionPane.showMessageDialog (panelMap, sMessage);
 							
-					}else{
-						
+					}else{					
 						//Mache nun eine Ausgabe, wie sonst in AreaCellTHM.onTileCreated(EventTileCreatedInCellTHM) 		
 						String sMessage = "ERWARTETES TESTERGEBNIS: " + objFleetDaoFacade.getFacadeResult().getMessage(); //Hole die Meldung ab.						
 						JOptionPane.showMessageDialog (panelMap, sMessage);//TODO GOON: Eigentlich hier nicht ausgeben, sondern das Ergebnis für irgendwelche Frontend-Klassen zur Verfügung stellen, die dann ggfs. auch eine UI Komponente haben.

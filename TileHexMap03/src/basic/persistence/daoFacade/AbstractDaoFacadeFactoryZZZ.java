@@ -39,5 +39,4 @@ public abstract class AbstractDaoFacadeFactoryZZZ extends KernelUseObjectZZZ imp
 	
 	@Override
 	public abstract GeneralDaoFacadeZZZ createDaoFacadeJndi(Troop objectTroopEntity) throws ExceptionZZZ;
-
 }

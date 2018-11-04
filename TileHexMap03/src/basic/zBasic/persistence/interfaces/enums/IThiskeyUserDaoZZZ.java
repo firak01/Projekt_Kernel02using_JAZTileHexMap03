@@ -40,5 +40,8 @@ public interface IThiskeyUserDaoZZZ{
      *
      * @return the hisKey
      */
-	public String getKeyTypeUsed();
+	public String getKeyTypeUsed(); //z.B. in TroopVariantDaoTHM:  "TROOPARMYVARIANT" , "TROOPFLEETVARIANT"
+	
+	public Long getThiskeyUsed(); //wird in den Varianten verwendet, u.a. in der VariniantDaoFactory. Hier besteht eine 1:1 Beziehung zwischen der Variante und dem Dao-Objekt.
+	abstract void setThiskeyUsed(Long lngThiskey);	
 }

@@ -856,13 +856,13 @@ public class HexMapTHM extends KernelUseObjectZZZ implements ITileEventUserTHM {
 			//20181103: Verwende eine Factory, um die passende Dao-Klasse zu holen und daraus dann das passende Varianten-Objekt.
 		    TroopVariantDaoFactory objDaoVariantFactory = TroopVariantDaoFactory.getInstance();
 		    
-		    long lngTroopArmyVariant_Thiskeyid = 11; //"Infanterie". TODO GOON 20180311: Aus dem GhostDropEvent (via GhostpictureAdapter) die im PANEL_WEST ausgewählte Variante holen.						
+		    long lngTroopArmyVariant_Thiskeyid = 11; //"Infanterie". TODO GOON 20181104: Im GhostDropEvent (via GhostpictureAdapter) auch diese Factory einsetzen						
 //		    TroopArmyVariantDao daoKeyArmy = new TroopArmyVariantDao(objContextHibernate);
 //			TroopArmyVariant objTroopArmyVariant = (TroopArmyVariant) daoKeyArmy.searchKey("TROOPARMYVARIANT", lngTroopArmyVariant_Thiskeyid );					   
 			TroopVariantDao daoKey = objDaoVariantFactory.createDaoVariant(lngTroopArmyVariant_Thiskeyid);
 			TroopArmyVariant objTroopArmyVariant = (TroopArmyVariant) daoKey.searchKey();
 			
-			 long lngTroopFleetVariant_Thiskeyid = 21; //"Destroyer". TODO GOON 20180311: Aus dem GhostDropEvent (via GhostpictureAdapter) die im PANEL_WEST ausgewählte Variante holen.			
+			 long lngTroopFleetVariant_Thiskeyid = 21; //"Destroyer".  TODO GOON 20181104: Im GhostDropEvent (via GhostpictureAdapter) auch diese Factory einsetzen			
 //			TroopFleetVariantDao daoKeyFleet = new TroopFleetVariantDao(objContextHibernate);
 //			TroopFleetVariant objTroopFleetVariant = (TroopFleetVariant) daoKeyFleet.searchKey("TROOPFLEETVARIANT", lngTroopFleetVariant_Thiskeyid );
 			daoKey = objDaoVariantFactory.createDaoVariant(lngTroopFleetVariant_Thiskeyid);			

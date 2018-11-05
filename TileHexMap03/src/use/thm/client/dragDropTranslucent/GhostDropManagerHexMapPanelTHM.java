@@ -152,9 +152,12 @@ public class GhostDropManagerHexMapPanelTHM extends AbstractGhostDropManager imp
 						TroopArmyVariant objTroopArmyVariant = (TroopArmyVariant) daoKey.searchKey("TROOPARMYVARIANT", lngTroopArmyVariant_Thiskeyid );
 											    
 						TroopArmyDaoFacade objTroopDaoFacade = new TroopArmyDaoFacade(objContextHibernate);
-						String sUniquename = objTroopDaoFacade.computeUniquename();						
-						bGoon = objTroopDaoFacade.insertTroopArmy(sUniquename, objTroopArmyVariant, objCellTemp);//Falls das aus irgendwelchen Gründen nicht erlaubt ist, ein Veto einlegen.
-						if(!bGoon){
+//						String sUniquename = objTroopDaoFacade.computeUniquename();						
+//						bGoon = objTroopDaoFacade.insertTroopArmy(sUniquename, objTroopArmyVariant, objCellTemp);//Falls das aus irgendwelchen Gründen nicht erlaubt ist, ein Veto einlegen.
+//						if(!bGoon){
+						
+						String sUniquename= objTroopDaoFacade.insert(objTroopArmyVariant, objCellTemp);
+						if(StringZZZ.isEmpty(sUniquename)){
 							//0170703: Hole auch irgendwie einen Grund ab, warum an dieser Stelle nix eingefügt werden darf.//Dies muss aus TroopArmyDaoFacade abgeholt werden.							
 							String sMessage = objTroopDaoFacade.getFacadeResult().getMessage(); //Hole die Meldung ab.
 							
@@ -205,9 +208,12 @@ public class GhostDropManagerHexMapPanelTHM extends AbstractGhostDropManager imp
 						TroopFleetVariant objTroopFleetVariant = (TroopFleetVariant) daoKey.searchKey("TROOPFLEETVARIANT", lngTroopFleetVariant_Thiskeyid );
 											    
 						TroopFleetDaoFacade objTroopDaoFacade = new TroopFleetDaoFacade(objContextHibernate);
-						String sUniquename = objTroopDaoFacade.computeUniquename();						
-						bGoon = objTroopDaoFacade.insertTroopFleet(sUniquename, objTroopFleetVariant, objCellTemp);//Falls das aus irgendwelchen Gründen nicht erlaubt ist, ein Veto einlegen.
-						if(!bGoon){
+//						String sUniquename = objTroopDaoFacade.computeUniquename();						
+//						bGoon = objTroopDaoFacade.insertTroopFleet(sUniquename, objTroopFleetVariant, objCellTemp);//Falls das aus irgendwelchen Gründen nicht erlaubt ist, ein Veto einlegen.
+//						if(!bGoon){							
+						String sUniquename= objTroopDaoFacade.insert(objTroopFleetVariant, objCellTemp);
+						if(StringZZZ.isEmpty(sUniquename)){
+							
 							//0170703: Hole auch irgendwie einen Grund ab, warum an dieser Stelle nix eingefügt werden darf.//Dies muss aus TroopArmyDaoFacade abgeholt werden.							
 							String sMessage = objTroopDaoFacade.getFacadeResult().getMessage(); //Hole die Meldung ab.
 							

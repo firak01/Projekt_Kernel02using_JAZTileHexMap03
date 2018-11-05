@@ -6,6 +6,7 @@ import java.util.Date;
 
 import use.thm.persistence.dto.ITileDtoAttribute;
 import use.thm.persistence.interfaces.IBackendPersistenceFacadeTHM;
+import use.thm.persistence.model.HexCell;
 import use.thm.persistence.model.Tile;
 import use.thm.persistence.model.Troop;
 import use.thm.persistence.model.TroopFleet;
@@ -30,6 +31,10 @@ public abstract class TileDaoFacade extends GeneralDaoFacadeZZZ implements IBack
 	
 	public abstract boolean delete(String sUniquename)  throws ExceptionZZZ;
 	public abstract boolean delete(Troop objTroop) throws ExceptionZZZ;
+	
+	public abstract String insert(TroopVariant objTroopVariant, HexCell objCell) throws ExceptionZZZ; //Rückgabewert ist der uniquename des neu erstellten Spielsteins.
+	
+	public abstract boolean move(Troop objTroop, HexCell objCell) throws Exception; //20181105 Wird noch nicht verwendet
 	
 	/* (non-Javadoc)
 	 * @see use.thm.persistence.interfaces.IBackendPersistenceFacadeTHM#computeUniquename()

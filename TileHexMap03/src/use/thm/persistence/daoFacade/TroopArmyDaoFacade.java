@@ -42,6 +42,7 @@ import use.thm.persistence.hibernate.HibernateContextProviderSingletonTHM;
 import use.thm.persistence.model.AreaCell;
 import use.thm.persistence.model.AreaCellLand;
 import use.thm.persistence.model.CellId;
+import use.thm.persistence.model.HexCell;
 import use.thm.persistence.model.Tile;
 import use.thm.persistence.model.TileDefaulttext;
 import use.thm.persistence.model.TileId;
@@ -67,6 +68,37 @@ public class TroopArmyDaoFacade extends TileDaoFacade{
 	public TroopArmyDaoFacade(IHibernateContextProviderZZZ objContextHibernate){
 		super(objContextHibernate);
 	}
+	
+	
+	
+	@Override
+	public String insert(TroopVariant objTroopVariant, HexCell objCell) throws ExceptionZZZ {
+		String sFacadeType = this.getFacadeType();
+		String sUniquename= this.computeUniquename(sFacadeType);
+		
+		TroopArmyVariant objTroopArmyVariant = (TroopArmyVariant) objTroopVariant;
+		AreaCell objArea = (AreaCell) objCell;
+		boolean bReturn = this.insertTroopArmy(sUniquename, objTroopArmyVariant, objArea);
+		if(bReturn){
+			return sUniquename;
+		}else{
+			return null;
+		}
+	}
+	
+	public String insert(TroopArmyVariant objTroopArmyVariant, HexCell objCell) throws ExceptionZZZ {
+		String sFacadeType = this.getFacadeType();
+		String sUniquename= this.computeUniquename(sFacadeType);
+		
+		AreaCell objArea = (AreaCell) objCell;
+		boolean bReturn = this.insertTroopArmy(sUniquename, objTroopArmyVariant, objArea);
+		if(bReturn){
+			return sUniquename;
+		}else{
+			return null;
+		}
+	}
+	
 	public boolean insertTroopArmy(String sUniqueName, TroopArmyVariant objTroopArmyVariant, AreaCell objArea) throws ExceptionZZZ{
 		boolean bReturn = false;
 		main:{
@@ -269,6 +301,12 @@ public class TroopArmyDaoFacade extends TileDaoFacade{
 					
 		}//end main:
 		return bReturn;
+	}
+	
+	@Override
+	public boolean move(Troop objTroop, HexCell objCell) throws Exception {
+		// TODO Auto-generated method stub
+		return false;
 	}
 	public boolean updateTroopArmyPosition(String sUniqueName, AreaCell objAreaTarget) throws ExceptionZZZ{
 		boolean bReturn = false;
@@ -758,6 +796,7 @@ public class TroopArmyDaoFacade extends TileDaoFacade{
 		}//end main:
 		return bReturn;
 	}
+
 	
 	
 	@Override
@@ -773,8 +812,6 @@ public class TroopArmyDaoFacade extends TileDaoFacade{
 	@Override
 	public void setEntityUsed(Troop objTroopArmy){
 		this.objTroopArmy =  (TroopArmy) objTroopArmy;
-	}
-	
-	
+	}	
 
 }

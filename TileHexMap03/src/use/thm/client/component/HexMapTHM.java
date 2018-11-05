@@ -921,10 +921,13 @@ public class HexMapTHM extends KernelUseObjectZZZ implements ITileEventUserTHM {
 						boolean bGoon = false;
 						//20170629: Dies in eine Methode kapseln (DAO Klasse?). Ziel: Dies ohne Redundanz beim Einsetzen eines neuen Spielsteins verwenden.
 						TroopArmyDaoFacade objTroopDaoFacade = new TroopArmyDaoFacade(objContextHibernate);
-						String sUniquename = objTroopDaoFacade.computeUniquename();//Merke: Zur Berechnung des uniquename wird hier ein Zeitstempel verwendet
-																							
-						bGoon = objTroopDaoFacade.insertTroopArmy(sUniquename, objTroopArmyVariant, objCellTemp);
-						if(bGoon){
+//						String sUniquename = objTroopDaoFacade.computeUniquename();//Merke: Zur Berechnung des uniquename wird hier ein Zeitstempel verwendet																						
+//						bGoon = objTroopDaoFacade.insertTroopArmy(sUniquename, objTroopArmyVariant, objCellTemp);
+//						if(bGoon){
+						
+						String sUniquename= objTroopDaoFacade.insert(objTroopArmyVariant, objCellTemp);
+						if(!StringZZZ.isEmpty(sUniquename)){
+						
 														
 							//+++ UI Operationen & die TroopArmy noch an das UI-verwendete Objekt weitergeben
 							//20170711: Nimm hier die UniqueId des Backends mit auf....
@@ -956,9 +959,12 @@ public class HexMapTHM extends KernelUseObjectZZZ implements ITileEventUserTHM {
 					boolean bGoon = false;
 					//20170629: Dies in eine Methode kapseln (DAO Klasse?). Ziel: Dies ohne Redundanz beim Einsetzen eines neuen Spielsteins verwenden.
 					TroopFleetDaoFacade objFleetDaoFacade = new TroopFleetDaoFacade(objContextHibernate);					
-					String sUniquename = objFleetDaoFacade.computeUniquename();//Merke: Zur Berechnung des uniquename wird hier ein Zeitstempel verwendet
-					bGoon = objFleetDaoFacade.insertTroopFleet(sUniquename, objTroopFleetVariant, objCellTemp);
-					if(bGoon){
+					//20181105: Nun String sUniquename = objFleetDaoFacade.computeUniquename();//Merke: Zur Berechnung des uniquename wird hier ein Zeitstempel verwendet
+					//          bGoon = objFleetDaoFacade.insertTroopFleet(sUniquename, objTroopFleetVariant, objCellTemp);
+					//if(bGoon){
+					String sUniquename= objFleetDaoFacade.insert(objTroopFleetVariant, objCellTemp);
+					if(!StringZZZ.isEmpty(sUniquename)){
+						bGoon = objFleetDaoFacade.insertTroopFleet(sUniquename, objTroopFleetVariant, objCellTemp);
 						
 						//20170711: Nimm hier die UniqueId des Backends mit auf....
 						//20170711: Der Uniquename muss der im UI-verwendeten Objekt übergeben werden. Das ist dann die Verbindung zwischen UI und Backend.

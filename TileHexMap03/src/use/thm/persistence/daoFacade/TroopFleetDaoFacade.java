@@ -35,6 +35,7 @@ import use.thm.persistence.model.AreaCell;
 import use.thm.persistence.model.AreaCellLand;
 import use.thm.persistence.model.AreaCellOcean;
 import use.thm.persistence.model.CellId;
+import use.thm.persistence.model.HexCell;
 import use.thm.persistence.model.Tile;
 import use.thm.persistence.model.TileId;
 import use.thm.persistence.model.Troop;
@@ -43,6 +44,7 @@ import use.thm.persistence.model.TroopArmyVariant;
 import use.thm.persistence.model.TroopFleet;
 import use.thm.persistence.model.TroopFleetVariant;
 import use.thm.persistence.model.TroopType;
+import use.thm.persistence.model.TroopVariant;
 import use.thm.rule.facade.TroopArmyRuleFacade;
 import use.thm.rule.facade.TroopFleetRuleFacade;
 import use.thm.rule.model.TroopArmyRuleType;
@@ -293,6 +295,34 @@ public class TroopFleetDaoFacade extends TileDaoFacade{
 		return bReturn;
 	}
 		
+	@Override
+	public String insert(TroopVariant objTroopVariant, HexCell objCell) throws ExceptionZZZ {
+		String sFacadeType = this.getFacadeType();
+		String sUniquename= this.computeUniquename(sFacadeType);
+		
+		TroopFleetVariant objTroopFleetVariant = (TroopFleetVariant) objTroopVariant;
+		AreaCell objArea = (AreaCell) objCell;
+		boolean bReturn = this.insertTroopFleet(sUniquename, objTroopFleetVariant, objArea);
+		if(bReturn){
+			return sUniquename;
+		}else{
+			return null;
+		}
+	}
+	
+	public String insert(TroopFleetVariant objTroopFleetVariant, HexCell objCell) throws ExceptionZZZ {
+		String sFacadeType = this.getFacadeType();
+		String sUniquename= this.computeUniquename(sFacadeType);
+		
+		AreaCell objArea = (AreaCell) objCell;
+		boolean bReturn = this.insertTroopFleet(sUniquename, objTroopFleetVariant, objArea);
+		if(bReturn){
+			return sUniquename;
+		}else{
+			return null;
+		}
+	}
+	
 	public boolean insertTroopFleet(String sUniqueName, TroopFleetVariant objTroopFleetVariant, AreaCell objArea) throws ExceptionZZZ{
 		boolean bReturn = false;
 		main:{
@@ -525,6 +555,13 @@ public class TroopFleetDaoFacade extends TileDaoFacade{
 //			//session.flush();
 //			session.getTransaction().commit();//SaveAndUpdate-Listener wir NICHT ausgeführt, aber PreInsert-Listener wird ausgeführt.
 //		}
+	}
+	
+
+	@Override
+	public boolean move(Troop objTroop, HexCell objCell) throws Exception {
+		// TODO Auto-generated method stub
+		return false;
 	}
 	
 	public boolean updateTroopFleetPosition(String sUniqueName, AreaCell objAreaTarget) throws ExceptionZZZ{
@@ -774,6 +811,8 @@ public class TroopFleetDaoFacade extends TileDaoFacade{
 		}//end main:
 		return bReturn;
 	}
+	
+	
 
 	@Override
 	public String getFacadeType() {
@@ -789,4 +828,6 @@ public class TroopFleetDaoFacade extends TileDaoFacade{
 	public void setEntityUsed(Troop objTroopFleet){
 		this.objTroopFleet =  (TroopFleet) objTroopFleet;
 	}
+
+	
 }

@@ -6,6 +6,7 @@ import org.hibernate.HibernateException;
 import org.hibernate.event.internal.DefaultSaveOrUpdateEventListener;
 import org.hibernate.event.spi.SaveOrUpdateEvent;
 
+import use.thm.persistence.hibernate.HibernateContextProviderJndiSingletonTHM;
 import use.thm.persistence.hibernate.HibernateContextProviderSingletonTHM;
 import use.thm.persistence.model.AreaCell;
 import use.thm.persistence.model.HexCell;
@@ -114,7 +115,7 @@ public class SaveOrUpdateListenerTHM extends DefaultSaveOrUpdateEventListener im
 			//                               In der DAO wird aber eine neue Transaction gemact....
 			
 			//Die Bemerkung vom 20170415 hat dann zur Folge: Wenn man an dieser Stelle eine neue Session aufmacht, dann gibt es in der aufrufenden Methode den Fehler, dass die Session closed sei.
-			HibernateContextProviderSingletonTHM objHibernateContext = HibernateContextProviderSingletonTHM.getInstance();			
+			HibernateContextProviderJndiSingletonTHM objHibernateContext = HibernateContextProviderJndiSingletonTHM.getInstance();			
 			//			AreaCellDao areaDao = new AreaCellDao(objHibernateContext);
 			//			AreaCell area = areaDao.findByKey(hex.getId());
 			
@@ -161,7 +162,7 @@ public class SaveOrUpdateListenerTHM extends DefaultSaveOrUpdateEventListener im
 			//                               In der DAO wird aber eine neue Transaction gemact....
 			
 			//Die Bemerkung vom 20170415 hat dann zur Folge: Wenn man an dieser Stelle eine neue Session aufmacht, dann gibt es in der aufrufenden Methode den Fehler, dass die Session closed sei.
-			HibernateContextProviderSingletonTHM objHibernateContext = HibernateContextProviderSingletonTHM.getInstance();			
+			HibernateContextProviderJndiSingletonTHM objHibernateContext = HibernateContextProviderJndiSingletonTHM.getInstance();			
 			//			AreaCellDao areaDao = new AreaCellDao(objHibernateContext);
 			//			AreaCell area = areaDao.findByKey(hex.getId());
 			
@@ -202,9 +203,8 @@ public class SaveOrUpdateListenerTHM extends DefaultSaveOrUpdateEventListener im
 			//                               In der DAO wird aber eine neue Transaction gemact....
 			
 			//Die Bemerkung vom 20170415 hat dann zur Folge: Wenn man an dieser Stelle eine neue Session aufmacht, dann gibt es in der aufrufenden Methode den Fehler, dass die Session closed sei.
-			HibernateContextProviderSingletonTHM objHibernateContext = HibernateContextProviderSingletonTHM.getInstance();			
-			//			AreaCellDao areaDao = new AreaCellDao(objHibernateContext);
-			//			AreaCell area = areaDao.findByKey(hex.getId());
+			HibernateContextProviderJndiSingletonTHM objHibernateContext = HibernateContextProviderJndiSingletonTHM.getInstance();			
+
 									
 			//####################
 			//### BACKEND Validierung

@@ -22,6 +22,7 @@ import basic.zBasic.ExceptionZZZ;
 import basic.zBasic.ReflectCodeZZZ;
 import basic.zBasic.persistence.hibernate.DateMapping;
 import basic.zBasic.persistence.hibernate.HibernateContextProviderZZZ;
+import basic.zBasic.persistence.interfaces.IHibernateContextProviderZZZ;
 import basic.zBasic.util.abstractList.VectorExtendedZZZ;
 import use.thm.client.component.ArmyTileTHM;
 import use.thm.client.event.EventTileCreatedInCellTHM;
@@ -81,8 +82,8 @@ public class TroopFleetDaoFacade extends TileDaoFacade{
 						
 			//###################
 			//1. Hole die TroopArmy, füge die neue Area der TroopArmy hinzu, damit sie weiss in welchem neuen Feld sie steht.
-			//####################								
-			HibernateContextProviderSingletonTHM objContextHibernate = (HibernateContextProviderSingletonTHM) this.getHibernateContext();
+			//####################											
+		  	IHibernateContextProviderZZZ objContextHibernate = this.getHibernateContext();
 			TroopFleetDao objTroopFleetDao = new TroopFleetDao(objContextHibernate);
 
 			//HQL verwenden, um die TroopArmy anhand des Uniquename zu bekommen. 
@@ -107,8 +108,8 @@ public class TroopFleetDaoFacade extends TileDaoFacade{
 			
 			//#############################
 			//2. Hole die Backendentsprechung der Ausgangszelle, daraus muss die TroopArmy entfernt werden.
-			//############################# 
-			HibernateContextProviderSingletonTHM objContextHibernate = (HibernateContextProviderSingletonTHM) this.getHibernateContext();
+			//############################# 			
+			IHibernateContextProviderZZZ objContextHibernate = this.getHibernateContext();
 			AreaCellDao objAreaDaoSource = new AreaCellDao(objContextHibernate);
 			int iXStarted = objTroopFleet.getMapX();
 			int iYStarted = objTroopFleet.getMapY();
@@ -235,8 +236,8 @@ public class TroopFleetDaoFacade extends TileDaoFacade{
 						
 			//###################
 			//1. Hole die TroopArmy, füge die neue Area der TroopArmy hinzu, damit sie weiss in welchem neuen Feld sie steht.
-			//####################								
-			HibernateContextProviderSingletonTHM objContextHibernate = (HibernateContextProviderSingletonTHM) this.getHibernateContext();
+			//####################											
+			IHibernateContextProviderZZZ objContextHibernate = this.getHibernateContext();
 			TroopFleetDao objTroopDao = new TroopFleetDao(objContextHibernate);
 
 			//HQL verwenden, um die TroopArmy anhand des Uniquename zu bekommen. 
@@ -344,8 +345,8 @@ public class TroopFleetDaoFacade extends TileDaoFacade{
 			Integer intSubtypeUniqueNumberUsed  = null;
 			Integer intVariantUniqueNumberUsed  = null;			
 			additionalData:{
-				//Hole die bisher höchste Zahl der Varianten 
-				HibernateContextProviderSingletonTHM objContextHibernate = (HibernateContextProviderSingletonTHM) this.getHibernateContext();
+				//Hole die bisher höchste Zahl der Varianten 				
+				IHibernateContextProviderZZZ objContextHibernate = this.getHibernateContext();
 				TroopFleetDao objTroopDao = new TroopFleetDao(objContextHibernate);
 				
 				///!!! Das reicht aus nicht aus... Intern wird wohl Es muss die ZhisId der Variante als WHERE Teil einbezogen werden.
@@ -381,9 +382,7 @@ public class TroopFleetDaoFacade extends TileDaoFacade{
 //					System.out.println("########### FEHLER: " + e.getMessage());
 //				}
 			}
-			
-
-			
+				
 			validEntry:{
 			boolean bGoon = false;
 			String sMessage = new String("");
@@ -413,7 +412,12 @@ public class TroopFleetDaoFacade extends TileDaoFacade{
 			this.makeCreatedDates(objTroopTemp);
 			
 			//Merke: EINE TRANSACTION = EINE SESSION ==>  neue session von der SessionFactory holen
-			session.save(objTroopTemp); //Hibernate Interceptor wird aufgerufen																				
+			session.save(objTroopTemp); //Hibernate Interceptor wird aufgerufen	: HibernateInterceptorTHM.java	
+
+			//			session.update(objTroopTemp); //Hibernate Interceptor wird aufgerufen
+			//          FEHLER: Row was updated or deleted by another transaction (or unsaved-value mapping was incorrect): [use.thm.persistence.model.TroopFleet#0]
+//			session.flush();
+//			session.getTransaction().commit();
 			if (!session.getTransaction().wasCommitted()) {
 				//session.flush(); //Datenbank synchronisation, d.h. Inserts und Updates werden gemacht. ABER es wird noch nix committed.
 				session.getTransaction().commit(); //onPreInsertListener wird ausgeführt   //!!! TODO: WARUM WIRD wg. des FLUSH NIX MEHR AUSGEFÜHRT AN LISTENERN, ETC ???
@@ -575,8 +579,8 @@ public class TroopFleetDaoFacade extends TileDaoFacade{
 			
 			//###################
 			//1. Hole die TroopArmy, füge die neue Area der TroopArmy hinzu, damit sie weiss in welchem neuen Feld sie steht.
-			//####################								
-			HibernateContextProviderSingletonTHM objContextHibernate = (HibernateContextProviderSingletonTHM) this.getHibernateContext();
+			//####################											
+			IHibernateContextProviderZZZ objContextHibernate = this.getHibernateContext();
 			TroopFleetDao objTroopFleetDao = new TroopFleetDao(objContextHibernate);
 
 			//HQL verwenden, um die TroopArmy anhand des Uniquename zu bekommen. 

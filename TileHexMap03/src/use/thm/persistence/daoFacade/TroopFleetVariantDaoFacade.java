@@ -10,6 +10,7 @@ import basic.persistence.dto.GenericDTO;
 import basic.zBasic.ExceptionZZZ;
 import basic.zBasic.ReflectCodeZZZ;
 import basic.zBasic.persistence.hibernate.HibernateContextProviderZZZ;
+import basic.zBasic.persistence.interfaces.IHibernateContextProviderZZZ;
 
 /**Soll die notwendigen Schritte für bestimmte Aktionen kapseln. 
  * 
@@ -33,7 +34,8 @@ public class TroopFleetVariantDaoFacade extends TroopVariantDaoFacade{
 			//###################
 			//1. Hole die TroopArmy, füge die neue Area der TroopArmy hinzu, damit sie weiss in welchem neuen Feld sie steht.
 			//####################								
-			HibernateContextProviderSingletonTHM objContextHibernate = (HibernateContextProviderSingletonTHM) this.getHibernateContext();
+			//HibernateContextProviderSingletonTHM objContextHibernate = (HibernateContextProviderSingletonTHM) this.getHibernateContext();
+			IHibernateContextProviderZZZ objContextHibernate = this.getHibernateContext();
 			TroopFleetVariantDao objTroopVariantDao = new TroopFleetVariantDao(objContextHibernate);
 
 			//HQL verwenden, um die TroopArmy anhand des Uniquename zu bekommen. 

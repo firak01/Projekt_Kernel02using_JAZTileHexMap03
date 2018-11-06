@@ -11,6 +11,7 @@ import org.hibernate.event.spi.PreInsertEventListener;
 
 import custom.zKernel.LogZZZ;
 import use.thm.persistence.dao.AreaCellDao;
+import use.thm.persistence.hibernate.HibernateContextProviderJndiSingletonTHM;
 import use.thm.persistence.hibernate.HibernateContextProviderSingletonTHM;
 import use.thm.persistence.model.AreaCell;
 import use.thm.persistence.model.AreaCellLand;
@@ -28,6 +29,7 @@ import use.thm.rule.model.TroopArmyRuleType;
 import basic.zBasic.ExceptionZZZ;
 import basic.zBasic.KernelSingletonTHM;
 import basic.zBasic.ReflectCodeZZZ;
+import basic.zBasic.persistence.interfaces.IHibernateContextProviderZZZ;
 import basic.zBasic.util.abstractList.VectorExtendedZZZ;
 import basic.zKernel.IKernelUserZZZ;
 import basic.zKernel.IKernelZZZ;
@@ -69,10 +71,11 @@ public class PreInsertListenerTHM implements PreInsertEventListener,IKernelUserZ
 		//                               In der DAO wird aber eine neue Transaction gemact....
 		
 		//Die Bemerkung vom 20170415 hat dann zur Folge: Wenn man an dieser Stelle eine neue Session aufmacht, dann gibt es in der aufrufenden Methode den Fehler, dass die Session closed sei.
-		HibernateContextProviderSingletonTHM objHibernateContext = HibernateContextProviderSingletonTHM.getInstance();			
-		//			AreaCellDao areaDao = new AreaCellDao(objHibernateContext);
-		//			AreaCell area = areaDao.findByKey(hex.getId());
+		//für SwingStandalone
+		//HibernateContextProviderSingletonTHM objHibernateContext = HibernateContextProviderSingletonTHM.getInstance();
 		
+		//für WebService
+		HibernateContextProviderJndiSingletonTHM objHibernateContext = HibernateContextProviderJndiSingletonTHM.getInstance();
 				
 		//Versuch nun mehr über den Event herauszubekommen....
 		Object obj = event.getEntity(); 

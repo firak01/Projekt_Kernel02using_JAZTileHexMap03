@@ -231,7 +231,7 @@ public abstract class HibernateContextProviderJndiZZZ  extends HibernateContextP
 	//################### GETTER / SETTER	
 	public Session getSession() throws ExceptionZZZ{
 		Session objReturn = null;
-		this.setSession(null); //Session objReturn = this.objSession; //!!! Session darf nicht als Variable gespeichert und wiederverwendet werden. Der Grund ist 1 Transaktion ==> 1 Session.
+		//this.setSession(null); //Session objReturn = this.objSession; //!!! Session darf nicht als Variable gespeichert und wiederverwendet werden. Der Grund ist 1 Transaktion ==> 1 Session.
 		
 			Configuration cfg = this.getConfiguration();
 			if(cfg==null){
@@ -271,7 +271,8 @@ public abstract class HibernateContextProviderJndiZZZ  extends HibernateContextP
 			//###########  B) also wenn kein Session mit Interceptro durch den SessionBuilder gebaut wurde ....  
 			if(objReturn==null) objReturn = sf.openSession();					        			
 			
-			this.objSession = objReturn; //session wird zwar gespeichert, aber nicht dauerhaft. Darf nicht gespeichert werden 1 Transaktion ==> 1 Session. Wird daher immer neu geholt. 
+			//this.objSession = objReturn; //session wird zwar gespeichert, aber nicht dauerhaft. Darf nicht gespeichert werden 1 Transaktion ==> 1 Session. Wird daher immer neu geholt.
+			this.setSession(objReturn);
 		return objReturn;
 	}
 	

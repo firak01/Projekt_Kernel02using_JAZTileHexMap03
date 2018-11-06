@@ -2,6 +2,7 @@ package use.thm.persistence.event;
 
 import org.hibernate.cfg.Configuration;
 import org.hibernate.engine.spi.SessionFactoryImplementor;
+import org.hibernate.event.service.internal.EventListenerRegistryImpl;
 import org.hibernate.event.service.spi.EventListenerRegistry;
 import org.hibernate.event.spi.EventType;
 import org.hibernate.event.spi.PersistEventListener;
@@ -11,6 +12,7 @@ import org.hibernate.integrator.spi.Integrator;
 import org.hibernate.metamodel.source.MetadataImplementor;
 import org.hibernate.service.spi.SessionFactoryServiceRegistry;
 
+import use.thm.persistence.hibernate.HibernateContextProviderJndiSingletonTHM;
 import use.thm.persistence.hibernate.HibernateContextProviderSingletonTHM;
 import custom.zKernel.LogZZZ;
 import basic.zBasic.ExceptionZZZ;
@@ -38,9 +40,7 @@ public class MyIntegratorTHM implements Integrator, IKernelUserZZZ {
 
             final EventListenerRegistry eventListenerRegistry = serviceRegistry.getService( EventListenerRegistry.class );
 
-            //Wird nicht ausgeführt, weder bei session.save noch bei session.update
-            System.out.println("XXX In MyIntegratorTHM.java");     
-            
+            System.out.println("XXX In MyIntegratorTHM.java");                 
             try {
             	//Problem: Man kann diesen Integrator nicht durch Änderung des Classpath ausblenden. 
                 //         D.h. auch Projekte, die dieses Projekt nutzen, werden den Integrator aufrufen und damit die Listener registrieren.
@@ -50,21 +50,53 @@ public class MyIntegratorTHM implements Integrator, IKernelUserZZZ {
             	//ALSO: Wenn dieses Singleton nicht mit einem Kernel-Objekt ausgestattet ist, dann ist es in diesem Projekt nicht definiert worden. 
             	//      Dann darf man auch dessen Listener nicht an den den EventLisenerRegistry übergeben.
             	
-            	if(!objKernel.getFlagZ("init")){            		           
-	            	IHibernateContextProviderZZZ objContextHibernate = HibernateContextProviderSingletonTHM.getInstance(objKernel);
+            	if(!objKernel.getFlagZ("init")){ 
+            		System.out.println("XXX MyIntegratorTHM.java: Kernel Objekt hat init=false FlagZ. Listener werden jetzt gesetzt.");
+            			            	
+            		IHibernateContextProviderZZZ objContextHibernate = HibernateContextProviderJndiSingletonTHM.getInstance();
 	            	           
 					//Nun die darin erstellten Listener hier an eventListenerRegistry übergeben.
 	            	//Merke: Statt die Listener zu ersetzen könnt man ggfs. auch welche anhängen ////eventListenerRegistry.appendListeners(EventType.SAVE_UPDATE, listenerSaveUpdate);
 					IHibernateListenerProviderZZZ objListenerProvider = objContextHibernate.getListenerProviderObject();
 					if(objListenerProvider!=null){
 						PersistEventListener listenerPersist = objListenerProvider.getPersistEventListener(); //Das ist PersistListenerTHM
-						if(listenerPersist!= null) eventListenerRegistry.setListeners(EventType.PERSIST, listenerPersist);
-						
+						if(listenerPersist!= null){
+							//Das Ziel ist es den Listener nur 1x zu registrieren... Sonst droht der Fehler "Illegal attempt to associate a collection with two open sessions"
+							if(eventListenerRegistry.getEventListenerGroup(EventType.PERSIST)==null){
+								eventListenerRegistry.setListeners(EventType.PERSIST, listenerPersist);
+							}else{
+								System.out.println("XXX MyIntegratorTHM.java: Kernel Objekt hat init=false FlagZ. Listener schon vorhanden. Entferne ihn und setze erneut (PERSIST).");								
+								//eventListenerRegistry.prependListeners(EventType.PERSIST, listenerPersist);
+								eventListenerRegistry.setListeners(EventType.PERSIST, listenerPersist);
+								System.out.println("XXX MyIntegratorTHM.java: Kernel Objekt hat init=false FlagZ. Doppeltes Setzen des Listeners wurde vermieden (PERSIST).");			            		
+							}
+						}
+													
 						PreInsertEventListener listenerPreInsert = objListenerProvider.getPreInsertEventListener();//Das ist PreInsertListenerTHM
-						if(listenerPreInsert != null) eventListenerRegistry.setListeners(EventType.PRE_INSERT, listenerPreInsert); 
+						if(listenerPreInsert != null){
+							//Das Ziel ist es den Listener nur 1x zu registrieren... Sonst droht der Fehler "Illegal attempt to associate a collection with two open sessions"
+							if(eventListenerRegistry.getEventListenerGroup(EventType.PRE_INSERT)==null){
+								eventListenerRegistry.setListeners(EventType.PRE_INSERT, listenerPreInsert); 
+							}else{
+								System.out.println("XXX MyIntegratorTHM.java: Kernel Objekt hat init=false FlagZ. Listener schon vorhanden. Entferne ihn und setze erneut (PRE_INSERT).");
+								//eventListenerRegistry.prependListeners(EventType.PRE_INSERT, listenerPreInsert);
+								eventListenerRegistry.setListeners(EventType.PRE_INSERT, listenerPreInsert);
+								System.out.println("XXX MyIntegratorTHM.java: Kernel Objekt hat init=false FlagZ. Doppeltes Setzen des Listeners wurde vermieden (PRE_INSERT).");								
+							}
+						}
 						
 						SaveOrUpdateEventListener listenerSaveUpdate = objListenerProvider.getSaveOrUpdateEventListener(); //Das ist SaveOrUpdateListenerTHM
-						if(listenerSaveUpdate != null) eventListenerRegistry.setListeners(EventType.SAVE_UPDATE, listenerSaveUpdate);
+						if(listenerSaveUpdate != null){
+							//Das Ziel ist es den Listener nur 1x zu registrieren... Sonst droht der Fehler "Illegal attempt to associate a collection with two open sessions"
+							if(eventListenerRegistry.getEventListenerGroup(EventType.SAVE_UPDATE)==null){
+								eventListenerRegistry.setListeners(EventType.SAVE_UPDATE, listenerSaveUpdate);
+							}else{
+								System.out.println("XXX MyIntegratorTHM.java: Kernel Objekt hat init=false FlagZ. Listener schon vorhanden. Entferne ihn und setze erneut (SAVE_UPDATE).");
+								//eventListenerRegistry.prependListeners(EventType.SAVE_UPDATE, listenerSaveUpdate);
+								eventListenerRegistry.setListeners(EventType.SAVE_UPDATE, listenerSaveUpdate);
+								System.out.println("XXX MyIntegratorTHM.java: Kernel Objekt hat init=false FlagZ. Doppeltes Setzen des Listeners wurde vermieden (SAVE_UPDATE).");			            		
+							}
+						}
 						
 						
 					    //Wird nicht ausgeführt, weder bei session.save noch bei session.update
@@ -76,8 +108,13 @@ public class MyIntegratorTHM implements Integrator, IKernelUserZZZ {
 //			            eventListenerRegistry.setListeners(EventType.PRE_LOAD, listener);
 //			            eventListenerRegistry.prependListeners(EventType.PRE_INSERT, listener);
 			            //eventListenerRegistry.appendListeners(EventType.POST_UPDATE, listener );			          
+					}else{
+						System.out.println("XXX MyIntegratorTHM.java: Listener würden gesetzt, sind aber keine per .getListenerProviderObject() vorhanden.");
 					}
+            	}else{
+            		System.out.println("XXX MyIntegratorTHM.java: Kernel Objekt hat init=true FlagZ. Listener werden NICHT gesetzt.");
             	}//end if !objKernel.getFlagZ("init")  
+            	
             	System.out.println("XXX MyIntegratorTHM.java beendet");     
                 
 			} catch (ExceptionZZZ e) {

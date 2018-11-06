@@ -120,8 +120,8 @@ public class TroopArmyDaoFacade extends TileDaoFacade{
 			Integer intSubtypeUniqueNumberUsed  = null;
 			Integer intVariantUniqueNumberUsed  = null;			
 			additionalData:{
-				//Hole die bisher höchste Zahl der Varianten 
-				HibernateContextProviderSingletonTHM objContextHibernate = (HibernateContextProviderSingletonTHM) this.getHibernateContext();
+				//Hole die bisher höchste Zahl der Varianten 			
+				IHibernateContextProviderZZZ objContextHibernate = this.getHibernateContext();
 				TroopArmyDao objTroopDao = new TroopArmyDao(objContextHibernate);
 				
 				///!!! Das reicht aus nicht aus... Intern wird wohl Es muss die ZhisId der Variante als WHERE Teil einbezogen werden.
@@ -154,9 +154,6 @@ public class TroopArmyDaoFacade extends TileDaoFacade{
 				}
 				System.out.println("############ Errechneter neuer max der übergebenen Troopvariant  ist: " + intVariantUniqueNumberUsed);
 				
-				
-				
-				
 //				}catch(Exception e){
 //					System.out.println("########### FEHLER: " + e.getMessage());
 //				}
@@ -170,7 +167,7 @@ public class TroopArmyDaoFacade extends TileDaoFacade{
 			//###################
 			//1. Speicher die TroopArmy neu, füge die Area der TroopArmy hinzu, damit sie weiss in welchem Feld sie steht.
 			//####################					
-			Session session = this.getSession();	//Vesuch eine neue Session zu bekommen. Merke: Die Session wird hier nicht gespeichert! Wg. 1 Transaktion ==> 1 Session
+			Session session = this.getSessionCurrent(); //VErsuch die Session wiederzuverwenden...    //.getSession();	//Vesuch eine neue Session zu bekommen. Merke: Die Session wird hier nicht gespeichert! Wg. 1 Transaktion ==> 1 Session
 			if(session == null) break main;			
 			session.getTransaction().begin();//Ein zu persistierendes Objekt - eine Transaction, auch wenn mehrere in einer Transaction abzuhandeln wären, aber besser um Fehler abfangen zu können.
 	
@@ -216,7 +213,7 @@ public class TroopArmyDaoFacade extends TileDaoFacade{
 			//2. Aktualisiere die Area-Zelle, setze den "Besitzer" in das Gebiet.
 			//####################			
 			if(objArea instanceof AreaCell){
-				session = this.getSession();		//Vesuch eine neue Session zu bekommen. Merke: Die Session wird hier nicht gespeichert! Wg. 1 Transaktion ==> 1 Session
+				session = this.getSessionCurrent();		//Vesuch eine neue Session zu bekommen. Merke: Die Session wird hier nicht gespeichert! Wg. 1 Transaktion ==> 1 Session
 				if(session == null) break main;				
 				session.getTransaction().begin();//Ein zu persistierendes Objekt - eine Transaction, auch wenn mehrere in einer Transaction abzuhandeln wären, aber besser um Fehler abfangen zu können.					 
 				
@@ -319,8 +316,8 @@ public class TroopArmyDaoFacade extends TileDaoFacade{
 			
 			//###################
 			//1. Hole die TroopArmy, füge die neue Area der TroopArmy hinzu, damit sie weiss in welchem neuen Feld sie steht.
-			//####################								
-			HibernateContextProviderSingletonTHM objContextHibernate = (HibernateContextProviderSingletonTHM) this.getHibernateContext();
+			//####################											
+			IHibernateContextProviderZZZ objContextHibernate = this.getHibernateContext();
 			TroopArmyDao objTroopArmyDao = new TroopArmyDao(objContextHibernate);
 
 			//HQL verwenden, um die TroopArmy anhand des Uniquename zu bekommen. 
@@ -410,7 +407,7 @@ public class TroopArmyDaoFacade extends TileDaoFacade{
 			*/ 
 			   
 			//+++ 4.2: Datenbankoperation: Aktualisiere die Troop mit der neuen Position/dem neuien HexFeld.		
-			session = this.getSession();	//Vesuch eine neue Session zu bekommen. Merke: Die Session wird hier nicht gespeichert! Wg. 1 Transaktion ==> 1 Session
+			session = this.getSessionCurrent();	//Vesuch eine neue Session zu bekommen. Merke: Die Session wird hier nicht gespeichert! Wg. 1 Transaktion ==> 1 Session
 			if(session == null) break main;			
 			session.getTransaction().begin();//Ein zu persistierendes Objekt - eine Transaction, auch wenn mehrere in einer Transaction abzuhandeln wären, aber besser um Fehler abfangen zu können.
 			
@@ -487,7 +484,7 @@ public class TroopArmyDaoFacade extends TileDaoFacade{
 			*/
 			
 			//++++++++ 4.3 Datanbankoperationen Aktualisiere die Hex-Zelle, füge die TroopArmy der Liste hinzu, damit die Hex-Zelle weiss welche TroopArmies in ihr stehen.		
-			session = this.getSession();			//Vesuch eine neue Session zu bekommen. Merke: Die Session wird hier nicht gespeichert! Wg. 1 Transaktion ==> 1 Session
+			session = this.getSessionCurrent();			//Vesuch eine neue Session zu bekommen. Merke: Die Session wird hier nicht gespeichert! Wg. 1 Transaktion ==> 1 Session
 			if(session == null) break main;			
 			session.getTransaction().begin();
 			
@@ -573,8 +570,8 @@ public class TroopArmyDaoFacade extends TileDaoFacade{
 			
 		  //###################
 			//1. Hole die TroopArmy, füge die neue Area der TroopArmy hinzu, damit sie weiss in welchem neuen Feld sie steht.
-			//####################								
-			HibernateContextProviderSingletonTHM objContextHibernate = (HibernateContextProviderSingletonTHM) this.getHibernateContext();
+			//####################										
+		  	IHibernateContextProviderZZZ objContextHibernate = this.getHibernateContext();
 			TroopArmyDao objTroopArmyDao = new TroopArmyDao(objContextHibernate);
 			
 			//HQL verwenden, um die TroopArmy anhand des Uniquename zu bekommen. 
@@ -598,7 +595,6 @@ public class TroopArmyDaoFacade extends TileDaoFacade{
 				//#############################
 				//2. Hole die Backendentsprechung der Ausgangszelle, daraus muss die TroopArmy entfernt werden.
 				//############################# 
-				//HibernateContextProviderSingletonTHM objContextHibernate = (HibernateContextProviderSingletonTHM) this.getHibernateContext();
 				IHibernateContextProviderZZZ objContextHibernate = this.getHibernateContext();
 				Session session = null;
 				AreaCellDao objAreaDaoSource = new AreaCellDao(objContextHibernate);
@@ -736,7 +732,7 @@ public class TroopArmyDaoFacade extends TileDaoFacade{
 			//###################
 			//1. Hole die TroopArmy, füge die neue Area der TroopArmy hinzu, damit sie weiss in welchem neuen Feld sie steht.
 			//####################								
-			HibernateContextProviderSingletonTHM objContextHibernate = (HibernateContextProviderSingletonTHM) this.getHibernateContext();
+			IHibernateContextProviderZZZ objContextHibernate = this.getHibernateContext();
 			TroopArmyDao objTroopArmyDao = new TroopArmyDao(objContextHibernate);
 
 			//HQL verwenden, um die TroopArmy anhand des Uniquename zu bekommen. 

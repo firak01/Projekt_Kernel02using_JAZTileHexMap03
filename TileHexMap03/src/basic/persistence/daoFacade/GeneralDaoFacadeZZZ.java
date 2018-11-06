@@ -37,4 +37,12 @@ public class GeneralDaoFacadeZZZ implements IFacadeDtoZZZ{
 		}
 		return objReturn;
 	}
+	protected Session getSessionCurrent() throws ExceptionZZZ{
+		Session objReturn = null;		
+		IHibernateContextProviderZZZ objHibernateContext = this.getHibernateContext();
+		if(objHibernateContext!=null){
+			objReturn = objHibernateContext.getSessionCurrent();
+		}
+		return objReturn;
+	}
 }

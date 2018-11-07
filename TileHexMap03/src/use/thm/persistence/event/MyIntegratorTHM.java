@@ -14,6 +14,7 @@ import org.hibernate.service.spi.SessionFactoryServiceRegistry;
 
 import use.thm.persistence.hibernate.HibernateContextProviderJndiSingletonTHM;
 import use.thm.persistence.hibernate.HibernateContextProviderSingletonTHM;
+import use.thm.persistence.util.HibernateUtilTHM;
 import custom.zKernel.LogZZZ;
 import basic.zBasic.ExceptionZZZ;
 import basic.zBasic.KernelSingletonTHM;
@@ -47,17 +48,20 @@ public class MyIntegratorTHM implements Integrator, IKernelUserZZZ {
                 //         Idee deshalb: Hole ein Array der Listener aus der KernelHibernateKonfigurations-Klasse
             	
             	KernelSingletonTHM objKernel = KernelSingletonTHM.getInstance();
+            	this.setKernelObject(objKernel);//Da es keinen Konstruktor mit der Übergabe des Kernel Objekts gibt.
+            	
             	//ALSO: Wenn dieses Singleton nicht mit einem Kernel-Objekt ausgestattet ist, dann ist es in diesem Projekt nicht definiert worden. 
             	//      Dann darf man auch dessen Listener nicht an den den EventLisenerRegistry übergeben.
             	
             	if(!objKernel.getFlagZ("init")){ 
             		System.out.println("XXX MyIntegratorTHM.java: Kernel Objekt hat init=false FlagZ. Listener werden jetzt gesetzt.");
             			            	
-            		IHibernateContextProviderZZZ objContextHibernate = HibernateContextProviderJndiSingletonTHM.getInstance();
-	            	           
+            		//IHibernateContextProviderZZZ objContextHibernate = HibernateContextProviderJndiSingletonTHM.getInstance();
+            		IHibernateContextProviderZZZ objHibernateContext = HibernateUtilTHM.getHibernateContextProviderUsed(this.getKernelObject());
+	            	          
 					//Nun die darin erstellten Listener hier an eventListenerRegistry übergeben.
 	            	//Merke: Statt die Listener zu ersetzen könnt man ggfs. auch welche anhängen ////eventListenerRegistry.appendListeners(EventType.SAVE_UPDATE, listenerSaveUpdate);
-					IHibernateListenerProviderZZZ objListenerProvider = objContextHibernate.getListenerProviderObject();
+					IHibernateListenerProviderZZZ objListenerProvider = objHibernateContext.getListenerProviderObject();            		
 					if(objListenerProvider!=null){
 						PersistEventListener listenerPersist = objListenerProvider.getPersistEventListener(); //Das ist PersistListenerTHM
 						if(listenerPersist!= null){

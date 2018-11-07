@@ -22,6 +22,7 @@ import use.thm.persistence.model.Tile;
 import use.thm.persistence.model.Defaulttext;
 import use.thm.persistence.model.TroopArmy;
 import use.thm.persistence.model.TroopFleet;
+import use.thm.persistence.util.HibernateUtilTHM;
 import use.thm.rule.facade.AreaCellRuleFacade;
 import use.thm.rule.facade.TroopArmyRuleFacade;
 import use.thm.rule.facade.TroopFleetRuleFacade;
@@ -57,7 +58,7 @@ public class PreInsertListenerTHM implements PreInsertEventListener,IKernelUserZ
 		String sReturnMessage = new String("");
 		
 		try {
-		this.resetVeto();
+			this.resetVeto();
 		
 		//Aber, das das mit den DAO-Klassen hier nicht klappt (wg. Sessionproblemen: 1. Lock Database oder 2. Nested Transaction not allowed),
 		//versuchen doch direkt die AreaCell zu bekommen, um den AreaTyp zu bekommen.
@@ -68,15 +69,23 @@ public class PreInsertListenerTHM implements PreInsertEventListener,IKernelUserZ
 		//                           Aber, zumindest mit SQLite bekommt man dann Probleme, wenn man
 		//                           A) Eine zweite Session erstellt (Database locked)
 		//                           B) In ein und derselben Session versucht eine zweite Transaktion zu starten, bevor die andere Transaktion beendet ist (Nested Transaction not allowed).			
-		//                               In der DAO wird aber eine neue Transaction gemact....
-		
+		//                               In der DAO wird aber eine neue Transaction gemact....		
 		//Die Bemerkung vom 20170415 hat dann zur Folge: Wenn man an dieser Stelle eine neue Session aufmacht, dann gibt es in der aufrufenden Methode den Fehler, dass die Session closed sei.
-		//für SwingStandalone
-		//HibernateContextProviderSingletonTHM objHibernateContext = HibernateContextProviderSingletonTHM.getInstance();
+		//Daher Wiederverwenden über den HibernateContext....
 		
-		//für WebService
-		HibernateContextProviderJndiSingletonTHM objHibernateContext = HibernateContextProviderJndiSingletonTHM.getInstance();
-				
+//		//Notwendige Fallunterscheidung, man muss die ganz zu Anfang geholte Instanz des Objekts wiederfinden.
+//		//Ansonsten gibt es so Fehlermeldunge wie: "Eine Collection in 2 offenen Sessions".
+//		IHibernateContextProviderZZZ objHibernateContext = null;
+//		if(this.getKernelObject().isOnServer()){
+//			//für WebService: HibernateContextProviderJndiSingletonTHM
+//			 objHibernateContext = HibernateContextProviderJndiSingletonTHM.getInstance();
+//		}else{
+//			//für SwingStandalone: HibernateContextProviderSingletonTHM
+//			 objHibernateContext = HibernateContextProviderSingletonTHM.getInstance();
+//		}
+		
+		IHibernateContextProviderZZZ objHibernateContext = HibernateUtilTHM.getHibernateContextProviderUsed(this.getKernelObject());
+    		
 		//Versuch nun mehr über den Event herauszubekommen....
 		Object obj = event.getEntity(); 
 		System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": obj="+obj.getClass().getSimpleName());

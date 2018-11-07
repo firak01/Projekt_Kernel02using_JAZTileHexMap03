@@ -5,6 +5,7 @@ import use.thm.persistence.hibernate.HibernateContextProviderJndiSingletonTHM;
 import use.thm.persistence.hibernate.HibernateContextProviderSingletonTHM;
 import use.thm.persistence.model.Tile;
 import use.thm.persistence.model.Troop;
+import use.thm.persistence.util.HibernateUtilTHM;
 import basic.persistence.dao.AbstractDaoFactoryZZZ;
 import basic.persistence.dao.GeneralDAO;
 import basic.persistence.daoFacade.AbstractDaoFacadeFactoryZZZ;
@@ -13,6 +14,7 @@ import basic.persistence.daoFacade.IDaoFacadeFactoryZZZ;
 import basic.zBasic.ExceptionZZZ;
 import basic.zBasic.KernelSingletonTHM;
 import basic.zBasic.ReflectCodeZZZ;
+import basic.zBasic.persistence.interfaces.IHibernateContextProviderZZZ;
 import basic.zBasic.util.datatype.string.StringZZZ;
 import basic.zBasic.util.log.ReportLogZZZ;
 import basic.zKernel.IKernelZZZ;
@@ -64,17 +66,18 @@ private static TroopVariantDaoFactory objFactory = null;  //muss static sein, wg
 	public TroopVariantDao createDaoVariant(long lngThiskey) throws ExceptionZZZ {
 		TroopVariantDao objReturn = null;
 		
-		HibernateContextProviderSingletonTHM objContextHibernate = HibernateContextProviderSingletonTHM.getInstance(objKernel);
+		//HibernateContextProviderSingletonTHM objContextHibernate = HibernateContextProviderSingletonTHM.getInstance(objKernel);
+		IHibernateContextProviderZZZ objHibernateContext = HibernateUtilTHM.getHibernateContextProviderUsed(this.getKernelObject());
 		
 		//FALLUNTERSCHEIDUNG: Suche nach der Variante über den Thiskey. Danach je nach Typ eine andere Dao-Klasse zurückgeben	
 				//Merke: Switch mit long ist nicht erlaubt.
 				if(lngThiskey >=0 && lngThiskey <=19){
 					ReportLogZZZ.write(ReportLogZZZ.DEBUG, ReflectCodeZZZ.getMethodCurrentName() + ": Creating TroopArmyVariantDao");
-					TroopArmyVariantDao objReturnTemp = new TroopArmyVariantDao(objContextHibernate);
+					TroopArmyVariantDao objReturnTemp = new TroopArmyVariantDao(objHibernateContext);
 					objReturn = objReturnTemp;
 				}else if(lngThiskey >=20 && lngThiskey <=29){
 					ReportLogZZZ.write(ReportLogZZZ.DEBUG, ReflectCodeZZZ.getMethodCurrentName() + ": Creating TroopFleetVariantDao");
-					TroopFleetVariantDao objReturnTemp = new TroopFleetVariantDao(objContextHibernate);			
+					TroopFleetVariantDao objReturnTemp = new TroopFleetVariantDao(objHibernateContext);			
 					objReturn = objReturnTemp;
 				}else{
 					String stemp = "Keine Thiskey-ID für eine passenden DaoVariante übergeben ('" + lngThiskey + ")";
@@ -86,20 +89,24 @@ private static TroopVariantDaoFactory objFactory = null;  //muss static sein, wg
 		return objReturn;
 	}
 	
+	/*
+	 * TODO GOON: Diese Methoden - Unterscheidung wäre dann nicht merh notwndig, wenn HibernateUtilTHM funktioniert.
+	 */
 	public TroopVariantDao createDaoVariantJndi(long lngThiskey) throws ExceptionZZZ {		
 		TroopVariantDao objReturn = null;
 		
-		HibernateContextProviderJndiSingletonTHM objContextHibernate = HibernateContextProviderJndiSingletonTHM.getInstance();
-		
+		//HibernateContextProviderJndiSingletonTHM objContextHibernate = HibernateContextProviderJndiSingletonTHM.getInstance();
+		IHibernateContextProviderZZZ objHibernateContext = HibernateUtilTHM.getHibernateContextProviderUsed(this.getKernelObject());
+				
 		//FALLUNTERSCHEIDUNG: Suche nach der Variante über den Thiskey. Danach je nach Typ eine andere Dao-Klasse zurückgeben	
 		//Merke: Switch mit long ist nicht erlaubt.
 		if(lngThiskey >=0 && lngThiskey <=19){
 			ReportLogZZZ.write(ReportLogZZZ.DEBUG, ReflectCodeZZZ.getMethodCurrentName() + ": Creating TroopArmyVariantDao (JNDI)");
-			TroopArmyVariantDao objReturnTemp = new TroopArmyVariantDao(objContextHibernate);
+			TroopArmyVariantDao objReturnTemp = new TroopArmyVariantDao(objHibernateContext);
 			objReturn = objReturnTemp;
 		}else if(lngThiskey >=20 && lngThiskey <=29){
 			ReportLogZZZ.write(ReportLogZZZ.DEBUG, ReflectCodeZZZ.getMethodCurrentName() + ": Creating TroopFleetVariantDao (JNDI)");
-			TroopFleetVariantDao objReturnTemp = new TroopFleetVariantDao(objContextHibernate);			
+			TroopFleetVariantDao objReturnTemp = new TroopFleetVariantDao(objHibernateContext);			
 			objReturn = objReturnTemp;
 		}else{
 			String stemp = "Keine Thiskey-ID für eine passenden DaoVariante übergeben ('" + lngThiskey + ") (JNDI)";

@@ -61,7 +61,7 @@ import use.thm.rule.model.TroopFleetRuleType;
 public class TroopFleetDaoFacade extends TileDaoFacade{
 	private TroopFleet objTroopFleet = null;
 
-	public TroopFleetDaoFacade(HibernateContextProviderZZZ objContextHibernate){
+	public TroopFleetDaoFacade(IHibernateContextProviderZZZ objContextHibernate){
 		super(objContextHibernate);
 	}
 	

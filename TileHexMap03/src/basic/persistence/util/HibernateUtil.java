@@ -16,16 +16,19 @@ import org.hibernate.event.spi.PreInsertEvent;
 import org.hibernate.event.spi.PreInsertEventListener;
 import org.hibernate.service.spi.SessionFactoryServiceRegistry;
 
+import use.thm.persistence.dao.TroopVariantDaoFactory;
 import use.thm.persistence.event.IVetoFlagZZZ;
 import use.thm.persistence.event.PreInsertListenerTHM;
 import use.thm.persistence.event.SaveOrUpdateListenerTHM;
 import use.thm.persistence.event.VetoFlag4ListenerZZZ;
 import use.thm.persistence.hibernate.HibernateContextProviderSingletonTHM;
+import basic.zBasic.ExceptionZZZ;
 import basic.zBasic.ReflectCodeZZZ;
 import basic.zBasic.persistence.interfaces.IHibernateContextProviderZZZ;
 import basic.zBasic.persistence.interfaces.IHibernateListenerProviderZZZ;
+import basic.zKernel.IKernelZZZ;
  
-public class HibernateUtil {
+public abstract class HibernateUtil {
  
     private static final SessionFactory sessionFactory = buildSessionFactory();
  
@@ -160,8 +163,10 @@ public class HibernateUtil {
 				    		SimpleDateFormat format1 = new SimpleDateFormat("yyyy-MM-dd - hh:mm:ss");			    			    
 				    		sDateTime = format1.format(cal.getTime());
 			    		}		
-			    		System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": Letztes Ergebnis des Listeners isVeto() = " + myListener.isVeto() + " vom: " + sDateTime);
-			    		objReturn = myListener.getCommitResult();
+			    		System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": Letztes Ergebnis des Listeners ('save') isVeto() = " + myListener.isVeto() + " vom: " + sDateTime);
+			    		if(myListener.isVeto()){
+			    			objReturn = myListener.getCommitResult();
+			    		}
 			    		//AUF GAR KEINE FALL myListener.resetVeto(); //Nachdem man hier den Status abgefragt hat, diesen auf "nicht ausgeführt" zurücksetzen.
 			    		System.out.println("xx2xx2xx2xx2xx2xx2xx2xx2xx2xx2xxx");
 		    		}
@@ -181,8 +186,10 @@ public class HibernateUtil {
 					    		SimpleDateFormat format1 = new SimpleDateFormat("yyyy-MM-dd - hh:mm:ss");			    			    
 					    		sDateTime = format1.format(cal.getTime());
 				    		}			    		
-				    		System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": Letztes Ergebnis des Listeners hasVeto() = " + myListener.isVeto() + " vom: " + sDateTime);
-				    		objReturn = myListener.getCommitResult();
+				    		System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": Letztes Ergebnis des Listeners ('update') hasVeto() = " + myListener.isVeto() + " vom: " + sDateTime);
+				    		if(myListener.isVeto()){
+				    			objReturn = myListener.getCommitResult();
+				    		}
 				    		//AUF GAR KEINE FALL myListener.resetVeto(); //Nachdem man hier den Status abgefragt hat, diesen auf "nicht ausgeführt" zurücksetzen.
 				    		System.out.println("yy2yy2yy2yy2yy2yy2yy2yy2yy2yy2yy2yy2yy");
 			    		} 
@@ -203,8 +210,10 @@ public class HibernateUtil {
 					    		SimpleDateFormat format1 = new SimpleDateFormat("yyyy-MM-dd - hh:mm:ss");			    			    
 					    		sDateTime = format1.format(cal.getTime());
 				    		}			    		
-				    		System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": Letztes Ergebnis des Listeners hasVeto() = " + myListener.isVeto() + " vom: " + sDateTime);
-				    		objReturn = myListener.getCommitResult();
+				    		System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": Letztes Ergebnis des Listeners ('preinsert') hasVeto() = " + myListener.isVeto() + " vom: " + sDateTime);
+				    		if(myListener.isVeto()){
+				    			objReturn = myListener.getCommitResult();
+				    		}
 				    		//AUF GAR KEINE FALL myListener.resetVeto(); //Nachdem man hier den Status abgefragt hat, diesen auf "nicht ausgeführt" zurücksetzen.
 				    		System.out.println("yy2yy2yy2yy2yy2yy2yy2yy2yy2yy2yy2yy2yy");
 			    		}
@@ -212,6 +221,14 @@ public class HibernateUtil {
 	    	}	  	    		    		
     	}//end main:
     	return objReturn;   
+    }
+    
+    public static IHibernateContextProviderZZZ getHibernateContextProviderUsed(IKernelZZZ objKernel) throws ExceptionZZZ{
+    	String stemp = "Diese Utility Methode muss überschrieben werden.";
+		System.out.println(ReflectCodeZZZ.getMethodCurrentName() + ": " +stemp);
+		ExceptionZZZ ez = new ExceptionZZZ(stemp,ExceptionZZZ.iERROR_PARAMETER_MISSING, TroopVariantDaoFactory.class,  ReflectCodeZZZ.getMethodCurrentName());
+		throw ez;
+    	//return null;
     }
 }
 

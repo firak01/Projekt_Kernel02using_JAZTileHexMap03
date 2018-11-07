@@ -12,11 +12,14 @@ import use.thm.persistence.model.AreaCell;
 import use.thm.persistence.model.HexCell;
 import use.thm.persistence.model.TroopArmy;
 import use.thm.persistence.model.TroopFleet;
+import use.thm.persistence.util.HibernateUtilTHM;
 import use.thm.rule.facade.AreaCellRuleFacade;
 import use.thm.rule.facade.TroopArmyRuleFacade;
 import use.thm.rule.facade.TroopFleetRuleFacade;
 import basic.zBasic.ExceptionZZZ;
+import basic.zBasic.KernelSingletonTHM;
 import basic.zBasic.ReflectCodeZZZ;
+import basic.zBasic.persistence.interfaces.IHibernateContextProviderZZZ;
 import basic.zKernel.IKernelUserZZZ;
 import basic.zKernel.IKernelZZZ;
 import basic.zKernel.KernelZZZ;
@@ -57,9 +60,8 @@ public class SaveOrUpdateListenerTHM extends DefaultSaveOrUpdateEventListener im
 		System.out.println(ReflectCodeZZZ.getPositionCurrent() + " Hibernate-Event 03...");		
 		boolean bHasVeto = true;//Erst mal auf true setzen. Falls einer der Fälle nicht greift, dann kommt eine leere dialogbox hoch, um hier ein Problem anzuzeigen.
 		try {
-		this.resetVeto();
+			this.resetVeto();
 
-			
 		//Versuch nun mehr über den Event herauszubekommen....
 //		Object obj = event.getEntity();   //NULL, zumindest beim SAVE - Fall
 //		EntityEntry entry = event.getEntry(); //NULL zumindest beim SAVE - Fall
@@ -115,7 +117,9 @@ public class SaveOrUpdateListenerTHM extends DefaultSaveOrUpdateEventListener im
 			//                               In der DAO wird aber eine neue Transaction gemact....
 			
 			//Die Bemerkung vom 20170415 hat dann zur Folge: Wenn man an dieser Stelle eine neue Session aufmacht, dann gibt es in der aufrufenden Methode den Fehler, dass die Session closed sei.
-			HibernateContextProviderJndiSingletonTHM objHibernateContext = HibernateContextProviderJndiSingletonTHM.getInstance();			
+			//HibernateContextProviderJndiSingletonTHM objHibernateContext = HibernateContextProviderJndiSingletonTHM.getInstance();
+			IHibernateContextProviderZZZ objHibernateContext = HibernateUtilTHM.getHibernateContextProviderUsed(this.getKernelObject());
+        	
 			//			AreaCellDao areaDao = new AreaCellDao(objHibernateContext);
 			//			AreaCell area = areaDao.findByKey(hex.getId());
 			
@@ -162,7 +166,9 @@ public class SaveOrUpdateListenerTHM extends DefaultSaveOrUpdateEventListener im
 			//                               In der DAO wird aber eine neue Transaction gemact....
 			
 			//Die Bemerkung vom 20170415 hat dann zur Folge: Wenn man an dieser Stelle eine neue Session aufmacht, dann gibt es in der aufrufenden Methode den Fehler, dass die Session closed sei.
-			HibernateContextProviderJndiSingletonTHM objHibernateContext = HibernateContextProviderJndiSingletonTHM.getInstance();			
+			//HibernateContextProviderJndiSingletonTHM objHibernateContext = HibernateContextProviderJndiSingletonTHM.getInstance();
+			IHibernateContextProviderZZZ objHibernateContext = HibernateUtilTHM.getHibernateContextProviderUsed(this.getKernelObject());
+        	
 			//			AreaCellDao areaDao = new AreaCellDao(objHibernateContext);
 			//			AreaCell area = areaDao.findByKey(hex.getId());
 			
@@ -203,9 +209,9 @@ public class SaveOrUpdateListenerTHM extends DefaultSaveOrUpdateEventListener im
 			//                               In der DAO wird aber eine neue Transaction gemact....
 			
 			//Die Bemerkung vom 20170415 hat dann zur Folge: Wenn man an dieser Stelle eine neue Session aufmacht, dann gibt es in der aufrufenden Methode den Fehler, dass die Session closed sei.
-			HibernateContextProviderJndiSingletonTHM objHibernateContext = HibernateContextProviderJndiSingletonTHM.getInstance();			
-
-									
+			//HibernateContextProviderJndiSingletonTHM objHibernateContext = HibernateContextProviderJndiSingletonTHM.getInstance();
+			IHibernateContextProviderZZZ objHibernateContext = HibernateUtilTHM.getHibernateContextProviderUsed(this.getKernelObject());
+        									
 			//####################
 			//### BACKEND Validierung
 			//####################

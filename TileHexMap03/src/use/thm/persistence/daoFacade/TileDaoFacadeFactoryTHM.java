@@ -70,38 +70,9 @@ private static TileDaoFacadeFactoryTHM objFacadeFactory = null;  //muss static s
 			ExceptionZZZ ez = new ExceptionZZZ(stemp,ExceptionZZZ.iERROR_PARAMETER_MISSING, TileDaoFacadeFactoryTHM.class,  ReflectCodeZZZ.getMethodCurrentName());
 			throw ez;
 		}
-		
-		HibernateContextProviderSingletonTHM objContextHibernate = HibernateContextProviderSingletonTHM.getInstance(objKernel);
-				
-		if(sTroopType.equalsIgnoreCase("ar")){
-			ReportLogZZZ.write(ReportLogZZZ.DEBUG, ReflectCodeZZZ.getMethodCurrentName() + ": Creating TroopArmyDaoFacade");
-			TroopArmyDaoFacade objTroopDaoFacade = new TroopArmyDaoFacade(objContextHibernate);		
-			return objTroopDaoFacade;
-		}else if(sTroopType.equalsIgnoreCase("fl")){
-			ReportLogZZZ.write(ReportLogZZZ.DEBUG, ReflectCodeZZZ.getMethodCurrentName() + ": Creating TroopFleetDaoFacade");
-			TroopFleetDaoFacade objTroopDaoFacade = new TroopFleetDaoFacade(objContextHibernate);
-			return objTroopDaoFacade;
-		}else{
-			String stemp = "Kein TroopType - Key mit einer passenden DaoFacade übergeben ('" + sTroopType + ")";
-			System.out.println(ReflectCodeZZZ.getMethodCurrentName() + ": " +stemp);
-			ExceptionZZZ ez = new ExceptionZZZ(stemp,ExceptionZZZ.iERROR_PARAMETER_VALUE, TileDaoFacadeFactoryTHM.class,  ReflectCodeZZZ.getMethodCurrentName());
-			throw ez;
-		}
-	}
 	
-	@Override
-	public GeneralDaoFacadeZZZ createDaoFacadeJndi(String sTroopType) throws ExceptionZZZ {
-		  //FALLUNTERSCHEIDUNG: Je nach Truppentyp eine andere DAOFACADE wählen.		
-		if(StringZZZ.isEmpty(sTroopType )){
-			String stemp = "Kein TroopType - Key übergeben.";
-			System.out.println(ReflectCodeZZZ.getMethodCurrentName() + ": " +stemp);
-			ExceptionZZZ ez = new ExceptionZZZ(stemp,ExceptionZZZ.iERROR_PARAMETER_MISSING, TileDaoFacadeFactoryTHM.class,  ReflectCodeZZZ.getMethodCurrentName());
-			throw ez;
-		}
-		
-		//HibernateContextProviderJndiSingletonTHM objContextHibernate = HibernateContextProviderJndiSingletonTHM.getInstance();
 		IHibernateContextProviderZZZ objHibernateContext = HibernateUtilTHM.getHibernateContextProviderUsed(this.getKernelObject());
-						
+				
 		if(sTroopType.equalsIgnoreCase("ar")){
 			ReportLogZZZ.write(ReportLogZZZ.DEBUG, ReflectCodeZZZ.getMethodCurrentName() + ": Creating TroopArmyDaoFacade");
 			TroopArmyDaoFacade objTroopDaoFacade = new TroopArmyDaoFacade(objHibernateContext);		
@@ -117,36 +88,12 @@ private static TileDaoFacadeFactoryTHM objFacadeFactory = null;  //muss static s
 			throw ez;
 		}
 	}
-	
+		
 	@Override
 	public GeneralDaoFacadeZZZ createDaoFacade(Troop objTroopEntity) throws ExceptionZZZ {
 		  //FALLUNTERSCHEIDUNG: Je nach Truppentyp eine andere DAOFACADE wählen.		
 		String sTroopType = objTroopEntity.getTroopType();
 		
-		HibernateContextProviderSingletonTHM objContextHibernate = HibernateContextProviderSingletonTHM.getInstance(objKernel);
-				
-		if(sTroopType.equalsIgnoreCase("ar")){
-			ReportLogZZZ.write(ReportLogZZZ.DEBUG, ReflectCodeZZZ.getMethodCurrentName() + ": Creating TroopArmyDaoFacade");
-			TroopArmyDaoFacade objTroopDaoFacade = new TroopArmyDaoFacade(objContextHibernate);		
-			return objTroopDaoFacade;
-		}else if(sTroopType.equalsIgnoreCase("fl")){
-			ReportLogZZZ.write(ReportLogZZZ.DEBUG, ReflectCodeZZZ.getMethodCurrentName() + ": Creating TroopFleetDaoFacade");
-			TroopFleetDaoFacade objTroopDaoFacade = new TroopFleetDaoFacade(objContextHibernate);
-			return objTroopDaoFacade;
-		}else{
-			String stemp = "Kein TroopType - Key mit einer passenden DaoFacade übergeben ('" + sTroopType + ")";
-			System.out.println(ReflectCodeZZZ.getMethodCurrentName() + ": " +stemp);
-			ExceptionZZZ ez = new ExceptionZZZ(stemp,ExceptionZZZ.iERROR_PARAMETER_VALUE, TileDaoFacadeFactoryTHM.class,  ReflectCodeZZZ.getMethodCurrentName());
-			throw ez;
-		}
-	}
-	
-	@Override
-	public GeneralDaoFacadeZZZ createDaoFacadeJndi(Troop objTroopEntity) throws ExceptionZZZ {
-		  //FALLUNTERSCHEIDUNG: Je nach Truppentyp eine andere DAOFACADE wählen.		
-		String sTroopType = objTroopEntity.getTroopType();
-		
-		//HibernateContextProviderJndiSingletonTHM objContextHibernate = HibernateContextProviderJndiSingletonTHM.getInstance();
 		IHibernateContextProviderZZZ objHibernateContext = HibernateUtilTHM.getHibernateContextProviderUsed(this.getKernelObject());
 				
 		if(sTroopType.equalsIgnoreCase("ar")){
@@ -171,15 +118,15 @@ private static TileDaoFacadeFactoryTHM objFacadeFactory = null;  //muss static s
 		TileTHM objTile = (TileTHM) objWithDto;
 		String sTroopType = objTile.getSubtype();
 		
-		HibernateContextProviderSingletonTHM objContextHibernate = HibernateContextProviderSingletonTHM.getInstance(objKernel);
+		IHibernateContextProviderZZZ objHibernateContext = HibernateUtilTHM.getHibernateContextProviderUsed(this.getKernelObject());
 				
 		if(sTroopType.equalsIgnoreCase("ar")){
 			ReportLogZZZ.write(ReportLogZZZ.DEBUG, ReflectCodeZZZ.getMethodCurrentName() + ": Creating TroopArmyDaoFacade");
-			TroopArmyDaoFacade objTroopDaoFacade = new TroopArmyDaoFacade(objContextHibernate);		
+			TroopArmyDaoFacade objTroopDaoFacade = new TroopArmyDaoFacade(objHibernateContext);		
 			return objTroopDaoFacade;
 		}else if(sTroopType.equalsIgnoreCase("fl")){
 			ReportLogZZZ.write(ReportLogZZZ.DEBUG, ReflectCodeZZZ.getMethodCurrentName() + ": Creating TroopFleetDaoFacade");
-			TroopFleetDaoFacade objTroopDaoFacade = new TroopFleetDaoFacade(objContextHibernate);
+			TroopFleetDaoFacade objTroopDaoFacade = new TroopFleetDaoFacade(objHibernateContext);
 			return objTroopDaoFacade;
 		}else{
 			String stemp = "Kein TroopType - Key mit einer passenden DaoFacade übergeben ('" + sTroopType + ")";
@@ -187,28 +134,5 @@ private static TileDaoFacadeFactoryTHM objFacadeFactory = null;  //muss static s
 			ExceptionZZZ ez = new ExceptionZZZ(stemp,ExceptionZZZ.iERROR_PARAMETER_VALUE, TileDaoFacadeFactoryTHM.class,  ReflectCodeZZZ.getMethodCurrentName());
 			throw ez;
 		}
-	}
-	@Override
-	public GeneralDaoFacadeZZZ createDaoFacadeJndi(Object objectWithDto) throws ExceptionZZZ {
-		  //FALLUNTERSCHEIDUNG: Je nach Truppentyp eine andere DAOFACADE wählen.
-				TileTHM objTile = (TileTHM) objectWithDto;
-				String sTroopType = objTile.getSubtype();
-				
-				//HibernateContextProviderJndiSingletonTHM objContextHibernate = HibernateContextProviderJndiSingletonTHM.getInstance();
-				IHibernateContextProviderZZZ objHibernateContext = HibernateUtilTHM.getHibernateContextProviderUsed(this.getKernelObject());				            
-				if(sTroopType.equalsIgnoreCase("ar")){
-					ReportLogZZZ.write(ReportLogZZZ.DEBUG, ReflectCodeZZZ.getMethodCurrentName() + ": Creating TroopArmyDaoFacade");
-					TroopArmyDaoFacade objTroopDaoFacade = new TroopArmyDaoFacade(objHibernateContext);		
-					return objTroopDaoFacade;
-				}else if(sTroopType.equalsIgnoreCase("fl")){
-					ReportLogZZZ.write(ReportLogZZZ.DEBUG, ReflectCodeZZZ.getMethodCurrentName() + ": Creating TroopFleetDaoFacade");
-					TroopFleetDaoFacade objTroopDaoFacade = new TroopFleetDaoFacade(objHibernateContext);
-					return objTroopDaoFacade;
-				}else{
-					String stemp = "Kein TroopType - Key mit einer passenden DaoFacade übergeben ('" + sTroopType + ")";
-					System.out.println(ReflectCodeZZZ.getMethodCurrentName() + ": " +stemp);
-					ExceptionZZZ ez = new ExceptionZZZ(stemp,ExceptionZZZ.iERROR_PARAMETER_VALUE, TileDaoFacadeFactoryTHM.class,  ReflectCodeZZZ.getMethodCurrentName());
-					throw ez;
-				}
 	}
 }

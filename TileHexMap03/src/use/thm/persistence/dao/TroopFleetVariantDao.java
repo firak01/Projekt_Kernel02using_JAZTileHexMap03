@@ -71,16 +71,14 @@ public class TroopFleetVariantDao<T> extends TroopVariantDao<T> {
 			System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": START ##############");			
 			
 			try {				
-				KernelZZZ objKernel = new KernelZZZ(); //Merke: Die Service Klasse selbst kann wohl nicht das KernelObjekt extenden!
-				HibernateContextProviderSingletonTHM objContextHibernate = HibernateContextProviderSingletonTHM.getInstance(objKernel);					
+				IHibernateContextProviderZZZ objContextHibernate = this.getHibernateContextProvider();
+				Session session = objContextHibernate.getSession(); //kürzer: session=this.getSession()
+				if(session == null) break main;	
 				
 				//###################
 				//1. Speichere die TroopFleetVarianten
 				//####################					
-				//Session session = this.getSession();	//Vesuch eine neue Session zu bekommen. Merke: Die Session wird hier nicht gespeichert! Wg. 1 Transaktion ==> 1 Session
-				Session session = objContextHibernate.getSession();
-				if(session == null) break main;			
-												
+											
 				//Alle Enumerations hier einlesen.
 				//Anders als bei der _fillValue(...) Lösung können hier nur die Variablen gefüllt werden. Die Zuweisung muss im Konstruktor des immutable Entity-Objekts passieren, das dies keine Setter-Methodne hat.				
 				Collection<String> colsEnumAlias = EnumZZZ.getNames(TroopFleetVariant.getThiskeyEnumClassStatic());
@@ -108,10 +106,9 @@ public class TroopFleetVariantDao<T> extends TroopVariantDao<T> {
 			System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": START: .... Gefundener Enum-Name: " + sEnumAlias);
 			
 			try {	
-			KernelZZZ objKernel = new KernelZZZ(); //Merke: Die Service Klasse selbst kann wohl nicht das KernelObjekt extenden!
-			HibernateContextProviderSingletonTHM objContextHibernate = HibernateContextProviderSingletonTHM.getInstance(objKernel);					
-			Session session = objContextHibernate.getSession(); //kürzer: session=this.getSession()
-			if(session == null) break main;	
+				IHibernateContextProviderZZZ objContextHibernate = this.getHibernateContextProvider();
+				Session session = objContextHibernate.getSession(); //kürzer: session=this.getSession()
+				if(session == null) break main;	
 			
 			//Alle Enumerations hier einlesen.
 			TroopFleetVariant objValueTemp = new TroopFleetVariant();//Quasi als Dummy, aus dem die Enumeration (angelegt als innere Klasse) ausgelesen werden kann.
@@ -388,19 +385,14 @@ return bReturn;
 public boolean isVariantStandard(long lngThisIdKey) {
 	System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": START ##############");			
 	boolean bReturn = false;
-	main:{
-		try {				
-			KernelZZZ objKernel = new KernelZZZ(); //Merke: Die Service Klasse selbst kann wohl nicht das KernelObjekt extenden!
-			HibernateContextProviderSingletonTHM objContextHibernate = HibernateContextProviderSingletonTHM.getInstance(objKernel);					
+	main:{			
+			Session session = this.getSession();
+			if(session == null) break main;	
 			
 			//###################
 			//1. Ermittle Daten der TroopFleetVarianten
 			//####################					
-			//Session session = this.getSession();	//Vesuch eine neue Session zu bekommen. Merke: Die Session wird hier nicht gespeichert! Wg. 1 Transaktion ==> 1 Session
-			Session session = objContextHibernate.getSession();
-			if(session == null) break main;			
-			
-			
+					
 			//Alle Enumerations hier einlesen.
 			TroopFleetVariant objValueTemp = new TroopFleetVariant();//Quasi als Dummy, aus dem die Enumeration (angelegt als innere Klasse) ausgelesen werden kann.
 						
@@ -436,12 +428,7 @@ public boolean isVariantStandard(long lngThisIdKey) {
 					break main;
 				}						
 			}//end for
-			
-			
-		} catch (ExceptionZZZ e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+
 		System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": ENDE ##############");			
 					
 	}//end main:

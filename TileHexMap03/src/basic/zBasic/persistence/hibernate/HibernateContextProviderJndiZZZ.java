@@ -85,8 +85,9 @@ public abstract class HibernateContextProviderJndiZZZ  extends HibernateContextP
 		return this.getSessionFactoryByJndi();
 	}
 	
-	//TODO GOON 20171206: Hier die SessionFactory anders holen als für lokale Datenbanken, nämlich wie in den WebServices....
-	/**HOLE DIE SESSIONFACTORY PER JNDI:
+	/** Hier die SessionFactory anders holen als für lokale Datenbanken, nämlich wie in den WebServices....
+	 * 
+	 * HOLE DIE SESSIONFACTORY PER JNDI:
 		Merke: DAS FUNKTIONIERT NUR, WENN DIE ANWENDUNG IN EINEM SERVER (z.B. Tomcat läuft). */
 	public SessionFactoryImpl getSessionFactoryByJndi(){
 		SessionFactoryImpl objReturn = null;

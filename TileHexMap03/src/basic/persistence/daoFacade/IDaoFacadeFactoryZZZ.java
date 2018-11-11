@@ -10,7 +10,7 @@ public interface IDaoFacadeFactoryZZZ {
 	public GeneralDaoFacadeZZZ createDaoFacade(String sTroopType) throws ExceptionZZZ;
 	public GeneralDaoFacadeZZZ createDaoFacade(Object objectWithDto) throws ExceptionZZZ;
 	public GeneralDaoFacadeZZZ createDaoFacade(Troop objectTroopEntity) throws ExceptionZZZ;
-	public GeneralDaoFacadeZZZ createDaoFacadeJndi(String sTroopType) throws ExceptionZZZ;
-	public GeneralDaoFacadeZZZ createDaoFacadeJndi(Object objectWithDto) throws ExceptionZZZ;
-	public GeneralDaoFacadeZZZ createDaoFacadeJndi(Troop objectTroopEntity) throws ExceptionZZZ;
+//	public GeneralDaoFacadeZZZ createDaoFacadeJndi(String sTroopType) throws ExceptionZZZ;
+//	public GeneralDaoFacadeZZZ createDaoFacadeJndi(Object objectWithDto) throws ExceptionZZZ;
+//	public GeneralDaoFacadeZZZ createDaoFacadeJndi(Troop objectTroopEntity) throws ExceptionZZZ;
 }

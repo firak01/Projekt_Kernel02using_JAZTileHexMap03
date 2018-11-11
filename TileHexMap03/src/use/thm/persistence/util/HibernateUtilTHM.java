@@ -20,8 +20,8 @@ public class HibernateUtilTHM extends HibernateUtil{
 			throw ez;		
 		}
 		
-		//Notwendige Fallunterscheidung, man muss die ganz zu Anfang geholte Instanz des Objekts wiederfinden.
-		//Ansonsten gibt es so Fehlermeldunge wie: "Eine Collection in 2 offenen Sessions".
+		//Notwendige Fallunterscheidung, man muss die ganz zu Anfang geholte Instanz des Objekts (für die Sessionerstellung) wiederfinden.
+		//Ansonsten gibt es so Fehlermeldungen wie: "Eine Collection in 2 offenen Sessions".
 		IHibernateContextProviderZZZ objHibernateContext = null;
 		if(objKernel.isOnServer()){
 			//für WebService: HibernateContextProviderJndiSingletonTHM

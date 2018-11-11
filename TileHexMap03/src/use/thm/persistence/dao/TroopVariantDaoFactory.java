@@ -92,29 +92,29 @@ private static TroopVariantDaoFactory objFactory = null;  //muss static sein, wg
 	/*
 	 * TODO GOON: Diese Methoden - Unterscheidung wäre dann nicht merh notwndig, wenn HibernateUtilTHM funktioniert.
 	 */
-	public TroopVariantDao createDaoVariantJndi(long lngThiskey) throws ExceptionZZZ {		
-		TroopVariantDao objReturn = null;
-		
-		//HibernateContextProviderJndiSingletonTHM objContextHibernate = HibernateContextProviderJndiSingletonTHM.getInstance();
-		IHibernateContextProviderZZZ objHibernateContext = HibernateUtilTHM.getHibernateContextProviderUsed(this.getKernelObject());
-				
-		//FALLUNTERSCHEIDUNG: Suche nach der Variante über den Thiskey. Danach je nach Typ eine andere Dao-Klasse zurückgeben	
-		//Merke: Switch mit long ist nicht erlaubt.
-		if(lngThiskey >=0 && lngThiskey <=19){
-			ReportLogZZZ.write(ReportLogZZZ.DEBUG, ReflectCodeZZZ.getMethodCurrentName() + ": Creating TroopArmyVariantDao (JNDI)");
-			TroopArmyVariantDao objReturnTemp = new TroopArmyVariantDao(objHibernateContext);
-			objReturn = objReturnTemp;
-		}else if(lngThiskey >=20 && lngThiskey <=29){
-			ReportLogZZZ.write(ReportLogZZZ.DEBUG, ReflectCodeZZZ.getMethodCurrentName() + ": Creating TroopFleetVariantDao (JNDI)");
-			TroopFleetVariantDao objReturnTemp = new TroopFleetVariantDao(objHibernateContext);			
-			objReturn = objReturnTemp;
-		}else{
-			String stemp = "Keine Thiskey-ID für eine passenden DaoVariante übergeben ('" + lngThiskey + ") (JNDI)";
-			System.out.println(ReflectCodeZZZ.getMethodCurrentName() + ": " +stemp);
-			ExceptionZZZ ez = new ExceptionZZZ(stemp,ExceptionZZZ.iERROR_PARAMETER_VALUE, TroopVariantDaoFactory.class,  ReflectCodeZZZ.getMethodCurrentName());
-			throw ez;
-		}
-		objReturn.setThiskeyUsed(lngThiskey);
-		return objReturn;
-	}
+//	public TroopVariantDao createDaoVariantJndi(long lngThiskey) throws ExceptionZZZ {		
+//		TroopVariantDao objReturn = null;
+//		
+//		//HibernateContextProviderJndiSingletonTHM objContextHibernate = HibernateContextProviderJndiSingletonTHM.getInstance();
+//		IHibernateContextProviderZZZ objHibernateContext = HibernateUtilTHM.getHibernateContextProviderUsed(this.getKernelObject());
+//				
+//		//FALLUNTERSCHEIDUNG: Suche nach der Variante über den Thiskey. Danach je nach Typ eine andere Dao-Klasse zurückgeben	
+//		//Merke: Switch mit long ist nicht erlaubt.
+//		if(lngThiskey >=0 && lngThiskey <=19){
+//			ReportLogZZZ.write(ReportLogZZZ.DEBUG, ReflectCodeZZZ.getMethodCurrentName() + ": Creating TroopArmyVariantDao (JNDI)");
+//			TroopArmyVariantDao objReturnTemp = new TroopArmyVariantDao(objHibernateContext);
+//			objReturn = objReturnTemp;
+//		}else if(lngThiskey >=20 && lngThiskey <=29){
+//			ReportLogZZZ.write(ReportLogZZZ.DEBUG, ReflectCodeZZZ.getMethodCurrentName() + ": Creating TroopFleetVariantDao (JNDI)");
+//			TroopFleetVariantDao objReturnTemp = new TroopFleetVariantDao(objHibernateContext);			
+//			objReturn = objReturnTemp;
+//		}else{
+//			String stemp = "Keine Thiskey-ID für eine passenden DaoVariante übergeben ('" + lngThiskey + ") (JNDI)";
+//			System.out.println(ReflectCodeZZZ.getMethodCurrentName() + ": " +stemp);
+//			ExceptionZZZ ez = new ExceptionZZZ(stemp,ExceptionZZZ.iERROR_PARAMETER_VALUE, TroopVariantDaoFactory.class,  ReflectCodeZZZ.getMethodCurrentName());
+//			throw ez;
+//		}
+//		objReturn.setThiskeyUsed(lngThiskey);
+//		return objReturn;
+//	}
 }

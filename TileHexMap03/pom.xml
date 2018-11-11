@@ -49,6 +49,15 @@
 			<version>3.23.1</version>
 		</dependency>
 		
+		<!-- Spezielles Connection - Pooling einbinden. Damit diese auf 1 gesetzt werden kann. -->
+		<!-- Ziel: Man soll die Datenbank per Betriebsystem löschen können. Im Beispiel für 4.3.7. -->
+		<!-- https://stackoverflow.com/questions/29364837/hibernate-sqlite-sqlite-busy -->
+		<dependency>
+		      <groupId>org.hibernate</groupId>
+		      <artifactId>hibernate-c3p0</artifactId>
+				<version>4.2.4.Final</version>
+		</dependency>
+		
 		<!-- Einen anderen Hibernate Dialekt einbinden für Hibernate 4... -->
 		<!-- Diesen dann bekanntmachen unter dem Namen:  
 		a) Set the dialect property hibernate.dialect to the class name com.enigmabridge.hibernate.dialect.SQLiteDialect

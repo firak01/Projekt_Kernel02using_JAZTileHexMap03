@@ -62,16 +62,13 @@ public class TextImmutabletextDao<T> extends ImmutabletextDao<T> {
 			System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": START ##############");			
 			
 			try {				
-				KernelZZZ objKernel = new KernelZZZ(); //Merke: Die Service Klasse selbst kann wohl nicht das KernelObjekt extenden!
-				HibernateContextProviderSingletonTHM objContextHibernate = HibernateContextProviderSingletonTHM.getInstance(objKernel);					
-				//Darüber hat diese Methode nicht zu befinden... objContextHibernate.getConfiguration().setProperty("hibernate.hbm2ddl.auto", "update");  //! Jetzt erst wird jede Tabelle über den Anwendungsstart hinaus gespeichert UND auch wiedergeholt.				
-			
+				IHibernateContextProviderZZZ objContextHibernate = this.getHibernateContextProvider();
+				Session session = objContextHibernate.getSession(); //kürzer: session=this.getSession()
+				if(session == null) break main;	
+				
 				//###################
 				//1. Speichere den Defaulttext
 				//####################					
-				//Session session = this.getSession();	//Vesuch eine neue Session zu bekommen. Merke: Die Session wird hier nicht gespeichert! Wg. 1 Transaktion ==> 1 Session
-				Session session = objContextHibernate.getSession();
-				if(session == null) break main;			
 								
 				//Alle Enumerations hier einlesen.
 				//TODO 20171114 ...ohje das irgendwie generisch machen ... vgl. meine _fillValue(...) Lösung..

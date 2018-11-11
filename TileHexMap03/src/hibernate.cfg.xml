@@ -24,11 +24,39 @@
 		<property name="connection.driver_class">org.sqlite.JDBC</property>
 <!-- 		20171207: Es soll auf die reine Konfiguration verlassen werden, auch auf context.xml für JNDI ZUgriff -->        
 <!--    <property name="connection.url">jdbc:sqlite:c:\\server\\SQLite\\TileHexMap03.sqlite</property> --><!-- wird in der Konfiguration programatisch gesetzt, je nachdem, ob Datenbank vorhanden oder nicht. -->
+		
 
 		<property name="connection.username"></property>
 		<property name="connection.password"></property>		
 		<property name="current_session_context_class">thread</property><!-- Enable Hibernates automatic session context management -->
 		<property name="cache.provider_class">org.hibernate.cache.NoCacheProvider</property><!-- disable the second-level cache -->
+
+		<!-- ############# CONNECTION POOLING ############### -->
+		<!-- Beim Löschen der Datenbank-Datei per Betriebssystem git es die Fehlermeldung:  Aktion kann nicht abgeschlossen werden da die Datei n Java ..... geöffnet ist.-->
+		<!-- Idee aus: https://stackoverflow.com/questions/29364837/hibernate-sqlite-sqlite-busy -->
+		<!-- Auch wenn das nicht hinsichtlich der in Java geöffneten Datei hilft, ist das cool. Aber: da oben die connection.url auskommentiert wird
+		        und diese programmatisch gesetzt wird, muss der Pool auch prrogrammatisch gesetzt werden.
+		        Ansonsten findet der Pool die URL nicht und es gibt eine NullPointer Exception beim Protocol:
+		        
+		        DEBUG com.mchange.v2.resourcepool.BasicResourcePool - An exception occurred while acquiring a poolable resource. Will retry.
+java.lang.NullPointerException
+	at sun.jdbc.odbc.JdbcOdbcDriver.getProtocol(Unknown Source)
+		        
+		 -->
+		
+		<!-- Connction Pool überhaupt erst anstellen -->
+<!-- 		<property name="hibernate.connection.provider_class">org.hibernate.service.jdbc.connections.internal.C3P0ConnectionProvider</property> -->
+<!-- 		<property name="hibernate.connection.pool_size">5</property> -->
+		
+<!-- 		<property name="hibernate.c3p0.idle_test_period">300</property> In seconds   -->
+<!-- 		<property name="hibernate.c3p0.timeout">1800</property>  -->
+<!--         <property name="hibernate.c3p0.max_statements">50</property> -->
+        
+		<!-- Connection Pool auf 1 beschränken.  -->
+		<!-- Idee aus: https://stackoverflow.com/questions/29364837/hibernate-sqlite-sqlite-busy -->
+<!-- 		<property name="hibernate.c3p0.min_size">1</property> -->
+<!-- 		<property name="hibernate.c3p0.max_size">1</property> -->
+	<!-- ################################################# -->
 
 		<!-- drop and recreate database schema on startup -->
 		<!-- FGL 20131124: Umgeändert auf create, erstellt damit automatisch die 

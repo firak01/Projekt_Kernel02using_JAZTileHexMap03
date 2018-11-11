@@ -31,12 +31,12 @@ public abstract class AbstractDaoFacadeFactoryZZZ extends KernelUseObjectZZZ imp
 	@Override
 	public abstract GeneralDaoFacadeZZZ createDaoFacade(Troop objectTroopEntity) throws ExceptionZZZ;
 
-	@Override
-	public abstract GeneralDaoFacadeZZZ createDaoFacadeJndi(String sTroopType) throws ExceptionZZZ;	
-	
-	@Override
-	public abstract GeneralDaoFacadeZZZ createDaoFacadeJndi(Object objectWithDto) throws ExceptionZZZ;
-	
-	@Override
-	public abstract GeneralDaoFacadeZZZ createDaoFacadeJndi(Troop objectTroopEntity) throws ExceptionZZZ;
+//	@Override
+//	public abstract GeneralDaoFacadeZZZ createDaoFacadeJndi(String sTroopType) throws ExceptionZZZ;	
+//	
+//	@Override
+//	public abstract GeneralDaoFacadeZZZ createDaoFacadeJndi(Object objectWithDto) throws ExceptionZZZ;
+//	
+//	@Override
+//	public abstract GeneralDaoFacadeZZZ createDaoFacadeJndi(Troop objectTroopEntity) throws ExceptionZZZ;
 }

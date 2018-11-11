@@ -19,5 +19,6 @@ public interface IHibernateContextProviderJndiZZZ extends IHibernateContextProvi
 	public String getContextJndiString();
 	abstract void setContextJndiString(String sContextJndi); //sollte dann private sein.
 	
+	public SessionFactoryImpl getSessionFactoryByJndi();
 	public SessionFactoryImpl getSessionFactoryByJndi(String sContextJndi);	
 }

@@ -69,10 +69,9 @@ public class ImmutabletextDao<T> extends AbstractKeyImmutableDao<T> {
 			System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": START ##############");			
 			
 			try{
-				KernelZZZ objKernel = new KernelZZZ(); //Merke: Die Service Klasse selbst kann wohl nicht das KernelObjekt extenden!
-				HibernateContextProviderSingletonTHM objContextHibernate = HibernateContextProviderSingletonTHM.getInstance(objKernel);					
-				//Darüber hat diese Methode nicht zu befinden... objContextHibernate.getConfiguration().setProperty("hibernate.hbm2ddl.auto", "update");  //! Jetzt erst wird jede Tabelle über den Anwendungsstart hinaus gespeichert UND auch wiedergeholt.				
-			
+				IHibernateContextProviderZZZ objContextHibernate = this.getHibernateContextProvider();
+				Session session = objContextHibernate.getSession(); //kürzer: session=this.getSession()
+				if(session == null) break main;	
 								
 				//####################
 				//1.1. Vorbereitung: Hole die anderen Objekte..
@@ -100,15 +99,10 @@ public class ImmutabletextDao<T> extends AbstractKeyImmutableDao<T> {
 				ReferenceZZZ<String> sLongtext = new ReferenceZZZ("");
 				ReferenceZZZ<String> sDescription = new ReferenceZZZ("");
 				this._fillValueImmutable(objValueTemp, sEnumAlias, lngThisValue, sName, sShorttext, sLongtext, sDescription);
-				
-				Session session = objContextHibernate.getSession();
-				if(session == null) break main;			
-				session.getTransaction().begin();//Ein zu persistierendes Objekt - eine Transaction, auch wenn mehrere in einer Transaction abzuhandeln wären, aber besser um Fehler abfangen zu können.
-								
+													
 				session.getTransaction().begin();//Ein zu persistierendes Objekt - eine Transaction, auch wenn mehrere in einer Transaction abzuhandeln wären, aber besser um Fehler abfangen zu können.
 				Immutabletext objValueTile = new Immutabletext(((int)lngThisValue.get().intValue()), sShorttext.get(), sLongtext.get(), sDescription.get());		//Bei jedem Schleifendurchlauf neu machen, sonst wird lediglich nur 1 Datensatz immer wieder verändert.
-				
-							   							   
+											   							   
 				//Merke: EINE TRANSACTION = EINE SESSION ==>  neue session von der SessionFactory holen
 				session.save(objValueTile); //Hibernate Interceptor wird aufgerufen																				
 				if (!session.getTransaction().wasCommitted()) {

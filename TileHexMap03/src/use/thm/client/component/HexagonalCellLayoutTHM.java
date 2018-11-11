@@ -88,30 +88,26 @@ public class HexagonalCellLayoutTHM extends KernelUseObjectZZZ implements Layout
 		}//end main:
 	}
 
-
 	@Override
 	public void addLayoutComponent(String arg0, Component arg1) {
 		// TODO Auto-generated method stub
 		
 	}
 
-
 	@Override
-	public Dimension minimumLayoutSize(Container arg0) {
+	public Dimension minimumLayoutSize(Container parent) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
-
 	@Override
-	public Dimension preferredLayoutSize(Container arg0) {
+	public Dimension preferredLayoutSize(Container parent) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
-
 	@Override
-	public void removeLayoutComponent(Component arg0) {
+	public void removeLayoutComponent(Component comp) {
 		// TODO Auto-generated method stub
 		
 	}

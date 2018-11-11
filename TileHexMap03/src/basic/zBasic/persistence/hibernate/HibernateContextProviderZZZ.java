@@ -25,6 +25,8 @@ import org.hibernate.internal.SessionFactoryImpl;
 import org.hibernate.mapping.PersistentClass;
 import org.hibernate.service.ServiceRegistry;
 import org.hibernate.service.ServiceRegistryBuilder;
+import org.hibernate.service.jdbc.connections.internal.C3P0ConnectionProvider;
+import org.hibernate.service.jdbc.connections.spi.ConnectionProvider;
 
 import use.thm.client.FrmMapSingletonTHM;
 import use.thm.persistence.event.MyIntegratorTHM;
@@ -124,6 +126,25 @@ public abstract class HibernateContextProviderZZZ  extends KernelUseObjectZZZ im
 		}			
 		return objReturn;
 	}
+	
+	
+	/** TODO GOON: Das habe ich noch nicht ausprobiert.
+	 *                         Tolles CodeSnippet aus: https://stackoverflow.com/questions/15298437/hibernate-closing-the-session-factory-does-not-close-the-c3p0-connection-pool
+	 * @param factory
+	 * @author lindhaueradmin, 11.11.2018, 11:44:28
+	 */
+	private void closeSessionFactory(SessionFactory factory) { 
+		   if(factory instanceof SessionFactoryImpl) {
+		      SessionFactoryImpl sf = (SessionFactoryImpl)factory;
+		      ConnectionProvider conn = sf.getConnectionProvider();
+		      if(conn instanceof C3P0ConnectionProvider) { 
+		        ((C3P0ConnectionProvider)conn).close(); 
+		      }
+		   }
+		   factory.close();
+		}
+	
+	
 	/**Das wird auch dafür benutzt, um eine neue SessionFactory zu erzwingen, fall sich die Hibernate Configuration geändert hat.
 	 * Z.B. wenn die Datenbank nicht mehr neu aufgebaut werden soll, sondern für Folgeabfragen weiterverwendet werden soll.
 	 * In diesem Fall setzt man die SessionFactory auf NULL.
@@ -420,7 +441,7 @@ public void integrate(Configuration configuration,
 	}
 	
 	//Wichtig, um z.B. nach dem Einlesen der Karte (TileHexMap-Projekt) die SQLite Datenbank wieder freizugeben, so dass andere Backendoperationen mit weiteren Programmen durchgeführt werden können.
-	public void closeAll() throws ExceptionZZZ{
+	public void closeAll() throws ExceptionZZZ{	
 		this.getSession().clear();
 		this.getSession().close();
 		this.getSessionFactory().close();//Wenn man nur die SessionFactory schliesst gibt es anschliessend z.B. beim Bewegen eines Spielsteins einen "unknown Service requested" Fehler. 		

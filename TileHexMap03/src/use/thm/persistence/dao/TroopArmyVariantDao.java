@@ -27,6 +27,7 @@ import use.thm.persistence.model.Troop;
 import use.thm.persistence.model.TroopArmy;
 import use.thm.persistence.model.TroopArmyVariant;
 import use.thm.persistence.model.TroopFleetVariant;
+import use.thm.persistence.util.HibernateUtilTHM;
 import use.thm.util.datatype.enums.EnumSetTroopArmyVariantUtilTHM;
 import use.thm.util.datatype.enums.EnumSetTroopFleetVariantUtilTHM;
 import basic.persistence.util.HibernateUtil;
@@ -70,16 +71,14 @@ public class TroopArmyVariantDao<T> extends TroopVariantDao<T> {
 		main:{
 			System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": START ##############");			
 			
-			try {				
-				KernelZZZ objKernel = new KernelZZZ(); //Merke: Die Service Klasse selbst kann wohl nicht das KernelObjekt extenden!
-				HibernateContextProviderSingletonTHM objContextHibernate = HibernateContextProviderSingletonTHM.getInstance(objKernel);					
+			try {								
+				IHibernateContextProviderZZZ objContextHibernate = this.getHibernateContextProvider();
+				Session session = objContextHibernate.getSession(); //kürzer: session=this.getSession()
+				if(session == null) break main;	
 				
 				//###################
 				//1. Speichere die TroopFleetVarianten
 				//####################					
-				//Session session = this.getSession();	//Vesuch eine neue Session zu bekommen. Merke: Die Session wird hier nicht gespeichert! Wg. 1 Transaktion ==> 1 Session
-				Session session = objContextHibernate.getSession();
-				if(session == null) break main;			
 												
 				//Alle Enumerations hier einlesen.
 				//Anders als bei der _fillValue(...) Lösung können hier nur die Variablen gefüllt werden. Die Zuweisung muss im Konstruktor des immutable Entity-Objekts passieren, das dies keine Setter-Methodne hat.				
@@ -107,10 +106,8 @@ public class TroopArmyVariantDao<T> extends TroopVariantDao<T> {
 		main:{
 			System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": START: .... Gefundener Enum-Name: " + sEnumAlias);
 			
-			try {	
-			KernelZZZ objKernel = new KernelZZZ(); //Merke: Die Service Klasse selbst kann wohl nicht das KernelObjekt extenden!
-			HibernateContextProviderSingletonTHM objContextHibernate = HibernateContextProviderSingletonTHM.getInstance(objKernel);					
-			Session session = objContextHibernate.getSession(); //kürzer: session=this.getSession()
+			try {				
+			Session session = this.getSession();
 			if(session == null) break main;	
 			
 			TroopArmyVariant objValueTemp = new TroopArmyVariant();//Quasi als Dummy, aus dem die Enumeration (angelegt als innere Klasse) ausgelesen werden kann.
@@ -156,6 +153,7 @@ public class TroopArmyVariantDao<T> extends TroopVariantDao<T> {
 			//####################################################
 			//### Suchen und ggfs. Erzeugen des TileDefaulttext
 			//#####################################################	
+			IHibernateContextProviderZZZ objContextHibernate = this.getHibernateContextProvider();
 			TileDefaulttextDao daoTileText = new TileDefaulttextDao(objContextHibernate);
 		    Key objKey = daoTileText.searchThiskey(lngThisidDefaulttext.get());
 			if(objKey==null){

@@ -76,7 +76,6 @@ public class TroopArmyVariantDaoFacade extends TroopVariantDaoFacade{
 			//###################
 			//1. Hole die TroopArmy, füge die neue Area der TroopArmy hinzu, damit sie weiss in welchem neuen Feld sie steht.
 			//####################								
-			//HibernateContextProviderSingletonTHM objContextHibernate = (HibernateContextProviderSingletonTHM) this.getHibernateContext();
 			IHibernateContextProviderZZZ objContextHibernate = this.getHibernateContext();
 			TroopArmyVariantDao objTroopVariantDao = new TroopArmyVariantDao(objContextHibernate);
 

@@ -170,9 +170,7 @@ public class ApplicationTHM extends KernelUseObjectZZZ{
 			//### PROBLEM: Nach dem Einlesen der Datenbank bleibt diese "loaded",
 			//                        Das wirft entsprechenden Fehler wenn man danach mit einer Debug Dao-Klasse z.B. Texte einlesen will (DebugKeyTable_Version_TileDefaulttextTHM.java).
 			//+++ Lösungsansatz 20180309: Schliesse alles im objContextSingleton Objekt.
-			//objContextHibernate.closeAll();
-			//ABER: Anschliessend gilt die Database als "locked"??? Wenn man hier weiterarbeitet.
-
+			//objContextHibernate.closeAll(); 			//ABER: Anschliessend gilt die Database als "locked"??? Wenn man hier weiterarbeitet.		
 		}//end main;
 		return true;
 	}

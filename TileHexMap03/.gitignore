@@ -1,5 +1,6 @@
 /target/
 /bin/
+/build/
 
 #In einem Projekt, das kein Web Projekt ist, den WebContent nicht übertragen.
 /WebContent/

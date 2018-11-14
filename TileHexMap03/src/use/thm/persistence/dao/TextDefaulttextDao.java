@@ -59,8 +59,11 @@ public class TextDefaulttextDao<T> extends DefaulttextDao<T> {
 			
 			try {				
 				IHibernateContextProviderZZZ objContextHibernate = this.getHibernateContextProvider();
-				Session session = objContextHibernate.getSession(); //kürzer: session=this.getSession()
-				if(session == null) break main;	
+				Session session = objContextHibernate.getSessionCurrent(); //kürzer: session=this.getSession()
+				//Session session = this.getSession();
+			    //Session session = this.getSessionCurrent();
+				if(session == null) break main;			
+				//wird in der Schleife gemacht session.getTransaction().begin();//Ein zu persistierendes Objekt - eine Transaction, auch wenn mehrere in einer Transaction abzuhandeln wären, aber besser um Fehler abfangen zu können.
 				
 				//###################
 				//1. Speichere den Defaulttext
@@ -69,9 +72,9 @@ public class TextDefaulttextDao<T> extends DefaulttextDao<T> {
 				//Alle Enumerations hier einlesen.
 				//TODO 20171114 ...ohje das irgendwie generisch machen ... vgl. meine _fillValue(...) Lösung..
 				Collection<String> colsEnumAlias = EnumZZZ.getNames(TextDefaulttext.getThiskeyEnumClassStatic());
-				for(String sEnumAlias : colsEnumAlias){
-					System.out.println("Starte Transaction:.... Gefundener Enum-Name: " + sEnumAlias);
+				for(String sEnumAlias : colsEnumAlias){					
 					TextDefaulttext objValueText = new TextDefaulttext();		//Bei jedem Schleifendurchlauf neu machen, sonst wird lediglich nur 1 Datensatz immer wieder verändert.
+					System.out.println("Starte Transaction:.... Gefundener Enum-Name: " + sEnumAlias);
 					session.getTransaction().begin();//Ein zu persistierendes Objekt - eine Transaction, auch wenn mehrere in einer Transaction abzuhandeln wären, aber besser um Fehler abfangen zu können.
 				
 					this._fillValue(objValueText, sEnumAlias);//FGL 20171114: Mein generischer Lösungsversuch.

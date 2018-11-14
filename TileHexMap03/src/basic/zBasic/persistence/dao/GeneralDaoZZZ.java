@@ -623,6 +623,7 @@ public abstract class GeneralDaoZZZ<T> extends GeneralDAO<T> implements IObjectZ
 //				}
 				
 				
+				
 				//############################
 				//LÖSUNGSANSATZ: Versuch auf die bestehende SessionFactory zuzugreifen.
 				IHibernateContextProviderZZZ objHibernateContext = this.getHibernateContextProvider();
@@ -631,6 +632,24 @@ public abstract class GeneralDaoZZZ<T> extends GeneralDAO<T> implements IObjectZ
 					SessionFactory sf = objHibernateContext.getSessionFactory();
 					objReturn = sf.openSession();
 					this.session = objReturn;
+				}
+			}else{
+				//WICHTIG: FALLS es eine noch nicht geschlossene Transaction gab, diese hier beenden.
+				//Ansonsten droht der Fehler: Nested Transaction not allowed.
+				Transaction tx = this.session.getTransaction();
+				if(tx!=null){
+					//Aber wg. Fehlermeldung: Transaction not successfully started
+					//Diese liegt wohl daran, dass ich nach jeder Session Erzeugung eine Transaction beginne. Sicher ist sicher.
+					//Hohle ich dann mit getSession() eine neue Session ist die alte ggfs. noch nicht mal angefangen. (durch ein .save(), .commit().
+					//Lösungsansatz: Frage den Status der Transaction ab.
+					//wohl so nicht complilierbar if (tx.getStatus().equals(TransactionStatus.ACTIVE)) {
+					if(!tx.wasCommitted()){
+						//tx.commit();
+						//tx.rollback(); //Es gibt wohl einen Grund warum noch nicht committed wurde
+						if(tx.isActive()){
+							System.out.println(ReflectCodeZZZ.getMethodCurrentName() + ": XXXXX NEUE SESSION TROTZ AKTIVER TRANSACTION ########");
+						}
+					}
 				}
 			}
 		} catch (ExceptionZZZ e) {

@@ -20,8 +20,9 @@ public interface IHibernateContextProviderZZZ {
 	
 	public SessionFactoryImpl getSessionFactory();
 	
-	public Session getSession() throws ExceptionZZZ;    //Liefere immer eine neue Session
+	public Session getSession() throws ExceptionZZZ;         //Öffne falls möglich eine geschlossen Session über die SessionFactory
 	public Session getSessionCurrent() throws ExceptionZZZ; //Versuche eine Session wiederzuverwenden, falls nicht vorhanden, liefere eine neue Session
+	public Session getSessionNew() throws ExceptionZZZ; //Liefere immer eine neue Session
 	
 	public EntityManager getEntityManager(String sSchemaName)throws ExceptionZZZ;
 	

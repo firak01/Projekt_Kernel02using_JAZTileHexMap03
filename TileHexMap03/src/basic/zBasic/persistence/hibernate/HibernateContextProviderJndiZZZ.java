@@ -49,6 +49,10 @@ import basic.zKernelUI.component.KernelJFrameCascadedZZZ;
  * Die Erweiterung ist, dass diese Klasse dafür sorgt, dass eine Hibernate SessionFactory per JNDI erzeugt wird.
  * Sie ist also für WebServices gedacht.
  * 
+ * ACHTUNG: DIE METHODNEN SIND REDUNDANT ZUN HibernateContextProviderJndiZZZ.
+ *          Drund dafür ist, dass die Suche nach einem KernelParameter in eine Endlosschleife kommt.
+ *          getEmbeddedClasses(Class objClass, String sFilterClassname)
+ *          Scheint 
  */
 public abstract class HibernateContextProviderJndiZZZ  extends HibernateContextProviderZZZ implements IHibernateContextProviderJndiZZZ {
 	//Session NICHT hier speichern. Der Grund ist, dass es pro Transaction nur 1 Session geben darf
@@ -56,8 +60,8 @@ public abstract class HibernateContextProviderJndiZZZ  extends HibernateContextP
 //	Thanks to @Michal, the problem is solved. In my base DAO class, I had the session as an instance variable, which screwed things up. Not entirely sure why exactly, but I also agree that one transaction = one session.
 //	So the solution was to make the session a method variable and basically always ask the session factory for the session.
 	private Session objSession = null; //Wird zwar gespeichert, aber beim neuen Holen per Getter auf NULL gesetzt und komplett neu geholt.
-	
-		//	20170415: Statt die Session zu speichern die SessionFactory speichern.
+
+		//20170415: Statt die Session zu speichern die SessionFactory speichern.
 		private SessionFactoryImpl objSessionFactory = null;
 		
 		private String sContextJndi = null; 
@@ -80,7 +84,7 @@ public abstract class HibernateContextProviderJndiZZZ  extends HibernateContextP
 		this(objKernel);
 		this.setContextJndiString(sContextJndi);
 	}
-	
+		
 	public SessionFactoryImpl getSessionFactory(){
 		return this.getSessionFactoryByJndi();
 	}
@@ -131,109 +135,44 @@ public abstract class HibernateContextProviderJndiZZZ  extends HibernateContextP
 				
 				//Merke: Bei einer nagelneuen SessionFactory keine Session setzen.
 				
-				}else{
-					objReturn = this.objSessionFactory;
-
-					//Wenn diese SessionFactory geschlossen ist, neu aufmachen.
+				}else{					
 					if(objReturn.isClosed()){
-						String sContextJndiPath=this.getContextJndiLookupPath();
+
+						//LÖSUNG: Nicht eine neue SessionFactory erstellen. Das Öffnen der Session öffnet auch die SessionFactory.
+						//https://stackoverflow.com/questions/15165681/how-to-reopen-hibernate-session-after-session-was-closed
+						objReturn.openSession();
 						
-						Context jndiContext = (Context) new InitialContext();
-						SessionFactory sf = (SessionFactory) jndiContext.lookup(sContextJndiPath);
-						
-						objReturn = (SessionFactoryImpl) sf;
-						this.objSessionFactory = objReturn;
-						//this.setSessionFactoryWithNewSession(objReturn); //Merke: Das hier machen. Dann ist diese Anweisung in der Singelton Klasse nicht mehr notwendig.
-					}				
-				}//end if objReturn=null
-				
+						if(objReturn.isClosed()){
+							System.out.println(ReflectCodeZZZ.getMethodCurrentName() + ": Trotz Öffnen der Session ist die SessionFactory noch geschlossen. Erstelle neue SessionFactory.");
+							
+							//Wenn diese SessionFactory geschlossen ist, neu aufmachen.
+							String sContextJndiPath=this.getContextJndiLookupPath();
+							
+							Context jndiContext = (Context) new InitialContext();
+							SessionFactory sf = (SessionFactory) jndiContext.lookup(sContextJndiPath);
+							
+							objReturn = (SessionFactoryImpl) sf;
+							
+							
+							//AUCH DAS IST NICHT GUT.
+							//this.setSessionFactoryWithNewSession(objReturn); //Merke: Das hier machen. Dann ist diese Anweisung in der Singelton Klasse nicht mehr notwendig.
+						}						
+					}			
+				}//end if objReturn=null				
 			} catch (NamingException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}//end main:
+		this.objSessionFactory = objReturn;
 		return objReturn;
 	}
-	/**Das wird auch dafür benutzt, um eine neue SessionFactory zu erzwingen, fall sich die Hibernate Configuration geändert hat.
-	 * Z.B. wenn die Datenbank nicht mehr neu aufgebaut werden soll, sondern für Folgeabfragen weiterverwendet werden soll.
-	 * In diesem Fall setzt man die SessionFactory auf NULL.
-	 * 
-	 * Merke: Eine neue Session wird dem HibernateContextProviderZZZ ebenfalls zur Verfügung gestellt.
-	 *        Grund: Sonst wird das xyzDaoZZZ gezwungen weiter in den Elternklassen nach einer getSession() Methode zu suchen und dann wird etwas mit HibernateAnotationUtility herangezogen.
-	 * 
-	 * @param objSessionFactory
-	 */
-	public void setSessionFactoryWithNewSession(SessionFactoryImpl objSessionFactory){
-		if(this.objSessionFactory!=null){						
-			if(this.objSessionFactory.isClosed()){
-			}else{
-				
-				//Sicherheitshalber alle bestehenden Sessions schliessen
-				Session ss = this.objSessionFactory.getCurrentSession();
-				if(ss!=null){
-					if(ss.isOpen()){
-						
-						//TODO GOON 20171208: Fehlermeldung, dass ss.clear() nur mit offenen Transactions durchgeführt werden darf...
-						ss.clear();
-						ss.close();					
-					}
-				}
-				
-				
-				if(this.objSession!=null){
-					if(this.objSession.isOpen()){						
-						this.objSession.clear();
-						this.objSession.close();
-					}
-				}
-				this.setSession(null);  //session darf nicht gespeichert werden 1 Transaktion ==> 1 Session 
-								
-				this.objSessionFactory.close(); //Die alte SessionFactory schliessen.
-			}
-		}
-		
-		//Die neue SessionFactory setzen.
-		this.objSessionFactory = objSessionFactory;
-		if(this.objSessionFactory!=null){
-			this.objSession = this.objSessionFactory.openSession(); //Explizit eine neue Session anbieten. Sonst wird das xyzDaoZZZ gezwungen weiter in den Elternklassen nach einer getSession() Methode zu suchen und dann wird etwas mit HibernateUtilityByAnnotiation herangezogen. Der darin verwendete JNDI-String ist aber nicht vorhanden.
-		}
-	}
 	
-	/*
-	 * Notwendig, um z.B. bei der Nutzung von JNDI (in Webservices) nicht jedes mal eine neue SessionFactory zu erstellen 
-	 * - per eigens zur Verfügung gestellter SessionFactory (Klasse HibernateSessionFactoryTomcatFactory) 
-	 */
-	public boolean hasSessionFactory(){
-		if(this.objSessionFactory==null){
-			return false;
-		}else{
-			return true;
-		}
-	}
-	
-	/*
-	 * Notwendig, um z.B. bei der Nutzung von JNDI (in Webservices) nicht jedes mal eine neue SessionFactory zu erstellen 
-	 * - per eigens zur Verfügung gestellter SessionFactory (Klasse HibernateSessionFactoryTomcatFactory) 
-	 */
-	public boolean hasSessionFactory_open(){
-		boolean bReturn = false;
-		main:{
-			boolean bErg = this.hasSessionFactory();
-			if(!bErg) break main;
-			
-			bErg = this.objSessionFactory.isClosed(); 
-			if(bErg) break main;
-			
-			bReturn = true;
-		}
-		return bReturn;
-	}
-	
-	//################### GETTER / SETTER	
 	public Session getSession() throws ExceptionZZZ{
 		Session objReturn = null;
-		//this.setSession(null); //Session objReturn = this.objSession; //!!! Session darf nicht als Variable gespeichert und wiederverwendet werden. Der Grund ist 1 Transaktion ==> 1 Session.
-		
+		if(this.objSession!=null){
+			objReturn = this.objSession;
+		}else{		
 			Configuration cfg = this.getConfiguration();
 			if(cfg==null){
 				ExceptionZZZ ez = new ExceptionZZZ("Configuration-Object not (yet) created.", iERROR_PROPERTY_EMPTY, this, ReflectCodeZZZ.getMethodCurrentName());
@@ -272,8 +211,8 @@ public abstract class HibernateContextProviderJndiZZZ  extends HibernateContextP
 			//###########  B) also wenn kein Session mit Interceptro durch den SessionBuilder gebaut wurde ....  
 			if(objReturn==null) objReturn = sf.openSession();					        			
 			
-			//this.objSession = objReturn; //session wird zwar gespeichert, aber nicht dauerhaft. Darf nicht gespeichert werden 1 Transaktion ==> 1 Session. Wird daher immer neu geholt.
-			this.setSession(objReturn);
+			this.objSession = objReturn; //session wird zwar gespeichert, aber nicht dauerhaft. Darf nicht gespeichert werden 1 Transaktion ==> 1 Session. Wird daher immer neu geholt.
+		}
 		return objReturn;
 	}
 	
@@ -292,18 +231,34 @@ public abstract class HibernateContextProviderJndiZZZ  extends HibernateContextP
 		if(this.objSession==null){
 			this.objSession = this.getSession();
 		}else{
-			//Exception in thread "main" org.hibernate.TransactionException: nested transactions not supported
-			//darum ggfs. vorhandene Transaction der Session schliessen.
-//NEIN, das bewirkt ggfs. eine Endlosschleife.
-//			Transaction tr = this.objSession.getTransaction();
-//			if(tr!=null){
-//				tr.commit();
-//			}
-			//DIE TRANSAKTION MUSS ALSO VORHER GESCHLOSSEN WORDEN SEIN.
+			if(!this.objSession.isOpen()){
+				this.objSession = this.getSessionFactory().openSession();
+			}
 		}
 		return this.objSession;
 	}
 	
+	public Session getSessionNew() throws ExceptionZZZ{
+		Session objReturn = null;		
+		this.setSession(null); //Session objReturn = this.objSession; //!!! Session darf nicht als Variable gespeichert und wiederverwendet werden. Der Grund ist 1 Transaktion ==> 1 Session.
+		objReturn = this.getSession();			
+		return objReturn;
+	}
+	
+	//Wichtig, um z.B. nach dem Einlesen der Karte (TileHexMap-Projekt) die SQLite Datenbank wieder freizugeben, so dass andere Backendoperationen mit weiteren Programmen durchgeführt werden können.
+		public void closeAll() throws ExceptionZZZ{
+			if(this.objSession!=null){
+				if(this.objSession.isOpen()){
+					this.objSession.close();
+					if(this.objSession.isOpen()){
+						this.objSession.clear();
+					}
+				}			
+			}
+			//this.getSessionFactory().close();//Wenn man nur die SessionFactory schliesst gibt es anschliessend z.B. beim Bewegen eines Spielsteins einen "unknown Service requested" Fehler. 		
+		}
+			
+	//################### GETTER / SETTER	
 	public void setContextJndiString(String sContextJndi){
 		this.sContextJndi = sContextJndi;
 	}
@@ -324,7 +279,8 @@ public abstract class HibernateContextProviderJndiZZZ  extends HibernateContextP
 		}//end main:
 		return sReturn;
 	}
-
+	
+	
 	//############## Abstracte Methoden, die auf jeden Fall überschrieben werden müssen.
 	//....
 	public SessionFactoryImpl getSessionFactoryByJndi(String sContextJndi) {

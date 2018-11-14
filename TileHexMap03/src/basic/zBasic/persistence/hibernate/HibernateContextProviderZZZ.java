@@ -112,18 +112,30 @@ public abstract class HibernateContextProviderZZZ  extends KernelUseObjectZZZ im
 			 objReturn = (SessionFactoryImpl) sf;	
 			 //Merke: bei einer nagelneuen SessionFactory hier nicht die Session setzen.
 			 
-		}else{
+		}else{			
 			if(objReturn.isClosed()){
+				
+				//LÖSUNG: Nicht eine neue SessionFactory erstellen. Das Öffnen der Session öffnet auch die SessionFactory.
+				//https://stackoverflow.com/questions/15165681/how-to-reopen-hibernate-session-after-session-was-closed
+				objReturn.openSession();
+				
+				
+				if(objReturn.isClosed()){
+					System.out.println(ReflectCodeZZZ.getMethodCurrentName() + ": Trotz Öffnen der Session ist die SessionFactory noch geschlossen. Erstelle neue SessionFactory.");
+				//DAS MACHT BEIM CONNECTION POOLING PROBLEME
 				 Configuration cfg = this.getConfiguration();
 					
 			      ServiceRegistry sr = new ServiceRegistryBuilder().applySettings(cfg.getProperties()).buildServiceRegistry();		    
 			      SessionFactory sf = cfg.buildSessionFactory(sr);
 							     
-				 objReturn = (SessionFactoryImpl) sf;	
-				 this.objSessionFactory =objReturn; 
+				 objReturn = (SessionFactoryImpl) sf;					 
+												
+				//AUCH DAS IST NICHT GUT.
 				// this.setSessionFactoryWithNewSession(objReturn); //Merke: Das hier machen. Dann ist diese Anweisung in der Singelton Klasse nicht mehr notwendig.
+				}
 			}
-		}			
+		}		
+		this.objSessionFactory=objReturn;
 		return objReturn;
 	}
 	
@@ -326,8 +338,9 @@ public void integrate(Configuration configuration,
 	
 	public Session getSession() throws ExceptionZZZ{
 		Session objReturn = null;
-		this.setSession(null); //Session objReturn = this.objSession; //!!! Session darf nicht als Variable gespeichert und wiederverwendet werden. Der Grund ist 1 Transaktion ==> 1 Session.
-		
+		if(this.objSession!=null){
+			objReturn = this.objSession;
+		}else{		
 			Configuration cfg = this.getConfiguration();
 			if(cfg==null){
 				ExceptionZZZ ez = new ExceptionZZZ("Configuration-Object not (yet) created.", iERROR_PROPERTY_EMPTY, this, ReflectCodeZZZ.getMethodCurrentName());
@@ -366,7 +379,8 @@ public void integrate(Configuration configuration,
 			//###########  B) also wenn kein Session mit Interceptro durch den SessionBuilder gebaut wurde ....  
 			if(objReturn==null) objReturn = sf.openSession();					        			
 			
-			this.objSession = objReturn; //session wird zwar gespeichert, aber nicht dauerhaft. Darf nicht gespeichert werden 1 Transaktion ==> 1 Session. Wird daher immer neu geholt. 
+			this.objSession = objReturn; //session wird zwar gespeichert, aber nicht dauerhaft. Darf nicht gespeichert werden 1 Transaktion ==> 1 Session. Wird daher immer neu geholt.
+		}
 		return objReturn;
 	}
 	
@@ -385,17 +399,32 @@ public void integrate(Configuration configuration,
 		if(this.objSession==null){
 			this.objSession = this.getSession();
 		}else{
-			//Exception in thread "main" org.hibernate.TransactionException: nested transactions not supported
-			//darum ggfs. vorhandene Transaction der Session schliessen.
-//NEIN, das bewirkt ggfs. eine Endlosschleife.
-//			Transaction tr = this.objSession.getTransaction();
-//			if(tr!=null){
-//				tr.commit();
-//			}
-			//DIE TRANSAKTION MUSS ALSO VORHER GESCHLOSSEN WORDEN SEIN.
+			if(!this.objSession.isOpen()){
+				this.objSession = this.getSessionFactory().openSession();
+			}
 		}
 		return this.objSession;
 	}
+	
+	public Session getSessionNew() throws ExceptionZZZ{
+		Session objReturn = null;		
+		this.setSession(null); //Session objReturn = this.objSession; //!!! Session darf nicht als Variable gespeichert und wiederverwendet werden. Der Grund ist 1 Transaktion ==> 1 Session.
+		objReturn = this.getSession();			
+		return objReturn;
+	}
+	
+	//Wichtig, um z.B. nach dem Einlesen der Karte (TileHexMap-Projekt) die SQLite Datenbank wieder freizugeben, so dass andere Backendoperationen mit weiteren Programmen durchgeführt werden können.
+		public void closeAll() throws ExceptionZZZ{
+			if(this.objSession!=null){
+				if(this.objSession.isOpen()){
+					this.objSession.close();
+					if(this.objSession.isOpen()){
+						this.objSession.clear();
+					}
+				}				
+			}
+			//this.getSessionFactory().close();//Wenn man nur die SessionFactory schliesst gibt es anschliessend z.B. beim Bewegen eines Spielsteins einen "unknown Service requested" Fehler. 		
+		}
 	
 	//+++++ Configuration ++++++++
 	public boolean fillConfiguration() throws ExceptionZZZ{
@@ -440,13 +469,6 @@ public void integrate(Configuration configuration,
 		this.objListenerProvider = objHibernateListener;
 	}
 	
-	//Wichtig, um z.B. nach dem Einlesen der Karte (TileHexMap-Projekt) die SQLite Datenbank wieder freizugeben, so dass andere Backendoperationen mit weiteren Programmen durchgeführt werden können.
-	public void closeAll() throws ExceptionZZZ{	
-		this.getSession().clear();
-		this.getSession().close();
-		this.getSessionFactory().close();//Wenn man nur die SessionFactory schliesst gibt es anschliessend z.B. beim Bewegen eines Spielsteins einen "unknown Service requested" Fehler. 		
-	}
-
 	//############## Abstracte Methoden, die auf jeden Fall überschrieben werden müssen.
 	//Verwende intern den SessionBuilder um eine Session zurückzuliefern, die einen Interceptor benutzt.
 	public abstract Session declareSessionHibernateIntercepted(SessionFactoryImpl sf);

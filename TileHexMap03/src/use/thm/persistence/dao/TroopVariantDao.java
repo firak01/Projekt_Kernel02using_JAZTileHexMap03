@@ -151,9 +151,15 @@ protected <T> void _fillValueImmutableByEnumAlias(ITroopVariantTHM objValue,Stri
 //Interface 
 public List<TroopVariant> searchTroopTypeVariantsAll() throws ExceptionZZZ{ //TODO GOON: Sortierung... , int iSortedDirection, boolean bAscending){
 	List<TroopVariant> listReturn = new ArrayList<TroopVariant>();
-	
-	Session session = this.getSession();
-	
+	main:{
+		IHibernateContextProviderZZZ objContextHibernate = this.getHibernateContextProvider();
+		Session session = objContextHibernate.getSessionCurrent(); //kürzer: session=this.getSession()
+		//Session session = this.getSession();
+	    //Session session = this.getSessionCurrent();
+		if(session == null) break main;	
+		System.out.println(ReflectCodeZZZ.getMethodCurrentName() + ": Starte Transaction:....");
+		session.getTransaction().begin();//Ein zu persistierendes Objekt - eine Transaction, auch wenn mehrere in einer Transaction abzuhandeln wären, aber besser um Fehler abfangen zu können.
+
 	String sKeyType = this.getKeyTypeUsed();
 	String sTable = this.getDaoTableName();  //z.B. TroopArmyVariant
 	String sQuery = "from " + sTable + " as tableVariant where tableVariant.keyType = :keyType";
@@ -166,13 +172,14 @@ public List<TroopVariant> searchTroopTypeVariantsAll() throws ExceptionZZZ{ //TO
 	//Object objResult = query.uniqueResult(); //Das sind aber ggfs. mehrere Werte		
 	listReturn = query.list(); 
 	System.out.println("Ergebnis der Query. Es wurden " + listReturn.size() + " Datensätze gefunden.");
-	
+	session.getTransaction().commit();
 	//3. Beispiel
 	//TODO: Nicht den statischen HQL Ansatz, sondern über die Criteria API, d.h. die Where - Bedingung zur Laufzeit zusammensetzen
 			
 	//TODO GOON 20171127: Nach dem Update soll mit dem UI weitergearbeitet werden können			
 	this.getHibernateContextProvider().closeAll();
 	System.out.println("SessionFactory über den HibernateContextProvider geschlossen.... Nun wieder bearbeitbar im Java Swing Client?");
+	}//end main
 	return listReturn;
 }
 
@@ -183,7 +190,7 @@ public String getKeyTypeUsed() {
 	return "TROOPVARIANT";
 }
 
-public abstract boolean isVariantValid(long lngThisIdKey);
-public abstract boolean isVariantStandard(long lngThisIdKey);
+public abstract boolean isVariantValid(long lngThisIdKey) throws ExceptionZZZ;
+public abstract boolean isVariantStandard(long lngThisIdKey) throws ExceptionZZZ;
 			
 }//end class

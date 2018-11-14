@@ -117,11 +117,12 @@ public abstract class AbstractKeyImmutableDao<T> extends GeneralDaoZZZ<T>  imple
 	public KeyImmutable searchThiskey(Long lngThiskey){
 		KeyImmutable objReturn = null;
 		main:{
-			Session session = this.getSession();	//Versuch eine neue Session zu bekommen. Merke: Die Session wird hier nicht gespeichert! Wg. 1 Transaktion ==> 1 Session			
-			if(session == null) break main;			
-				
+			Session session = this.getSession();	//Versuch eine neue Session zu bekommen. Merke: Die Session wird hier nicht gespeichert! Wg. 1 Transaktion ==> 1 Session
+		    //Session session = this.getSessionCurrent();
+			if(session == null) break main;	
+			System.out.println(ReflectCodeZZZ.getMethodCurrentName() + ": Starte Transaction:....");
 			session.getTransaction().begin();//Ein zu persistierendes Objekt - eine Transaction, auch wenn mehrere in einer Transaction abzuhandeln wären, aber besser um Fehler abfangen zu können.
-
+			
 		String sTableNameHql = this.getDaoTableName();
 		Query query = session.createQuery("from " + sTableNameHql + " as tableKey where tableKey.thiskey = :thiskey");
 		query.setLong("thiskey", lngThiskey);
@@ -174,7 +175,7 @@ public abstract class AbstractKeyImmutableDao<T> extends GeneralDaoZZZ<T>  imple
 		main:{
 		Session session = this.getSession();	//Versuch eine neue Session zu bekommen. Merke: Die Session wird hier nicht gespeichert! Wg. 1 Transaktion ==> 1 Session			
 		if(session == null) break main;			
-			
+		System.out.println(ReflectCodeZZZ.getMethodCurrentName() + ": Starte Transaction:....");	
 		session.getTransaction().begin();//Ein zu persistierendes Objekt - eine Transaction, auch wenn mehrere in einer Transaction abzuhandeln wären, aber besser um Fehler abfangen zu können.
 
 //		select mate
@@ -214,13 +215,13 @@ public abstract class AbstractKeyImmutableDao<T> extends GeneralDaoZZZ<T>  imple
 		
 		Object objResult = query.uniqueResult();//für einen einzelwert, darum ist es wichtig, das der uniquename beim Einfügen eines Spielsteins auch wirklich unique ist... Bei 2 gefundenen Werten kammt es hier zum begründeten Fehler. 		
 		//listReturn = query.list(); //Für meherer Werte
-		
-		
+
 		session.getTransaction().commit();
 		objReturn = (KeyImmutable) objResult;
 		}//end main:
 		return objReturn;
 	}
+	
 				
    //### INTERFACE: IThiskeyUserDAO
 	//Das kann dann z.B. zum gezielteren Löschen ausgeführt werden.

@@ -45,18 +45,18 @@ public class HibernateConfigurationProviderTHM extends HibernateConfigurationPro
 			bReturn = this.fillConfigurationGlobal();
 			bReturn = this.fillConfigurationMapping();
 			//20181111: Wie beim lokalen Zugriff auch, so kann man nur LeseZugriffe hier mit dem Connection Pooling realisieren. Schreibzugriffe brechen ab.
-			//Keine Ahnung warum
-			//bReturn = this.fillConfigurationConnectionPool(); //ConnectionPooling wird ebenfalls durch serverseitige JNDI Configuration bereitgestellt, funktioniert aber auch lokal.
+			//Keine Ahnung warum. Habe alle session mit einer Transaction.begin() versehen. Jetzt klappts das Bewegen der Spielsteine.
+			//AUSSER BEIM EINFÜGEN EINES NEUEN SPIELSTEINS: 
+			//Fehlermeldung: DEBUG com.mchange.v2.resourcepool.BasicResourcePool - acquire test -- pool is already maxed out. [managed: 1; max: 1]
+			bReturn = this.fillConfigurationConnectionPool(); //ConnectionPooling wird ebenfalls durch serverseitige JNDI Configuration bereitgestellt, funktioniert aber auch lokal.
 
-			//bReturn = this.fillConfigurationConnectionPool(); //ConnectionPooling wird ebenfalls durch serverseitige JNDI Configuration bereitgestellt, funktioniert aber auch lokal.
 			// 20181111: Fehlermeldung bei eingebundem lokalen ConnetionPool, wenn man einen neuen Spielstein hinzufügt:
 			//            org.sqlite.SQLiteException: [SQLITE_ERROR] SQL error or missing database (near "drop": syntax error)
 			//            Ich weiss nicht woran das liegt.......... 
-			//Vermutlich etwas mit der Erstellung einer neuen Session...
+			//Vermutlich etwas mit der Erstellung einer neuen Session... oer mit dem auto-modus
 			//HiberanteContextProviderTHM.getSessionFactory()
 			//                              .....bReturn SessionFactory sf = cfg.buildSessionFactory(sr);
-			
-			
+				
 			bReturn = this.fillConfigurationLocalDb(); //Merke das wird in einer reinen Serverseitgen Anwendung nicht gebraucht.
 			
 		}
@@ -189,15 +189,20 @@ create-drop: drop the schema when the SessionFactory is closed explicitly, typic
 				this.getConfiguration().setProperty("hibernate.c3p0.timeout","1800"); 
 				this.getConfiguration().setProperty("hibernate.c3p0.max_statements","50");
 		        
-				// Connection Pool auf 1 beschränken. 
-				// Idee aus: https://stackoverflow.com/questions/29364837/hibernate-sqlite-sqlite-busy           
+				//Connection Pool auf 1 beschränken. Aber das liefert beim Einfügen von Spielsteinen einen Fehler.
+				//Also auf 2 Setzen. 
+				//Dann bekommt man beim Starten aber folgenden Fehler:
+				/*
+				 2018-11-13 12:13:09,753 [main] DEBUG org.hibernate.tool.hbm2ddl.SchemaUpdate - alter table ARMYVARIANT drop constraint UK_cjy10hmy2dp615iaa655nru0a
+				 2018-11-13 12:13:09,763 [main] DEBUG com.mchange.v2.c3p0.impl.NewPooledConnection - com.mchange.v2.c3p0.impl.NewPooledConnection@1c0644a handling a throwable.
+				 org.sqlite.SQLiteException: [SQLITE_ERROR] SQL error or missing database (near "drop": syntax error)
+				 */
+				
+				//Auf 1 Setzen wäre eine  Idee aus: https://stackoverflow.com/questions/29364837/hibernate-sqlite-sqlite-busy           
 				//Ziel soll es sein keine "Database is locked" mehr zu bekommen
 				this.getConfiguration().setProperty("hibernate.c3p0.min_size","1");
-				this.getConfiguration().setProperty("hibernate.c3p0.max_size","1");
-				
-				
-				//Merke im Server Log 
-				
+				this.getConfiguration().setProperty("hibernate.c3p0.max_size","2");
+			
 				return true;
 	}
 	

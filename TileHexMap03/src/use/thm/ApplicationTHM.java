@@ -732,7 +732,7 @@ public class ApplicationTHM extends KernelUseObjectZZZ{
 				IKernelZZZ objKernel = this.getKernelObject();
 							
 				//Der HibernateContext ist ein Singleton Objekt, darum braucht man ihn nicht als Parameter im Methodenaufruf weitergeben.
-				HibernateContextProviderSingletonTHM objContextHibernate = HibernateContextProviderSingletonTHM.getInstance(this.getKernelObject());			
+				HibernateContextProviderSingletonTHM objContextHibernate = HibernateContextProviderSingletonTHM.getInstance(objKernel);			
 				if(bDbExists){
 					System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": Datenbank existiert schon.");
 					
@@ -740,7 +740,7 @@ public class ApplicationTHM extends KernelUseObjectZZZ{
 					bFillDatabaseNew = false;
 				}else{
 					//Fall: Datenbank existiert noch nicht
-					System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": Datenbank existiert noch nicht.");						
+					System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": Datenbank existiert noch nicht. Weitermachen mit der Erstellung.");						
 					bFillDatabaseNew=true;
 				}//end if bDbExists
 				
@@ -790,7 +790,7 @@ public class ApplicationTHM extends KernelUseObjectZZZ{
 				IKernelZZZ objKernel = this.getKernelObject();
 							
 				//Der HibernateContext ist ein Singleton Objekt, darum braucht man ihn nicht als Parameter im Methodenaufruf weitergeben.
-				HibernateContextProviderSingletonTHM objContextHibernate = HibernateContextProviderSingletonTHM.getInstance(this.getKernelObject());			
+				HibernateContextProviderSingletonTHM objContextHibernate = HibernateContextProviderSingletonTHM.getInstance(objKernel);			
 				if(bDbExists){
 					System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": Datenbank existiert schon.");
 					
@@ -1075,7 +1075,7 @@ public class ApplicationTHM extends KernelUseObjectZZZ{
 				IKernelZZZ objKernel = this.getKernelObject();
 							
 				//Der HibernateContext ist ein Singleton Objekt, darum braucht man ihn nicht als Parameter im Methodenaufruf weitergeben.
-				HibernateContextProviderSingletonTHM objContextHibernate = HibernateContextProviderSingletonTHM.getInstance(this.getKernelObject());			
+				HibernateContextProviderSingletonTHM objContextHibernate = HibernateContextProviderSingletonTHM.getInstance(objKernel);			
 				if(bDbExists){
 					System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": Datenbank existiert schon.");
 					

@@ -63,8 +63,12 @@ public class TextImmutabletextDao<T> extends ImmutabletextDao<T> {
 			
 			try {				
 				IHibernateContextProviderZZZ objContextHibernate = this.getHibernateContextProvider();
-				Session session = objContextHibernate.getSession(); //kürzer: session=this.getSession()
+				Session session = objContextHibernate.getSessionCurrent(); //kürzer: session=this.getSession()
+				//Session session = this.getSession();
+			    //Session session = this.getSessionCurrent();
 				if(session == null) break main;	
+				System.out.println(ReflectCodeZZZ.getMethodCurrentName() + ": Starte Transaction:....");
+				session.getTransaction().begin();//Ein zu persistierendes Objekt - eine Transaction, auch wenn mehrere in einer Transaction abzuhandeln wären, aber besser um Fehler abfangen zu können.
 				
 				//###################
 				//1. Speichere den Defaulttext
@@ -92,8 +96,7 @@ public class TextImmutabletextDao<T> extends ImmutabletextDao<T> {
 					ReferenceZZZ<String> sLongtext = new ReferenceZZZ("");
 					ReferenceZZZ<String> sDescription = new ReferenceZZZ("");
 					this._fillValueImmutable(objValueTemp, sEnumAlias, lngThisValue, sName, sShorttext, sLongtext, sDescription);
-					
-					session.getTransaction().begin();//Ein zu persistierendes Objekt - eine Transaction, auch wenn mehrere in einer Transaction abzuhandeln wären, aber besser um Fehler abfangen zu können.
+										
 					TextImmutabletext objValueText = new TextImmutabletext(((int)lngThisValue.get().intValue()), sShorttext.get(), sLongtext.get(), sDescription.get());		//Bei jedem Schleifendurchlauf neu machen, sonst wird lediglich nur 1 Datensatz immer wieder verändert.
 					
 				//Merke: EINE TRANSACTION = EINE SESSION ==>  neue session von der SessionFactory holen

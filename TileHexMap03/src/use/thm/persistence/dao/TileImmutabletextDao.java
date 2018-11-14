@@ -66,39 +66,46 @@ public class TileImmutabletextDao<T> extends ImmutabletextDao<T> {
 			
 			try{
 				IHibernateContextProviderZZZ objContextHibernate = this.getHibernateContextProvider();
-				Session session = objContextHibernate.getSession(); //kürzer: session=this.getSession()
+				Session session = objContextHibernate.getSessionCurrent(); //kürzer: session=this.getSession()
+				//Session session = this.getSession();
+			    //Session session = this.getSessionCurrent();
 				if(session == null) break main;	
+				
+				validEntry:{
+					boolean bGoon = false;
+					String sMessage = new String("");
+					System.out.println(ReflectCodeZZZ.getMethodCurrentName() + ": Starte Transaction:.... ");
+					session.getTransaction().begin();//Ein zu persistierendes Objekt - eine Transaction, auch wenn mehrere in einer Transaction abzuhandeln wären, aber besser um Fehler abfangen zu können.
 								
-				//####################
-				//1.1. Vorbereitung: Hole die anderen Objekte..
-				//####################
-				EnumTileImmutabletext objType = (EnumTileImmutabletext) EnumSetInnerUtilZZZ.getThiskeyEnum(TileImmutabletext.getThiskeyEnumClassStatic(), lThiskey);
+					//####################
+					//1.1. Vorbereitung: Hole die anderen Objekte..
+					//####################
+					EnumTileImmutabletext objType = (EnumTileImmutabletext) EnumSetInnerUtilZZZ.getThiskeyEnum(TileImmutabletext.getThiskeyEnumClassStatic(), lThiskey);
+					
+					//String s = objaType[0].name(); //Prasenzstudium .... also entsprechend was als Eigenschaft vorgeschlagen wird von TileDefaulttextType.Praesenzstudium
+					//String s = objaType[0].toString(); //dito
+					//String s = objaType[0].description(); //gibt es nicht, das @description wohl nur etwas für Tool ist, welches diese Metasprachlichen Annotiations auswertet.
+					String s = objType.name();
+					System.out.println("debugCreateEntry für ... " + s);
+					
 				
-				//String s = objaType[0].name(); //Prasenzstudium .... also entsprechend was als Eigenschaft vorgeschlagen wird von TileDefaulttextType.Praesenzstudium
-				//String s = objaType[0].toString(); //dito
-				//String s = objaType[0].description(); //gibt es nicht, das @description wohl nur etwas für Tool ist, welches diese Metasprachlichen Annotiations auswertet.
-				String s = objType.name();
-				System.out.println("debugCreateEntry für ... " + s);
-				
-				
-				//####################
-				//1.2. Erstellle das gewünschte Objekt
-				//####################
-				String sEnumAlias = EnumZZZ.getEnumName(objType);//Eine andere Möglichkeit den Namen zu holen. Merke: Sollte an dieser Stelle = s sein.
-				
-				//Hier der Workaround mit Refenz-Objekten, aus denen dann der Wert geholt werden kann. Also PASS_BY_REFERENCE durch auslesen der Properties der Objekte.  
-				ReferenceZZZ<Long> lngThisValue = new ReferenceZZZ(4);
-				ReferenceZZZ<String> sName = new ReferenceZZZ("");
-				ReferenceZZZ<String> sShorttext = new ReferenceZZZ("");
-				ReferenceZZZ<String> sLongtext = new ReferenceZZZ("");
-				ReferenceZZZ<String> sDescription = new ReferenceZZZ("");
-				
-				TileImmutabletext objValueTemp = new TileImmutabletext();		//Bei jedem Schleifendurchlauf neu machen, sonst wird lediglich nur 1 Datensatz immer wieder verändert.				
-				this._fillValueImmutable(objValueTemp, sEnumAlias, lngThisValue, sName, sShorttext, sLongtext, sDescription);
-							
-				session.getTransaction().begin();//Ein zu persistierendes Objekt - eine Transaction, auch wenn mehrere in einer Transaction abzuhandeln wären, aber besser um Fehler abfangen zu können.
-				TileImmutabletext objValueTile = new TileImmutabletext(((int)lngThisValue.get().intValue()), sShorttext.get(), sLongtext.get(), sDescription.get());		//Bei jedem Schleifendurchlauf neu machen, sonst wird lediglich nur 1 Datensatz immer wieder verändert.
-				
+					//####################
+					//1.2. Erstellle das gewünschte Objekt
+					//####################
+					String sEnumAlias = EnumZZZ.getEnumName(objType);//Eine andere Möglichkeit den Namen zu holen. Merke: Sollte an dieser Stelle = s sein.
+					
+					//Hier der Workaround mit Refenz-Objekten, aus denen dann der Wert geholt werden kann. Also PASS_BY_REFERENCE durch auslesen der Properties der Objekte.  
+					ReferenceZZZ<Long> lngThisValue = new ReferenceZZZ(4);
+					ReferenceZZZ<String> sName = new ReferenceZZZ("");
+					ReferenceZZZ<String> sShorttext = new ReferenceZZZ("");
+					ReferenceZZZ<String> sLongtext = new ReferenceZZZ("");
+					ReferenceZZZ<String> sDescription = new ReferenceZZZ("");
+					
+					TileImmutabletext objValueTemp = new TileImmutabletext();		//Bei jedem Schleifendurchlauf neu machen, sonst wird lediglich nur 1 Datensatz immer wieder verändert.				
+					this._fillValueImmutable(objValueTemp, sEnumAlias, lngThisValue, sName, sShorttext, sLongtext, sDescription);
+												
+					TileImmutabletext objValueTile = new TileImmutabletext(((int)lngThisValue.get().intValue()), sShorttext.get(), sLongtext.get(), sDescription.get());		//Bei jedem Schleifendurchlauf neu machen, sonst wird lediglich nur 1 Datensatz immer wieder verändert.
+					
 							   							   
 				//Merke: EINE TRANSACTION = EINE SESSION ==>  neue session von der SessionFactory holen
 				session.save(objValueTile); //Hibernate Interceptor wird aufgerufen																				
@@ -109,16 +116,25 @@ public class TileImmutabletextDao<T> extends ImmutabletextDao<T> {
 					//bGoon = HibernateUtil.wasCommitSuccessful(objContextHibernate,"save",session.getTransaction());//EventType.PRE_INSERT
 					IHibernateContextProviderZZZ objHibernateContext = this.getHibernateContextProvider();
 					VetoFlag4ListenerZZZ objResult = HibernateUtil.getCommitResult(objHibernateContext,"save",session.getTransaction());
-//					sMessage = objResult.getVetoMessage();
-//					bGoon = !objResult.isVeto();
-				}
-//				if(!bGoon){
-//					//Mache die Ausgabe im UI nicht selbst, sondern stelle lediglich die Daten zur Verfügung. Grund: Hier stehen u.a. die UI Komponenten nicht zur Verfügung
-//					this.getFacadeResult().setMessage(sMessage);
-//					break validEntry;
-//				}
-				
-
+					if(objResult!=null){
+						sMessage = objResult.getVetoMessage();
+						bGoon = !objResult.isVeto();
+					}else{
+						bGoon = true;
+					}
+				}else{
+					if(session.getTransaction().isActive()){
+						session.getTransaction().rollback();
+						bGoon = false;
+					}
+				}	
+				if(!bGoon){
+					//Mache die Ausgabe im UI nicht selbst, sondern stelle lediglich die Daten zur Verfügung. Grund: Hier stehen u.a. die UI Komponenten nicht zur Verfügung
+					//this.getFacadeResult().setMessage(sMessage);
+					break validEntry;
+				}		
+				bReturn = true;
+				}//end validEntry:				
 		} catch (ExceptionZZZ e) {
 			e.printStackTrace();
 		} catch (ThiskeyEnumMappingExceptionZZZ e) {	
@@ -136,9 +152,12 @@ public class TileImmutabletextDao<T> extends ImmutabletextDao<T> {
 			System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": START ##############");			
 			
 			try {				
-				IHibernateContextProviderZZZ objContextHibernate = this.getHibernateContextProvider();
+				IHibernateContextProviderZZZ objContextHibernate = this.getHibernateContextProvider();				
 				Session session = objContextHibernate.getSession(); //kürzer: session=this.getSession()
-				if(session == null) break main;	
+				//Session session = this.getSession();
+			    //Session session = this.getSessionCurrent();
+				if(session == null) break main;			
+				//wird in der Schleife gemacht session.getTransaction().begin();//Ein zu persistierendes Objekt - eine Transaction, auch wenn mehrere in einer Transaction abzuhandeln wären, aber besser um Fehler abfangen zu können.
 				
 				//###################
 				//1. Speichere den Defaulttext
@@ -147,8 +166,13 @@ public class TileImmutabletextDao<T> extends ImmutabletextDao<T> {
 				//Alle Enumerations hier einlesen.
 				//Anders als bei der _fillValue(...) Lösung können hier nur die Variablen gefüllt werden. Die Zuweisung muss im Konstruktor des immutable Entity-Objekts passieren, das dies keine Setter-Methodne hat.				
 				Collection<String> colsEnumAlias = EnumZZZ.getNames(TileImmutabletext.getThiskeyEnumClassStatic());
-				for(String sEnumAlias : colsEnumAlias){
-					System.out.println("Starte Transaction:.... Gefundener Enum-Name: " + sEnumAlias);
+				for(String sEnumAlias : colsEnumAlias){					
+					validEntry:{
+						boolean bGoon = false;
+						String sMessage = new String("");
+						System.out.println(ReflectCodeZZZ.getMethodCurrentName() + ": Starte Transaction:.... Gefundener Enum-Name: " + sEnumAlias);
+						session.getTransaction().begin();//Ein zu persistierendes Objekt - eine Transaction, auch wenn mehrere in einer Transaction abzuhandeln wären, aber besser um Fehler abfangen zu können.
+					
 					TileImmutabletext objValueTemp = new TileImmutabletext();
 
 					//DAS GEHT NICHT, DA JAVA IMMER EIN PASS_BY_VALUE MACHT.
@@ -166,8 +190,7 @@ public class TileImmutabletextDao<T> extends ImmutabletextDao<T> {
 					ReferenceZZZ<String> sLongtext = new ReferenceZZZ("");
 					ReferenceZZZ<String> sDescription = new ReferenceZZZ("");
 					this._fillValueImmutable(objValueTemp, sEnumAlias, lngThisValue, sName, sShorttext, sLongtext, sDescription);
-					
-					session.getTransaction().begin();//Ein zu persistierendes Objekt - eine Transaction, auch wenn mehrere in einer Transaction abzuhandeln wären, aber besser um Fehler abfangen zu können.
+										
 					TileImmutabletext objValueTile = new TileImmutabletext(((int)lngThisValue.get().intValue()), sShorttext.get(), sLongtext.get(), sDescription.get());		//Bei jedem Schleifendurchlauf neu machen, sonst wird lediglich nur 1 Datensatz immer wieder verändert.
 					
 					//Merke: EINE TRANSACTION = EINE SESSION ==>  neue session von der SessionFactory holen
@@ -178,17 +201,27 @@ public class TileImmutabletextDao<T> extends ImmutabletextDao<T> {
 						
 						//bGoon = HibernateUtil.wasCommitSuccessful(objContextHibernate,"save",session.getTransaction());//EventType.PRE_INSERT
 						VetoFlag4ListenerZZZ objResult = HibernateUtil.getCommitResult(objContextHibernate,"save",session.getTransaction());
-	//					sMessage = objResult.getVetoMessage();
-	//					bGoon = !objResult.isVeto();
-					}
-	//				if(!bGoon){
-	//					//Mache die Ausgabe im UI nicht selbst, sondern stelle lediglich die Daten zur Verfügung. Grund: Hier stehen u.a. die UI Komponenten nicht zur Verfügung
-	//					this.getFacadeResult().setMessage(sMessage);
-	//					break validEntry;
-	//				}else{
-						iReturn++;
-	//				}
-				}//end for
+						if(objResult!=null){
+							sMessage = objResult.getVetoMessage();
+							bGoon = !objResult.isVeto();
+						}else{
+							bGoon = true;
+						}
+					}else{
+						if(session.getTransaction().isActive()){
+							session.getTransaction().rollback();
+							bGoon = false;
+						}
+					}	
+					if(!bGoon){
+						//Mache die Ausgabe im UI nicht selbst, sondern stelle lediglich die Daten zur Verfügung. Grund: Hier stehen u.a. die UI Komponenten nicht zur Verfügung
+						//this.getFacadeResult().setMessage(sMessage);
+						break validEntry;
+					}					
+					
+					iReturn++;
+					}//end validEndtry:					
+					}//end for
 												
 			} catch (ExceptionZZZ e) {
 				// TODO Auto-generated catch block

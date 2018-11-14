@@ -68,59 +68,73 @@ public class TileDefaulttextDao<T> extends DefaulttextDao<T> {
 			
 			try{
 				IHibernateContextProviderZZZ objContextHibernate = this.getHibernateContextProvider();
-				Session session = objContextHibernate.getSession(); //kürzer: session=this.getSession()
-				if(session == null) break main;	
+				Session session = objContextHibernate.getSessionCurrent(); //kürzer: session=this.getSession()
+				//Session session = this.getSession();
+			    //Session session = this.getSessionCurrent();
+				if(session == null) break main;
+				
+				validEntry:{
+					boolean bGoon = false;
+					String sMessage = new String("");
+					System.out.println(ReflectCodeZZZ.getMethodCurrentName() + ": Starte Transaction:.... ");
+					session.getTransaction().begin();//Ein zu persistierendes Objekt - eine Transaction, auch wenn mehrere in einer Transaction abzuhandeln wären, aber besser um Fehler abfangen zu können.
 								
-				//####################
-				//1.1. Vorbereitung: Hole die anderen Objekte..
-				//####################
-				EnumTileDefaulttext objType = (EnumTileDefaulttext) EnumSetInnerUtilZZZ.getThiskeyEnum(TileDefaulttext.getThiskeyEnumClassStatic(), lThiskey);
-				
-				//String s = objaType[0].name(); //Prasenzstudium .... also entsprechend was als Eigenschaft vorgeschlagen wird von TileDefaulttextType.Praesenzstudium
-				//String s = objaType[0].toString(); //dito
-				//String s = objaType[0].description(); //gibt es nicht, das @description wohl nur etwas für Tool ist, welches diese Metasprachlichen Annotiations auswertet.
-				String s = objType.name();
-				System.out.println("debugCreateEntry für ... " + s);
-				
-				
-				//####################
-				//1.2. Erstellle das gewünschte Objekt
-				//####################
+					//####################
+					//1.1. Vorbereitung: Hole die anderen Objekte..
+					//####################
+					EnumTileDefaulttext objType = (EnumTileDefaulttext) EnumSetInnerUtilZZZ.getThiskeyEnum(TileDefaulttext.getThiskeyEnumClassStatic(), lThiskey);
 					
-				session.getTransaction().begin();//Ein zu persistierendes Objekt - eine Transaction, auch wenn mehrere in einer Transaction abzuhandeln wären, aber besser um Fehler abfangen zu können.
-								
-				TileDefaulttext objValue = new TileDefaulttext();
-				
-				Long lngThiskey = new Long(lThiskey);								
-				objValue.setThiskey(lngThiskey);
-								
-				String sDescription = objType.getDescription();
-				objValue.setDescription(sDescription);
-				
-				String sShorttext = objType.getShorttext();
-				objValue.setShorttext(sShorttext);
-				
-				String sLongtext = objType.getLongtext();
-				objValue.setLongtext(sLongtext);
-							   							   
-				//Merke: EINE TRANSACTION = EINE SESSION ==>  neue session von der SessionFactory holen
-				session.save(objValue); //Hibernate Interceptor wird aufgerufen																				
-				if (!session.getTransaction().wasCommitted()) {
-					//session.flush(); //Datenbank synchronisation, d.h. Inserts und Updates werden gemacht. ABER es wird noch nix committed.
-					session.getTransaction().commit(); //onPreInsertListener wird ausgeführt   //!!! TODO: WARUM WIRD wg. des FLUSH NIX MEHR AUSGEFÜHRT AN LISTENERN, ETC ???
+					//String s = objaType[0].name(); //Prasenzstudium .... also entsprechend was als Eigenschaft vorgeschlagen wird von TileDefaulttextType.Praesenzstudium
+					//String s = objaType[0].toString(); //dito
+					//String s = objaType[0].description(); //gibt es nicht, das @description wohl nur etwas für Tool ist, welches diese Metasprachlichen Annotiations auswertet.
+					String s = objType.name();
+					System.out.println("debugCreateEntry für ... " + s);
 					
-					//bGoon = HibernateUtil.wasCommitSuccessful(objContextHibernate,"save",session.getTransaction());//EventType.PRE_INSERT
-					VetoFlag4ListenerZZZ objResult = HibernateUtil.getCommitResult(objContextHibernate,"save",session.getTransaction());
-//					sMessage = objResult.getVetoMessage();
-//					bGoon = !objResult.isVeto();
-				}
-//				if(!bGoon){
-//					//Mache die Ausgabe im UI nicht selbst, sondern stelle lediglich die Daten zur Verfügung. Grund: Hier stehen u.a. die UI Komponenten nicht zur Verfügung
-//					this.getFacadeResult().setMessage(sMessage);
-//					break validEntry;
-//				}
-				
-
+					
+					//####################
+					//1.2. Erstellle das gewünschte Objekt
+					//####################																	
+					TileDefaulttext objValue = new TileDefaulttext();
+					
+					Long lngThiskey = new Long(lThiskey);								
+					objValue.setThiskey(lngThiskey);
+									
+					String sDescription = objType.getDescription();
+					objValue.setDescription(sDescription);
+					
+					String sShorttext = objType.getShorttext();
+					objValue.setShorttext(sShorttext);
+					
+					String sLongtext = objType.getLongtext();
+					objValue.setLongtext(sLongtext);
+								   							   
+					//Merke: EINE TRANSACTION = EINE SESSION ==>  neue session von der SessionFactory holen
+					session.save(objValue); //Hibernate Interceptor wird aufgerufen																				
+					if (!session.getTransaction().wasCommitted()) {
+						//session.flush(); //Datenbank synchronisation, d.h. Inserts und Updates werden gemacht. ABER es wird noch nix committed.
+						session.getTransaction().commit(); //onPreInsertListener wird ausgeführt   //!!! TODO: WARUM WIRD wg. des FLUSH NIX MEHR AUSGEFÜHRT AN LISTENERN, ETC ???
+						
+						//bGoon = HibernateUtil.wasCommitSuccessful(objContextHibernate,"save",session.getTransaction());//EventType.PRE_INSERT
+						VetoFlag4ListenerZZZ objResult = HibernateUtil.getCommitResult(objContextHibernate,"save",session.getTransaction());
+						if(objResult!=null){
+							sMessage = objResult.getVetoMessage();
+							bGoon = !objResult.isVeto();
+						}else{
+							bGoon = true;
+						}
+					}else{
+						if(session.getTransaction().isActive()){
+							session.getTransaction().rollback();
+							bGoon = false;
+						}
+					}	
+					if(!bGoon){
+						//Mache die Ausgabe im UI nicht selbst, sondern stelle lediglich die Daten zur Verfügung. Grund: Hier stehen u.a. die UI Komponenten nicht zur Verfügung
+						//this.getFacadeResult().setMessage(sMessage);
+						break validEntry;
+					}					
+					bReturn=true;
+				}//end validEndtry:				
 		} catch (ExceptionZZZ e) {
 			e.printStackTrace();
 		} catch (ThiskeyEnumMappingExceptionZZZ e) {	
@@ -139,8 +153,11 @@ public class TileDefaulttextDao<T> extends DefaulttextDao<T> {
 			
 			try {				
 				IHibernateContextProviderZZZ objContextHibernate = this.getHibernateContextProvider();
-				Session session = objContextHibernate.getSession(); //kürzer: session=this.getSession()
-				if(session == null) break main;	
+				Session session = objContextHibernate.getSession(); 
+				//Session session = this.getSession();
+			    //Session session = this.getSessionCurrent();
+				if(session == null) break main;			
+				//Nein, das wird in der Schleife gemacht: session.getTransaction().begin();//Ein zu persistierendes Objekt - eine Transaction, auch wenn mehrere in einer Transaction abzuhandeln wären, aber besser um Fehler abfangen zu können.
 				
 				//###################
 				//1. Speichere den Defaulttext
@@ -149,12 +166,15 @@ public class TileDefaulttextDao<T> extends DefaulttextDao<T> {
 				//Alle Enumerations hier einlesen.
 				//TODO 20171114 ...ohje das irgendwie generisch machen ... vgl. meine _fillValue(...) Lösung..
 				Collection<String> colsEnumAlias = EnumZZZ.getNames(TileDefaulttext.getThiskeyEnumClassStatic());
-				for(String sEnumAlias : colsEnumAlias){
-					System.out.println("Starte Transaction:.... Gefundener Enum-Name: " + sEnumAlias);					
-					session.getTransaction().begin();//Ein zu persistierendes Objekt - eine Transaction, auch wenn mehrere in einer Transaction abzuhandeln wären, aber besser um Fehler abfangen zu können.
-					TileDefaulttext objValueTile = new TileDefaulttext();		//Bei jedem Schleifendurchlauf neu machen, sonst wird lediglich nur 1 Datensatz immer wieder verändert.
-				
-					this._fillValue(objValueTile, sEnumAlias);
+				for(String sEnumAlias : colsEnumAlias){						
+					validEntry:{
+						boolean bGoon = false;
+						String sMessage = new String("");
+						System.out.println(ReflectCodeZZZ.getMethodCurrentName() + ": Starte Transaction:.... Gefundener Enum-Name: " + sEnumAlias);
+						session.getTransaction().begin();//Ein zu persistierendes Objekt - eine Transaction, auch wenn mehrere in einer Transaction abzuhandeln wären, aber besser um Fehler abfangen zu können.
+						TileDefaulttext objValueTile = new TileDefaulttext();		//Bei jedem Schleifendurchlauf neu machen, sonst wird lediglich nur 1 Datensatz immer wieder verändert.
+					
+						this._fillValue(objValueTile, sEnumAlias);
 
 				//Merke: EINE TRANSACTION = EINE SESSION ==>  neue session von der SessionFactory holen
 				session.save(objValueTile); //Hibernate Interceptor wird aufgerufen																				
@@ -164,16 +184,26 @@ public class TileDefaulttextDao<T> extends DefaulttextDao<T> {
 					
 					//bGoon = HibernateUtil.wasCommitSuccessful(objContextHibernate,"save",session.getTransaction());//EventType.PRE_INSERT
 					VetoFlag4ListenerZZZ objResult = HibernateUtil.getCommitResult(objContextHibernate,"save",session.getTransaction());
-//					sMessage = objResult.getVetoMessage();
-//					bGoon = !objResult.isVeto();
-				}
-//				if(!bGoon){
-//					//Mache die Ausgabe im UI nicht selbst, sondern stelle lediglich die Daten zur Verfügung. Grund: Hier stehen u.a. die UI Komponenten nicht zur Verfügung
-//					this.getFacadeResult().setMessage(sMessage);
-//					break validEntry;
-//				}else{
-					iReturn++;
-//				}
+					if(objResult!=null){
+						sMessage = objResult.getVetoMessage();
+						bGoon = !objResult.isVeto();
+					}else{
+						//also... wenn kein Veto, dann immer true, auch wenn nicht committed!
+						bGoon = true;
+					}
+				}else{
+					if(session.getTransaction().isActive()){
+						session.getTransaction().rollback();
+						bGoon = false;
+					}
+				}	
+				if(!bGoon){
+					//Mache die Ausgabe im UI nicht selbst, sondern stelle lediglich die Daten zur Verfügung. Grund: Hier stehen u.a. die UI Komponenten nicht zur Verfügung
+					//this.getFacadeResult().setMessage(sMessage);
+					break validEntry;
+				}									
+				iReturn++;
+				}//end validEndtry:				
 				}//end for
 												
 			} catch (ExceptionZZZ e) {

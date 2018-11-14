@@ -106,9 +106,13 @@ public class TroopFleetVariantDao<T> extends TroopVariantDao<T> {
 			System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": START: .... Gefundener Enum-Name: " + sEnumAlias);
 			
 			try {	
-				IHibernateContextProviderZZZ objContextHibernate = this.getHibernateContextProvider();
-				Session session = objContextHibernate.getSession(); //kürzer: session=this.getSession()
-				if(session == null) break main;	
+//				
+//				Session session = objContextHibernate.getSessionCurrent(); //kürzer: session=this.getSession()
+//				//Session session = this.getSession();
+//			    //Session session = this.getSessionCurrent();
+//				if(session == null) break main;			
+//				session.getTransaction().begin();//Ein zu persistierendes Objekt - eine Transaction, auch wenn mehrere in einer Transaction abzuhandeln wären, aber besser um Fehler abfangen zu können.
+//	
 			
 			//Alle Enumerations hier einlesen.
 			TroopFleetVariant objValueTemp = new TroopFleetVariant();//Quasi als Dummy, aus dem die Enumeration (angelegt als innere Klasse) ausgelesen werden kann.
@@ -154,6 +158,7 @@ public class TroopFleetVariantDao<T> extends TroopVariantDao<T> {
 			//####################################################
 			//### Suchen und ggfs. Erzeugen des TileDefaulttext
 			//#####################################################	
+			IHibernateContextProviderZZZ objContextHibernate = this.getHibernateContextProvider();
 			TileDefaulttextDao daoTileText = new TileDefaulttextDao(objContextHibernate);
 		    Key objKey = daoTileText.searchThiskey(lngThisidDefaulttext.get());
 			if(objKey==null){
@@ -208,8 +213,15 @@ public class TroopFleetVariantDao<T> extends TroopVariantDao<T> {
 			
 			//####################################################################################################
 			//### Erzeugen der Variante. Merke: Sie ist immutable, also alles nur über den Konstruktor erzeugen.
-			//####################################################################################################		
-			session = this.getSession(); //Die Session am Anfang ist durch die vielen anderen DaoObjekte und deren Aktionen bestimmt schon geschlossen.			
+			//####################################################################################################
+			Session session = objContextHibernate.getSession(); //kürzer: session=this.getSession()
+			//session = this.getSession(); //Die Session am Anfang ist durch die vielen anderen DaoObjekte und deren Aktionen bestimmt schon geschlossen.
+			//session = objContextHibernate.getSessionCurrent();
+			
+			validEntry:{
+			boolean bGoon = false;
+			String sMessage = new String("");
+			System.out.println(ReflectCodeZZZ.getMethodCurrentName() + ": Starte Transaction:.... Gefundener Enum-Name: " + sEnumAlias);
 			session.getTransaction().begin();//Ein zu persistierendes Objekt - eine Transaction, auch wenn mehrere in einer Transaction abzuhandeln wären, aber besser um Fehler abfangen zu können.
 			//public TroopFleetVariant(int iKey, String sUniquetext, String sCategorytext, int intMapMoveRange, String sImageUrl, TileDefaulttext objDefaulttext, TileImmutabletext objImmutabletext){
 			TroopFleetVariant objValueVariant = new TroopFleetVariant(lngThisValue.get().intValue(), sUniquetext.get(), sCategorytext.get(), iMoveRange.get().intValue(), fHealthInitial.get().floatValue(), sImageUrl.get(), objDefaulttext, objImmutableText, iNumberOfTurret.get().intValue());		//Bei jedem Schleifendurchlauf neu machen, sonst wird lediglich nur 1 Datensatz immer wieder verändert.
@@ -222,16 +234,27 @@ public class TroopFleetVariantDao<T> extends TroopVariantDao<T> {
 				
 				//bGoon = HibernateUtil.wasCommitSuccessful(objContextHibernate,"save",session.getTransaction());//EventType.PRE_INSERT
 				VetoFlag4ListenerZZZ objResult = HibernateUtil.getCommitResult(objContextHibernate,"save",session.getTransaction());
-//					sMessage = objResult.getVetoMessage();
-//					bGoon = !objResult.isVeto();
-			}
-//				if(!bGoon){
-//					//Mache die Ausgabe im UI nicht selbst, sondern stelle lediglich die Daten zur Verfügung. Grund: Hier stehen u.a. die UI Komponenten nicht zur Verfügung
-//					this.getFacadeResult().setMessage(sMessage);
-//					break validEntry;
-//				}else{
-					bReturn = true;
-//				}
+				if(objResult!=null){
+					sMessage = objResult.getVetoMessage();
+					bGoon = !objResult.isVeto();
+				}else{
+					bGoon = true;
+				}
+			}else{
+				if(session.getTransaction().isActive()){
+					session.getTransaction().rollback();
+					bGoon = false;
+				}
+			}	
+			if(!bGoon){
+				//Mache die Ausgabe im UI nicht selbst, sondern stelle lediglich die Daten zur Verfügung. Grund: Hier stehen u.a. die UI Komponenten nicht zur Verfügung
+				//this.getFacadeResult().setMessage(sMessage);
+				break validEntry;
+			}					
+			
+			bReturn = true;
+			}//end validEndtry:
+
 			} catch (ExceptionZZZ e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -382,12 +405,17 @@ public boolean isVariantValid(long lngThisIdKey) {
 return bReturn;
 }
 @Override
-public boolean isVariantStandard(long lngThisIdKey) {
+public boolean isVariantStandard(long lngThisIdKey) throws ExceptionZZZ {
 	System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": START ##############");			
 	boolean bReturn = false;
 	main:{			
-			Session session = this.getSession();
-			if(session == null) break main;	
+		IHibernateContextProviderZZZ objContextHibernate = this.getHibernateContextProvider();
+		Session session = objContextHibernate.getSessionCurrent(); //kürzer: session=this.getSession()
+		//Session session = this.getSession();
+	    //Session session = this.getSessionCurrent();
+		if(session == null) break main;			
+		//NEIN wird in der Schleife gemacht session.getTransaction().begin();//Ein zu persistierendes Objekt - eine Transaction, auch wenn mehrere in einer Transaction abzuhandeln wären, aber besser um Fehler abfangen zu können.
+
 			
 			//###################
 			//1. Ermittle Daten der TroopFleetVarianten
@@ -437,9 +465,14 @@ public boolean isVariantStandard(long lngThisIdKey) {
 			
 public List<TroopFleetVariant> searchTroopFleetVariantsAll() throws ExceptionZZZ{ //TODO GOON: Sortierung... , int iSortedDirection, boolean bAscending){
 	List<TroopFleetVariant> listReturn = new ArrayList<TroopFleetVariant>();
+	main:{
+		Session session = this.getSession();
+	    //Session session = this.getSessionCurrent();
+		if(session == null) break main;	
+		System.out.println(ReflectCodeZZZ.getMethodCurrentName() + ": Starte Transaction:....");
+		session.getTransaction().begin();//Ein zu persistierendes Objekt - eine Transaction, auch wenn mehrere in einer Transaction abzuhandeln wären, aber besser um Fehler abfangen zu können.
 	
-	Session session = this.getSession();
-	
+		
 	String sKeyType = this.getKeyTypeUsed(); //z.B. "TROOPARMYVARIANT" , "TROOPFLEETVARIANT"
 	String sTable = this.getDaoTableName();  //z.B. TroopArmyVariant
 	String sQuery = "from " + sTable + " as tableVariant where tableVariant.keyType = :keyType";
@@ -451,6 +484,7 @@ public List<TroopFleetVariant> searchTroopFleetVariantsAll() throws ExceptionZZZ
 	
 	//Object objResult = query.uniqueResult(); //Das sind aber ggfs. mehrere Werte		
 	listReturn = query.list(); 
+	session.getTransaction().commit();
 	System.out.println("Ergebnis der Query. Es wurden " + listReturn.size() + " Datensätze gefunden.");
 	
 	//3. Beispiel
@@ -459,6 +493,7 @@ public List<TroopFleetVariant> searchTroopFleetVariantsAll() throws ExceptionZZZ
 	//TODO GOON 20171127: Nach dem Update soll mit dem UI weitergearbeitet werden können			
 	this.getHibernateContextProvider().closeAll();
 	System.out.println("SessionFactory über den HibernateContextProvider geschlossen.... Nun wieder bearbeitbar im Java Swing Client?");
+	}//End main:
 	return listReturn;
 }
 }//end class

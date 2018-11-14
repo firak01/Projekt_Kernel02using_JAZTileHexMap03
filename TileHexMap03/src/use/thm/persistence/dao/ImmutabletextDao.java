@@ -72,7 +72,9 @@ public class ImmutabletextDao<T> extends AbstractKeyImmutableDao<T> {
 				IHibernateContextProviderZZZ objContextHibernate = this.getHibernateContextProvider();
 				Session session = objContextHibernate.getSession(); //kürzer: session=this.getSession()
 				if(session == null) break main;	
-								
+				System.out.println(ReflectCodeZZZ.getMethodCurrentName() + ": Starte Transaction:....");
+				session.getTransaction().begin();//Ein zu persistierendes Objekt - eine Transaction, auch wenn mehrere in einer Transaction abzuhandeln wären, aber besser um Fehler abfangen zu können.
+				
 				//####################
 				//1.1. Vorbereitung: Hole die anderen Objekte..
 				//####################
@@ -99,8 +101,7 @@ public class ImmutabletextDao<T> extends AbstractKeyImmutableDao<T> {
 				ReferenceZZZ<String> sLongtext = new ReferenceZZZ("");
 				ReferenceZZZ<String> sDescription = new ReferenceZZZ("");
 				this._fillValueImmutable(objValueTemp, sEnumAlias, lngThisValue, sName, sShorttext, sLongtext, sDescription);
-													
-				session.getTransaction().begin();//Ein zu persistierendes Objekt - eine Transaction, auch wenn mehrere in einer Transaction abzuhandeln wären, aber besser um Fehler abfangen zu können.
+																	
 				Immutabletext objValueTile = new Immutabletext(((int)lngThisValue.get().intValue()), sShorttext.get(), sLongtext.get(), sDescription.get());		//Bei jedem Schleifendurchlauf neu machen, sonst wird lediglich nur 1 Datensatz immer wieder verändert.
 											   							   
 				//Merke: EINE TRANSACTION = EINE SESSION ==>  neue session von der SessionFactory holen
@@ -156,6 +157,7 @@ public class ImmutabletextDao<T> extends AbstractKeyImmutableDao<T> {
 				Collection<String> colsEnumAlias = EnumZZZ.getNames(Defaulttext.getThiskeyEnumClassStatic());
 				for(String sEnumAlias : colsEnumAlias){
 					System.out.println("Starte Transaction:.... Gefundener Enum-Name: " + sEnumAlias);
+					session.getTransaction().begin();//Ein zu persistierendes Objekt - eine Transaction, auch wenn mehrere in einer Transaction abzuhandeln wären, aber besser um Fehler abfangen zu können.
 					Immutabletext objValueTemp = new Immutabletext();		//Bei jedem Schleifendurchlauf neu machen, sonst wird lediglich nur 1 Datensatz immer wieder verändert.
 					
 					//DAS GEHT NICHT, DA JAVA IMMER EIN PASS_BY_VALUE MACHT.
@@ -173,8 +175,7 @@ public class ImmutabletextDao<T> extends AbstractKeyImmutableDao<T> {
 					ReferenceZZZ<String> sLongtext = new ReferenceZZZ("");
 					ReferenceZZZ<String> sDescription = new ReferenceZZZ("");
 					this._fillValueImmutable(objValueTemp, sEnumAlias, lngThisValue, sName, sShorttext, sLongtext, sDescription);
-					
-					session.getTransaction().begin();//Ein zu persistierendes Objekt - eine Transaction, auch wenn mehrere in einer Transaction abzuhandeln wären, aber besser um Fehler abfangen zu können.					
+														
 					Immutabletext objValue = new Immutabletext(lngThisValue.get(), sShorttext.get(), sLongtext.get(), sDescription.get());		//Bei jedem Schleifendurchlauf neu machen, sonst wird lediglich nur 1 Datensatz immer wieder verändert.
 					
 				//Merke: EINE TRANSACTION = EINE SESSION ==>  neue session von der SessionFactory holen

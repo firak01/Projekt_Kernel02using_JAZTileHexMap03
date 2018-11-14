@@ -346,7 +346,8 @@ public class DebugKeyTable_Version_TileImmutabletextTHM {
 				//####################					
 				//Session session = this.getSession();	//Vesuch eine neue Session zu bekommen. Merke: Die Session wird hier nicht gespeichert! Wg. 1 Transaktion ==> 1 Session
 				Session session = objContextHibernate.getSession();
-				if(session == null) break main;			
+				if(session == null) break main;	
+				System.out.println(ReflectCodeZZZ.getMethodCurrentName() + ": Starte Transaction:....");
 				session.getTransaction().begin();//Ein zu persistierendes Objekt - eine Transaction, auch wenn mehrere in einer Transaction abzuhandeln wären, aber besser um Fehler abfangen zu können.
 				
 				EnumImmutabletext[] objaType = Immutabletext.EnumImmutabletext.values();
@@ -417,7 +418,8 @@ public class DebugKeyTable_Version_TileImmutabletextTHM {
 				//####################					
 				//Session session = this.getSession();	//Vesuch eine neue Session zu bekommen. Merke: Die Session wird hier nicht gespeichert! Wg. 1 Transaktion ==> 1 Session
 				Session session = objContextHibernate.getSession();
-				if(session == null) break main;			
+				if(session == null) break main;	
+				System.out.println(ReflectCodeZZZ.getMethodCurrentName() + ": Starte Transaction:....");
 				session.getTransaction().begin();//Ein zu persistierendes Objekt - eine Transaction, auch wenn mehrere in einer Transaction abzuhandeln wären, aber besser um Fehler abfangen zu können.
 				
 				EnumTileImmutabletext[] objaType = TileImmutabletext.EnumTileImmutabletext.values();
@@ -486,7 +488,8 @@ public class DebugKeyTable_Version_TileImmutabletextTHM {
 				//####################					
 				//Session session = this.getSession();	//Vesuch eine neue Session zu bekommen. Merke: Die Session wird hier nicht gespeichert! Wg. 1 Transaktion ==> 1 Session
 				Session session = objContextHibernate.getSession();
-				if(session == null) break main;			
+				if(session == null) break main;
+				System.out.println(ReflectCodeZZZ.getMethodCurrentName() + ": Starte Transaction:....");
 				session.getTransaction().begin();//Ein zu persistierendes Objekt - eine Transaction, auch wenn mehrere in einer Transaction abzuhandeln wären, aber besser um Fehler abfangen zu können.
 				
 				EnumTextImmutabletext[] objaType = TextImmutabletext.EnumTextImmutabletext.values();

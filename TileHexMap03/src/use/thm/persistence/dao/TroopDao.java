@@ -13,6 +13,7 @@ import use.thm.persistence.model.AreaCell;
 import use.thm.persistence.model.Troop;
 import use.thm.persistence.model.TroopArmy;
 import basic.zBasic.ExceptionZZZ;
+import basic.zBasic.ReflectCodeZZZ;
 import basic.zBasic.persistence.dao.GeneralDaoZZZ;
 import basic.zBasic.persistence.interfaces.IHibernateContextProviderZZZ;
 public class TroopDao<T> extends TileDao<T> {
@@ -151,7 +152,7 @@ public class TroopDao<T> extends TileDao<T> {
 	
 	public List<TroopArmy> searchTroopCollectionByHexCell(String sMapAlias, String sX, String sY){
 		List<TroopArmy> listReturn = new ArrayList<TroopArmy>();
-		
+		main:{
 //		select mate
 //		from Cat as cat
 //		    inner join cat.mate as mate
@@ -162,6 +163,11 @@ public class TroopDao<T> extends TileDao<T> {
 		
 		//2. Beispiel: Etwas sicherer ist es die Parameter mit Platzhaltern zu füllen
 		Session session = this.getSession();
+	    //Session session = this.getSessionCurrent();
+		if(session == null) break main;	
+		System.out.println(ReflectCodeZZZ.getMethodCurrentName() + ": Starte Transaction:....");
+		session.getTransaction().begin();//Ein zu persistierendes Objekt - eine Transaction, auch wenn mehrere in einer Transaction abzuhandeln wären, aber besser um Fehler abfangen zu können.
+
 		//liefert die ID Spalte als Integer zurück, also nicht das TileId Objekt...  Query query = session.createQuery("SELECT id from Tile as tableTile");
 		//                                                       wird nicht gefunden Query query = session.createQuery("SELECT TileIdObject from Tile as tableTile");
 		
@@ -190,10 +196,11 @@ public class TroopDao<T> extends TileDao<T> {
 		
 		//Object objResult = query.uniqueResult(); //Das sind aber ggfs. mehrere Werte		
 		listReturn = query.list(); 
+		session.getTransaction().commit();
 		
 		//3. Beispiel
 		//TODO: Nicht den statischen HQL Ansatz, sondern über die Criteria API, d.h. die Where - Bedingung zur Laufzeit zusammensetzen
-				
+		}
 		return listReturn;
 	}
 }

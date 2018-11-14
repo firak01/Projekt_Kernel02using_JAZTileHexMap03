@@ -13,6 +13,7 @@ import use.thm.persistence.model.AreaCell;
 import use.thm.persistence.model.Troop;
 import use.thm.persistence.model.TroopArmy;
 import basic.zBasic.ExceptionZZZ;
+import basic.zBasic.ReflectCodeZZZ;
 import basic.zBasic.persistence.dao.GeneralDaoZZZ;
 import basic.zBasic.persistence.interfaces.IHibernateContextProviderZZZ;
 public class TroopArmyDao<T> extends TroopDao<T> {
@@ -95,7 +96,7 @@ public class TroopArmyDao<T> extends TroopDao<T> {
 	//....
 		public TroopArmy searchTroopArmyByUniquename(String sUniquename){
 			TroopArmy objReturn = null;
-			
+			main:{
 //			select mate
 //			from Cat as cat
 //			    inner join cat.mate as mate
@@ -106,6 +107,11 @@ public class TroopArmyDao<T> extends TroopDao<T> {
 			
 			//2. Beispiel: Etwas sicherer ist es die Parameter mit Platzhaltern zu füllen
 			Session session = this.getSession();
+		    //Session session = this.getSessionCurrent();
+			if(session == null) break main;	
+			System.out.println(ReflectCodeZZZ.getMethodCurrentName() + ": Starte Transaction:....");
+			session.getTransaction().begin();//Ein zu persistierendes Objekt - eine Transaction, auch wenn mehrere in einer Transaction abzuhandeln wären, aber besser um Fehler abfangen zu können.
+
 			//liefert die ID Spalte als Integer zurück, also nicht das TileId Objekt...  Query query = session.createQuery("SELECT id from Tile as tableTile");
 			//                                                       wird nicht gefunden Query query = session.createQuery("SELECT TileIdObject from Tile as tableTile");
 			
@@ -136,7 +142,7 @@ public class TroopArmyDao<T> extends TroopDao<T> {
 			//Query query = session.createQuery("from Tile as tableTile where tableTile.objHexCell.id.mapAlias = :mapAlias");
 			//Query query = session.createQuery("from Tile as tableTile where tableTile.objHexCell.id.mapAlias = :mapAlias AND tableTile.objHexCell.id.mapX = :mapX AND tableTile.objHexCell.id.mapY = :mapY");
 			//Query query = session.createQuery("from TroopArmy as tableTile where tableTile.objHexCell.id.mapAlias = :mapAlias AND tableTile.objHexCell.id.mapX = :mapX AND tableTile.objHexCell.id.mapY = :mapY");
-			session.getTransaction().begin();//Ein zu persistierendes Objekt - eine Transaction, auch wenn mehrere in einer Transaction abzuhandeln wären, aber besser um Fehler abfangen zu können.
+			//session.getTransaction().begin();//Ein zu persistierendes Objekt - eine Transaction, auch wenn mehrere in einer Transaction abzuhandeln wären, aber besser um Fehler abfangen zu können.
 			Query query = session.createQuery("from TroopArmy as tableTile where tableTile.tileIdObject.uniquename = :uniqueName");//Merke: In TroopArmy ist der uniquename transient. Also kommt man über das Objekt daran.
 			query.setString("uniqueName", sUniquename);
 
@@ -146,12 +152,13 @@ public class TroopArmyDao<T> extends TroopDao<T> {
 			
 			session.getTransaction().commit();
 			objReturn = (TroopArmy) objResult;
+			}//end main:
 			return objReturn;
 		}
 		
 		public List<TroopArmy> searchTroopArmyCollectionByHexCell(String sMapAlias, String sX, String sY){
 			List<TroopArmy> listReturn = new ArrayList<TroopArmy>();
-			
+			main:{
 //			select mate
 //			from Cat as cat
 //			    inner join cat.mate as mate
@@ -162,6 +169,11 @@ public class TroopArmyDao<T> extends TroopDao<T> {
 			
 			//2. Beispiel: Etwas sicherer ist es die Parameter mit Platzhaltern zu füllen
 			Session session = this.getSession();
+		    //Session session = this.getSessionCurrent();
+			if(session == null) break main;	
+			System.out.println(ReflectCodeZZZ.getMethodCurrentName() + ": Starte Transaction:....");
+			session.getTransaction().begin();//Ein zu persistierendes Objekt - eine Transaction, auch wenn mehrere in einer Transaction abzuhandeln wären, aber besser um Fehler abfangen zu können.
+
 			//liefert die ID Spalte als Integer zurück, also nicht das TileId Objekt...  Query query = session.createQuery("SELECT id from Tile as tableTile");
 			//                                                       wird nicht gefunden Query query = session.createQuery("SELECT TileIdObject from Tile as tableTile");
 			
@@ -190,17 +202,22 @@ public class TroopArmyDao<T> extends TroopDao<T> {
 			
 			//Object objResult = query.uniqueResult(); //Das sind aber ggfs. mehrere Werte		
 			listReturn = query.list(); 
-			
+			session.getTransaction().commit();
 			//3. Beispiel
 			//TODO: Nicht den statischen HQL Ansatz, sondern über die Criteria API, d.h. die Where - Bedingung zur Laufzeit zusammensetzen
-					
+			}//end main:	
 			return listReturn;
 		}
 		
 		public List<TroopArmy> searchTroopArmiesAll(String sMapAlias) throws ExceptionZZZ{ //TODO GOON: Sortierung... , int iSortedDirection, boolean bAscending){
 			List<TroopArmy> listReturn = new ArrayList<TroopArmy>();
-			
+			main:{
 			Session session = this.getSession();
+		    //Session session = this.getSessionCurrent();
+			if(session == null) break main;	
+			System.out.println(ReflectCodeZZZ.getMethodCurrentName() + ": Starte Transaction:....");
+			session.getTransaction().begin();//Ein zu persistierendes Objekt - eine Transaction, auch wenn mehrere in einer Transaction abzuhandeln wären, aber besser um Fehler abfangen zu können.
+
 	
 			Query query = session.createQuery("from TroopArmy as tableTile where tableTile.objHexCell.id.mapAlias = :mapAlias"); // AND tableTile.objHexCell.id.mapX = :mapX AND tableTile.objHexCell.id.mapY = :mapY");
 			
@@ -211,13 +228,14 @@ public class TroopArmyDao<T> extends TroopDao<T> {
 			//Object objResult = query.uniqueResult(); //Das sind aber ggfs. mehrere Werte		
 			listReturn = query.list(); 
 			System.out.println("Ergebnis der Query. Es wurden " + listReturn.size() + " Datensätze gefunden.");
-			
+			session.getTransaction().commit();
 			//3. Beispiel
 			//TODO: Nicht den statischen HQL Ansatz, sondern über die Criteria API, d.h. die Where - Bedingung zur Laufzeit zusammensetzen
 					
 			//TODO GOON 20171127: Nach dem Update soll mit dem UI weitergearbeitet werden können			
 			this.getHibernateContextProvider().closeAll();
 			System.out.println("SessionFactory über den HibernateContextProvider geschlossen.... Nun wieder bearbeitbar im Java Swing Client?");
+			}//end main:
 			return listReturn;
 		}		
 }

@@ -73,7 +73,8 @@ public class TroopArmyVariantDao<T> extends TroopVariantDao<T> {
 			
 			try {								
 				IHibernateContextProviderZZZ objContextHibernate = this.getHibernateContextProvider();
-				Session session = objContextHibernate.getSession(); //kürzer: session=this.getSession()
+				//Session session = objContextHibernate.getSessionCurrent(); //kürzer: session=this.getSession()
+				Session session = objContextHibernate.getSession();
 				if(session == null) break main;	
 				
 				//###################
@@ -108,8 +109,10 @@ public class TroopArmyVariantDao<T> extends TroopVariantDao<T> {
 			
 			try {				
 			Session session = this.getSession();
-			if(session == null) break main;	
-			
+		    //Session session = this.getSessionCurrent();
+			if(session == null) break main;			
+			//session.getTransaction().begin();//Ein zu persistierendes Objekt - eine Transaction, auch wenn mehrere in einer Transaction abzuhandeln wären, aber besser um Fehler abfangen zu können.
+
 			TroopArmyVariant objValueTemp = new TroopArmyVariant();//Quasi als Dummy, aus dem die Enumeration (angelegt als innere Klasse) ausgelesen werden kann.
 
 			//DAS GEHT NICHT, DA JAVA IMMER EIN PASS_BY_VALUE MACHT.
@@ -209,35 +212,47 @@ public class TroopArmyVariantDao<T> extends TroopVariantDao<T> {
 			//####################################################################################################
 			//### Erzeugen der Variante. Merke: Sie ist immutable, also alles nur über den Konstruktor erzeugen.
 			//####################################################################################################		
-			session = this.getSession(); //Die Session am Anfang ist durch die vielen anderen DaoObjekte und deren Aktionen bestimmt schon geschlossen.			
-			session.getTransaction().begin();//Ein zu persistierendes Objekt - eine Transaction, auch wenn mehrere in einer Transaction abzuhandeln wären, aber besser um Fehler abfangen zu können.			
+			session = this.getSession(); //Die Session am Anfang ist durch die vielen anderen DaoObjekte und deren Aktionen bestimmt schon geschlossen.
+			validEntry:{
+				boolean bGoon = false;
+				String sMessage = new String("");
+				System.out.println(ReflectCodeZZZ.getMethodCurrentName() + ": Starte Transaction:.... Gefundener Enum-Name: " + sEnumAlias);
+				session.getTransaction().begin();//Ein zu persistierendes Objekt - eine Transaction, auch wenn mehrere in einer Transaction abzuhandeln wären, aber besser um Fehler abfangen zu können.			
 
-			TroopArmyVariant objValueVariant = new TroopArmyVariant(lngThisValue.get().intValue(), sUniquetext.get(), sCategorytext.get(), iMoveRange.get().intValue(), fHealthInitial.get().floatValue(), sImageUrl.get(), objDefaulttext, objImmutableText, iDegreeOfCoverMax.get().intValue());		//Bei jedem Schleifendurchlauf neu machen, sonst wird lediglich nur 1 Datensatz immer wieder verändert.
-			
-			//Merke: EINE TRANSACTION = EINE SESSION ==>  neue session von der SessionFactory holen
-			session.save(objValueVariant); //Hibernate Interceptor wird aufgerufen																				
-			if (!session.getTransaction().wasCommitted()) {
-				//session.flush(); //Datenbank synchronisation, d.h. Inserts und Updates werden gemacht. ABER es wird noch nix committed.
-				session.getTransaction().commit(); //onPreInsertListener wird ausgeführt   //!!! TODO: WARUM WIRD wg. des FLUSH NIX MEHR AUSGEFÜHRT AN LISTENERN, ETC ???
+				TroopArmyVariant objValueVariant = new TroopArmyVariant(lngThisValue.get().intValue(), sUniquetext.get(), sCategorytext.get(), iMoveRange.get().intValue(), fHealthInitial.get().floatValue(), sImageUrl.get(), objDefaulttext, objImmutableText, iDegreeOfCoverMax.get().intValue());		//Bei jedem Schleifendurchlauf neu machen, sonst wird lediglich nur 1 Datensatz immer wieder verändert.
 				
-				//bGoon = HibernateUtil.wasCommitSuccessful(objContextHibernate,"save",session.getTransaction());//EventType.PRE_INSERT
-				VetoFlag4ListenerZZZ objResult = HibernateUtil.getCommitResult(objContextHibernate,"save",session.getTransaction());
-//					sMessage = objResult.getVetoMessage();
-//					bGoon = !objResult.isVeto();
-			}
-//				if(!bGoon){
-//					//Mache die Ausgabe im UI nicht selbst, sondern stelle lediglich die Daten zur Verfügung. Grund: Hier stehen u.a. die UI Komponenten nicht zur Verfügung
-//					this.getFacadeResult().setMessage(sMessage);
-//					break validEntry;
-//				}else{
-					bReturn = true;
-//				}
+				//Merke: EINE TRANSACTION = EINE SESSION ==>  neue session von der SessionFactory holen
+				session.save(objValueVariant); //Hibernate Interceptor wird aufgerufen																				
+				if (!session.getTransaction().wasCommitted()) {
+					//session.flush(); //Datenbank synchronisation, d.h. Inserts und Updates werden gemacht. ABER es wird noch nix committed.
+					session.getTransaction().commit(); //onPreInsertListener wird ausgeführt   //!!! TODO: WARUM WIRD wg. des FLUSH NIX MEHR AUSGEFÜHRT AN LISTENERN, ETC ???
+					
+					//bGoon = HibernateUtil.wasCommitSuccessful(objContextHibernate,"save",session.getTransaction());//EventType.PRE_INSERT
+					VetoFlag4ListenerZZZ objResult = HibernateUtil.getCommitResult(objContextHibernate,"save",session.getTransaction());
+					if(objResult!=null){
+						sMessage = objResult.getVetoMessage();
+						bGoon = !objResult.isVeto();
+					}else{
+						bGoon = true;
+					}
+				}else{
+					if(session.getTransaction().isActive()){
+						session.getTransaction().rollback();
+						bGoon = false;
+					}
+				}	
+				if(!bGoon){
+					//Mache die Ausgabe im UI nicht selbst, sondern stelle lediglich die Daten zur Verfügung. Grund: Hier stehen u.a. die UI Komponenten nicht zur Verfügung
+					//this.getFacadeResult().setMessage(sMessage);
+					break validEntry;
+				}					
+				}//end validEndtry:
+				bReturn = true;
 			} catch (ExceptionZZZ e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": ENDE");
-			
+			System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": ENDE");			
 		}
 		return bReturn;
 	}
@@ -360,7 +375,7 @@ public String getKeyTypeUsed() {
 	return "TROOPARMYVARIANT";
 }
 @Override
-public boolean isVariantValid(long lngThisIdKey) {
+public boolean isVariantValid(long lngThisIdKey) throws ExceptionZZZ {
 	System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": START ##############");			
 	boolean bReturn = false;
 	main:{
@@ -381,20 +396,22 @@ public boolean isVariantValid(long lngThisIdKey) {
 return bReturn;
 }
 @Override
-public boolean isVariantStandard(long lngThisIdKey) {
+public boolean isVariantStandard(long lngThisIdKey) throws ExceptionZZZ {
 	System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": START ##############");			
 	boolean bReturn = false;
 	main:{
-		try {				
-			KernelZZZ objKernel = new KernelZZZ(); //Merke: Die Service Klasse selbst kann wohl nicht das KernelObjekt extenden!
-			HibernateContextProviderSingletonTHM objContextHibernate = HibernateContextProviderSingletonTHM.getInstance(objKernel);					
-			
+//		try {				
+//			KernelZZZ objKernel = new KernelZZZ(); //Merke: Die Service Klasse selbst kann wohl nicht das KernelObjekt extenden!
+//			HibernateContextProviderSingletonTHM objContextHibernate = HibernateContextProviderSingletonTHM.getInstance(objKernel);					
+//			
 			//###################
 			//1. Ermittle Daten der TroopArmyVarianten
 			//####################					
 			//Session session = this.getSession();	//Vesuch eine neue Session zu bekommen. Merke: Die Session wird hier nicht gespeichert! Wg. 1 Transaktion ==> 1 Session
-			Session session = objContextHibernate.getSession();
-			if(session == null) break main;			
+//			Session session = objContextHibernate.getSessionCurrent();
+//			if(session == null) break main;			
+			//Nein, wird innerhalb der Schleife gemacht. session.getTransaction().begin();//Ein zu persistierendes Objekt - eine Transaction, auch wenn mehrere in einer Transaction abzuhandeln wären, aber besser um Fehler abfangen zu können.
+		
 			
 			
 			//Alle Enumerations hier einlesen.
@@ -434,10 +451,10 @@ public boolean isVariantStandard(long lngThisIdKey) {
 				}						
 			}//end for
 						
-		} catch (ExceptionZZZ e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+//		} catch (ExceptionZZZ e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
 		System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": ENDE ##############");			
 					
 	}//end main:
@@ -445,8 +462,13 @@ public boolean isVariantStandard(long lngThisIdKey) {
 }
 public List<TroopArmyVariant> searchTroopArmyVariantsAll() throws ExceptionZZZ{ //TODO GOON: Sortierung... , int iSortedDirection, boolean bAscending){
 	List<TroopArmyVariant> listReturn = new ArrayList<TroopArmyVariant>();
-	
-	Session session = this.getSession();
+	main:{
+		Session session = this.getSession();
+	    //Session session = this.getSessionCurrent();
+		if(session == null) break main;	
+		System.out.println(ReflectCodeZZZ.getMethodCurrentName() + ": Starte Transaction:....");
+		session.getTransaction().begin();//Ein zu persistierendes Objekt - eine Transaction, auch wenn mehrere in einer Transaction abzuhandeln wären, aber besser um Fehler abfangen zu können.
+
 	
 	String sKeyType = this.getKeyTypeUsed(); //z.B. "TROOPARMYVARIANT" , "TROOPFLEETVARIANT"
 	String sTable = this.getDaoTableName();  //z.B. TroopArmyVariant
@@ -458,7 +480,8 @@ public List<TroopArmyVariant> searchTroopArmyVariantsAll() throws ExceptionZZZ{ 
 	//query.setString("mapY", sY);
 	
 	//Object objResult = query.uniqueResult(); //Das sind aber ggfs. mehrere Werte		
-	listReturn = query.list(); 
+	listReturn = query.list();
+	session.getTransaction().commit();
 	System.out.println("Ergebnis der Query. Es wurden " + listReturn.size() + " Datensätze gefunden.");
 	
 	//3. Beispiel
@@ -467,6 +490,7 @@ public List<TroopArmyVariant> searchTroopArmyVariantsAll() throws ExceptionZZZ{ 
 	//TODO GOON 20171127: Nach dem Update soll mit dem UI weitergearbeitet werden können			
 	this.getHibernateContextProvider().closeAll();
 	System.out.println("SessionFactory über den HibernateContextProvider geschlossen.... Nun wieder bearbeitbar im Java Swing Client?");
+	}//end main:
 	return listReturn;
 }
 	

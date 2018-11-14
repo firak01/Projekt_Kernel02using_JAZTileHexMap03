@@ -101,7 +101,7 @@ public class TileDao<T> extends GeneralDaoZZZ<T> {
 	//....
 		public Tile searchTileByUniquename(String sUniquename){
 			Tile objReturn = null;
-			
+			main:{
 //			select mate
 //			from Cat as cat
 //			    inner join cat.mate as mate
@@ -112,6 +112,11 @@ public class TileDao<T> extends GeneralDaoZZZ<T> {
 			
 			//2. Beispiel: Etwas sicherer ist es die Parameter mit Platzhaltern zu füllen
 			Session session = this.getSession();
+		    //Session session = this.getSessionCurrent();
+			if(session == null) break main;	
+			System.out.println(ReflectCodeZZZ.getMethodCurrentName() + ": Starte Transaction:....");
+			session.getTransaction().begin();//Ein zu persistierendes Objekt - eine Transaction, auch wenn mehrere in einer Transaction abzuhandeln wären, aber besser um Fehler abfangen zu können.
+
 			//liefert die ID Spalte als Integer zurück, also nicht das TileId Objekt...  Query query = session.createQuery("SELECT id from Tile as tableTile");
 			//                                                       wird nicht gefunden Query query = session.createQuery("SELECT TileIdObject from Tile as tableTile");
 			
@@ -150,7 +155,9 @@ public class TileDao<T> extends GeneralDaoZZZ<T> {
 			Object objResult = query.uniqueResult();//für einen einzelwert, darum ist es wichtig, das der uniquename beim Einfügen eines Spielsteins auch wirklich unique ist... Bei 2 gefundenen Werten kammt es hier zum begründeten Fehler. 		
 			//listReturn = query.list(); //Für meherer Werte
 			
+			session.getTransaction().commit();
 			objReturn = (Tile) objResult;
+			}//end main:
 			return objReturn;
 		}
 		

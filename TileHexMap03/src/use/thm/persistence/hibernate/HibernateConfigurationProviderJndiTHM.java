@@ -36,8 +36,7 @@ public class HibernateConfigurationProviderJndiTHM extends HibernateConfiguratio
 			bReturn = this.fillConfigurationMapping();
 			//20181111: Wie beim lokalen Zugriff auch, so kann man nur LeseZugriffe hier mit dem Connection Pooling realisieren. Schreibzugriffe brechen ab.
 			//Keine Ahnung warum
-			//bReturn = this.fillConfigurationConnectionPool(); //ConnectionPooling wird ebenfalls durch serverseitige JNDI Configuration bereitgestellt, funktioniert aber auch lokal.
-
+			bReturn = this.fillConfigurationConnectionPool(); //ConnectionPooling wird ebenfalls durch serverseitige JNDI Configuration bereitgestellt, funktioniert aber auch lokal.
 			
 			//das wird nicht benötigt, da hier JNDI und Konfiguration der Datenquelle in der der context.xml vorausgesetzt wird
 			//bReturn = this.fillConfigurationLocalDb();			

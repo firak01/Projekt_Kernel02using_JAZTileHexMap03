@@ -41,6 +41,8 @@ public class TroopFleetRuleFacade  extends GeneralRuleFacadeTHM{
 	}
 	
 	public boolean onUpdateTroopFleetPosition(HexCell objPersistedHexTarget, String sCallingFlag) throws ExceptionZZZ{
+		//!!! Weil dies während eines .save() Aufrufs durchgeführt wird, dürfen hier keine weiteren Transactions aufgemacht werden.
+		//    Ansonsten gibt es Fehlermelund bzgl. NESTED TRANSACTIONS
 		boolean bReturn = true;// true=alles o.k., false=Regelverletzung schlägt zu. Daher wird später, d.h. beim Persistieren ein Veto eingelegt.
 		main:{
 			System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": Hexcell Objekt von der Klasse: " + objPersistedHexTarget.getClass().getName());
@@ -85,13 +87,14 @@ public class TroopFleetRuleFacade  extends GeneralRuleFacadeTHM{
 				//4. Ansatz
 				//VERSUCH AUF ANDEREM WEG EINE SESSION ZU BEKOMMEN OHNE DIE AKTUELLE ZU SCHLIESEN:						
 				//VERSUCH DIE AKTUELLE SESSION WEITERZUVERWENDEN & DIE AKTUELLE TRANSACTION. ICH FÜRCHTE DAS IST ABER NUR MÖGLICH BEI REINEN LESEOPERATIONEN!!!
-				Session session = this.getSessionCurrent();
-				if(session == null) break main;			
-				//session.getTransaction();//NEIN, FEHLERMEDUNG: NESTED TRANSACTION NOT ALLOWED, also mit der aktuellen Session und der aktuellen Transaction weiterarbeiten.
-				                                      //Daher nur zum Lesen zu gebrauchen!!!
-
+				Session session = this.getSession();
+				//Session session = this.getSessionCurrent();
+				if(session == null) break main;	
+//				System.out.println(ReflectCodeZZZ.getMethodCurrentName() + ": Starte Transaction:....");				
+//				session.getTransaction().begin();//Ein zu persistierendes Objekt - eine Transaction, auch wenn mehrere in einer Transaction abzuhandeln wären, aber besser um Fehler abfangen zu können.
+				
 				//Update, d.h. Initialisierung innerhalb dieser Session ist wichtig, weil die Zelle ggfs. noch nie zuvor betreten worden ist.
-				session.update(objPersistedHexTarget);//20170703: GROSSE PROBLEME WG. LAZY INITIALISIERUNG DES PERSISTENTBAG in dem area-Objekt. Versuche damit das zu inisiteliesen.
+//				session.update(objPersistedHexTarget);//20170703: GROSSE PROBLEME WG. LAZY INITIALISIERUNG DES PERSISTENTBAG in dem area-Objekt. Versuche damit das zu inisiteliesen.
 				PersistentBag pbag = new PersistentBag((SessionImplementor) session, objPersistedHexTarget.getTileBag());
 				System.out.println("Zielzelle. Anzahl Tiles=" + objPersistedHexTarget.getTileBag().size() + " / PersistentBag. Anzahl Tiles= " + pbag.size());
 								
@@ -103,6 +106,7 @@ public class TroopFleetRuleFacade  extends GeneralRuleFacadeTHM{
 					bReturn = false;
 				}
 				
+//				session.getTransaction().commit();
 			
 			}else if (objPersistedHexTarget instanceof use.thm.persistence.model.AreaCell){
 				
@@ -117,13 +121,14 @@ public class TroopFleetRuleFacade  extends GeneralRuleFacadeTHM{
 				}else{
 										
 					//TODO GOON 20170726: Stacking Limit prüfen
-					//Session session = this.getSession();	//Vesuch eine neue Session zu bekommen. Merke: Die Session wird hier nicht gespeichert! Wg. 1 Transaktion ==> 1 Session
-					Session session = this.getSessionCurrent();	
-					if(session == null) break main;			
-					//session.getTransaction().begin();//Ein zu persistierendes Objekt - eine Transaction, auch wenn mehrere in einer Transaction abzuhandeln wären, aber besser um Fehler abfangen zu können.
-					
+					Session session = this.getSession();	//Vesuch eine neue Session zu bekommen. Merke: Die Session wird hier nicht gespeichert! Wg. 1 Transaktion ==> 1 Session
+					//Session session = this.getSessionCurrent();	
+					if(session == null) break main;		
+//					System.out.println(ReflectCodeZZZ.getMethodCurrentName() + ": Starte Transaction:....");
+//					session.getTransaction().begin();//Ein zu persistierendes Objekt - eine Transaction, auch wenn mehrere in einer Transaction abzuhandeln wären, aber besser um Fehler abfangen zu können.
+//					
 					//Update, d.h. Initialisierung ist wichtig, weil die Zelle ggfs. noch nie zuvor betreten worden ist.
-					session.update(objPersistedHexTarget);//20170703: GROSSE PROBLEME WG. LAZY INITIALISIERUNG DES PERSISTENTBAG in dem area-Objekt. Versuche damit das zu inisiteliesen.
+//					session.update(objPersistedHexTarget);//20170703: GROSSE PROBLEME WG. LAZY INITIALISIERUNG DES PERSISTENTBAG in dem area-Objekt. Versuche damit das zu inisiteliesen.
 					PersistentBag pbag = new PersistentBag((SessionImplementor) session, objPersistedHexTarget.getTileBag());
 					System.out.println("Zielzelle. Anzahl Tiles=" + objPersistedHexTarget.getTileBag().size() + " / PersistentBag. Anzahl Tiles= " + pbag.size());
 					
@@ -132,6 +137,8 @@ public class TroopFleetRuleFacade  extends GeneralRuleFacadeTHM{
 						this.getFacadeRuleResult().addMessage(TroopArmyRuleType.STACKING_LIMIT_MAX);
 						bReturn = false;
 					}
+					
+//					session.getTransaction().commit();
 					
 					//Schliesse die neu geholte Session...
 					//wg. der Collection in der Zelle, die ja wieder beim Aktualisieren geholt werden muss. Ohne das Schliessen gibt es folgende Fehlermeldung: Exception in thread "AWT-EventQueue-0" org.hibernate.HibernateException: Illegal attempt to associate a collection with two open sessions

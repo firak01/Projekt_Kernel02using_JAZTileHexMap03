@@ -45,6 +45,8 @@ public class AreaCellRuleFacade  extends GeneralRuleFacadeTHM{
 	}
 	
 	public boolean onUpdateAreaCell(AreaCell area, String sCallingFlag) throws ExceptionZZZ{
+		//!!! Da onPreInsert während es .save() aufgerufen wird darf man hier keine neue Transaction machen.
+		//    Ansonsten git es die Fehlermeldung "NESTED TRANSACTION".
 		boolean bReturn = true;// true=alles o.k., false=Regelverletzung schlägt zu. Daher wird später, d.h. beim Persistieren ein Veto eingelegt.
 		main:{
 			//DAS IST NICHT NOTWENDIG, ERST WENN AREAS AUCH PER DRAG AND DROP AUF DIE KARTE GEZOGEN WERDEN KÖNNEN.
@@ -52,11 +54,10 @@ public class AreaCellRuleFacade  extends GeneralRuleFacadeTHM{
 			}else{
 			break main;
 			}
-			
 
 			boolean bHasVeto = false;
 			String sTypeArea = area.getAreaType();
-			System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": Area vom Typ="+sTypeArea);
+			System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": Area vom Typ="+sTypeArea + " | CallingFlag='"+sCallingFlag+"'");
 			
 			Collection<Tile> colTile = area.getTileBag();
 			if(colTile.size() == 0){
@@ -81,7 +82,7 @@ public class AreaCellRuleFacade  extends GeneralRuleFacadeTHM{
 					}						
 				}//end for	
 				
-				//#####################################################
+			//#####################################################
 			//### Stacking Limit prüfen
 			//#################################
 			//MERKE: Lass CODE stehen. Nur zur Erinnerung wie (ggfs.) andere Zellen gefunden werden könnten
@@ -121,13 +122,16 @@ public class AreaCellRuleFacade  extends GeneralRuleFacadeTHM{
 				
 				
 			
-				Session session = this.getSessionCurrent();
-				if(session == null) break main;			
-				//session.getTransaction();//NEIN, FEHLERMEDUNG: NESTED TRANSACTION NOT ALLOWED, also mit der aktuellen Session und der aktuellen Transaction weiterarbeiten.
-				                                      //Daher nur zum Lesen zu gebrauchen!!!
-
+				//Session session = this.getSessionCurrent();
+				Session session = this.getSession();
+				if(session == null) break main;
+				//System.out.println(ReflectCodeZZZ.getMethodCurrentName() + ": Starte Transaction:....");
+				//session.getTransaction().begin();//Ein zu persistierendes Objekt - eine Transaction, auch wenn mehrere in einer Transaction abzuhandeln wären, aber besser um Fehler abfangen zu können.
+				
 				//Update, d.h. Initialisierung innerhalb dieser Session ist wichtig, weil die Zelle ggfs. noch nie zuvor betreten worden ist.
-				session.update(area);//20170703: GROSSE PROBLEME WG. LAZY INITIALISIERUNG DES PERSISTENTBAG in dem area-Objekt. Versuche damit das zu inisiteliesen.
+				//FRAGE: KANN MAN DAS UPDATE OHNE TRANSACTION MACHEN ???
+				//session.update(area);//20170703: GROSSE PROBLEME WG. LAZY INITIALISIERUNG DES PERSISTENTBAG in dem area-Objekt. Versuche damit das zu inisiteliesen.
+				
 				PersistentBag pbag = new PersistentBag((SessionImplementor) session, area.getTileBag());
 				System.out.println("Zielzelle. Anzahl Tiles=" + area.getTileBag().size() + " / PersistentBag. Anzahl Tiles= " + pbag.size());
 					
@@ -139,9 +143,9 @@ public class AreaCellRuleFacade  extends GeneralRuleFacadeTHM{
 					this.getFacadeRuleResult().addMessage(AreaCellRuleType.STACKING_LIMIT_MAX);
 					bReturn = false;
 				}
-									
+				//session.getTransaction().commit();					
 			
-				}		//col.size()=0
+				}//col.size()=0
 		bReturn = !bHasVeto;
 	}//end main:
 	return bReturn;

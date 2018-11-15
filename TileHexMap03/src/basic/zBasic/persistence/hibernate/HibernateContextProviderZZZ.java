@@ -393,8 +393,20 @@ public void integrate(Configuration configuration,
 			}
 		}
 		this.objSession=objSession;
+	}	
+	public Session getSessionOpen() throws ExceptionZZZ{		
+		if(this.objSession==null){
+			this.objSession = this.getSession();
+			if(!this.objSession.isOpen()){
+				this.objSession = this.getSessionFactory().openSession();
+			}
+		}else{
+			if(!this.objSession.isOpen()){
+				this.objSession = this.getSessionFactory().openSession();
+			}
+		}
+		return this.objSession;
 	}
-	
 	public Session getSessionCurrent() throws ExceptionZZZ{
 		if(this.objSession==null){
 			this.objSession = this.getSession();

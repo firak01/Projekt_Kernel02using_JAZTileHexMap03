@@ -84,5 +84,12 @@
 		    <artifactId>guava</artifactId>
 		    <version>16.0.1</version>
 		</dependency>
+		
+		<!-- slf4j-log4j, verwendet von Hibernate. braucht eine log4j.properties Datei im classpath -->
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-log4j12</artifactId>
+			<version>1.6.1</version>
+		</dependency>
 	</dependencies>
 </project>

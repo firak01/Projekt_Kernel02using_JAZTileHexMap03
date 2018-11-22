@@ -5,7 +5,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
 import java.lang.reflect.Field;
 
 import javax.persistence.EntityManager;
@@ -568,6 +567,7 @@ public abstract class GeneralDaoZZZ<T> extends GeneralDAO<T> implements IObjectZ
 			if(this.session==null){
 				IHibernateContextProviderZZZ objHibernateContext = this.getHibernateContextProvider();
 				if(objHibernateContext==null){
+					System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": WARNUNG - Hole Session über GeneralDAO und nicht über HibernateContextProvider !!!");
 					objReturn= GeneralDAO.getSessionObject();			
 				}else{
 					objReturn = objHibernateContext.getSession();
@@ -666,6 +666,115 @@ public abstract class GeneralDaoZZZ<T> extends GeneralDAO<T> implements IObjectZ
 		this.session=objSession;
 	}
 	
+	public Session getSessionOpen() throws ExceptionZZZ{
+		Session objReturn = null;
+		
+		if(this.session==null){
+			IHibernateContextProviderZZZ objHibernateContext = this.getHibernateContextProvider();
+			if(objHibernateContext==null){
+				System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": WARNUNG - Hole Session über GeneralDAO und nicht über HibernateContextProvider !!!");									
+				objReturn= GeneralDAO.getSessionObject();	//Diese Session ist dann auch per SessionFactory Geöffnet.					
+			}else{
+				objReturn = objHibernateContext.getSessionOpen();
+			}
+			
+			if(objReturn==null){				
+				throw new ExceptionZZZ("Session weder aus reinem Hibernate noch aus dem EntityManager (s. HibernateContextProvider) zu holen. Keine HibernateContextProvider vorhanden.", iERROR_PARAMETER_VALUE, this, ReflectCodeZZZ.getMethodCurrentName());
+			}else{
+				this.setSession(objReturn);
+			}				
+		}
+			
+		// Fehler: "Session Closed", wenn man eine Dao-Methode mehrfach hintereinander ausführen will. Ziel ist: 1 Session für 1 Transaction
+		if(!this.session.isOpen()){
+				throw new ExceptionZZZ("Session ist nicht geöffnet. Sollte es aber sein.", iERROR_PARAMETER_VALUE, this, ReflectCodeZZZ.getMethodCurrentName());					
+		}else{
+			//WICHTIG: FALLS es eine noch nicht geschlossene Transaction gab, diese hier beenden.
+			//Ansonsten droht der Fehler: Nested Transaction not allowed.
+			Transaction tx = this.session.getTransaction();
+			if(tx!=null){
+				//Aber wg. Fehlermeldung: Transaction not successfully started
+				//Diese liegt wohl daran, dass ich nach jeder Session Erzeugung eine Transaction beginne. Sicher ist sicher.
+				//Hohle ich dann mit getSession() eine neue Session ist die alte ggfs. noch nicht mal angefangen. (durch ein .save(), .commit().
+				//Lösungsansatz: Frage den Status der Transaction ab.
+				//wohl so nicht complilierbar if (tx.getStatus().equals(TransactionStatus.ACTIVE)) {
+				if(!tx.wasCommitted()){
+					//tx.commit();
+					//tx.rollback(); //Es gibt wohl einen Grund warum noch nicht committed wurde
+					if(tx.isActive()){
+						System.out.println(ReflectCodeZZZ.getMethodCurrentName() + ": XXXXX NEUE SESSION TROTZ AKTIVER TRANSACTION ########");
+					}
+				}
+			}
+		}		
+		return this.session;		
+	}
+	
+
+	
+	public Session getSessionCurrent(){
+		return this.session;				
+	}
+
+	public Session getSessionNew(){
+		Session objReturn = null;
+		
+		//1. Session schon vorhanden
+		Session session = this.getSessionCurrent();
+		if(session!=null){
+			if(session.isOpen()){		
+				//WICHTIG: FALLS es eine noch nicht geschlossene Transaction gab, diese hier beenden.
+				//Ansonsten droht der Fehler: Nested Transaction not allowed.
+				Transaction tx = this.session.getTransaction();
+				if(tx!=null){
+					//Aber wg. Fehlermeldung: Transaction not successfully started
+					//Diese liegt wohl daran, dass ich nach jeder Session Erzeugung eine Transaction beginne. Sicher ist sicher.
+					//Hohle ich dann mit getSession() eine neue Session ist die alte ggfs. noch nicht mal angefangen. (durch ein .save(), .commit().
+					//Lösungsansatz: Frage den Status der Transaction ab.
+					//wohl so nicht complilierbar if (tx.getStatus().equals(TransactionStatus.ACTIVE)) {
+					if(!tx.wasCommitted()){
+						//tx.commit();
+						//tx.rollback(); //Es gibt wohl einen Grund warum noch nicht committed wurde
+						if(tx.isActive()){
+							System.out.println(ReflectCodeZZZ.getMethodCurrentName() + ": XXXXX NEUE SESSION TROTZ AKTIVER TRANSACTION ########");
+						}
+					}
+				}
+			}
+			this.setSession(null);
+		}
+		objReturn = this.getSession();
+		return objReturn;
+	}
+	
+	public T findByKey(IPrimaryKeys primaryKey) {
+//		log.debug("getting " + this.getT().toString() + " instance with id: " + primaryKey);
+
+		try {
+			this.begin();
+			@SuppressWarnings("unchecked")
+			T instance = (T) getSession().get(this.getT(), primaryKey);
+			this.commit();
+			if (instance == null) {
+				log.debug("get successful, no instance found");
+			}
+			else {
+				log.debug("get successful, instance found");
+				//getSession().refresh(instance);//RELOAD FROM DB!
+			}
+			return instance;
+		}
+		catch (Exception e) {
+			log.error("Method findByKey failed +\n" + session.hashCode() + "\n ThreadID:" + Thread.currentThread().getId() +"\n" , e);
+			return null;
+		}
+		finally {
+			if (getSession().getTransaction().isActive()) {
+				this.rollback();
+				log.debug("Method findByKey rollback executed");
+			}
+		}
+	}
 	
 	//#### GETTER / SETTER 
 	public void setHibernateContextProvider(IHibernateContextProviderZZZ objContextHibernate){

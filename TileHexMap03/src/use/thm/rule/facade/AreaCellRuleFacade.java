@@ -120,10 +120,7 @@ public class AreaCellRuleFacade  extends GeneralRuleFacadeTHM{
 			//VERSUCH AUF ANDEREM WEG EINE SESSION ZU BEKOMMEN OHNE DIE AKTUELLE ZU SCHLIESEN:						
 			//VERSUCH DIE AKTUELLE SESSION WEITERZUVERWENDEN & DIE AKTUELLE TRANSACTION. ICH FÜRCHTE DAS IST ABER NUR MÖGLICH BEI REINEN LESEOPERATIONEN!!!
 				
-				
-			
-				//Session session = this.getSessionCurrent();
-				Session session = this.getSession();
+				Session session = this.getSessionOpen();
 				if(session == null) break main;
 				//System.out.println(ReflectCodeZZZ.getMethodCurrentName() + ": Starte Transaction:....");
 				//session.getTransaction().begin();//Ein zu persistierendes Objekt - eine Transaction, auch wenn mehrere in einer Transaction abzuhandeln wären, aber besser um Fehler abfangen zu können.

@@ -87,8 +87,7 @@ public class TroopFleetRuleFacade  extends GeneralRuleFacadeTHM{
 				//4. Ansatz
 				//VERSUCH AUF ANDEREM WEG EINE SESSION ZU BEKOMMEN OHNE DIE AKTUELLE ZU SCHLIESEN:						
 				//VERSUCH DIE AKTUELLE SESSION WEITERZUVERWENDEN & DIE AKTUELLE TRANSACTION. ICH FÜRCHTE DAS IST ABER NUR MÖGLICH BEI REINEN LESEOPERATIONEN!!!
-				Session session = this.getSession();
-				//Session session = this.getSessionCurrent();
+				Session session = this.getSessionOpen();
 				if(session == null) break main;	
 //				System.out.println(ReflectCodeZZZ.getMethodCurrentName() + ": Starte Transaction:....");				
 //				session.getTransaction().begin();//Ein zu persistierendes Objekt - eine Transaction, auch wenn mehrere in einer Transaction abzuhandeln wären, aber besser um Fehler abfangen zu können.
@@ -121,8 +120,7 @@ public class TroopFleetRuleFacade  extends GeneralRuleFacadeTHM{
 				}else{
 										
 					//TODO GOON 20170726: Stacking Limit prüfen
-					Session session = this.getSession();	//Vesuch eine neue Session zu bekommen. Merke: Die Session wird hier nicht gespeichert! Wg. 1 Transaktion ==> 1 Session
-					//Session session = this.getSessionCurrent();	
+					Session session = this.getSessionOpen();	//Vesuch eine neue Session zu bekommen. Merke: Die Session wird hier nicht gespeichert! Wg. 1 Transaktion ==> 1 Session
 					if(session == null) break main;		
 //					System.out.println(ReflectCodeZZZ.getMethodCurrentName() + ": Starte Transaction:....");
 //					session.getTransaction().begin();//Ein zu persistierendes Objekt - eine Transaction, auch wenn mehrere in einer Transaction abzuhandeln wären, aber besser um Fehler abfangen zu können.

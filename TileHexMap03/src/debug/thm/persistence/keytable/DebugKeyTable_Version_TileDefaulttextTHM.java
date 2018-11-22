@@ -304,9 +304,8 @@ public class DebugKeyTable_Version_TileDefaulttextTHM {
 			
 				//###################
 				//1. Speicher den Defaulttext
-				//####################					
-				//Session session = this.getSession();	//Vesuch eine neue Session zu bekommen. Merke: Die Session wird hier nicht gespeichert! Wg. 1 Transaktion ==> 1 Session
-				Session session = objContextHibernate.getSession();
+				//####################									
+				Session session = objContextHibernate.getSessionOpen();
 				if(session == null) break main;	
 				System.out.println(ReflectCodeZZZ.getMethodCurrentName() + ": Starte Transaction:....");
 				session.getTransaction().begin();//Ein zu persistierendes Objekt - eine Transaction, auch wenn mehrere in einer Transaction abzuhandeln wären, aber besser um Fehler abfangen zu können.
@@ -380,9 +379,8 @@ public class DebugKeyTable_Version_TileDefaulttextTHM {
 			
 				//###################
 				//1. Speicher den Defaulttext
-				//####################					
-				//Session session = this.getSession();	//Vesuch eine neue Session zu bekommen. Merke: Die Session wird hier nicht gespeichert! Wg. 1 Transaktion ==> 1 Session
-				Session session = objContextHibernate.getSession();
+				//####################									
+				Session session = objContextHibernate.getSessionOpen();
 				if(session == null) break main;	
 				System.out.println(ReflectCodeZZZ.getMethodCurrentName() + ": Starte Transaction:....");
 				session.getTransaction().begin();//Ein zu persistierendes Objekt - eine Transaction, auch wenn mehrere in einer Transaction abzuhandeln wären, aber besser um Fehler abfangen zu können.
@@ -456,9 +454,8 @@ public class DebugKeyTable_Version_TileDefaulttextTHM {
 			
 				//###################
 				//1. Speicher den Defaulttext
-				//####################					
-				//Session session = this.getSession();	//Vesuch eine neue Session zu bekommen. Merke: Die Session wird hier nicht gespeichert! Wg. 1 Transaktion ==> 1 Session
-				Session session = objContextHibernate.getSession();
+				//####################									
+				Session session = objContextHibernate.getSessionOpen();
 				if(session == null) break main;		
 				System.out.println(ReflectCodeZZZ.getMethodCurrentName() + ": Starte Transaction:....");
 				session.getTransaction().begin();//Ein zu persistierendes Objekt - eine Transaction, auch wenn mehrere in einer Transaction abzuhandeln wären, aber besser um Fehler abfangen zu können.

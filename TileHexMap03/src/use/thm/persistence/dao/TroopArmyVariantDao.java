@@ -72,9 +72,8 @@ public class TroopArmyVariantDao<T> extends TroopVariantDao<T> {
 			System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": START ##############");			
 			
 			try {								
-				IHibernateContextProviderZZZ objContextHibernate = this.getHibernateContextProvider();
-				//Session session = objContextHibernate.getSessionCurrent(); //kürzer: session=this.getSession()
-				Session session = objContextHibernate.getSession();
+				IHibernateContextProviderZZZ objContextHibernate = this.getHibernateContextProvider();				
+				Session session = this.getSessionOpen();
 				if(session == null) break main;	
 				
 				//###################
@@ -96,8 +95,7 @@ public class TroopArmyVariantDao<T> extends TroopVariantDao<T> {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": ENDE ##############");			
-						
+			System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": ENDE ##############");								
 		}//end main:
 		return iReturn;		
 	}
@@ -108,11 +106,9 @@ public class TroopArmyVariantDao<T> extends TroopVariantDao<T> {
 			System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": START: .... Gefundener Enum-Name: " + sEnumAlias);
 			
 			try {				
-			Session session = this.getSession();
-		    //Session session = this.getSessionCurrent();
+			Session session = this.getSessionOpen();
 			if(session == null) break main;			
-			//session.getTransaction().begin();//Ein zu persistierendes Objekt - eine Transaction, auch wenn mehrere in einer Transaction abzuhandeln wären, aber besser um Fehler abfangen zu können.
-
+			
 			TroopArmyVariant objValueTemp = new TroopArmyVariant();//Quasi als Dummy, aus dem die Enumeration (angelegt als innere Klasse) ausgelesen werden kann.
 
 			//DAS GEHT NICHT, DA JAVA IMMER EIN PASS_BY_VALUE MACHT.
@@ -212,7 +208,7 @@ public class TroopArmyVariantDao<T> extends TroopVariantDao<T> {
 			//####################################################################################################
 			//### Erzeugen der Variante. Merke: Sie ist immutable, also alles nur über den Konstruktor erzeugen.
 			//####################################################################################################		
-			session = this.getSession(); //Die Session am Anfang ist durch die vielen anderen DaoObjekte und deren Aktionen bestimmt schon geschlossen.
+			session = this.getSessionOpen(); //Die Session am Anfang ist durch die vielen anderen DaoObjekte und deren Aktionen bestimmt schon geschlossen.
 			validEntry:{
 				boolean bGoon = false;
 				String sMessage = new String("");
@@ -463,8 +459,7 @@ public boolean isVariantStandard(long lngThisIdKey) throws ExceptionZZZ {
 public List<TroopArmyVariant> searchTroopArmyVariantsAll() throws ExceptionZZZ{ //TODO GOON: Sortierung... , int iSortedDirection, boolean bAscending){
 	List<TroopArmyVariant> listReturn = new ArrayList<TroopArmyVariant>();
 	main:{
-		Session session = this.getSession();
-	    //Session session = this.getSessionCurrent();
+		Session session = this.getSessionOpen();
 		if(session == null) break main;	
 		System.out.println(ReflectCodeZZZ.getMethodCurrentName() + ": Starte Transaction:....");
 		session.getTransaction().begin();//Ein zu persistierendes Objekt - eine Transaction, auch wenn mehrere in einer Transaction abzuhandeln wären, aber besser um Fehler abfangen zu können.

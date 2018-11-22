@@ -1,0 +1,24 @@
+# MERKE1 : Dies log4j.properties Datei muss im Classpath vorhanden sein, 
+#           sonst Fehlermeldung 'No appenders could be found for logger (org.jboss.logging).'
+           
+# Merke2: Den Namen der Datei kann man ggfs. als Aufruf-Systemparameter ändern
+#         java -Dlog4j.configuration=customNam
+
+ 
+
+
+#Log to Console as STDOUT
+log4j.appender.stdout=org.apache.log4j.ConsoleAppender
+log4j.appender.stdout.Target=System.out
+log4j.appender.stdout.layout=org.apache.log4j.PatternLayout
+log4j.appender.stdout.layout.ConversionPattern=%d{yyyy-MM-dd HH:mm:ss} %-5p %c %3x - %m%n
+#Log to file FILE
+log4j.appender.file=org.apache.log4j.DailyRollingFileAppender
+log4j.appender.file.File=logfile.log
+log4j.appender.file.DatePattern='.'yyyy-MM-dd
+log4j.appender.file.append=true
+log4j.appender.file.layout=org.apache.log4j.PatternLayout
+log4j.appender.file.layout.ConversionPattern=%d{yyyy-MM-dd HH:mm:ss} %-5p %c %3x - %m%n
+
+#Root Logger
+log4j.rootLogger=INFO, stdout, file

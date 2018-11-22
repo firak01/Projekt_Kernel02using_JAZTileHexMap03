@@ -116,7 +116,8 @@ public abstract class AbstractKeyDao<T> extends GeneralDaoZZZ<T> implements IThi
 	public Key searchThiskey(Long lngThiskey){
 		Key objReturn = null;
 		main:{
-			Session session = this.getSession();	//Versuch eine neue Session zu bekommen. Merke: Die Session wird hier nicht gespeichert! Wg. 1 Transaktion ==> 1 Session			
+			try {
+			Session session = this.getSessionOpen();	//Versuch eine neue Session zu bekommen. Merke: Die Session wird hier nicht gespeichert! Wg. 1 Transaktion ==> 1 Session			
 			if(session == null) break main;			
 			System.out.println(ReflectCodeZZZ.getMethodCurrentName() + ": Starte Transaction:....");
 			session.getTransaction().begin();//Ein zu persistierendes Objekt - eine Transaction, auch wenn mehrere in einer Transaction abzuhandeln wären, aber besser um Fehler abfangen zu können.
@@ -176,6 +177,10 @@ public abstract class AbstractKeyDao<T> extends GeneralDaoZZZ<T> implements IThi
 //			break validEntry;
 //		}
 		
+			} catch (ExceptionZZZ e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}//end main:
 		return objReturn;
 	}
@@ -183,7 +188,8 @@ public abstract class AbstractKeyDao<T> extends GeneralDaoZZZ<T> implements IThi
 	public Key searchKey(String sKeyType, Long lngThiskey){
 		Key objReturn = null;
 		main:{
-		Session session = this.getSession();	//Versuch eine neue Session zu bekommen. Merke: Die Session wird hier nicht gespeichert! Wg. 1 Transaktion ==> 1 Session			
+			try{
+		Session session = this.getSessionOpen();	//Versuch eine neue Session zu bekommen. Merke: Die Session wird hier nicht gespeichert! Wg. 1 Transaktion ==> 1 Session			
 		if(session == null) break main;			
 		System.out.println(ReflectCodeZZZ.getMethodCurrentName() + ": Starte Transaction:....");
 		session.getTransaction().begin();//Ein zu persistierendes Objekt - eine Transaction, auch wenn mehrere in einer Transaction abzuhandeln wären, aber besser um Fehler abfangen zu können.
@@ -228,6 +234,10 @@ public abstract class AbstractKeyDao<T> extends GeneralDaoZZZ<T> implements IThi
 		session.getTransaction().commit();
 		
 		objReturn = (Key) objResult;
+			} catch (ExceptionZZZ e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}//end main:
 		return objReturn;
 	}

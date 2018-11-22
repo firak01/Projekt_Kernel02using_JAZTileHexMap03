@@ -15,6 +15,7 @@ import org.hibernate.LockOptions;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.Session.LockRequest;
+import org.hibernate.Transaction;
 import org.hibernate.collection.internal.PersistentBag;
 import org.hibernate.engine.spi.SessionImplementor;
 import org.hibernate.event.spi.EventType;
@@ -169,8 +170,7 @@ public class TroopArmyDaoFacade extends TileDaoFacade{
 			//####################		
 			
 			//+++ DAS ENTITY UND VERBUNDENE OBJEKTE  ++++++++++++++++++++
-			Session session = this.getSession();
-			//Session session = this.getSessionCurrent(); //VErsuch die Session wiederzuverwenden...    //.getSession();	//Vesuch eine neue Session zu bekommen. Merke: Die Session wird hier nicht gespeichert! Wg. 1 Transaktion ==> 1 Session
+			Session session = this.getSessionOpen();
 			if(session == null) break main;	
 //			System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": Starte Transaction:....");
 //			session.getTransaction().begin();//Ein zu persistierendes Objekt - eine Transaction, auch wenn mehrere in einer Transaction abzuhandeln wären, aber besser um Fehler abfangen zu können.
@@ -190,9 +190,8 @@ public class TroopArmyDaoFacade extends TileDaoFacade{
 			objTroopTemp.setHealth(fltHealthInitial.floatValue());
 			
 			//+++ DAS ENTITY SELBST  ++++++++++++++++++++
-			session = this.getSession();
-			//Session session = this.getSessionCurrent(); //VErsuch die Session wiederzuverwenden...    //.getSession();	//Vesuch eine neue Session zu bekommen. Merke: Die Session wird hier nicht gespeichert! Wg. 1 Transaktion ==> 1 Session
-			if(session == null) break main;	
+//			session = this.getSessionOpen();
+//			if(session == null) break main;	
 			System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": Starte Transaction:....");
 			session.getTransaction().begin();//Ein zu persistierendes Objekt - eine Transaction, auch wenn mehrere in einer Transaction abzuhandeln wären, aber besser um Fehler abfangen zu können.
 
@@ -260,7 +259,7 @@ public class TroopArmyDaoFacade extends TileDaoFacade{
 			//3. Aktualisiere die Hex-Zelle, füge die TroopArmy der Liste hinzu, damit die Hex-Zelle weiss welche TroopArmies in ihr stehen.
 			//####################		
 			//session = this.getSession();			//Vesuch eine neue Session zu bekommen. Merke: Die Session wird hier nicht gespeichert! Wg. 1 Transaktion ==> 1 Session
-			session = this.getSessionCurrent();
+			session = this.getSessionOpen();
 			if(session == null) break main;		
 			System.out.println(ReflectCodeZZZ.getMethodCurrentName() + ": Starte Transaction:....");
 			session.getTransaction().begin();
@@ -372,8 +371,7 @@ public class TroopArmyDaoFacade extends TileDaoFacade{
 			
 				//+++ 4.1 Datenbankoperationen: Entferne aus der Ausgangszelle
 				System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": Ausgangszelle. Anzahl Tiles=" + objCellStarted.getTileBag().size());
-				Session session = this.getSession();	//Vesuch eine neue Session zu bekommen. Merke: Die Session wird hier nicht gespeichert! Wg. 1 Transaktion ==> 1 Session
-				//Session session = this.getSessionCurrent();
+				Session session = this.getSessionOpen();	//Vesuch eine neue Session zu bekommen. Merke: Die Session wird hier nicht gespeichert! Wg. 1 Transaktion ==> 1 Session
 				if(session == null) break main;	
 				System.out.println(ReflectCodeZZZ.getMethodCurrentName() + ": Starte Transaction:....");
 				session.getTransaction().begin();//Ein zu persistierendes Objekt - eine Transaction, auch wenn mehrere in einer Transaction abzuhandeln wären, aber besser um Fehler abfangen zu können.
@@ -424,8 +422,7 @@ public class TroopArmyDaoFacade extends TileDaoFacade{
 			*/ 
 			   
 			//+++ 4.2: Datenbankoperation: Aktualisiere die Troop mit der neuen Position/dem neuien HexFeld.		
-			session = this.getSession();	//Vesuch eine neue Session zu bekommen. Merke: Die Session wird hier nicht gespeichert! Wg. 1 Transaktion ==> 1 Session
-			//session = this.getSessionCurrent();
+			session = this.getSessionOpen();	//Vesuch eine neue Session zu bekommen. Merke: Die Session wird hier nicht gespeichert! Wg. 1 Transaktion ==> 1 Session
 			if(session == null) break main;	
 			System.out.println(ReflectCodeZZZ.getMethodCurrentName() + ": Starte Transaction:....");
 			session.getTransaction().begin();//Ein zu persistierendes Objekt - eine Transaction, auch wenn mehrere in einer Transaction abzuhandeln wären, aber besser um Fehler abfangen zu können.
@@ -440,8 +437,7 @@ public class TroopArmyDaoFacade extends TileDaoFacade{
 			//wenn man .save() aufruft, wird immer eine neue Zeile mit dem Objekt erzeugt, auch wenn man ein bestehendes aktualisieren möchte session.save(objTroopArmy); //Hibernate Interceptor wird aufgerufen
 			//Alternative: Siehe https://stackoverflow.com/questions/30473707/hibernate-creates-new-row-on-save-and-not-updates
 			//session.saveOrUpdate(objTroopArmy); //Hibernate Interceptor wird aufgerufen
-			session = this.getSession();	//Vesuch eine neue Session zu bekommen. Merke: Die Session wird hier nicht gespeichert! Wg. 1 Transaktion ==> 1 Session
-			//session = this.getSessionCurrent();
+			session = this.getSessionOpen();	//Vesuch eine neue Session zu bekommen. Merke: Die Session wird hier nicht gespeichert! Wg. 1 Transaktion ==> 1 Session
 			if(session == null) break main;		
 			System.out.println(ReflectCodeZZZ.getMethodCurrentName() + ": Starte Transaction:....");
 			session.getTransaction().begin();//Ein zu persistierendes Objekt - eine Transaction, auch wenn mehrere in einer Transaction abzuhandeln wären, aber besser um Fehler abfangen zu können.
@@ -512,8 +508,7 @@ public class TroopArmyDaoFacade extends TileDaoFacade{
 			*/
 			
 			//++++++++ 4.3 Datanbankoperationen Aktualisiere die Hex-Zelle, füge die TroopArmy der Liste hinzu, damit die Hex-Zelle weiss welche TroopArmies in ihr stehen.
-			//session = this.getSession();
-			session = this.getSessionCurrent();			//Vesuch eine neue Session zu bekommen. Merke: Die Session wird hier nicht gespeichert! Wg. 1 Transaktion ==> 1 Session
+			session = this.getSessionOpen();			//Vesuch eine neue Session zu bekommen. Merke: Die Session wird hier nicht gespeichert! Wg. 1 Transaktion ==> 1 Session
 			if(session == null) break main;		
 			System.out.println(ReflectCodeZZZ.getMethodCurrentName() + ": Starte Transaction:....");
 			session.getTransaction().begin();
@@ -635,14 +630,11 @@ public class TroopArmyDaoFacade extends TileDaoFacade{
 				AreaCell objCellStarted = objAreaDaoSource.findByKey(primaryKeyCellStarted);//Spannend. Eine Transaction = Eine Session, d.h. es müsste dann wieder eine neue Session gemacht werden, beim zweiten DAO Aufruf.
 				
 				System.out.println("Ausgangszelle. Anzahl Tiles=" + objCellStarted.getTileBag().size());
-				if(objCellStarted.getTileBag().size()>=1){				
+				if(objCellStarted.getTileBag().size()>=1){	
 					//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-					//session = this.getSession();	//Vesuch eine neue Session zu bekommen. Merke: Die Session wird hier nicht gespeichert! Wg. 1 Transaktion ==> 1 Session
-					session = this.getSessionCurrent();
+					//session = this.getSessionNew();//Spannend. Eine Transaction = Eine Session, d.h. es müsste dann wieder eine neue Session gemacht werden, beim zweiten DAO Aufruf.
+					session = this.getSessionOpen();
 					if(session == null) break main;		
-					System.out.println(ReflectCodeZZZ.getMethodCurrentName() + ": Starte Transaction:....");
-					session.getTransaction().begin();//Ein zu persistierendes Objekt - eine Transaction, auch wenn mehrere in einer Transaction abzuhandeln wären, aber besser um Fehler abfangen zu können.
-					System.out.println("Ausgangszelle. Anzahl Tiles=" + objCellStarted.getTileBag().size());
 					
 					//ALSO: Ich bin mir nicht sicher, ob objTroopArmy in der TileBag gefunden wird.
 					//1. VErsuch: Darum nicht so einfach, statt dessen versuchen wieder ein Objekt im persistant state zu bekommen:
@@ -659,12 +651,24 @@ public class TroopArmyDaoFacade extends TileDaoFacade{
 					
 					//sondern als Notlösung: 
 					//objCellStarted.getTileBag().clear();
-					
+		
+					//Reicht es das aus dem PersistentBag zu entfernen. Muss dann nicht die Zelle noch aktualisiert werden?
+					//Dies erst mal auskommentiert wg. Fehler: Caused by: org.hibernate.HibernateException: Illegal attempt to associate a collection with two open sessions
 	//				session.saveOrUpdate(objCellStarted); //Hibernate Interceptor wird aufgerufen
-					session.update(objCellStarted); //Hibernate Interceptor wird aufgerufen
+	//				session.update(objCellStarted); //Hibernate Interceptor wird aufgerufen 
 					System.out.println("Ausgangszelle. Anzahl Tiles nach UPDATE =" + objCellStarted.getTileBag().size());
-					session.getTransaction().commit();
-					if (!session.getTransaction().wasCommitted()) {
+					
+					System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": Starte Transaction:....");
+					Transaction tx = session.getTransaction();
+					if(tx.isActive()){
+						System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": Nutze noch aktive Transaction.");
+					}else{
+						System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": Transaction ist nicht aktiv.");
+						tx = session.beginTransaction();
+					}
+					
+					if (!tx.wasCommitted()) {
+						tx.commit();
 						
 						//VErsuch die Werte der neuen xSpalte yZeile in der Datenbank zu aktualisiere, mit flush()... 
 						//session.flush(); //Datenbank synchronisation, d.h. Inserts und Updates werden gemacht. ABER es wird noch nix committed.
@@ -685,6 +689,8 @@ public class TroopArmyDaoFacade extends TileDaoFacade{
 						this.getFacadeResult().setMessage(sMessage);
 						break main;
 					}
+					
+					pbag.unsetSession((SessionImplementor) session); //WG. Fehler: Caused by: org.hibernate.HibernateException: Illegal attempt to associate a collection with two open sessions
 				}//end if: (objCellStarted.getTileBag().size()>=1)
 				
 				//############################
@@ -692,19 +698,23 @@ public class TroopArmyDaoFacade extends TileDaoFacade{
 				//############################
 				
 				//+++ Datenbankoperationen		
-				session = this.getSession();	//Vesuch eine neue Session zu bekommen. Merke: Die Session wird hier nicht gespeichert! Wg. 1 Transaktion ==> 1 Session
-				//session = this.getSessionCurrent();
+				session = this.getSessionOpen();	//Vesuch eine neue Session zu bekommen. Merke: Die Session wird hier nicht gespeichert! Wg. 1 Transaktion ==> 1 Session
 				if(session == null) break main;	
 				System.out.println(ReflectCodeZZZ.getMethodCurrentName() + ": Starte Transaction:....");
-				session.getTransaction().begin();//Ein zu persistierendes Objekt - eine Transaction, auch wenn mehrere in einer Transaction abzuhandeln wären, aber besser um Fehler abfangen zu können.
-				
+				Transaction tx = session.getTransaction();
+				if(tx.isActive()){
+					System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": Nutze noch aktive Transaction.");
+				}else{
+					System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": Transaction ist nicht aktiv.");
+					tx = session.beginTransaction();
+				}
 				session.delete(objTroopArmy);
 				
 				//FLUSH IST HIER NOTWENDIG, UM DIE JOIN-Tabelle HEXCELL_TILE um den Eintrag zu reduzieren, ansonsten habe ich es nicht hinbekommen.
 				session.flush(); //Datenbank ynchronisation, d.h. Inserts und Updates werden gemacht. ABER es wird noch nix committed.
-			
-				session.getTransaction().commit();
-				if (!session.getTransaction().wasCommitted()) {
+
+				if (!tx.wasCommitted()) {
+					tx.commit();///SaveOrUpdate-Listener wird ausgeführt, FÜR EIN TROOPARMY OBJEKT!!!
 					
 					//Versuch die Werte der neuen xSpalte yZeile in der Datenbank zu aktualisiere, mit flush()... 
 					//session.flush(); //Datenbank synchronisation, d.h. Inserts und Updates werden gemacht. ABER es wird noch nix committed.

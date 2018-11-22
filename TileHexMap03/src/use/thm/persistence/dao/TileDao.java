@@ -102,6 +102,7 @@ public class TileDao<T> extends GeneralDaoZZZ<T> {
 		public Tile searchTileByUniquename(String sUniquename){
 			Tile objReturn = null;
 			main:{
+				try{
 //			select mate
 //			from Cat as cat
 //			    inner join cat.mate as mate
@@ -111,8 +112,7 @@ public class TileDao<T> extends GeneralDaoZZZ<T> {
 			//listReturn = this.findByHQL(sHql, 0, 0);//start ist indexwert also 0 = erster Wert, Danach folgt maximale Anzahl von Objekten.
 			
 			//2. Beispiel: Etwas sicherer ist es die Parameter mit Platzhaltern zu füllen
-			Session session = this.getSession();
-		    //Session session = this.getSessionCurrent();
+			Session session = this.getSessionOpen();
 			if(session == null) break main;	
 			System.out.println(ReflectCodeZZZ.getMethodCurrentName() + ": Starte Transaction:....");
 			session.getTransaction().begin();//Ein zu persistierendes Objekt - eine Transaction, auch wenn mehrere in einer Transaction abzuhandeln wären, aber besser um Fehler abfangen zu können.
@@ -157,13 +157,17 @@ public class TileDao<T> extends GeneralDaoZZZ<T> {
 			
 			session.getTransaction().commit();
 			objReturn = (Tile) objResult;
+				} catch (ExceptionZZZ e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 			}//end main:
 			return objReturn;
 		}
 		
 		public List<Tile> searchTileCollectionByHexCell(String sMapAlias, String sX, String sY){
 			List<Tile> listReturn = new ArrayList<Tile>();
-			
+			try{
 //			select mate
 //			from Cat as cat
 //			    inner join cat.mate as mate
@@ -173,7 +177,7 @@ public class TileDao<T> extends GeneralDaoZZZ<T> {
 			//listReturn = this.findByHQL(sHql, 0, 0);//start ist indexwert also 0 = erster Wert, Danach folgt maximale Anzahl von Objekten.
 			
 			//2. Beispiel: Etwas sicherer ist es die Parameter mit Platzhaltern zu füllen
-			Session session = this.getSession();
+			Session session = this.getSessionOpen();
 			//liefert die ID Spalte als Integer zurück, also nicht das TileId Objekt...  Query query = session.createQuery("SELECT id from Tile as tableTile");
 			//                                                       wird nicht gefunden Query query = session.createQuery("SELECT TileIdObject from Tile as tableTile");
 			
@@ -205,7 +209,10 @@ public class TileDao<T> extends GeneralDaoZZZ<T> {
 			
 			//3. Beispiel
 			//TODO: Nicht den statischen HQL Ansatz, sondern über die Criteria API, d.h. die Where - Bedingung zur Laufzeit zusammensetzen
-					
+			} catch (ExceptionZZZ e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}	
 			return listReturn;
 		}
 		

@@ -154,7 +154,7 @@ public class TryoutReadBinaryImageForVariant {
 		
 		/*++++++++++++++*/
 		//Erzeugen der Entities		
-		Session session = objContextHibernate.getSession();
+		Session session = objContextHibernate.getSessionOpen();
 		
 		
 		

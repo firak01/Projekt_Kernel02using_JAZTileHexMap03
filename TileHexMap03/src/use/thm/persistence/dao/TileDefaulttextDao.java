@@ -68,9 +68,7 @@ public class TileDefaulttextDao<T> extends DefaulttextDao<T> {
 			
 			try{
 				IHibernateContextProviderZZZ objContextHibernate = this.getHibernateContextProvider();
-				Session session = objContextHibernate.getSessionCurrent(); //kürzer: session=this.getSession()
-				//Session session = this.getSession();
-			    //Session session = this.getSessionCurrent();
+				Session session = this.getSessionOpen();
 				if(session == null) break main;
 				
 				validEntry:{
@@ -153,9 +151,7 @@ public class TileDefaulttextDao<T> extends DefaulttextDao<T> {
 			
 			try {				
 				IHibernateContextProviderZZZ objContextHibernate = this.getHibernateContextProvider();
-				Session session = objContextHibernate.getSession(); 
-				//Session session = this.getSession();
-			    //Session session = this.getSessionCurrent();
+				Session session = this.getSessionOpen(); 				
 				if(session == null) break main;			
 				//Nein, das wird in der Schleife gemacht: session.getTransaction().begin();//Ein zu persistierendes Objekt - eine Transaction, auch wenn mehrere in einer Transaction abzuhandeln wären, aber besser um Fehler abfangen zu können.
 				

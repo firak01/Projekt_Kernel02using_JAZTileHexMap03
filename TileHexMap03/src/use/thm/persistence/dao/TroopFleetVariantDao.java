@@ -72,7 +72,7 @@ public class TroopFleetVariantDao<T> extends TroopVariantDao<T> {
 			
 			try {				
 				IHibernateContextProviderZZZ objContextHibernate = this.getHibernateContextProvider();
-				Session session = objContextHibernate.getSession(); //kürzer: session=this.getSession()
+				Session session = this.getSessionOpen();
 				if(session == null) break main;	
 				
 				//###################
@@ -214,10 +214,7 @@ public class TroopFleetVariantDao<T> extends TroopVariantDao<T> {
 			//####################################################################################################
 			//### Erzeugen der Variante. Merke: Sie ist immutable, also alles nur über den Konstruktor erzeugen.
 			//####################################################################################################
-			Session session = objContextHibernate.getSession(); //kürzer: session=this.getSession()
-			//session = this.getSession(); //Die Session am Anfang ist durch die vielen anderen DaoObjekte und deren Aktionen bestimmt schon geschlossen.
-			//session = objContextHibernate.getSessionCurrent();
-			
+			Session session = this.getSessionOpen();
 			validEntry:{
 			boolean bGoon = false;
 			String sMessage = new String("");
@@ -410,9 +407,7 @@ public boolean isVariantStandard(long lngThisIdKey) throws ExceptionZZZ {
 	boolean bReturn = false;
 	main:{			
 		IHibernateContextProviderZZZ objContextHibernate = this.getHibernateContextProvider();
-		Session session = objContextHibernate.getSessionCurrent(); //kürzer: session=this.getSession()
-		//Session session = this.getSession();
-	    //Session session = this.getSessionCurrent();
+		Session session = this.getSessionOpen();
 		if(session == null) break main;			
 		//NEIN wird in der Schleife gemacht session.getTransaction().begin();//Ein zu persistierendes Objekt - eine Transaction, auch wenn mehrere in einer Transaction abzuhandeln wären, aber besser um Fehler abfangen zu können.
 
@@ -466,8 +461,7 @@ public boolean isVariantStandard(long lngThisIdKey) throws ExceptionZZZ {
 public List<TroopFleetVariant> searchTroopFleetVariantsAll() throws ExceptionZZZ{ //TODO GOON: Sortierung... , int iSortedDirection, boolean bAscending){
 	List<TroopFleetVariant> listReturn = new ArrayList<TroopFleetVariant>();
 	main:{
-		Session session = this.getSession();
-	    //Session session = this.getSessionCurrent();
+		Session session = this.getSessionOpen();
 		if(session == null) break main;	
 		System.out.println(ReflectCodeZZZ.getMethodCurrentName() + ": Starte Transaction:....");
 		session.getTransaction().begin();//Ein zu persistierendes Objekt - eine Transaction, auch wenn mehrere in einer Transaction abzuhandeln wären, aber besser um Fehler abfangen zu können.

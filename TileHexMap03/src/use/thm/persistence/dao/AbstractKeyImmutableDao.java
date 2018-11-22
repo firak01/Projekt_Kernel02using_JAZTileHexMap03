@@ -117,8 +117,8 @@ public abstract class AbstractKeyImmutableDao<T> extends GeneralDaoZZZ<T>  imple
 	public KeyImmutable searchThiskey(Long lngThiskey){
 		KeyImmutable objReturn = null;
 		main:{
-			Session session = this.getSession();	//Versuch eine neue Session zu bekommen. Merke: Die Session wird hier nicht gespeichert! Wg. 1 Transaktion ==> 1 Session
-		    //Session session = this.getSessionCurrent();
+			try{
+			Session session = this.getSessionOpen();	//Versuch eine neue Session zu bekommen. Merke: Die Session wird hier nicht gespeichert! Wg. 1 Transaktion ==> 1 Session
 			if(session == null) break main;	
 			System.out.println(ReflectCodeZZZ.getMethodCurrentName() + ": Starte Transaction:....");
 			session.getTransaction().begin();//Ein zu persistierendes Objekt - eine Transaction, auch wenn mehrere in einer Transaction abzuhandeln wären, aber besser um Fehler abfangen zu können.
@@ -146,7 +146,10 @@ public abstract class AbstractKeyImmutableDao<T> extends GeneralDaoZZZ<T>  imple
 //			this.getFacadeResult().setMessage(sMessage);
 //			break validEntry;
 //		}
-		
+			} catch (ExceptionZZZ e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}//end main:
 		return objReturn;
 	}
@@ -173,7 +176,8 @@ public abstract class AbstractKeyImmutableDao<T> extends GeneralDaoZZZ<T>  imple
 	public KeyImmutable searchKey(String sKeyType, Long lngThiskey){
 		KeyImmutable objReturn = null;
 		main:{
-		Session session = this.getSession();	//Versuch eine neue Session zu bekommen. Merke: Die Session wird hier nicht gespeichert! Wg. 1 Transaktion ==> 1 Session			
+			try{
+		Session session = this.getSessionOpen();	//Versuch eine neue Session zu bekommen. Merke: Die Session wird hier nicht gespeichert! Wg. 1 Transaktion ==> 1 Session			
 		if(session == null) break main;			
 		System.out.println(ReflectCodeZZZ.getMethodCurrentName() + ": Starte Transaction:....");	
 		session.getTransaction().begin();//Ein zu persistierendes Objekt - eine Transaction, auch wenn mehrere in einer Transaction abzuhandeln wären, aber besser um Fehler abfangen zu können.
@@ -218,6 +222,10 @@ public abstract class AbstractKeyImmutableDao<T> extends GeneralDaoZZZ<T>  imple
 
 		session.getTransaction().commit();
 		objReturn = (KeyImmutable) objResult;
+			} catch (ExceptionZZZ e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}//end main:
 		return objReturn;
 	}

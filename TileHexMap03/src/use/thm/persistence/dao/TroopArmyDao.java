@@ -97,6 +97,7 @@ public class TroopArmyDao<T> extends TroopDao<T> {
 		public TroopArmy searchTroopArmyByUniquename(String sUniquename){
 			TroopArmy objReturn = null;
 			main:{
+				try{
 //			select mate
 //			from Cat as cat
 //			    inner join cat.mate as mate
@@ -106,8 +107,7 @@ public class TroopArmyDao<T> extends TroopDao<T> {
 			//listReturn = this.findByHQL(sHql, 0, 0);//start ist indexwert also 0 = erster Wert, Danach folgt maximale Anzahl von Objekten.
 			
 			//2. Beispiel: Etwas sicherer ist es die Parameter mit Platzhaltern zu füllen
-			Session session = this.getSession();
-		    //Session session = this.getSessionCurrent();
+			Session session = this.getSessionOpen();
 			if(session == null) break main;	
 			System.out.println(ReflectCodeZZZ.getMethodCurrentName() + ": Starte Transaction:....");
 			session.getTransaction().begin();//Ein zu persistierendes Objekt - eine Transaction, auch wenn mehrere in einer Transaction abzuhandeln wären, aber besser um Fehler abfangen zu können.
@@ -152,6 +152,10 @@ public class TroopArmyDao<T> extends TroopDao<T> {
 			
 			session.getTransaction().commit();
 			objReturn = (TroopArmy) objResult;
+				} catch (ExceptionZZZ e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 			}//end main:
 			return objReturn;
 		}
@@ -159,6 +163,7 @@ public class TroopArmyDao<T> extends TroopDao<T> {
 		public List<TroopArmy> searchTroopArmyCollectionByHexCell(String sMapAlias, String sX, String sY){
 			List<TroopArmy> listReturn = new ArrayList<TroopArmy>();
 			main:{
+				try{
 //			select mate
 //			from Cat as cat
 //			    inner join cat.mate as mate
@@ -168,8 +173,7 @@ public class TroopArmyDao<T> extends TroopDao<T> {
 			//listReturn = this.findByHQL(sHql, 0, 0);//start ist indexwert also 0 = erster Wert, Danach folgt maximale Anzahl von Objekten.
 			
 			//2. Beispiel: Etwas sicherer ist es die Parameter mit Platzhaltern zu füllen
-			Session session = this.getSession();
-		    //Session session = this.getSessionCurrent();
+			Session session = this.getSessionOpen();		   
 			if(session == null) break main;	
 			System.out.println(ReflectCodeZZZ.getMethodCurrentName() + ": Starte Transaction:....");
 			session.getTransaction().begin();//Ein zu persistierendes Objekt - eine Transaction, auch wenn mehrere in einer Transaction abzuhandeln wären, aber besser um Fehler abfangen zu können.
@@ -205,6 +209,10 @@ public class TroopArmyDao<T> extends TroopDao<T> {
 			session.getTransaction().commit();
 			//3. Beispiel
 			//TODO: Nicht den statischen HQL Ansatz, sondern über die Criteria API, d.h. die Where - Bedingung zur Laufzeit zusammensetzen
+				} catch (ExceptionZZZ e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 			}//end main:	
 			return listReturn;
 		}
@@ -212,8 +220,7 @@ public class TroopArmyDao<T> extends TroopDao<T> {
 		public List<TroopArmy> searchTroopArmiesAll(String sMapAlias) throws ExceptionZZZ{ //TODO GOON: Sortierung... , int iSortedDirection, boolean bAscending){
 			List<TroopArmy> listReturn = new ArrayList<TroopArmy>();
 			main:{
-			Session session = this.getSession();
-		    //Session session = this.getSessionCurrent();
+			Session session = this.getSessionOpen();
 			if(session == null) break main;	
 			System.out.println(ReflectCodeZZZ.getMethodCurrentName() + ": Starte Transaction:....");
 			session.getTransaction().begin();//Ein zu persistierendes Objekt - eine Transaction, auch wenn mehrere in einer Transaction abzuhandeln wären, aber besser um Fehler abfangen zu können.

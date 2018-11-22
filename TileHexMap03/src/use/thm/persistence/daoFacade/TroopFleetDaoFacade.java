@@ -117,8 +117,7 @@ public class TroopFleetDaoFacade extends TileDaoFacade{
 			AreaCell objCellStarted = objAreaDaoSource.findByKey(primaryKeyCellStarted);//Spannend. Eine Transaction = Eine Session, d.h. es müsste dann wieder eine neue Session gemacht werden, beim zweiten DAO Aufruf.
 			
 			System.out.println("Ausgangszelle. Anzahl Tiles=" + objCellStarted.getTileBag().size());
-			Session session = this.getSession();	//Vesuch eine neue Session zu bekommen. Merke: Die Session wird hier nicht gespeichert! Wg. 1 Transaktion ==> 1 Session
-			//Session session = this.getSessionCurrent();
+			Session session = this.getSessionOpen();	//Vesuch eine neue Session zu bekommen. Merke: Die Session wird hier nicht gespeichert! Wg. 1 Transaktion ==> 1 Session
 			if(session == null) break main;	
 			System.out.println(ReflectCodeZZZ.getMethodCurrentName() + ": Starte Transaction:....");
 			session.getTransaction().begin();//Ein zu persistierendes Objekt - eine Transaction, auch wenn mehrere in einer Transaction abzuhandeln wären, aber besser um Fehler abfangen zu können.
@@ -171,8 +170,7 @@ public class TroopFleetDaoFacade extends TileDaoFacade{
 			//############################
 			
 			//+++ Datenbankoperationen		
-			session = this.getSession();	//Vesuch eine neue Session zu bekommen. Merke: Die Session wird hier nicht gespeichert! Wg. 1 Transaktion ==> 1 Session
-			//session = this.getSessionCurrent();
+			session = this.getSessionOpen();	//Vesuch eine neue Session zu bekommen. Merke: Die Session wird hier nicht gespeichert! Wg. 1 Transaktion ==> 1 Session
 			if(session == null) break main;		
 			System.out.println(ReflectCodeZZZ.getMethodCurrentName() + ": Starte Transaction:....");
 			session.getTransaction().begin();//Ein zu persistierendes Objekt - eine Transaction, auch wenn mehrere in einer Transaction abzuhandeln wären, aber besser um Fehler abfangen zu können.
@@ -395,12 +393,9 @@ public class TroopFleetDaoFacade extends TileDaoFacade{
 			//###################
 			//1. Speicher die TroopFleet neu, füge die Area der TroopFleet hinzu, damit sie weiss in welchem Feld sie steht.
 			//####################
-			//Session session = this.getSession();//Vesuch eine neue Session zu bekommen. Merke: Die Session wird hier nicht gespeichert! Wg. 1 Transaktion ==> 1 Session
-			Session session = this.getSessionCurrent();
+			Session session = this.getSessionOpen();
 			if(session == null) break main;		
-//			System.out.println(ReflectCodeZZZ.getMethodCurrentName() + ": Starte Transaction:....");
-//			session.getTransaction().begin();//Ein zu persistierendes Objekt - eine Transaction, auch wenn mehrere in einer Transaction abzuhandeln wären, aber besser um Fehler abfangen zu können.
-			
+		
 			//+++ DAS ENTITY UND VERBUNDENEN OBJEKTE
 			TroopFleet objTroopTemp = new TroopFleet(new TileId("EINS", "1", sUniqueName));//TODO GOON : sY als Uniquename zu verwenden ist nur heuristisch und nicht wirklich UNIQUE						
 //			session.update(objArea);//20170703: GROSSE PROBLEME WG. LAZY INITIALISIERUNG DES PERSISTENTBAG in dem area-Objekt. Versuche damit das zu inisiteliesen.
@@ -419,7 +414,8 @@ public class TroopFleetDaoFacade extends TileDaoFacade{
 			//+++ DAS ERSTELLDATUM ++++++++++++++++++++++++++++++++++++
 			this.makeCreatedDates(objTroopTemp);
 			
-			//Merke: EINE TRANSACTION = EINE SESSION ==>  neue session von der SessionFactory holen
+			System.out.println(ReflectCodeZZZ.getMethodCurrentName() + ": Starte Transaction:....");
+			session.getTransaction().begin();//Ein zu persistierendes Objekt - eine Transaction, auch wenn mehrere in einer Transaction abzuhandeln wären, aber besser um Fehler abfangen zu können.						
 			session.save(objTroopTemp); //Hibernate Interceptor wird aufgerufen	: HibernateInterceptorTHM.java	
 
 			//			session.update(objTroopTemp); //Hibernate Interceptor wird aufgerufen
@@ -478,9 +474,8 @@ public class TroopFleetDaoFacade extends TileDaoFacade{
 			
 			//###################
 			//2. Aktualisiere die Hex-Zelle, füge die TroopFleet der Liste hinzu, damit die Hex-Zelle weiss welche TroopFleets in ihr stehen.
-			//####################		
-			//session = this.getSession();//Vesuch eine neue Session zu bekommen. Merke: Die Session wird hier nicht gespeichert! Wg. 1 Transaktion ==> 1 Session
-			session = this.getSessionCurrent();
+			//####################					
+			session = this.getSessionOpen();
 			if(session == null) break main;	
 			System.out.println(ReflectCodeZZZ.getMethodCurrentName() + ": Starte Transaction:....");
 			session.getTransaction().begin();
@@ -685,7 +680,7 @@ public class TroopFleetDaoFacade extends TileDaoFacade{
 			*/ 
 			   
 			//+++ 4.2: Datenbankoperation: Aktualisiere die Troop mit der neuen Position/dem neuien HexFeld.		
-			session = this.getSession();	//Vesuch eine neue Session zu bekommen. Merke: Die Session wird hier nicht gespeichert! Wg. 1 Transaktion ==> 1 Session			
+			session = this.getSessionOpen();	//Vesuch eine neue Session zu bekommen. Merke: Die Session wird hier nicht gespeichert! Wg. 1 Transaktion ==> 1 Session			
 			if(session == null) break main;	
 			System.out.println(ReflectCodeZZZ.getMethodCurrentName() + ": Starte Transaction:....");
 			session.getTransaction().begin();//Ein zu persistierendes Objekt - eine Transaction, auch wenn mehrere in einer Transaction abzuhandeln wären, aber besser um Fehler abfangen zu können.
@@ -764,8 +759,7 @@ public class TroopFleetDaoFacade extends TileDaoFacade{
 			*/
 			
 			//++++++++ 4.3 Datanbankoperationen Aktualisiere die Hex-Zelle, füge die TroopArmy der Liste hinzu, damit die Hex-Zelle weiss welche TroopArmies in ihr stehen.		
-			//session = this.getSession();			//Vesuch eine neue Session zu bekommen. Merke: Die Session wird hier nicht gespeichert! Wg. 1 Transaktion ==> 1 Session
-			session = this.getSessionCurrent();
+			session = this.getSessionOpen();
 			if(session == null) break main;	
 			System.out.println(ReflectCodeZZZ.getMethodCurrentName() + ": Starte Transaction:....");
 			session.getTransaction().begin();

@@ -751,7 +751,7 @@ public class HexMapTHM extends KernelUseObjectZZZ implements ITileEventUserTHM {
 		main:{
 			int iNrOfHexes = 0;
 			
-			Session session = objContextHibernate.getSession(); 
+			Session session = objContextHibernate.getSessionOpen(); 
 									
 			//Zwei verschachtelte Schleifen, Aussen: Solange wie es "Provinzen" gibt...
 			//                                                  Innen:   von 1 bis maximaleSpaltenanzahl...

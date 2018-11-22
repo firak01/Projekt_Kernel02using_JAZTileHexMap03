@@ -27,6 +27,7 @@ import org.hibernate.StaleObjectStateException;
 import basic.persistence.model.IPrimaryKeys;
 import basic.persistence.type.IntLongTupel;
 import basic.persistence.util.HibernateUtilByAnnotation;
+import basic.zBasic.ExceptionZZZ;
 import basic.zBasic.persistence.IConstantHibernateZZZ;
 import use.thm.persistence.model.AreaCell;
 
@@ -93,6 +94,21 @@ public abstract class GeneralDAO<T> implements IDaoInterface<T>{
 		return session;
 	}
 	
+	/**Erweiterung, die immer "betont" eine offenen Session garantieren soll
+	 * @return
+	 * @author lindhaueradmin, 21.11.2018, 07:26:35
+	 */
+	public Session getSessionOpen() throws ExceptionZZZ{		
+		if(this.session==null){
+			this.session = this.getSession();			
+		}else{
+			if(!this.session.isOpen()){
+				this.session = this.getSession();
+			}
+		}
+		return this.session;
+	}
+	
 	/** Erweitert von FGL, weil der HibernateContextProvider (per ZKernel) auch die Session holen kann.
 	 * 
 	 */
@@ -102,7 +118,7 @@ public abstract class GeneralDAO<T> implements IDaoInterface<T>{
 		if(session==null || !session.isOpen()) {
 			SessionFactory sf = HibernateUtilByAnnotation.getHibernateUtil().getSessionFactory();
 			if (sf!=null){
-				sf.openSession();
+				session = sf.openSession();
 			}else{
 				System.out.println("SessionFactory kann nicht erstellt werden. Tip: Alternativ den EntityManager verwenden oder ... (Need to specify class name in environment or system property, or as an applet parameter, or in an application resource file:  java.naming.factory.initial). ");
 			}
@@ -132,7 +148,7 @@ public abstract class GeneralDAO<T> implements IDaoInterface<T>{
 	 */
 	protected void begin() {
 		try {
-			Session session = this.getSession();
+			Session session = this.getSessionOpen();
 			session.beginTransaction();
 		} catch (Exception e) {
 			if(session!=null){
@@ -1211,11 +1227,14 @@ public abstract class GeneralDAO<T> implements IDaoInterface<T>{
 	 * General findLazyAll for managing the find Lazy methods.
 	 */
 	protected List<T> findLazyAll(String table, int first, int max){
+		@SuppressWarnings("unchecked")
+		List<T> list = null;
+		try{
 		log.debug("find all "+this.getClass().toString());
 		
 		this.begin();
 		
-		Session objSession = this.getSession();		
+		Session objSession = this.getSessionOpen();		
 		Query q = objSession.createQuery("from "+table+" p") ;
 		
 		//FGL: 20171031 - Sinnvolle Erweiterung
@@ -1231,11 +1250,14 @@ public abstract class GeneralDAO<T> implements IDaoInterface<T>{
 			q.setMaxResults(max);
 		}
 		
-		@SuppressWarnings("unchecked")
-		List<T> list = q.list();
+		list = q.list();
 		
 		this.commit();
-		
+				
+	} catch (ExceptionZZZ e) {
+		// TODO Auto-generated catch block
+		e.printStackTrace();
+	}
 		//return this.refreshList(list);
 		return list;
 	}

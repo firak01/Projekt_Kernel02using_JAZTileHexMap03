@@ -410,10 +410,6 @@ public void integrate(Configuration configuration,
 	public Session getSessionCurrent() throws ExceptionZZZ{
 		if(this.objSession==null){
 			this.objSession = this.getSession();
-		}else{
-			if(!this.objSession.isOpen()){
-				this.objSession = this.getSessionFactory().openSession();
-			}
 		}
 		return this.objSession;
 	}
@@ -433,7 +429,8 @@ public void integrate(Configuration configuration,
 					if(this.objSession.isOpen()){
 						this.objSession.clear();
 					}
-				}				
+				}	
+				this.objSession=null;
 			}
 			//this.getSessionFactory().close();//Wenn man nur die SessionFactory schliesst gibt es anschliessend z.B. beim Bewegen eines Spielsteins einen "unknown Service requested" Fehler. 		
 		}

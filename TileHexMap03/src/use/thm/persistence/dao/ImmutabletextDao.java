@@ -70,7 +70,7 @@ public class ImmutabletextDao<T> extends AbstractKeyImmutableDao<T> {
 			
 			try{
 				IHibernateContextProviderZZZ objContextHibernate = this.getHibernateContextProvider();
-				Session session = objContextHibernate.getSession(); //kürzer: session=this.getSession()
+				Session session = this.getSessionOpen();
 				if(session == null) break main;	
 				System.out.println(ReflectCodeZZZ.getMethodCurrentName() + ": Starte Transaction:....");
 				session.getTransaction().begin();//Ein zu persistierendes Objekt - eine Transaction, auch wenn mehrere in einer Transaction abzuhandeln wären, aber besser um Fehler abfangen zu können.
@@ -138,18 +138,14 @@ public class ImmutabletextDao<T> extends AbstractKeyImmutableDao<T> {
 		main:{
 			System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": START ##############");			
 			
-			try {				
-				KernelZZZ objKernel = new KernelZZZ(); //Merke: Die Service Klasse selbst kann wohl nicht das KernelObjekt extenden!
-				HibernateContextProviderSingletonTHM objContextHibernate;
-				
-				objContextHibernate = HibernateContextProviderSingletonTHM.getInstance(objKernel);					
+			try {								
+				IHibernateContextProviderZZZ objContextHibernate = this.getHibernateContextProvider();								
 				//Darüber hat diese Methode nicht zu befinden... objContextHibernate.getConfiguration().setProperty("hibernate.hbm2ddl.auto", "update");  //! Jetzt erst wird jede Tabelle über den Anwendungsstart hinaus gespeichert UND auch wiedergeholt.				
 			
 				//###################
 				//1. Speichere den Defaulttext
-				//####################					
-				//Session session = this.getSession();	//Vesuch eine neue Session zu bekommen. Merke: Die Session wird hier nicht gespeichert! Wg. 1 Transaktion ==> 1 Session
-				Session session = objContextHibernate.getSession();
+				//####################									
+				Session session = this.getSessionOpen();
 				if(session == null) break main;			
 								
 				//Alle Enumerations hier einlesen.

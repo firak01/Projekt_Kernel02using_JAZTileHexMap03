@@ -33,7 +33,7 @@ import basic.zBasic.util.datatype.enums.EnumSetDefaulttextUtilZZZ;
 import basic.zBasic.util.datatype.enums.EnumSetInnerUtilZZZ;
 import basic.zBasic.util.datatype.enums.EnumZZZ;
 import basic.zBasic.util.datatype.enums.EnumSetInnerUtilZZZ.ThiskeyEnumMappingExceptionZZZ;
-import basic.zBasic.util.dataype.calling.ReferenceZZZ;
+import basic.zBasic.util.datatype.calling.ReferenceZZZ;
 import basic.zKernel.KernelZZZ;
 public class ImmutabletextDao<T> extends AbstractKeyImmutableDao<T> {
 	private static final long serialVersionUID = 1L;

@@ -87,7 +87,8 @@ public class KernelSingletonTHM extends KernelKernelZZZ{
 		public IKernelConfigZZZ getConfigObject() throws ExceptionZZZ{
 			IKernelConfigZZZ objConfig = super.getConfigObject();
 			if(objConfig==null){
-				objConfig = new ConfigTHM();			
+				objConfig = new ConfigTHM();
+				this.setConfigObject(objConfig);
 			}
 			return objConfig;
 		}

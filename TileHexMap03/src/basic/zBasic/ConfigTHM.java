@@ -15,7 +15,10 @@ public class ConfigTHM extends KernelConfigZZZ{
 	private static String sFILE_CONFIG_DEFAULT = "ZKernelConfigTileHexMap02Client.ini";
 	private static String sKEY_APPLICATION_DEFAULT = "THM";
 	private static String sNUMBER_SYSTEM_DEFAULT= "01";
-	
+	private static String sPATTERN_DEFAULT="k:s:f:d:";
+
+
+
 	public ConfigTHM() throws ExceptionZZZ{
 		super();
 	}
@@ -36,7 +39,7 @@ public class ConfigTHM extends KernelConfigZZZ{
 	}
 	@Override
 	public String getPatternStringDefault() {
-		return "k:s:f:d:";
+		return ConfigTHM.sPATTERN_DEFAULT;
 	}
 	@Override
 	public String getSystemNumberDefault() {

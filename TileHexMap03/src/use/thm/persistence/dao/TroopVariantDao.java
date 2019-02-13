@@ -40,7 +40,7 @@ import basic.zBasic.util.datatype.enums.EnumSetDefaulttextUtilZZZ;
 import basic.zBasic.util.datatype.enums.EnumSetInnerUtilZZZ;
 import basic.zBasic.util.datatype.enums.EnumZZZ;
 import basic.zBasic.util.datatype.enums.EnumSetInnerUtilZZZ.ThiskeyEnumMappingExceptionZZZ;
-import basic.zBasic.util.dataype.calling.ReferenceZZZ;
+import basic.zBasic.util.datatype.calling.ReferenceZZZ;
 import basic.zKernel.KernelZZZ;
 /**Diese DAO Klasse dient nur der dazu den Code der daraus erbenden Klassen nicht redundant zu haben.
  * Sie wird selbst nicht direkt aufgerufen.

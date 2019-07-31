@@ -15,6 +15,8 @@ import java.io.Serializable;
 
 
 
+
+
 import javax.naming.InitialContext;
 
 
@@ -31,6 +33,8 @@ import use.thm.persistence.hibernate.HibernateContextProviderSingletonTHM;
 import use.thm.persistence.hibernate.HibernateContextProviderJndiSingletonTHM;
 import basic.zBasic.ExceptionZZZ;
 import basic.zBasic.KernelSingletonTHM;
+import basic.zBasic.ReflectCodeZZZ;
+import basic.zKernel.IKernelConfigSectionEntryZZZ;
 import basic.zKernel.IKernelZZZ;
 import basic.zKernel.KernelZZZ;
 
@@ -117,7 +121,16 @@ public class TryoutSessionFactoryCreation {
 			try {
 				//20181010: Den JNDI-String nun aus der Kernel-Konfiguration holen
 				KernelSingletonTHM objKernelSingleton = KernelSingletonTHM.getInstance();								
-				String sContextJndi = objKernelSingleton.getParameter("DatabaseRemoteNameJNDI");//String sContextJndi = "jdbc/ServicePortal";
+				String sContextJndi = null;
+				IKernelConfigSectionEntryZZZ objEntry = objKernelSingleton.getParameter("DatabaseRemoteNameJNDI");//String sContextJndi = "jdbc/ServicePortal";
+				if(!objEntry.hasAnyValue()){
+					String serror = "Parameter existiert nicht in der Konfiguration: 'DatabaseRemoteNameJNDI'";
+					System.out.println(ReflectCodeZZZ.getMethodCurrentName() + ": " +serror);
+					ExceptionZZZ ez = new ExceptionZZZ(serror,ExceptionZZZ.iERROR_CONFIGURATION_VALUE, this,  ReflectCodeZZZ.getMethodCurrentName());
+					throw ez;
+				}else{
+					sContextJndi = objEntry.getValue();
+				}
 				bReturn = this.tryoutGetSessionFactoryByJndiContextProvider(sContextJndi);
 			} catch (ExceptionZZZ e) {
 				// TODO Auto-generated catch block

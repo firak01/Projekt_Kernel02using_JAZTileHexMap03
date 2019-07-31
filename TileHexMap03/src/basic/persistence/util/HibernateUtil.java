@@ -57,7 +57,8 @@ public abstract class HibernateUtil {
      */
     public static boolean wasCommitSuccessful(IHibernateContextProviderZZZ objContextHibernate, String sCommitedType, Transaction objTransaction){
     	boolean bReturn = false;
-    	main:{    		    		
+    	main:{    
+    		try{
 //	    	if (objTransaction.wasCommitted()) { //Keine LÖSUNG, da: //Always false: http://stackoverflow.com/questions/15503976/why-does-transaction-wascommitted-return-false
 //				System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": committed gilt als ausgeführt, aber es wurde nix inserted. Das hat preInsertListerner durch sein Veto verhindert.");
 //				bReturn = true;
@@ -116,7 +117,12 @@ public abstract class HibernateUtil {
 			    		}
 			    	}
 	    		
-	    	}	    		
+	    	}	
+    		}catch(ExceptionZZZ ez){
+				String sError = "ExceptionZZZ: " + ez.getMessageLast() + "+\n ThreadID:" + Thread.currentThread().getId() +"\n";			
+				System.out.println(sError);
+				bReturn = false;
+			}
     	}//end main:
     	return bReturn;
     }
@@ -130,7 +136,8 @@ public abstract class HibernateUtil {
      */
     public static VetoFlag4ListenerZZZ getCommitResult(IHibernateContextProviderZZZ objContextHibernate, String sCommitedType, Transaction objTransaction){
     	VetoFlag4ListenerZZZ objReturn = null;
-    	main:{    		    		
+    	main:{  
+    		try{
 //	    	if (objTransaction.wasCommitted()) { //Keine LÖSUNG, da: //Always false: http://stackoverflow.com/questions/15503976/why-does-transaction-wascommitted-return-false
 //				System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": committed gilt als ausgeführt, aber es wurde nix inserted. Das hat preInsertListerner durch sein Veto verhindert.");
 //				bReturn = true;
@@ -218,7 +225,12 @@ public abstract class HibernateUtil {
 				    		System.out.println("yy2yy2yy2yy2yy2yy2yy2yy2yy2yy2yy2yy2yy");
 			    		}
 			    	}//end for	    		
-	    	}	  	    		    		
+	    	}	  	 
+    		}catch(ExceptionZZZ ez){
+				String sError = "ExceptionZZZ: " + ez.getMessageLast() + "+\n ThreadID:" + Thread.currentThread().getId() +"\n";			
+				System.out.println(sError);
+				objReturn = null;
+			}
     	}//end main:
     	return objReturn;   
     }

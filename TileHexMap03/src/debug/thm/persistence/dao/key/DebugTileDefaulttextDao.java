@@ -52,10 +52,12 @@ public class DebugTileDefaulttextDao {
 				objDebug.debugSearchKey();	
 				
 				objDebug.debugFindAll();
-			} catch (ExceptionZZZ e) {
-				e.printStackTrace();
+			
+				System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": ENDE ##############");
+			}catch(ExceptionZZZ ez){
+				String sError = "ExceptionZZZ: " + ez.getMessageLast() + "+\n ThreadID:" + Thread.currentThread().getId() +"\n";			
+				System.out.println(sError);
 			}
-			System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": ENDE ##############");	
 		}//end main;
 		
 	}
@@ -89,12 +91,13 @@ public class DebugTileDefaulttextDao {
 			    Long lngThiskey = objaType[iIndex].getThiskey(); //Das darf nicht NULL sein, sonst Fehler. Über diesen Schlüssel wird der Wert dann gefunden.
 			   	
 			    bReturn= this.debugCreateEntryForThiskey(lngThiskey);
-			    
-			    
-			} catch (ExceptionZZZ e) {
-				e.printStackTrace();
+
+			    System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": ENDE ##############");
+			}catch(ExceptionZZZ ez){
+				String sError = "ExceptionZZZ: " + ez.getMessageLast() + "+\n ThreadID:" + Thread.currentThread().getId() +"\n";			
+				System.out.println(sError);
+				bReturn = false;
 			}
-			System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": ENDE ##############");			
 		}//end main:
 		return bReturn;											
 	}
@@ -110,12 +113,13 @@ public class DebugTileDefaulttextDao {
 				//1. Speichere den Defaulttext
 				TileDefaulttextDao daoKey = new TileDefaulttextDao(objContextHibernate);
 				bReturn = daoKey.createEntryForThiskey(lThiskey);
-												
-			} catch (ExceptionZZZ e) {				
-				e.printStackTrace();
+															
+				System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": ENDE ##############");			
+			}catch(ExceptionZZZ ez){
+				String sError = "ExceptionZZZ: " + ez.getMessageLast() + "+\n ThreadID:" + Thread.currentThread().getId() +"\n";			
+				System.out.println(sError);
+				bReturn = false;
 			}
-			System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": ENDE ##############");			
-						
 		}//end main:
 		return bReturn;											
 	}

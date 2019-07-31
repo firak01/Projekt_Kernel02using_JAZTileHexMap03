@@ -19,6 +19,7 @@ import org.hibernate.event.spi.PreUpdateEventListener;
 import org.hibernate.type.Type;
 
 import use.thm.persistence.model.TroopArmy;
+import basic.zBasic.ExceptionZZZ;
 import basic.zBasic.ReflectCodeZZZ;
 
 /**20170409: Funktioniert nicht..... Hibernate Weg.
@@ -50,29 +51,53 @@ public class TroopArmyListener implements PersistEventListener, PreInsertEventLi
 	
 	@PrePersist
 	public void vorEinsetzen(TroopArmy objTroop){
-		System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": Vor dem Einsetzen einer Armee.");
+		try{
+			System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": Vor dem Einsetzen einer Armee.");
+		}catch(ExceptionZZZ ez){
+			String sError = "ExceptionZZZ: " + ez.getMessageLast() + "+\n ThreadID:" + Thread.currentThread().getId() +"\n";			
+			System.out.println(sError);
+		}
 	}
 	
 	@PostPersist
 	public void nachEinsetzen(TroopArmy objTroop){
-		System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": Nach dem Einsetzen einer Armee.");
+		try{
+			System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": Nach dem Einsetzen einer Armee.");
+		}catch(ExceptionZZZ ez){
+			String sError = "ExceptionZZZ: " + ez.getMessageLast() + "+\n ThreadID:" + Thread.currentThread().getId() +"\n";			
+			System.out.println(sError);
+		}
 	}
 
 	public boolean onPreUpdate(PreUpdateEvent event) {
-		System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": onPreUpdate");
+		try{
+			System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": onPreUpdate");
+		}catch(ExceptionZZZ ez){
+			String sError = "ExceptionZZZ: " + ez.getMessageLast() + "+\n ThreadID:" + Thread.currentThread().getId() +"\n";			
+			System.out.println(sError);
+		}
 		return true;
 	}
 
 	public boolean onPreInsert(PreInsertEvent event) {
-		System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": onPreInsert");
+		try{
+			System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": onPreInsert");
+		}catch(ExceptionZZZ ez){
+			String sError = "ExceptionZZZ: " + ez.getMessageLast() + "+\n ThreadID:" + Thread.currentThread().getId() +"\n";			
+			System.out.println(sError);
+		}
 		return true;
 	}
 
 
 	//PreLoad-Klappt
 	public void onPreLoad(PreLoadEvent event) {
-		System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": onPreLoad");
-		
+		try{
+			System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": onPreLoad");
+		}catch(ExceptionZZZ ez){
+			String sError = "ExceptionZZZ: " + ez.getMessageLast() + "+\n ThreadID:" + Thread.currentThread().getId() +"\n";			
+			System.out.println(sError);
+		}
 	}
 	
 	

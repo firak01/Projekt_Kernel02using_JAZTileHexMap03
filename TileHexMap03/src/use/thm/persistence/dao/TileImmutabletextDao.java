@@ -62,9 +62,9 @@ public class TileImmutabletextDao<T> extends ImmutabletextDao<T> {
 	public boolean createEntryForThiskey(long lThiskey){
 		boolean bReturn = false;
 		main:{
-			System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": START ##############");			
-			
 			try{
+				System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": START ##############");			
+				try{		
 				IHibernateContextProviderZZZ objContextHibernate = this.getHibernateContextProvider();
 				Session session = this.getSessionOpen();
 				if(session == null) break main;	
@@ -133,13 +133,15 @@ public class TileImmutabletextDao<T> extends ImmutabletextDao<T> {
 				}		
 				bReturn = true;
 				}//end validEntry:				
-		} catch (ExceptionZZZ e) {
-			e.printStackTrace();
 		} catch (ThiskeyEnumMappingExceptionZZZ e) {	
 			e.printStackTrace();
 		}
 		System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": ENDE ##############");			
-											
+		}catch(ExceptionZZZ ez){
+			String sError = "ExceptionZZZ: " + ez.getMessageLast() + "+\n ThreadID:" + Thread.currentThread().getId() +"\n";			
+			System.out.println(sError);
+			bReturn = false;
+		}										
 		}//end main:
 		return bReturn;
 	}
@@ -147,9 +149,9 @@ public class TileImmutabletextDao<T> extends ImmutabletextDao<T> {
 	public int createEntriesAll(){
 		int iReturn = 0;
 		main:{
-			System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": START ##############");			
-			
-			try {				
+			try{
+				System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": START ##############");						
+							
 				IHibernateContextProviderZZZ objContextHibernate = this.getHibernateContextProvider();				
 				Session session = this.getSessionOpen();				
 				if(session == null) break main;			
@@ -219,12 +221,13 @@ public class TileImmutabletextDao<T> extends ImmutabletextDao<T> {
 					}//end validEndtry:					
 					}//end for
 												
-			} catch (ExceptionZZZ e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+			
 			System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": ENDE ##############");			
-						
+			}catch(ExceptionZZZ ez){
+				String sError = "ExceptionZZZ: " + ez.getMessageLast() + "+\n ThreadID:" + Thread.currentThread().getId() +"\n";			
+				System.out.println(sError);
+				iReturn = 0;
+			}		
 		}//end main:
 		return iReturn;		
 	}

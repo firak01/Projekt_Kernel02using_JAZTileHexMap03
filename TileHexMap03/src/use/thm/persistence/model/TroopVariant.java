@@ -55,6 +55,7 @@ import basic.zBasic.util.datatype.string.StringZZZ;
 import basic.zBasic.util.file.FileEasyZZZ;
 import basic.zBasicUI.component.UIHelper;
 import basic.zBasicUI.component.UIHelperTransparencyRange;
+import basic.zKernel.IKernelConfigSectionEntryZZZ;
 import basic.zKernel.IKernelZZZ;
 import basic.zKernel.KernelZZZ;
 
@@ -446,11 +447,29 @@ public abstract class TroopVariant  extends KeyImmutable implements ITroopVarian
 			
 			//... Größen holen aus der Kernelkonfiguration
 			System.out.println(ReflectCodeZZZ.getMethodCurrentName() + ": Suche Modul: '" + sModuleAlias +"'/ Program: '" + sProgramAlias + "'/ Parameter: 'IconWidth'");				
-			String sIconWidth = objKernel.getParameterByProgramAlias(sModuleAlias, sProgramAlias, "IconWidth" );
+			String sIconWidth = null;
+			IKernelConfigSectionEntryZZZ objEntry = objKernel.getParameterByProgramAlias(sModuleAlias, sProgramAlias, "IconWidth" );
+			if(!objEntry.hasAnyValue()){
+				String serror = "Parameter existiert nicht in der Konfiguration: 'IconWidth'";
+				System.out.println(ReflectCodeZZZ.getMethodCurrentName() + ": " +serror);
+				ExceptionZZZ ez = new ExceptionZZZ(serror,ExceptionZZZ.iERROR_CONFIGURATION_VALUE, this,  ReflectCodeZZZ.getMethodCurrentName());
+				throw ez;
+			}else{
+				sIconWidth = objEntry.getValue();
+			}
 			float fIconWidth = StringZZZ.toFloat(sIconWidth);
 			
 			System.out.println(ReflectCodeZZZ.getMethodCurrentName() + ": Suche Modul: '" + sModuleAlias +"'/ Program: '" + sProgramAlias + "'/ Parameter: 'IconHeight'");			
-			String sIconHeight = objKernel.getParameterByProgramAlias(sModuleAlias, sProgramAlias, "IconHeight" );
+			String sIconHeight = null;
+			objEntry = objKernel.getParameterByProgramAlias(sModuleAlias, sProgramAlias, "IconHeight" );
+			if(!objEntry.hasAnyValue()){
+				String serror = "Parameter existiert nicht in der Konfiguration: 'IconHeight'";
+				System.out.println(ReflectCodeZZZ.getMethodCurrentName() + ": " +serror);
+				ExceptionZZZ ez = new ExceptionZZZ(serror,ExceptionZZZ.iERROR_CONFIGURATION_VALUE, this,  ReflectCodeZZZ.getMethodCurrentName());
+				throw ez;
+			}else{
+				sIconHeight = objEntry.getValue();
+			}
 			float fIconHeight = StringZZZ.toFloat(sIconHeight);
 			
 			//... Bild bearbeitet als Katalogeintrag
@@ -490,11 +509,29 @@ public abstract class TroopVariant  extends KeyImmutable implements ITroopVarian
 						
 			//... Größen holen aus der Kernelkonfiguration
 			System.out.println(ReflectCodeZZZ.getMethodCurrentName() + ": Suche Modul: '" + sModuleAlias +"'/ Program: '" + sProgramAlias + "'/ Parameter: 'IconWidth'");			
-			sIconWidth = objKernel.getParameterByProgramAlias(sModuleAlias, sProgramAlias, "IconWidth" );			
+			sIconWidth = null;	
+			objEntry = objKernel.getParameterByProgramAlias(sModuleAlias, sProgramAlias, "IconWidth" ); 
+			if(!objEntry.hasAnyValue()){
+				String serror = "Parameter existiert nicht in der Konfiguration: 'IconWidth'";
+				System.out.println(ReflectCodeZZZ.getMethodCurrentName() + ": " +serror);
+				ExceptionZZZ ez = new ExceptionZZZ(serror,ExceptionZZZ.iERROR_CONFIGURATION_VALUE, this,  ReflectCodeZZZ.getMethodCurrentName());
+				throw ez;
+			}else{
+				sIconWidth = objEntry.getValue();
+			}			
 			fIconWidth = StringZZZ.toFloat(sIconWidth);
 							
 			System.out.println(ReflectCodeZZZ.getMethodCurrentName() + ": Suche Modul: '" + sModuleAlias +"'/ Program: '" + sProgramAlias + "'/ Parameter: 'IconHeight'");			
-			sIconHeight = objKernel.getParameterByProgramAlias(sModuleAlias, sProgramAlias, "IconHeight" );
+			sIconHeight = null;
+			objEntry = objKernel.getParameterByProgramAlias(sModuleAlias, sProgramAlias, "IconHeight" );
+			if(!objEntry.hasAnyValue()){
+				String serror = "Parameter existiert nicht in der Konfiguration: 'xxxxx'";
+				System.out.println(ReflectCodeZZZ.getMethodCurrentName() + ": " +serror);
+				ExceptionZZZ ez = new ExceptionZZZ(serror,ExceptionZZZ.iERROR_CONFIGURATION_VALUE, this,  ReflectCodeZZZ.getMethodCurrentName());
+				throw ez;
+			}else{
+				sIconHeight = objEntry.getValue();
+			}
 			fIconHeight = StringZZZ.toFloat(sIconHeight);
 						
 			//... Bild bearbeitet als Dialogeintrag über dem Katalog
@@ -539,11 +576,29 @@ public abstract class TroopVariant  extends KeyImmutable implements ITroopVarian
 						
 			//... Größen holen aus der Kernelkonfiguration
 			System.out.println(ReflectCodeZZZ.getMethodCurrentName() + ": Suche Modul: '" + sModuleAlias +"'/ Program: '" + sProgramAlias + "'/ Parameter: 'IconWidth'");			
-			sIconWidth = objKernel.getParameterByProgramAlias(sModuleAlias, sProgramAlias, "IconWidth" );			
+			sIconWidth = null;
+			objEntry = objKernel.getParameterByProgramAlias(sModuleAlias, sProgramAlias, "IconWidth" ); 
+			if(!objEntry.hasAnyValue()){
+				String serror = "Parameter existiert nicht in der Konfiguration: 'xxxxx'";
+				System.out.println(ReflectCodeZZZ.getMethodCurrentName() + ": " +serror);
+				ExceptionZZZ ez = new ExceptionZZZ(serror,ExceptionZZZ.iERROR_CONFIGURATION_VALUE, this,  ReflectCodeZZZ.getMethodCurrentName());
+				throw ez;
+			}else{
+				sIconWidth = objEntry.getValue();
+			}			
 			fIconWidth = StringZZZ.toFloat(sIconWidth);
 							
 			System.out.println(ReflectCodeZZZ.getMethodCurrentName() + ": Suche Modul: '" + sModuleAlias +"'/ Program: '" + sProgramAlias + "'/ Parameter: 'IconHeight'");			
-			sIconHeight = objKernel.getParameterByProgramAlias(sModuleAlias, sProgramAlias, "IconHeight" );
+			sIconHeight = null;
+			objEntry = objKernel.getParameterByProgramAlias(sModuleAlias, sProgramAlias, "IconHeight" );
+			if(!objEntry.hasAnyValue()){
+				String serror = "Parameter existiert nicht in der Konfiguration: 'xxxxx'";
+				System.out.println(ReflectCodeZZZ.getMethodCurrentName() + ": " +serror);
+				ExceptionZZZ ez = new ExceptionZZZ(serror,ExceptionZZZ.iERROR_CONFIGURATION_VALUE, this,  ReflectCodeZZZ.getMethodCurrentName());
+				throw ez;
+			}else{
+				sIconHeight = objEntry.getValue();
+			}
 			fIconHeight = StringZZZ.toFloat(sIconHeight);
 						
 			//... Bild bearbeitet als Dialogeintrag über dem Katalog
@@ -595,11 +650,29 @@ public abstract class TroopVariant  extends KeyImmutable implements ITroopVarian
 			
 			//... Größen holen aus der Kernelkonfiguration
 			System.out.println(ReflectCodeZZZ.getMethodCurrentName() + ": Suche Modul: '" + sModuleAlias +"'/ Program: '" + sProgramAlias + "'/ Parameter: 'IconWidth'");			
-			String sIconWidth = objKernel.getParameterByProgramAlias(objIni, sModuleAlias, sProgramAlias, "IconWidth" );							
+			String sIconWidth = null;
+			IKernelConfigSectionEntryZZZ objEntry = objKernel.getParameterByProgramAlias(objIni, sModuleAlias, sProgramAlias, "IconWidth" );
+			if(!objEntry.hasAnyValue()){
+				String serror = "Parameter existiert nicht in der Konfiguration: 'IconWidth'";
+				System.out.println(ReflectCodeZZZ.getMethodCurrentName() + ": " +serror);
+				ExceptionZZZ ez = new ExceptionZZZ(serror,ExceptionZZZ.iERROR_CONFIGURATION_VALUE, this,  ReflectCodeZZZ.getMethodCurrentName());
+				throw ez;
+			}else{
+				sIconWidth = objEntry.getValue();
+			}							
 			float fIconWidth = StringZZZ.toFloat(sIconWidth);
 									
 			System.out.println(ReflectCodeZZZ.getMethodCurrentName() + ": Suche Modul: '" + sModuleAlias +"'/ Program: '" + sProgramAlias + "'/ Parameter: 'IconHeight'");			
-			String sIconHeight = objKernel.getParameterByProgramAlias(sModuleAlias, sProgramAlias, "IconHeight" );
+			String sIconHeight = null;
+			objEntry = objKernel.getParameterByProgramAlias(sModuleAlias, sProgramAlias, "IconHeight" );
+			if(!objEntry.hasAnyValue()){
+				String serror = "Parameter existiert nicht in der Konfiguration: 'IconHeight'";
+				System.out.println(ReflectCodeZZZ.getMethodCurrentName() + ": " +serror);
+				ExceptionZZZ ez = new ExceptionZZZ(serror,ExceptionZZZ.iERROR_CONFIGURATION_VALUE, this,  ReflectCodeZZZ.getMethodCurrentName());
+				throw ez;
+			}else{
+				sIconHeight = objEntry.getValue();
+			}
 			float fIconHeight = StringZZZ.toFloat(sIconHeight);
 						
 			//1. Versuche das Bild mit einem transparenten Hintergrund auszustatten:
@@ -703,11 +776,29 @@ public abstract class TroopVariant  extends KeyImmutable implements ITroopVarian
 			
 			//... Größen holen aus der Kernelkonfiguration			
 			System.out.println(ReflectCodeZZZ.getMethodCurrentName() + ": Suche Modul: '" + sModuleAlias +"'/ Program: '" + sProgramAlias + "'/ Parameter: 'IconWidthOnDrag'");						
-			sIconWidth = objKernel.getParameterByProgramAlias(sModuleAlias, sProgramAlias, "IconWidthOnDrag" );			
+			sIconWidth = null;
+			objEntry = objKernel.getParameterByProgramAlias(sModuleAlias, sProgramAlias, "IconWidthOnDrag" );
+			if(!objEntry.hasAnyValue()){
+				String serror = "Parameter existiert nicht in der Konfiguration: 'IconWidthOnDrag'";
+				System.out.println(ReflectCodeZZZ.getMethodCurrentName() + ": " +serror);
+				ExceptionZZZ ez = new ExceptionZZZ(serror,ExceptionZZZ.iERROR_CONFIGURATION_VALUE, this,  ReflectCodeZZZ.getMethodCurrentName());
+				throw ez;
+			}else{
+				sIconWidth = objEntry.getValue();
+			}			
 			fIconWidth = StringZZZ.toFloat(sIconWidth);
 						
 			System.out.println(ReflectCodeZZZ.getMethodCurrentName() + ": Suche Modul: '" + sModuleAlias +"'/ Program: '" + sProgramAlias + "'/ Parameter: 'IconHeightOnDrag'");
-			sIconHeight = objKernel.getParameterByProgramAlias(sModuleAlias, sProgramAlias, "IconHeightOnDrag" );
+			sIconHeight = null;
+			objEntry = objKernel.getParameterByProgramAlias(sModuleAlias, sProgramAlias, "IconHeightOnDrag" );
+			if(!objEntry.hasAnyValue()){
+				String serror = "Parameter existiert nicht in der Konfiguration: 'IconHeightOnDrag'";
+				System.out.println(ReflectCodeZZZ.getMethodCurrentName() + ": " +serror);
+				ExceptionZZZ ez = new ExceptionZZZ(serror,ExceptionZZZ.iERROR_CONFIGURATION_VALUE, this,  ReflectCodeZZZ.getMethodCurrentName());
+				throw ez;
+			}else{
+				sIconHeight = objEntry.getValue();
+			}
 			fIconHeight = StringZZZ.toFloat(sIconHeight);
 			
 			

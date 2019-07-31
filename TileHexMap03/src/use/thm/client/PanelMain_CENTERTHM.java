@@ -11,6 +11,7 @@ import basic.zBasic.ExceptionZZZ;
 import basic.zBasic.ReflectCodeZZZ;
 import basic.zBasic.util.datatype.string.StringZZZ;
 import basic.zBasic.util.log.ReportLogZZZ;
+import basic.zKernel.IKernelConfigSectionEntryZZZ;
 import basic.zKernel.IKernelZZZ;
 import basic.zKernel.KernelZZZ;
 import basic.zKernelUI.component.KernelJFrameCascadedZZZ;
@@ -54,13 +55,40 @@ public class PanelMain_CENTERTHM extends KernelJPanelCascadedZZZ implements IHex
 			String sProgramAlias = this.getProgramAlias();
 			
 			System.out.println("Suche Modul: '" + sModuleAlias +"'/ Program: '" + sProgramAlias + "'/ Parameter: 'NumberOfColumn'");
-			String sNumberOfColumn = this.getKernelObject().getParameterByProgramAlias(sModuleAlias, sProgramAlias, "NumberOfColumn" );
+			String sNumberOfColumn = null;
+			IKernelConfigSectionEntryZZZ objEntry = this.getKernelObject().getParameterByProgramAlias(sModuleAlias, sProgramAlias, "NumberOfColumn" );
+			if(!objEntry.hasAnyValue()){
+				String serror = "Parameter existiert nicht in der Konfiguration: 'NumberOfColumn'";
+				System.out.println(ReflectCodeZZZ.getMethodCurrentName() + ": " +serror);
+				ExceptionZZZ ez = new ExceptionZZZ(serror,ExceptionZZZ.iERROR_CONFIGURATION_VALUE, this,  ReflectCodeZZZ.getMethodCurrentName());
+				throw ez;
+			}else{
+				sNumberOfColumn = objEntry.getValue();
+			}
 			int iNumberOfColumn = Integer.parseInt(sNumberOfColumn);
 			
-			String sNumberOfRow = this.getKernelObject().getParameterByProgramAlias(sModuleAlias, sProgramAlias, "NumberOfRow" );
+			String sNumberOfRow = null;
+			objEntry = this.getKernelObject().getParameterByProgramAlias(sModuleAlias, sProgramAlias, "NumberOfRow" );
+			if(!objEntry.hasAnyValue()){
+				String serror = "Parameter existiert nicht in der Konfiguration: 'NumberOfRow'";
+				System.out.println(ReflectCodeZZZ.getMethodCurrentName() + ": " +serror);
+				ExceptionZZZ ez = new ExceptionZZZ(serror,ExceptionZZZ.iERROR_CONFIGURATION_VALUE, this,  ReflectCodeZZZ.getMethodCurrentName());
+				throw ez;
+			}else{
+				sNumberOfRow = objEntry.getValue();
+			}
 			int iNumberOfRow = Integer.parseInt(sNumberOfRow);
 			
-			String sHexSideLengthUsed = this.getKernelObject().getParameterByProgramAlias(sModuleAlias, sProgramAlias, "HexSideLength" );
+			String sHexSideLengthUsed = null;
+			objEntry = this.getKernelObject().getParameterByProgramAlias(sModuleAlias, sProgramAlias, "HexSideLength" ); 
+			if(!objEntry.hasAnyValue()){
+				String serror = "Parameter existiert nicht in der Konfiguration: 'xxxxx'";
+				System.out.println(ReflectCodeZZZ.getMethodCurrentName() + ": " +serror);
+				ExceptionZZZ ez = new ExceptionZZZ(serror,ExceptionZZZ.iERROR_CONFIGURATION_VALUE, this,  ReflectCodeZZZ.getMethodCurrentName());
+				throw ez;
+			}else{
+				sHexSideLengthUsed = objEntry.getValue();
+			}
 			int iHexSideLengthUsed = StringZZZ.toInteger(sHexSideLengthUsed);
 			
 			//Die Hexadimensionale Karte aufbauen.			

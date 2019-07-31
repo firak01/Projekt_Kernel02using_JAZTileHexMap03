@@ -27,6 +27,7 @@ import basic.zBasic.persistence.interfaces.IHibernateContextProviderZZZ;
 import basic.zBasic.persistence.interfaces.IHibernateListenerProviderZZZ;
 import basic.zBasic.util.abstractList.HashMapExtendedZZZ;
 import basic.zBasic.util.abstractList.HashMapIndexedZZZ;
+import basic.zKernel.IKernelConfigSectionEntryZZZ;
 import basic.zKernel.IKernelZZZ;
 import basic.zKernel.KernelZZZ;
 
@@ -42,7 +43,16 @@ public class HibernateContextProviderJndiSingletonTHM extends HibernateContextPr
 		//return HibernateContextProviderJndiSingletonTHM.getInstance("jdbc/ServicePortal");
 		
 		KernelSingletonTHM objKernelSingleton = KernelSingletonTHM.getInstance();
-		String sDatabaseRemoteNameJNDI = objKernelSingleton.getParameter("DatabaseRemoteNameJNDI");
+		String sDatabaseRemoteNameJNDI = null;
+		IKernelConfigSectionEntryZZZ objEntry = objKernelSingleton.getParameter("DatabaseRemoteNameJNDI");
+		if(!objEntry.hasAnyValue()){
+			String serror = "Parameter existiert nicht in der Konfiguration: 'xxxxx'";
+			System.out.println(ReflectCodeZZZ.getMethodCurrentName() + ": " +serror);
+			ExceptionZZZ ez = new ExceptionZZZ(serror,ExceptionZZZ.iERROR_CONFIGURATION_VALUE, HibernateContextProviderJndiSingletonTHM.class,  ReflectCodeZZZ.getMethodCurrentName());
+			throw ez;
+		}else{
+			sDatabaseRemoteNameJNDI = objEntry.getValue();
+		}
 		return HibernateContextProviderJndiSingletonTHM.getInstance(sDatabaseRemoteNameJNDI);
 	}
 	public static  HibernateContextProviderJndiSingletonTHM getInstance(String sContextJndi) throws ExceptionZZZ{

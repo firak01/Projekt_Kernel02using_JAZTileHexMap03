@@ -295,11 +295,16 @@ public class TileMouseMotionHandlerTHM extends MouseAdapter implements MouseMoti
 	public void mouseClicked(MouseEvent arg0) {
 		//Merke: Das Anclicken des Spielsteins wird im TileMouseContextMenuHandler behandelt
 		main:{
+		try{
 			if(SwingUtilities.isLeftMouseButton(arg0)){
 				System.out.println(ReflectCodeZZZ.getPositionCurrent()+": Linksclick...");		
 			}else if(SwingUtilities.isRightMouseButton(arg0)){
 				System.out.println(ReflectCodeZZZ.getPositionCurrent()+": Rechtsclick...");				
 			}//end if SwingUtiilities.is...MouseButton(...)
+		}catch(ExceptionZZZ ez){
+			String sError = "ExceptionZZZ: " + ez.getMessageLast() + "+\n ThreadID:" + Thread.currentThread().getId() +"\n";			
+			System.out.println(sError);
+		}
 		}//End main:
 		
 	}
@@ -336,7 +341,7 @@ public class TileMouseMotionHandlerTHM extends MouseAdapter implements MouseMoti
 
 	public void mouseReleased(MouseEvent arg0) {
 		super.mouseReleased(arg0);
-			
+		try{	
 		if(SwingUtilities.isLeftMouseButton(arg0)){
 		//Im MouseDrag des MouseMotionHandlers wird ein Flag gesetzt.
 		//Hierüber bekommt man mit, ob die Maustaste losgelassen worden ist "AM ENDE DER DRAG - BEWEGUNG"
@@ -396,7 +401,7 @@ public class TileMouseMotionHandlerTHM extends MouseAdapter implements MouseMoti
 						//Allerdings müssen erst einmal alle Voraussetzungen erfüllt werden. KernelObjekt..., HibernateContext..., PrimaryKey..., AreaCell Objekt...,
 						IKernelZZZ objKernel = this.getTile().getMapPanel().getKernelObject();
 						HibernateContextProviderSingletonTHM objContextHibernate;
-						try {
+						
 							objContextHibernate = HibernateContextProviderSingletonTHM.getInstance(objKernel);						
 							AreaCellDao objAreaDao = new AreaCellDao(objContextHibernate);
 						    
@@ -505,11 +510,7 @@ public class TileMouseMotionHandlerTHM extends MouseAdapter implements MouseMoti
 								
 								//################
 							}												
-					} //bGoon == false
-						} catch (ExceptionZZZ e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
-						}
+					} //bGoon == false						
 					}//end if objCellCur==null
 				} //end if objMapItem instanceof HexCellTHM			
 			}//end if objMapItem!=null
@@ -528,6 +529,10 @@ public class TileMouseMotionHandlerTHM extends MouseAdapter implements MouseMoti
 			System.out.println(ReflectCodeZZZ.getMethodCurrentName() + ": Rechstclick... ");
 			//Merke: Der Rechtsclick wird im TileMouseContextMenuHandlerTHM behandelt.
 		}//end if (SwingUtilities.is...Button(...)
+		}catch(ExceptionZZZ ez){
+			String sError = "ExceptionZZZ: " + ez.getMessageLast() + "+\n ThreadID:" + Thread.currentThread().getId() +"\n";			
+			System.out.println(sError);
+		}
 	}
 	
 	 /* Finds the component corresponding to the given SCREEN-coordinates.

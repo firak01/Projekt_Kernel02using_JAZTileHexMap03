@@ -22,6 +22,7 @@ import use.thm.persistence.interfaces.enums.IEnumSetTextTHM;
 import basic.persistence.model.IFieldDescription;
 import basic.persistence.model.IKeyEnum;
 import basic.persistence.model.IOptimisticLocking;
+import basic.zBasic.ExceptionZZZ;
 import basic.zBasic.ReflectCodeZZZ;
 import basic.zBasic.persistence.interfaces.enums.AbstractValue;
 import basic.zBasic.persistence.interfaces.enums.IThiskeyProviderZZZ;
@@ -163,7 +164,12 @@ public class Defaulttext<IEnumDefaulttext>  extends Key implements IOptimisticLo
 	
     //### Statische Methode (um einfacher darauf zugreifen zu können)
     public static Class getThiskeyEnumClassStatic(){
-    	System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": Diese Methode muss in den daraus erbenden Klassen überschrieben werden.");
+    	try{
+    		System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": Diese Methode muss in den daraus erbenden Klassen überschrieben werden.");
+    	}catch(ExceptionZZZ ez){
+			String sError = "ExceptionZZZ: " + ez.getMessageLast() + "+\n ThreadID:" + Thread.currentThread().getId() +"\n";			
+			System.out.println(sError);
+		}
     	return EnumDefaulttext.class;    	
     }
 

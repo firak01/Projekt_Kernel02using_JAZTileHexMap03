@@ -22,8 +22,10 @@ import use.thm.persistence.model.TroopFleet;
 import use.thm.persistence.model.TroopFleetVariant;
 import basic.zBasic.ExceptionZZZ;
 import basic.zBasic.KernelSingletonTHM;
+import basic.zBasic.ReflectCodeZZZ;
 import basic.zBasic.persistence.hibernate.HibernateConfigurationProviderZZZ;
 import basic.zBasic.persistence.interfaces.IHibernateConfigurationProviderZZZ;
+import basic.zKernel.IKernelConfigSectionEntryZZZ;
 
 public class HibernateConfigurationProviderTHM extends HibernateConfigurationProviderZZZ {
     public HibernateConfigurationProviderTHM() throws ExceptionZZZ{
@@ -101,7 +103,16 @@ create-drop: drop the schema when the SessionFactory is closed explicitly, typic
 		//20180929: Den Pfad aus der Kernel-Konfiguration auslesen....
 		//String sDatabaseLocalPath="c:\\server\\SQLite\\TileHexMap03.sqlite";
 		KernelSingletonTHM objKernelSingleton = KernelSingletonTHM.getInstance();
-		String sDatabaseLocalPath = objKernelSingleton.getParameter("DatabaseLocalPath");
+		String sDatabaseLocalPath = null;
+		IKernelConfigSectionEntryZZZ objEntry = objKernelSingleton.getParameter("DatabaseLocalPath");
+		if(!objEntry.hasAnyValue()){
+			String serror = "Parameter existiert nicht in der Konfiguration: 'DatabaseLocalPath'";
+			System.out.println(ReflectCodeZZZ.getMethodCurrentName() + ": " +serror);
+			ExceptionZZZ ez = new ExceptionZZZ(serror,ExceptionZZZ.iERROR_CONFIGURATION_VALUE, this,  ReflectCodeZZZ.getMethodCurrentName());
+			throw ez;
+		}else{
+			sDatabaseLocalPath = objEntry.getValue();
+		}
 		this.getConfiguration().setProperty("hibernate.connection.url", "jdbc:sqlite:"+sDatabaseLocalPath);
 		
 		

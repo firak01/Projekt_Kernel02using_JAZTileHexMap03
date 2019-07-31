@@ -66,9 +66,10 @@ public class ImmutabletextDao<T> extends AbstractKeyImmutableDao<T> {
 	public boolean createEntryForThiskey(long lThiskey){
 		boolean bReturn = false;
 		main:{
-			System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": START ##############");			
-			
 			try{
+			try{
+				System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": START ##############");			
+						
 				IHibernateContextProviderZZZ objContextHibernate = this.getHibernateContextProvider();
 				Session session = this.getSessionOpen();
 				if(session == null) break main;	
@@ -121,14 +122,16 @@ public class ImmutabletextDao<T> extends AbstractKeyImmutableDao<T> {
 //					break validEntry;
 //				}
 				
-
-		} catch (ExceptionZZZ e) {
-			e.printStackTrace();
-		} catch (ThiskeyEnumMappingExceptionZZZ e) {	
-			e.printStackTrace();
-		}
-		System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": ENDE ##############");			
-											
+		
+			} catch (ThiskeyEnumMappingExceptionZZZ e) {	
+				e.printStackTrace();
+			}
+			System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": ENDE ##############");			
+		}catch(ExceptionZZZ ez){
+			String sError = "ExceptionZZZ: " + ez.getMessageLast() + "+\n ThreadID:" + Thread.currentThread().getId() +"\n";			
+			System.out.println(sError);
+			bReturn = false;
+		}							
 		}//end main:
 		return bReturn;
 	}
@@ -136,9 +139,11 @@ public class ImmutabletextDao<T> extends AbstractKeyImmutableDao<T> {
 	public int createEntriesAll(){
 		int iReturn = 0;
 		main:{
-			System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": START ##############");			
+			try{
+				
+				System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": START ##############");			
 			
-			try {								
+											
 				IHibernateContextProviderZZZ objContextHibernate = this.getHibernateContextProvider();								
 				//Darüber hat diese Methode nicht zu befinden... objContextHibernate.getConfiguration().setProperty("hibernate.hbm2ddl.auto", "update");  //! Jetzt erst wird jede Tabelle über den Anwendungsstart hinaus gespeichert UND auch wiedergeholt.				
 			
@@ -194,14 +199,14 @@ public class ImmutabletextDao<T> extends AbstractKeyImmutableDao<T> {
 					iReturn++;
 //				}
 				}//end for
-				
-			} catch (ExceptionZZZ e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+							
+				System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": ENDE ##############");			
+		
+			}catch(ExceptionZZZ ez){
+				String sError = "ExceptionZZZ: " + ez.getMessageLast() + "+\n ThreadID:" + Thread.currentThread().getId() +"\n";			
+				System.out.println(sError);
+				iReturn = 0;
 			}
-			System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": ENDE ##############");			
-			
-			
 		}//end main:
 		return iReturn;		
 	}

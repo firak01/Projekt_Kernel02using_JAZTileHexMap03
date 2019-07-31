@@ -23,11 +23,13 @@ import org.hibernate.service.ServiceRegistryBuilder;
 import basic.persistence.util.HibernateUtil;
 import basic.zBasic.ExceptionZZZ;
 import basic.zBasic.KernelSingletonTHM;
+import basic.zBasic.ReflectCodeZZZ;
 import basic.zBasic.util.datatype.string.StringZZZ;
 import basic.zBasic.util.log.KernelReportContextProviderZZZ;
 import basic.zBasic.util.log.ReportLogZZZ;
 import basic.zBasicUI.glassPane.dragDropTranslucent.GhostGlassPane;
 import basic.zBasicUI.glassPane.dragDropTranslucent.IGhostGlassPaneFrame;
+import basic.zKernel.IKernelConfigSectionEntryZZZ;
 import basic.zKernel.IKernelZZZ;
 import basic.zKernel.KernelZZZ;
 import basic.zKernelUI.component.KernelJFrameCascadedZZZ;
@@ -205,7 +207,18 @@ public class FrmMapSingletonTHM  extends KernelJFrameCascadedZZZ implements IGho
 
 	@Override
 	public boolean setSizeDefault() throws ExceptionZZZ {
-		String sPercent = this.getKernelObject().getParameter("FrameSizeInScreenPercent");
+		String sPercent = null; 
+		IKernelConfigSectionEntryZZZ objEntry = this.getKernelObject().getParameter("FrameSizeInScreenPercent"); 
+		if(!objEntry.hasAnyValue()){
+			String serror = "Parameter existiert nicht in der Konfiguration: 'FrameSizeInScreenPercent'";
+			System.out.println(ReflectCodeZZZ.getMethodCurrentName() + ": " +serror);
+			ExceptionZZZ ez = new ExceptionZZZ(serror,ExceptionZZZ.iERROR_CONFIGURATION_VALUE, this,  ReflectCodeZZZ.getMethodCurrentName());
+			throw ez;
+		}else{
+			sPercent = objEntry.getValue();
+		}
+		
+		
 		int iPercent = Integer.parseInt(sPercent);
 		JFrameHelperZZZ.setSizeInScreenPercent(this, iPercent);
 		return true;

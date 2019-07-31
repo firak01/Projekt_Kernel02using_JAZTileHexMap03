@@ -48,6 +48,7 @@ public class PreUpdateListenerTHM  implements PreUpdateEventListener,IKernelUser
 	public boolean onPreUpdate(PreUpdateEvent event) {
 		//20170802: Ich glaube, das wird gar nicht aufgerufen.
 		//                Falls doch, dann auf das RuleFacade-System umstellen.
+		try{
 		System.out.println(ReflectCodeZZZ.getPositionCurrent() + " onPreUpdate   Hibernate-Event 0X...");
 		boolean bReturn = false; //Erst mal false setzen.
 		boolean bHasVeto = true;//Erst mal auf true setzen. Falls einer der Fälle nicht greift, dann kommt eine leere dialogbox hoch, um hier ein Problem anzuzeigen.
@@ -111,8 +112,13 @@ public class PreUpdateListenerTHM  implements PreUpdateEventListener,IKernelUser
 			System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": FEHLER beim Committen eines Spielsteins / einer Area.");
 			this.veto(true);
 		}		
-		bReturn = !bHasVeto;
+		bReturn = !bHasVeto;		
 		return bReturn;
+		}catch(ExceptionZZZ ez){
+			String sError = "ExceptionZZZ: " + ez.getMessageLast() + "+\n ThreadID:" + Thread.currentThread().getId() +"\n";			
+			System.out.println(sError);
+			return false;
+		}		
 	}
 	
 	private boolean preUpdate_AreaVeto(AreaCell area) throws ExceptionZZZ{

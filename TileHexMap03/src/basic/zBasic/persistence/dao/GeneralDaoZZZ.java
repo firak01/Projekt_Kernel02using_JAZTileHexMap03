@@ -106,6 +106,7 @@ public abstract class GeneralDaoZZZ<T> extends GeneralDAO<T> implements IObjectZ
 	public int count(){
 		int iReturn = -1;
 		try{
+		try{
 		String sTableName = this.getDaoTableName();
 		
 		this.getLog().debug(ReflectCodeZZZ.getPositionCurrent() + ": Counting '" + sTableName);
@@ -144,16 +145,26 @@ public abstract class GeneralDaoZZZ<T> extends GeneralDAO<T> implements IObjectZ
 				iReturn = -1;
 			}
 		}
+	}catch(ExceptionZZZ ez){
+		String sError = "ExceptionZZZ: " + ez.getMessageLast() + "+\n ThreadID:" + Thread.currentThread().getId() +"\n";			
+		System.out.println(sError);
+		iReturn=-1;
+	}
 
 		return iReturn;
 	}
 	
 //	@Override
-	public int countByCriteria(Map<String, Object> whereBy, 	Map<String, String> filter) {		
-		String sTableName = this.getDaoTableName();
-		this.getLog().debug(ReflectCodeZZZ.getPositionCurrent() + ": Counting '" + sTableName);
-		
-		return this.countByCriteria(sTableName, whereBy, filter);
+	public int countByCriteria(Map<String, Object> whereBy, 	Map<String, String> filter) {	
+		try{
+			String sTableName = this.getDaoTableName();
+			this.getLog().debug(ReflectCodeZZZ.getPositionCurrent() + ": Counting '" + sTableName);		
+			return this.countByCriteria(sTableName, whereBy, filter);
+		}catch(ExceptionZZZ ez){
+			String sError = "ExceptionZZZ: " + ez.getMessageLast() + "+\n ThreadID:" + Thread.currentThread().getId() +"\n";			
+			System.out.println(sError);
+			return 0;
+		}
 	}
 	
 	

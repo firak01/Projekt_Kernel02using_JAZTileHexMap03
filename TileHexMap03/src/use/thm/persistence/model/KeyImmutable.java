@@ -140,7 +140,12 @@ public class KeyImmutable extends AbstractImmutable<KeyImmutable> implements ITh
 //	    @Transient
 //		@Override
 		public Class getThiskeyEnumClass() {
-			System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": Diese Methode muss in den daraus erbenden Klassen überschrieben werden.");
+			try{
+				System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": Diese Methode muss in den daraus erbenden Klassen überschrieben werden.");
+			}catch(ExceptionZZZ ez){
+				String sError = "ExceptionZZZ: " + ez.getMessageLast() + "+\n ThreadID:" + Thread.currentThread().getId() +"\n";			
+				System.out.println(sError);
+			}
 			return null;
 		}
 	    

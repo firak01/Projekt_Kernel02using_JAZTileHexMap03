@@ -69,9 +69,9 @@ public class TroopArmyVariantDao<T> extends TroopVariantDao<T> {
 	public int createEntriesAll(){
 		int iReturn = 0;
 		main:{
-			System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": START ##############");			
-			
-			try {								
+			try{
+				System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": START ##############");			
+													
 				IHibernateContextProviderZZZ objContextHibernate = this.getHibernateContextProvider();				
 				Session session = this.getSessionOpen();
 				if(session == null) break main;	
@@ -91,11 +91,12 @@ public class TroopArmyVariantDao<T> extends TroopVariantDao<T> {
 					}
 				}//end for
 												
-			} catch (ExceptionZZZ e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+
+				System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": ENDE ##############");
+			}catch(ExceptionZZZ ez){
+				String sError = "ExceptionZZZ: " + ez.getMessageLast() + "+\n ThreadID:" + Thread.currentThread().getId() +"\n";			
+				System.out.println(sError);
 			}
-			System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": ENDE ##############");								
 		}//end main:
 		return iReturn;		
 	}
@@ -103,9 +104,9 @@ public class TroopArmyVariantDao<T> extends TroopVariantDao<T> {
 	boolean createEntryByEnumSetAlias(String sEnumAlias){
 		boolean bReturn = false;
 		main:{
+			try{
 			System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": START: .... Gefundener Enum-Name: " + sEnumAlias);
-			
-			try {				
+										
 			Session session = this.getSessionOpen();
 			if(session == null) break main;			
 			
@@ -244,11 +245,12 @@ public class TroopArmyVariantDao<T> extends TroopVariantDao<T> {
 				}					
 				}//end validEndtry:
 				bReturn = true;
-			} catch (ExceptionZZZ e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+
+				System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": ENDE");
+			}catch(ExceptionZZZ ez){
+				String sError = "ExceptionZZZ: " + ez.getMessageLast() + "+\n ThreadID:" + Thread.currentThread().getId() +"\n";			
+				System.out.println(sError);
 			}
-			System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": ENDE");			
 		}
 		return bReturn;
 	}

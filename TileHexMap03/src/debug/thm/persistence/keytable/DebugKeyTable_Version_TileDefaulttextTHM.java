@@ -293,9 +293,9 @@ public class DebugKeyTable_Version_TileDefaulttextTHM {
 	public boolean debugCreateEntry_Defaulttext(int iIndex){
 		boolean bReturn = false;
 		main:{
+			try{
 			System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": START ##############");			
-			
-			try {				
+				
 				KernelZZZ objKernel = new KernelZZZ(); //Merke: Die Service Klasse selbst kann wohl nicht das KernelObjekt extenden!
 				HibernateContextProviderSingletonTHM objContextHibernate;
 				
@@ -347,14 +347,13 @@ public class DebugKeyTable_Version_TileDefaulttextTHM {
 //					this.getFacadeResult().setMessage(sMessage);
 //					break validEntry;
 //				}
-				
-			} catch (ExceptionZZZ e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+							
+				System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": ENDE ##############");										
+			}catch(ExceptionZZZ ez){
+				String sError = "ExceptionZZZ: " + ez.getMessageLast() + "+\n ThreadID:" + Thread.currentThread().getId() +"\n";			
+				System.out.println(sError);
+				bReturn = false;
 			}
-			System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": ENDE ##############");			
-			
-			
 		}//end main:
 		return bReturn;	
 	}
@@ -368,9 +367,10 @@ public class DebugKeyTable_Version_TileDefaulttextTHM {
 	public boolean debugCreateEntry_TileDefaulttext(int iIndex){
 		boolean bReturn = false;
 		main:{
-			System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": START ##############");			
+			try {
+				System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": START ##############");			
 			
-			try {				
+							
 				KernelZZZ objKernel = new KernelZZZ(); //Merke: Die Service Klasse selbst kann wohl nicht das KernelObjekt extenden!
 				HibernateContextProviderSingletonTHM objContextHibernate;
 				
@@ -423,13 +423,13 @@ public class DebugKeyTable_Version_TileDefaulttextTHM {
 //					break validEntry;
 //				}
 				
-			} catch (ExceptionZZZ e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": ENDE ##############");			
 			
-			
+				System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": ENDE ##############");			
+			}catch(ExceptionZZZ ez){
+				String sError = "ExceptionZZZ: " + ez.getMessageLast() + "+\n ThreadID:" + Thread.currentThread().getId() +"\n";			
+				System.out.println(sError);
+				bReturn = false;
+			}			
 		}//end main:
 		return bReturn;	
 	}
@@ -443,9 +443,10 @@ public class DebugKeyTable_Version_TileDefaulttextTHM {
 	public boolean debugCreateEntry_TextDefaulttext(int iIndex){
 		boolean bReturn = false;
 		main:{
-			System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": START ##############");			
+			try {
+				System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": START ##############");			
 			
-			try {				
+							
 				KernelZZZ objKernel = new KernelZZZ(); //Merke: Die Service Klasse selbst kann wohl nicht das KernelObjekt extenden!
 				HibernateContextProviderSingletonTHM objContextHibernate;
 				
@@ -497,14 +498,13 @@ public class DebugKeyTable_Version_TileDefaulttextTHM {
 //					this.getFacadeResult().setMessage(sMessage);
 //					break validEntry;
 //				}
-				
-			} catch (ExceptionZZZ e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": ENDE ##############");			
-			
-			
+						
+				System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": ENDE ##############");			
+			}catch(ExceptionZZZ ez){
+				String sError = "ExceptionZZZ: " + ez.getMessageLast() + "+\n ThreadID:" + Thread.currentThread().getId() +"\n";			
+				System.out.println(sError);
+				bReturn = false;
+			}				
 		}//end main:
 		return bReturn;	
 	}
@@ -512,9 +512,9 @@ public class DebugKeyTable_Version_TileDefaulttextTHM {
 	public boolean debugCreateEntriesAll(){
 		boolean bReturn = false;
 		main:{
-			System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": START ##############");			
-			
-			try {				
+			try{
+				System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": START ##############");						
+							
 				KernelZZZ objKernel = new KernelZZZ(); //Merke: Die Service Klasse selbst kann wohl nicht das KernelObjekt extenden!
 				HibernateContextProviderSingletonTHM objContextHibernate = HibernateContextProviderSingletonTHM.getInstance(objKernel);					
 				//objContextHibernate.getConfiguration().setProperty("hibernate.hbm2ddl.auto", "update");  //! Jetzt erst wird jede Tabelle über den Anwendungsstart hinaus gespeichert UND auch wiedergeholt.				
@@ -536,14 +536,14 @@ public class DebugKeyTable_Version_TileDefaulttextTHM {
 				daoText.deleteAll();//Bevor man alles neu erstellt, erst einmal alles löschen, sonst bekommtm man Constraint Verletzungen, wg. doppelter Schlüssel.
 				int iTextCreated = daoText.createEntriesAll();
 				System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": Erstellte Texte: " + iTextCreated);
-				
-			} catch (ExceptionZZZ e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+							
+				System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": ENDE ##############");			
+			
+			}catch(ExceptionZZZ ez){
+				String sError = "ExceptionZZZ: " + ez.getMessageLast() + "+\n ThreadID:" + Thread.currentThread().getId() +"\n";			
+				System.out.println(sError);
+				bReturn = false;
 			}
-			System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": ENDE ##############");			
-			
-			
 		}//end main:
 		return bReturn;	
 	}
@@ -558,9 +558,9 @@ public class DebugKeyTable_Version_TileDefaulttextTHM {
 	public boolean debugTileDefaulttextDao_searchDefaulttextByThiskey(int iThiskey){
 		boolean bReturn = false;
 		main:{
-			System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": START ##############");			
-			
-			try {				
+			try{
+				System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": START ##############");						
+							
 				KernelZZZ objKernel = new KernelZZZ(); //Merke: Die Service Klasse selbst kann wohl nicht das KernelObjekt extenden!
 				HibernateContextProviderSingletonTHM objContextHibernate;
 				
@@ -588,13 +588,13 @@ public class DebugKeyTable_Version_TileDefaulttextTHM {
 					
 					System.out.println("Thiskey='"+iThiskey+"' gefunden. ("+sShorttext+"|"+sLongtext+"|"+sDescription+")");
 				}	
-			} catch (ExceptionZZZ e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": ENDE ##############");			
 			
-			
+				System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": ENDE ##############");			
+			}catch(ExceptionZZZ ez){
+				String sError = "ExceptionZZZ: " + ez.getMessageLast() + "+\n ThreadID:" + Thread.currentThread().getId() +"\n";			
+				System.out.println(sError);
+				bReturn = false;
+			}			
 		}//end main:
 		return bReturn;	
 	}

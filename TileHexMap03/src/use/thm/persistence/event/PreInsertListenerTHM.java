@@ -53,8 +53,10 @@ public class PreInsertListenerTHM implements PreInsertEventListener,IKernelUserZ
 	private VetoFlag4ListenerZZZ objLastResult=new VetoFlag4ListenerZZZ();
 
 	public boolean onPreInsert(PreInsertEvent event) {
-//		System.out.println(ReflectCodeZZZ.getPositionCurrent() + " onPreInsert   Hibernate-Event 02...");		
 		boolean bReturn = false;
+		try{
+//		System.out.println(ReflectCodeZZZ.getPositionCurrent() + " onPreInsert   Hibernate-Event 02...");		
+
 		String sReturnMessage = new String("");
 		
 		try {
@@ -178,6 +180,11 @@ public class PreInsertListenerTHM implements PreInsertEventListener,IKernelUserZ
 			System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": FEHLER beim Committen eines Spielsteins / einer Area.");
 			this.veto(true);
 		}
+	}catch(ExceptionZZZ ez){
+		String sError = "ExceptionZZZ: " + ez.getMessageLast() + "+\n ThreadID:" + Thread.currentThread().getId() +"\n";			
+		System.out.println(sError);
+		bReturn = false;
+	}
 		return bReturn;
 	}
 	

@@ -39,6 +39,7 @@ import basic.zBasicUI.component.UIHelperAlphaImageIcon;
 import basic.zBasicUI.component.UIHelperAnalyseImage;
 import basic.zBasicUI.component.UIHelperTransparency;
 import basic.zBasicUI.component.UIHelperTransparencyRange;
+import basic.zKernel.IKernelConfigSectionEntryZZZ;
 import basic.zKernel.IKernelUserZZZ;
 import basic.zKernel.KernelZZZ;
 import basic.zKernelUI.component.IPanelCascadedZZZ;
@@ -161,10 +162,29 @@ public class TileTHM extends JPanel implements IMapPositionableTHM, IBackendPers
 			
 			//... Nun können die Formeln wieder korrekt arbeiten.		
 			System.out.println(ReflectCodeZZZ.getMethodCurrentName() + ": Suche Modul: '" + sModuleAlias +"'/ Program: '" + sProgramAlias + "'/ Parameter: 'IconWidth'");			
-			String sIconWidth = objKernel.getParameterByProgramAlias(sModuleAlias, sProgramAlias, "IconWidth" );
-			int iIconWidth = StringZZZ.toInteger(sIconWidth);				
+			String sIconWidth = null;
+			IKernelConfigSectionEntryZZZ objEntry = objKernel.getParameterByProgramAlias(sModuleAlias, sProgramAlias, "IconWidth" );
+			if(!objEntry.hasAnyValue()){
+				String serror = "Parameter existiert nicht in der Konfiguration: 'IconWidth'";
+				System.out.println(ReflectCodeZZZ.getMethodCurrentName() + ": " +serror);
+				ExceptionZZZ ez = new ExceptionZZZ(serror,ExceptionZZZ.iERROR_CONFIGURATION_VALUE, this,  ReflectCodeZZZ.getMethodCurrentName());
+				throw ez;
+			}else{
+				sIconWidth = objEntry.getValue();
+			}
+			int iIconWidth = StringZZZ.toInteger(sIconWidth);
+			
 			System.out.println(ReflectCodeZZZ.getMethodCurrentName() + ": Suche Modul: '" + sModuleAlias +"'/ Program: '" + sProgramAlias + "'/ Parameter: 'IconHeight'");			
-			String sIconHeight = objKernel.getParameterByProgramAlias(sModuleAlias, sProgramAlias, "IconHeight" );
+			String sIconHeight = null;
+			objEntry = objKernel.getParameterByProgramAlias(sModuleAlias, sProgramAlias, "IconHeight" );
+			if(!objEntry.hasAnyValue()){
+				String serror = "Parameter existiert nicht in der Konfiguration: 'IconHeight'";
+				System.out.println(ReflectCodeZZZ.getMethodCurrentName() + ": " +serror);
+				ExceptionZZZ ez = new ExceptionZZZ(serror,ExceptionZZZ.iERROR_CONFIGURATION_VALUE, this,  ReflectCodeZZZ.getMethodCurrentName());
+				throw ez;
+			}else{
+				sIconHeight = objEntry.getValue();
+			}
 			int iIconHeight = StringZZZ.toInteger(sIconHeight);
 			
 		    //+++++++++	
@@ -184,7 +204,16 @@ public class TileTHM extends JPanel implements IMapPositionableTHM, IBackendPers
 			BufferedImage objBufferedImageTransparentAndResized = UIHelper.toBufferedImage(imageInByte);
 						
 			//+++++++++ Das Bild an der errechneten Postion (unterhalb des Labels) zeichnen.			
-			String sFontOffset = objKernel.getParameterByProgramAlias(sModuleAlias, sProgramAlias, "IconLabelFontOffsetHeight_float" );//Irgendwie die Fontgröße justieren in der Höhe. Wird dann auch vom HexMapZoomFaktor beeinflusst ...			//
+			String sFontOffset = null;
+			objEntry = objKernel.getParameterByProgramAlias(sModuleAlias, sProgramAlias, "IconLabelFontOffsetHeight_float" );//Irgendwie die Fontgröße justieren in der Höhe. Wird dann auch vom HexMapZoomFaktor beeinflusst ...			//
+			if(!objEntry.hasAnyValue()){
+				String serror = "Parameter existiert nicht in der Konfiguration: 'xxxxx'";
+				System.out.println(ReflectCodeZZZ.getMethodCurrentName() + ": " +serror);
+				ExceptionZZZ ez = new ExceptionZZZ(serror,ExceptionZZZ.iERROR_CONFIGURATION_VALUE, this,  ReflectCodeZZZ.getMethodCurrentName());
+				throw ez;
+			}else{
+				sFontOffset = objEntry.getValue();
+			}		
 			int iFontOffsetUsed = StringZZZ.toInteger(sFontOffset);
 			
 			int iTileSideLength = this.getTileSideLength();
@@ -266,7 +295,16 @@ public class TileTHM extends JPanel implements IMapPositionableTHM, IBackendPers
 			//Font font = g.getFont().deriveFont( 8.0f );					//Die Schriftgöße ändern, hier des aktuellen Fonts						
 			//Font font = g.getFont().deriveFont( 12.0f );					//Die Schriftgöße ändern, hier des aktuellen Fonts
 						
-			String sIconLabelFontSize = objKernel.getParameterByProgramAlias(sModuleAlias, sProgramAlias, "IconLabelFontSize_float" );
+			String sIconLabelFontSize = null;
+			objEntry = objKernel.getParameterByProgramAlias(sModuleAlias, sProgramAlias, "IconLabelFontSize_float" );
+			if(!objEntry.hasAnyValue()){
+				String serror = "Parameter existiert nicht in der Konfiguration: 'xxxxx'";
+				System.out.println(ReflectCodeZZZ.getMethodCurrentName() + ": " +serror);
+				ExceptionZZZ ez = new ExceptionZZZ(serror,ExceptionZZZ.iERROR_CONFIGURATION_VALUE, this,  ReflectCodeZZZ.getMethodCurrentName());
+				throw ez;
+			}else{
+				sIconLabelFontSize = objEntry.getValue();
+			}
 			if(StringZZZ.isEmpty(sIconLabelFontSize)){ sIconLabelFontSize="8.0"; }
 			Float fltIconLabelFontSize = new Float(sIconLabelFontSize);
 			

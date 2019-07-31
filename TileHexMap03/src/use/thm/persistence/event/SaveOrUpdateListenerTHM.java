@@ -39,17 +39,22 @@ public class SaveOrUpdateListenerTHM extends DefaultSaveOrUpdateEventListener im
 
 	//@Override
 	 public void onSaveOrUpdate_NurTest(SaveOrUpdateEvent event)   throws HibernateException {
-		 System.out.println(ReflectCodeZZZ.getPositionCurrent() + " Hibernate-Event 02...");	
-		 
-		 Object obj = event.getObject();
-		 System.out.println("TEST Object:" + obj.getClass().getName());
-		 
-		 Object objEntity =  event.getEntity();
-		 if(objEntity!=null){
-			 System.out.println("TEST Entity:" + objEntity.getClass().getName());
-		}else{
-			System.out.println("TEXT Entity: NULL");
-		}
+		 try{
+			 System.out.println(ReflectCodeZZZ.getPositionCurrent() + " Hibernate-Event 02...");	
+			 
+			 Object obj = event.getObject();
+			 System.out.println("TEST Object:" + obj.getClass().getName());
+			 
+			 Object objEntity =  event.getEntity();
+			 if(objEntity!=null){
+				 System.out.println("TEST Entity:" + objEntity.getClass().getName());
+			}else{
+				System.out.println("TEXT Entity: NULL");
+			}
+		 }catch(ExceptionZZZ ez){
+				String sError = "ExceptionZZZ: " + ez.getMessageLast() + "+\n ThreadID:" + Thread.currentThread().getId() +"\n";			
+				System.out.println(sError);
+			}
 		 
 		 //ABER: WARUM BEKOMME ICH HIER NIE EIN UPDATE DER AREACELL ANGEZEIGT?
 		 this.veto(false);
@@ -57,6 +62,7 @@ public class SaveOrUpdateListenerTHM extends DefaultSaveOrUpdateEventListener im
 
 	@Override
 	public void onSaveOrUpdate(SaveOrUpdateEvent event) throws HibernateException {
+		try{
 		System.out.println(ReflectCodeZZZ.getPositionCurrent() + " Hibernate-Event 03...");		
 		boolean bHasVeto = true;//Erst mal auf true setzen. Falls einer der Fälle nicht greift, dann kommt eine leere dialogbox hoch, um hier ein Problem anzuzeigen.
 		try {
@@ -91,7 +97,11 @@ public class SaveOrUpdateListenerTHM extends DefaultSaveOrUpdateEventListener im
 			e.printStackTrace();
 			System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": FEHLER beim Committen eines Spielsteins / einer Area.");
 			this.veto(true);
-		}		
+		}
+	}catch(ExceptionZZZ ez){
+		String sError = "ExceptionZZZ: " + ez.getMessageLast() + "+\n ThreadID:" + Thread.currentThread().getId() +"\n";			
+		System.out.println(sError);
+	}
 	}
 	
 	private boolean saveOrUpdate_ArmyVeto(TroopArmy troop) throws ExceptionZZZ{

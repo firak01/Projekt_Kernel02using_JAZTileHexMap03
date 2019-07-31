@@ -258,6 +258,7 @@ public abstract class AbstractKeyDao<T> extends GeneralDaoZZZ<T> implements IThi
 	public int count(){
 		int iReturn = -1;
 		try{
+		try{
 		String sTableName = this.getDaoTableName();
 		
 		this.getLog().debug(ReflectCodeZZZ.getPositionCurrent() + ": Counting '" + sTableName);
@@ -284,7 +285,7 @@ public abstract class AbstractKeyDao<T> extends GeneralDaoZZZ<T> implements IThi
 //		catch(StaleObjectStateException er){
 //			log.error("Method delete failed StaleObjectStateException +\n" + session.hashCode() + "\n ThreadID:" + Thread.currentThread().getId() +"\n" , er);
 //			System.out.println("STALE!!!");
-//			return this.staleObjectStateException(instance, er);
+//			return this.staleObjectStateException(instance, er);		
 		}catch(HibernateException he){
 			log.error("Method delete failed HibernateException +\n" + getSession().hashCode() + "\n ThreadID:" + Thread.currentThread().getId() +"\n" , he);
 			System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": HIBERNATE EXCEPTION!!!!");
@@ -298,7 +299,18 @@ public abstract class AbstractKeyDao<T> extends GeneralDaoZZZ<T> implements IThi
 				iReturn = -1;
 			}
 		}
-
-		return iReturn;
+	}catch(ExceptionZZZ ez){
+		String sError = "ExceptionZZZ: " + ez.getMessageLast() + "+\n" + getSession().hashCode() + "\n ThreadID:" + Thread.currentThread().getId() +"\n";
+		log.error(sError, ez);
+		System.out.println(sError);
+		iReturn = -1;
+	}finally {
+		if (getSession().getTransaction().isActive()) {
+			this.rollback();			
+			System.out.println("HIBERNATE ROLLBACK EXECUTED!!!!");
+			iReturn = -1;
+		}
+	}
+	return iReturn;
 	}
 }

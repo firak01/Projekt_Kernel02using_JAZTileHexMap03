@@ -335,9 +335,9 @@ public class DebugKeyTable_Version_TileImmutabletextTHM {
 	public boolean debugCreateEntry_Immutabletext(int iIndex){
 		boolean bReturn = false;
 		main:{
-			System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": START ##############");			
-			
-			try {				
+			try{
+				System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": START ##############");						
+							
 				KernelZZZ objKernel = new KernelZZZ(); //Merke: Die Service Klasse selbst kann wohl nicht das KernelObjekt extenden!
 				HibernateContextProviderSingletonTHM objContextHibernate = HibernateContextProviderSingletonTHM.getInstance(objKernel);					
 				
@@ -385,12 +385,13 @@ public class DebugKeyTable_Version_TileImmutabletextTHM {
 //					break validEntry;
 //				}
 				
-			} catch (ExceptionZZZ e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": ENDE ##############");			
-			
+
+				System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": ENDE ##############");			
+			}catch(ExceptionZZZ ez){
+				String sError = "ExceptionZZZ: " + ez.getMessageLast() + "+\n ThreadID:" + Thread.currentThread().getId() +"\n";			
+				System.out.println(sError);
+				bReturn = false;
+			}	
 			
 		}//end main:
 		return bReturn;	
@@ -405,9 +406,9 @@ public class DebugKeyTable_Version_TileImmutabletextTHM {
 	public boolean debugCreateEntry_TileImmutabletext(int iIndex){
 		boolean bReturn = false;
 		main:{
-			System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": START ##############");			
-			
-			try {				
+			try{
+				System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": START ##############");			
+				
 				KernelZZZ objKernel = new KernelZZZ(); //Merke: Die Service Klasse selbst kann wohl nicht das KernelObjekt extenden!
 				HibernateContextProviderSingletonTHM objContextHibernate = HibernateContextProviderSingletonTHM.getInstance(objKernel);					
 				//Diese MEthode hat darüber nciht zu entscheiden. objContextHibernate.getConfiguration().setProperty("hibernate.hbm2ddl.auto", "update");  //! Jetzt erst wird jede Tabelle über den Anwendungsstart hinaus gespeichert UND auch wiedergeholt.				
@@ -453,14 +454,13 @@ public class DebugKeyTable_Version_TileImmutabletextTHM {
 //					this.getFacadeResult().setMessage(sMessage);
 //					break validEntry;
 //				}
-				
-			} catch (ExceptionZZZ e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": ENDE ##############");			
-			
-			
+
+				System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": ENDE ##############");
+			}catch(ExceptionZZZ ez){
+				String sError = "ExceptionZZZ: " + ez.getMessageLast() + "+\n ThreadID:" + Thread.currentThread().getId() +"\n";			
+				System.out.println(sError);
+				bReturn = false;
+			}						
 		}//end main:
 		return bReturn;	
 	}
@@ -474,9 +474,9 @@ public class DebugKeyTable_Version_TileImmutabletextTHM {
 	public boolean debugCreateEntry_TextImmutabletext(int iIndex){
 		boolean bReturn = false;
 		main:{
-			System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": START ##############");			
-			
-			try {				
+			try{
+				System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": START ##############");			
+									
 				KernelZZZ objKernel = new KernelZZZ(); //Merke: Die Service Klasse selbst kann wohl nicht das KernelObjekt extenden!
 				HibernateContextProviderSingletonTHM objContextHibernate = HibernateContextProviderSingletonTHM.getInstance(objKernel);					
 				//Diese MEthode hat darüber nciht zu entscheiden. objContextHibernate.getConfiguration().setProperty("hibernate.hbm2ddl.auto", "update");  //! Jetzt erst wird jede Tabelle über den Anwendungsstart hinaus gespeichert UND auch wiedergeholt.				
@@ -523,13 +523,13 @@ public class DebugKeyTable_Version_TileImmutabletextTHM {
 //					this.getFacadeResult().setMessage(sMessage);
 //					break validEntry;
 //				}
-				
-			} catch (ExceptionZZZ e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": ENDE ##############");			
 			
+				System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": ENDE ##############");			
+			}catch(ExceptionZZZ ez){
+				String sError = "ExceptionZZZ: " + ez.getMessageLast() + "+\n ThreadID:" + Thread.currentThread().getId() +"\n";			
+				System.out.println(sError);
+				bReturn = false;
+			}
 			
 		}//end main:
 		return bReturn;	
@@ -538,9 +538,9 @@ public class DebugKeyTable_Version_TileImmutabletextTHM {
 	public boolean debugCreateEntriesAll(){
 		boolean bReturn = false;
 		main:{
-			System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": START ##############");			
+			try{
+				System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": START ##############");			
 			
-			try {				
 				KernelZZZ objKernel = new KernelZZZ(); //Merke: Die Service Klasse selbst kann wohl nicht das KernelObjekt extenden!
 				HibernateContextProviderSingletonTHM objContextHibernate = HibernateContextProviderSingletonTHM.getInstance(objKernel);					
 				//Diese MEthode hat darüber nciht zu entscheiden. objContextHibernate.getConfiguration().setProperty("hibernate.hbm2ddl.auto", "update");  //! Jetzt erst wird jede Tabelle über den Anwendungsstart hinaus gespeichert UND auch wiedergeholt.				
@@ -559,14 +559,13 @@ public class DebugKeyTable_Version_TileImmutabletextTHM {
 				ImmutabletextDao daoText = new ImmutabletextDao(objContextHibernate);
 				int iTextCreated = daoText.createEntriesAll();
 				System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": Erstellte Texte: " + iTextCreated);
-				
-			} catch (ExceptionZZZ e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": ENDE ##############");			
-			
-			
+							
+				System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": ENDE ##############");			
+			}catch(ExceptionZZZ ez){
+				String sError = "ExceptionZZZ: " + ez.getMessageLast() + "+\n ThreadID:" + Thread.currentThread().getId() +"\n";			
+				System.out.println(sError);
+				bReturn = false;
+			}			
 		}//end main:
 		return bReturn;	
 	}
@@ -581,9 +580,9 @@ public class DebugKeyTable_Version_TileImmutabletextTHM {
 	public boolean debugTileImmutabletextDao_searchImmutabletextByThiskey(int iThiskey){
 		boolean bReturn = false;
 		main:{
-			System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": START ##############");			
-			
-			try {				
+			try{
+				System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": START ##############");			
+				
 				KernelZZZ objKernel = new KernelZZZ(); //Merke: Die Service Klasse selbst kann wohl nicht das KernelObjekt extenden!
 				HibernateContextProviderSingletonTHM objContextHibernate = HibernateContextProviderSingletonTHM.getInstance(objKernel);					
 				//Diese Methode hat darüber nciht zu entscheiden. objContextHibernate.getConfiguration().setProperty("hibernate.hbm2ddl.auto", "update");  //! Jetzt erst wird jede Tabelle über den Anwendungsstart hinaus gespeichert UND auch wiedergeholt.				
@@ -609,13 +608,12 @@ public class DebugKeyTable_Version_TileImmutabletextTHM {
 					
 					System.out.println("Thiskey='"+iThiskey+"' gefunden. ("+sShorttext+"|"+sLongtext+"|"+sDescription+")");
 				}	
-			} catch (ExceptionZZZ e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": ENDE ##############");			
-			
-			
+				System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": ENDE ##############");			
+			}catch(ExceptionZZZ ez){
+				String sError = "ExceptionZZZ: " + ez.getMessageLast() + "+\n ThreadID:" + Thread.currentThread().getId() +"\n";			
+				System.out.println(sError);
+				bReturn = false;
+			}			
 		}//end main:
 		return bReturn;	
 	}

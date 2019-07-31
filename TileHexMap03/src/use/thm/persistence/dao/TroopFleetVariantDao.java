@@ -68,9 +68,9 @@ public class TroopFleetVariantDao<T> extends TroopVariantDao<T> {
 	public int createEntriesAll(){
 		int iReturn = 0;
 		main:{
-			System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": START ##############");			
-			
-			try {				
+			try{
+				System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": START ##############");			
+				
 				IHibernateContextProviderZZZ objContextHibernate = this.getHibernateContextProvider();
 				Session session = this.getSessionOpen();
 				if(session == null) break main;	
@@ -90,12 +90,11 @@ public class TroopFleetVariantDao<T> extends TroopVariantDao<T> {
 					}
 				}//end for
 												
-			} catch (ExceptionZZZ e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": ENDE ##############");			
-						
+				System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": ENDE ##############");			
+			}catch(ExceptionZZZ ez){
+				String sError = "ExceptionZZZ: " + ez.getMessageLast() + "+\n ThreadID:" + Thread.currentThread().getId() +"\n";			
+				System.out.println(sError);
+			}		
 		}//end main:
 		return iReturn;		
 	}
@@ -103,9 +102,10 @@ public class TroopFleetVariantDao<T> extends TroopVariantDao<T> {
 	boolean createEntryByEnumSetAlias(String sEnumAlias){
 		boolean bReturn = false;
 		main:{
-			System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": START: .... Gefundener Enum-Name: " + sEnumAlias);
+			try{
+				System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": START: .... Gefundener Enum-Name: " + sEnumAlias);
 			
-			try {	
+				
 //				
 //				Session session = objContextHibernate.getSessionCurrent(); //kürzer: session=this.getSession()
 //				//Session session = this.getSession();
@@ -252,12 +252,12 @@ public class TroopFleetVariantDao<T> extends TroopVariantDao<T> {
 			bReturn = true;
 			}//end validEndtry:
 
-			} catch (ExceptionZZZ e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
 			System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": ENDE");
-			
+			}catch(ExceptionZZZ ez){
+				String sError = "ExceptionZZZ: " + ez.getMessageLast() + "+\n ThreadID:" + Thread.currentThread().getId() +"\n";			
+				System.out.println(sError);
+				bReturn = false;
+			}
 		}
 		return bReturn;
 	}
@@ -381,23 +381,28 @@ public String getKeyTypeUsed() {
 	return "TROOPFLEETVARIANT";
 }
 @Override
-public boolean isVariantValid(long lngThisIdKey) {
-	System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": START ##############");			
+public boolean isVariantValid(long lngThisIdKey) {			
 	boolean bReturn = false;
 	main:{
-
-	String sKeytype = "TROOPFLEETVARIANT";
-	TroopFleetVariant objKey02 = (TroopFleetVariant)this.searchKey(sKeytype, lngThisIdKey );
-	if(objKey02==null){
-		System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": Abfrage: UNERWARTETES ERGEBNIS. Kein Key mit dem KeyType '" + sKeytype + "' und dem Thiskey '" + lngThisIdKey + "' gefunden.");
-		bReturn=false;
-	}else{
-		System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": Abfrage: Erwartetes Ergebnis. Key mit dem KeyType '" + sKeytype + "' und dem Thiskey '" + lngThisIdKey + "' gefunden.");	
-		bReturn=true;
-	}			
-
-	System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": ENDE ##############");			
-				
+		try{
+			System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": START ##############");
+			
+			String sKeytype = "TROOPFLEETVARIANT";
+			TroopFleetVariant objKey02 = (TroopFleetVariant)this.searchKey(sKeytype, lngThisIdKey );
+			if(objKey02==null){
+				System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": Abfrage: UNERWARTETES ERGEBNIS. Kein Key mit dem KeyType '" + sKeytype + "' und dem Thiskey '" + lngThisIdKey + "' gefunden.");
+				bReturn=false;
+			}else{
+				System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": Abfrage: Erwartetes Ergebnis. Key mit dem KeyType '" + sKeytype + "' und dem Thiskey '" + lngThisIdKey + "' gefunden.");	
+				bReturn=true;
+			}			
+		
+			System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": ENDE ##############");			
+	}catch(ExceptionZZZ ez){
+		String sError = "ExceptionZZZ: " + ez.getMessageLast() + "+\n ThreadID:" + Thread.currentThread().getId() +"\n";			
+		System.out.println(sError);
+		bReturn = false;
+	}		
 }//end main:
 return bReturn;
 }

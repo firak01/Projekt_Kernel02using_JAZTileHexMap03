@@ -248,6 +248,7 @@ public abstract class AbstractKeyImmutableDao<T> extends GeneralDaoZZZ<T>  imple
 	public int count(){
 		int iReturn = -1;
 		try{
+		try{
 		String sTableName = this.getDaoTableName();
 		
 		this.getLog().debug(ReflectCodeZZZ.getPositionCurrent() + ": Counting '" + sTableName);
@@ -288,7 +289,18 @@ public abstract class AbstractKeyImmutableDao<T> extends GeneralDaoZZZ<T>  imple
 				iReturn = -1;
 			}
 		}
-
+		}catch(ExceptionZZZ ez){
+			String sError = "ExceptionZZZ: " + ez.getMessageLast() + "+\n" + getSession().hashCode() + "\n ThreadID:" + Thread.currentThread().getId() +"\n";
+			log.error(sError, ez);
+			System.out.println(sError);
+			iReturn = -1;
+		}finally {
+			if (getSession().getTransaction().isActive()) {
+				this.rollback();			
+				System.out.println("HIBERNATE ROLLBACK EXECUTED!!!!");
+				iReturn = -1;
+			}
+		}
 		return iReturn;
 	}
 	

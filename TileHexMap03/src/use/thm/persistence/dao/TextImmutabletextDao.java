@@ -59,9 +59,9 @@ public class TextImmutabletextDao<T> extends ImmutabletextDao<T> {
 	public int createEntriesAll(){
 		int iReturn = 0;
 		main:{
-			System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": START ##############");			
-			
-			try {				
+			try{
+				System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": START ##############");			
+								
 				IHibernateContextProviderZZZ objContextHibernate = this.getHibernateContextProvider();
 				Session session = this.getSessionOpen();
 				if(session == null) break main;	
@@ -117,13 +117,13 @@ public class TextImmutabletextDao<T> extends ImmutabletextDao<T> {
 //				}
 				}//end for
 												
-			} catch (ExceptionZZZ e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": ENDE ##############");			
-			
-			
+
+				System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": ENDE ##############");			
+			}catch(ExceptionZZZ ez){
+				String sError = "ExceptionZZZ: " + ez.getMessageLast() + "+\n ThreadID:" + Thread.currentThread().getId() +"\n";			
+				System.out.println(sError);
+				iReturn = 0;
+			}			
 		}//end main:
 		return iReturn;		
 	}

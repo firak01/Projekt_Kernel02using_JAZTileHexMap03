@@ -91,9 +91,9 @@ public class DebugTroopFleetVariantDao {
 	public boolean debugCreateEntriesAll(){
 		boolean bReturn = false;
 		main:{
-			System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": START ##############");			
-			
-			try {				
+			try{
+				System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": START ##############");			
+				
 				KernelZZZ objKernel = new KernelZZZ(); //Merke: Die Service Klasse selbst kann wohl nicht das KernelObjekt extenden!
 				HibernateContextProviderSingletonTHM objContextHibernate = HibernateContextProviderSingletonTHM.getInstance(objKernel);													
 			
@@ -102,14 +102,13 @@ public class DebugTroopFleetVariantDao {
 				//####################	
 				 TroopFleetVariantDao daoTroopFleetVariant = new TroopFleetVariantDao(objContextHibernate);
 				daoTroopFleetVariant.createEntriesAll();
-				
-			} catch (ExceptionZZZ e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": ENDE ##############");			
-			
-			
+							
+				System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": ENDE ##############");
+			}catch(ExceptionZZZ ez){
+				String sError = "ExceptionZZZ: " + ez.getMessageLast() + "+\n ThreadID:" + Thread.currentThread().getId() +"\n";			
+				System.out.println(sError);
+				bReturn = false;
+			}						
 		}//end main:
 		return bReturn;	
 	}
@@ -235,14 +234,14 @@ public class DebugTroopFleetVariantDao {
 //					this.getFacadeResult().setMessage(sMessage);
 //					break validEntry;
 //				}
-				
-			} catch (ExceptionZZZ e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+							
 			System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": ENDE ##############");			
 			
-			
+			}catch(ExceptionZZZ ez){
+				String sError = "ExceptionZZZ: " + ez.getMessageLast() + "+\n ThreadID:" + Thread.currentThread().getId() +"\n";			
+				System.out.println(sError);
+				bReturn = false;
+			}
 		}//end main:
 		return bReturn;											
 	}
@@ -273,11 +272,12 @@ public class DebugTroopFleetVariantDao {
 			   	
 			    this.debugCreateEntryForThiskey(lngThiskey);
 			    
-			    
-			} catch (ExceptionZZZ e) {
-				e.printStackTrace();
+			    System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": ENDE ##############");
+			}catch(ExceptionZZZ ez){
+				String sError = "ExceptionZZZ: " + ez.getMessageLast() + "+\n ThreadID:" + Thread.currentThread().getId() +"\n";			
+				System.out.println(sError);
+				bReturn = false;
 			}
-			System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": ENDE ##############");			
 		}//end main:
 		return bReturn;											
 	}
@@ -285,6 +285,7 @@ public class DebugTroopFleetVariantDao {
 	public boolean debugCreateEntryForThiskey(long lThiskey){
 		boolean bReturn = false;
 		main:{
+			try{
 			try {				
 				KernelZZZ objKernel = new KernelZZZ(); //Merke: Die Service Klasse selbst kann wohl nicht das KernelObjekt extenden!
 				HibernateContextProviderSingletonTHM objContextHibernate = HibernateContextProviderSingletonTHM.getInstance(objKernel);					
@@ -404,14 +405,16 @@ public class DebugTroopFleetVariantDao {
 //					this.getFacadeResult().setMessage(sMessage);
 //					break validEntry;
 //				}
-				
-			} catch (ExceptionZZZ e) {				
-				e.printStackTrace();
+							
 			} catch (ThiskeyEnumMappingExceptionZZZ e1) {			
 				e1.printStackTrace();
 			}
 			System.out.println(ReflectCodeZZZ.getPositionCurrent() + ": ENDE ##############");			
-			
+		}catch(ExceptionZZZ ez){
+			String sError = "ExceptionZZZ: " + ez.getMessageLast() + "+\n ThreadID:" + Thread.currentThread().getId() +"\n";			
+			System.out.println(sError);
+			bReturn = false;
+		}
 			
 		}//end main:
 		return bReturn;											
@@ -437,9 +440,10 @@ public class DebugTroopFleetVariantDao {
 				
 				String sCategorytext = objKey02.getCategorytext();
 				System.out.println("Categorytext = " + sCategorytext);
-			} catch (ExceptionZZZ e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+			}catch(ExceptionZZZ ez){
+				String sError = "ExceptionZZZ: " + ez.getMessageLast() + "+\n ThreadID:" + Thread.currentThread().getId() +"\n";			
+				System.out.println(sError);
+				bReturn = false;
 			}
 		}//end main:
 		return bReturn;		

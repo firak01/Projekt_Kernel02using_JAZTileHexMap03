@@ -8,6 +8,7 @@ import org.hibernate.event.spi.PersistEvent;
 import org.hibernate.event.spi.PersistEventListener;
 
 import custom.zKernel.LogZZZ;
+import basic.zBasic.ExceptionZZZ;
 import basic.zBasic.ReflectCodeZZZ;
 import basic.zKernel.IKernelUserZZZ;
 import basic.zKernel.IKernelZZZ;
@@ -25,11 +26,21 @@ public class PersistListenerTHM implements PersistEventListener, IKernelUserZZZ,
 	private VetoFlag4ListenerZZZ objLastResult=new VetoFlag4ListenerZZZ();
 	
 	public void onPersist(PersistEvent arg0) throws HibernateException {
-		System.out.println(ReflectCodeZZZ.getPositionCurrent() + " onPersist Hibernate-Event...");
+		try{
+			System.out.println(ReflectCodeZZZ.getPositionCurrent() + " onPersist Hibernate-Event...");
+		}catch(ExceptionZZZ ez){
+			String sError = "ExceptionZZZ: " + ez.getMessageLast() + "+\n ThreadID:" + Thread.currentThread().getId() +"\n";			
+			System.out.println(sError);		
+		}
 	}
 
-	public void onPersist(PersistEvent arg0, Map arg1) throws HibernateException {		
-		System.out.println(ReflectCodeZZZ.getPositionCurrent() + " onPersist Hibernate-Event 02...");
+	public void onPersist(PersistEvent arg0, Map arg1) throws HibernateException {
+		try{
+			System.out.println(ReflectCodeZZZ.getPositionCurrent() + " onPersist Hibernate-Event 02...");
+		}catch(ExceptionZZZ ez){
+			String sError = "ExceptionZZZ: " + ez.getMessageLast() + "+\n ThreadID:" + Thread.currentThread().getId() +"\n";			
+			System.out.println(sError);
+		}
 	}
 
 	@Override

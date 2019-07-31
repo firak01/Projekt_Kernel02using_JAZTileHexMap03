@@ -16,6 +16,7 @@ import basic.zBasic.util.datatype.string.StringZZZ;
 import basic.zBasic.util.log.KernelReportContextProviderZZZ;
 import basic.zBasic.util.log.ReportLogZZZ;
 import basic.zBasicUI.glassPane.dragDropTranslucent.GhostGlassPane;
+import basic.zKernel.IKernelConfigSectionEntryZZZ;
 import basic.zKernel.IKernelZZZ;
 import basic.zKernel.KernelUseObjectZZZ;
 import basic.zKernel.KernelZZZ;
@@ -206,12 +207,15 @@ public class ApplicationTHM extends KernelUseObjectZZZ{
 //	       String sBaseDirectory = sPathEclipse + File.separator + "images";
 			
 		  //Der Download-Pfad liegt aber nicht im Eclipse Workspace, sollter er auch nicht weil sonst alles Mögliche in das GIT - Repository hochgeladen wird.		  
-		  String sBaseDirectory = this.getKernelObject().getParameter(ApplicationTHM.sINI_APPLICATION_DOWNLOADPATH);
-			if(sBaseDirectory==null){
+		  String sBaseDirectory = null;
+		  IKernelConfigSectionEntryZZZ objEntry = this.getKernelObject().getParameter(ApplicationTHM.sINI_APPLICATION_DOWNLOADPATH);
+			if(!objEntry.hasAnyValue()){
 				String stemp = "Parameter existiert nicht in der Konfiguration auf Applikationsebene: '" + ApplicationTHM.sINI_APPLICATION_DOWNLOADPATH + "'";
 				System.out.println(ReflectCodeZZZ.getMethodCurrentName() + ": " +stemp);
 				ExceptionZZZ ez = new ExceptionZZZ(stemp,ExceptionZZZ.iERROR_CONFIGURATION_VALUE, this,  ReflectCodeZZZ.getMethodCurrentName());
 				throw ez;		
+			}else{
+				sBaseDirectory = objEntry.getValue();
 			}
 		  ReportLogZZZ.write(ReportLogZZZ.DEBUG, "Application download path: " + sBaseDirectory);
 		  
@@ -229,7 +233,16 @@ public class ApplicationTHM extends KernelUseObjectZZZ{
 		String sModuleAlias = this.getKernelObject().getApplicationKey();
 		String sProgramAlias = this.getKernelObject().getSystemNumber();
 		
-		String stemp = this.getKernelObject().getParameterByProgramAlias(sModuleAlias, sProgramAlias, "GuiZoomFactorAliasStart");
+		String stemp = null;
+		IKernelConfigSectionEntryZZZ objEntry = this.getKernelObject().getParameterByProgramAlias(sModuleAlias, sProgramAlias, "GuiZoomFactorAliasStart");
+		if(!objEntry.hasAnyValue()){
+			String serror = "Parameter existiert nicht in der Konfiguration: 'GuiZoomFactorAliasStart'";
+			System.out.println(ReflectCodeZZZ.getMethodCurrentName() + ": " +serror);
+			ExceptionZZZ ez = new ExceptionZZZ(serror,ExceptionZZZ.iERROR_CONFIGURATION_VALUE, this,  ReflectCodeZZZ.getMethodCurrentName());
+			throw ez;
+		}else{
+			stemp = objEntry.getValue();
+		}
 		ReportLogZZZ.write(ReportLogZZZ.DEBUG, "GuiZoomFactorAliasStart as String " + stemp);
 		
 		return stemp;
@@ -322,7 +335,16 @@ public class ApplicationTHM extends KernelUseObjectZZZ{
 			String sModuleAlias = this.getKernelObject().getApplicationKey();
 			String sProgramAlias = this.getKernelObject().getSystemNumber();
 			System.out.println(ReflectCodeZZZ.getMethodCurrentName() + ": Suche Modul: '" + sModuleAlias +"'/ Program: '" + sProgramAlias + "'/ Parameter: 'GuiZoomFactorListInitial'");						
-			String stemp = this.getKernelObject().getParameterByProgramAlias(sModuleAlias, sProgramAlias, "GuiZoomFactorListInitial");
+			String stemp = null; 
+			IKernelConfigSectionEntryZZZ objEntry = this.getKernelObject().getParameterByProgramAlias(sModuleAlias, sProgramAlias, "GuiZoomFactorListInitial"); 
+			if(!objEntry.hasAnyValue()){
+				String serror = "Parameter existiert nicht in der Konfiguration: 'GuiZoomFactorListInitial'";
+				System.out.println(ReflectCodeZZZ.getMethodCurrentName() + ": " +serror);
+				ExceptionZZZ ez = new ExceptionZZZ(serror,ExceptionZZZ.iERROR_CONFIGURATION_VALUE, this,  ReflectCodeZZZ.getMethodCurrentName());
+				throw ez;
+			}else{
+				stemp = objEntry.getValue();
+			}
 			ReportLogZZZ.write(ReportLogZZZ.DEBUG, "GuiZoomFactorListInitial as String " + stemp);
 			
 			if(!StringZZZ.isEmpty(stemp)){
@@ -350,7 +372,16 @@ public class ApplicationTHM extends KernelUseObjectZZZ{
 		String sModuleAlias = this.getKernelObject().getApplicationKey();
 		String sProgramAlias = "HexMapCentral";
 		
-		String stemp = this.getKernelObject().getParameterByProgramAlias(sModuleAlias, sProgramAlias, "HexZoomFactorAliasStart");
+		String stemp = null;
+		IKernelConfigSectionEntryZZZ objEntry = this.getKernelObject().getParameterByProgramAlias(sModuleAlias, sProgramAlias, "HexZoomFactorAliasStart");
+		if(!objEntry.hasAnyValue()){
+			String serror = "Parameter existiert nicht in der Konfiguration: 'HexZoomFactorAliasStart'";
+			System.out.println(ReflectCodeZZZ.getMethodCurrentName() + ": " +serror);
+			ExceptionZZZ ez = new ExceptionZZZ(serror,ExceptionZZZ.iERROR_CONFIGURATION_VALUE, this,  ReflectCodeZZZ.getMethodCurrentName());
+			throw ez;
+		}else{
+			stemp = objEntry.getValue();
+		}
 		ReportLogZZZ.write(ReportLogZZZ.DEBUG, "HexZoomFactorAliasStart as String " + stemp);
 		
 		return stemp;
@@ -390,7 +421,16 @@ public class ApplicationTHM extends KernelUseObjectZZZ{
 			String sProgramAlias ="HexMapCentral";
 			System.out.println(ReflectCodeZZZ.getMethodCurrentName() + ": Suche Modul: '" + sModuleAlias +"'/ Program: '" + sProgramAlias + "'/ Parameter: 'HexZoomFactorListInitial'");						
 			
-			String stemp = this.getKernelObject().getParameterByProgramAlias(sModuleAlias, sProgramAlias, "HexZoomFactorListInitial");
+			String stemp = null;
+			IKernelConfigSectionEntryZZZ objEntry = this.getKernelObject().getParameterByProgramAlias(sModuleAlias, sProgramAlias, "HexZoomFactorListInitial"); 
+			if(!objEntry.hasAnyValue()){
+				String serror = "Parameter existiert nicht in der Konfiguration: 'HexZoomFactorListInitial'";
+				System.out.println(ReflectCodeZZZ.getMethodCurrentName() + ": " +serror);
+				ExceptionZZZ ez = new ExceptionZZZ(serror,ExceptionZZZ.iERROR_CONFIGURATION_VALUE, this,  ReflectCodeZZZ.getMethodCurrentName());
+				throw ez;
+			}else{
+				stemp = objEntry.getValue();
+			}
 			ReportLogZZZ.write(ReportLogZZZ.DEBUG, "HexZoomFactorListInitial as String " + stemp);
 			
 			if(!StringZZZ.isEmpty(stemp)){
@@ -610,7 +650,16 @@ public class ApplicationTHM extends KernelUseObjectZZZ{
 		System.out.println(ReflectCodeZZZ.getMethodCurrentName() + ": Suche Modul: '" + sModuleAlias +"'/ Program: '" + sProgramAlias + "'/ Parameter: 'GuiLabelFontSize_float'");
 
 			
-			String sGuiLabelFontSize = objKernel.getParameterByProgramAlias(sModuleAlias, sProgramAlias, "GuiLabelFontSize_float" );
+			String sGuiLabelFontSize = null;									
+			IKernelConfigSectionEntryZZZ objEntry = objKernel.getParameterByProgramAlias(sModuleAlias, sProgramAlias, "GuiLabelFontSize_float" ); 
+			if(!objEntry.hasAnyValue()){
+				String serror = "Parameter existiert nicht in der Konfiguration: 'GuiLabelFontSize_float'";
+				System.out.println(ReflectCodeZZZ.getMethodCurrentName() + ": " +serror);
+				ExceptionZZZ ez = new ExceptionZZZ(serror,ExceptionZZZ.iERROR_CONFIGURATION_VALUE, this,  ReflectCodeZZZ.getMethodCurrentName());
+				throw ez;
+			}else{
+				sGuiLabelFontSize = objEntry.getValue();
+			}
 			if(StringZZZ.isEmpty(sGuiLabelFontSize)){ sGuiLabelFontSize="8.0"; }
 			Float fltGuiLabelFontSize = new Float(sGuiLabelFontSize);
 			
@@ -641,22 +690,31 @@ public class ApplicationTHM extends KernelUseObjectZZZ{
 	//==== Hexfeldgröße, basierende auf der Zoomstufe
 	public int getHexFieldSideLenghtInitial() throws ExceptionZZZ{
 		int iReturn = 0;
-		{
-		KernelSingletonTHM objKernel = KernelSingletonTHM.getInstance();
-		FileIniZZZ objFileConfig = objKernel.getFileConfigIni();
-	
-		//0. Hole den initial in der Applikation für das GUI eingestellten ZoomFaktor. Diesen als Variable für die INI-Berechnungen zur Verfügung stellen
-		String sHexZoomFactorAliasCurrent = this.getHexZoomFactorAliasCurrent();
-		String sHexZoomFactorCurrent = ApplicationSingletonTHM.getInstance().getHexZoomFactor(sHexZoomFactorAliasCurrent);							
-		objFileConfig.setVariable("HexZoomFactorUsed", sHexZoomFactorCurrent);
-	
- 	    //1. Hole die Seitenlänge des Hexfelds, das basiert auf einer Formel in der Ini Datei:
-		//Für den Parameter "NumberOfColumn wird in Panel verwendet: Modul: 'use.thm.client.FrmMapSingletonTHM'/ Program: 'use.thm.client.PanelMain_CENTERTHM'/ 
-    	String sModuleAlias =  this.getKernelObject().getApplicationKey(); //this.getModuleUsed();// this.getModuleName();
-		String sProgramAlias = "HexMapCentral"; //this.getProgramUsed(); //this.getProgramAlias(); //				
-		System.out.println(ReflectCodeZZZ.getMethodCurrentName() + ": Suche Modul: '" + sModuleAlias +"'/ Program: '" + sProgramAlias + "'/ Parameter: 'HexSideLength'");
-			
-			String sHexSideLength = objKernel.getParameterByProgramAlias(sModuleAlias, sProgramAlias, "HexSideLength" );			
+		main:{
+			KernelSingletonTHM objKernel = KernelSingletonTHM.getInstance();
+			FileIniZZZ objFileConfig = objKernel.getFileConfigIni();
+		
+			//0. Hole den initial in der Applikation für das GUI eingestellten ZoomFaktor. Diesen als Variable für die INI-Berechnungen zur Verfügung stellen
+			String sHexZoomFactorAliasCurrent = this.getHexZoomFactorAliasCurrent();
+			String sHexZoomFactorCurrent = ApplicationSingletonTHM.getInstance().getHexZoomFactor(sHexZoomFactorAliasCurrent);							
+			objFileConfig.setVariable("HexZoomFactorUsed", sHexZoomFactorCurrent);
+		
+	 	    //1. Hole die Seitenlänge des Hexfelds, das basiert auf einer Formel in der Ini Datei:
+			//Für den Parameter "NumberOfColumn wird in Panel verwendet: Modul: 'use.thm.client.FrmMapSingletonTHM'/ Program: 'use.thm.client.PanelMain_CENTERTHM'/ 
+	    	String sModuleAlias =  this.getKernelObject().getApplicationKey(); //this.getModuleUsed();// this.getModuleName();
+			String sProgramAlias = "HexMapCentral"; //this.getProgramUsed(); //this.getProgramAlias(); //				
+			System.out.println(ReflectCodeZZZ.getMethodCurrentName() + ": Suche Modul: '" + sModuleAlias +"'/ Program: '" + sProgramAlias + "'/ Parameter: 'HexSideLength'");
+				
+			String sHexSideLength = null;
+			IKernelConfigSectionEntryZZZ objEntry = objKernel.getParameterByProgramAlias(sModuleAlias, sProgramAlias, "HexSideLength" );
+			if(!objEntry.hasAnyValue()){
+				String serror = "Parameter existiert nicht in der Konfiguration: 'HexSideLength'";
+				System.out.println(ReflectCodeZZZ.getMethodCurrentName() + ": " +serror);
+				ExceptionZZZ ez = new ExceptionZZZ(serror,ExceptionZZZ.iERROR_CONFIGURATION_VALUE, this,  ReflectCodeZZZ.getMethodCurrentName());
+				throw ez;
+			}else{
+				sHexSideLength = objEntry.getValue();
+			}			
 			if(StringZZZ.isEmpty(sHexSideLength)){
 				iReturn=HexMapTHM.constSideLength;
 			}else{
@@ -694,7 +752,17 @@ public class ApplicationTHM extends KernelUseObjectZZZ{
 				String sProgramAlias = this.getKernelObject().getSystemNumber(); //Ist hier auf Applikationsebene (also "Modulübergreifend") eingerichtet.				
 				System.out.println(ReflectCodeZZZ.getMethodCurrentName() + ": Suche Modul: '" + sModuleAlias +"'/ Program: '" + sProgramAlias + "'/ Parameter: 'GuiZoomFactorAliasStart'");
 
-				String sHexZoomFactorAlias = objKernel.getParameterByProgramAlias(sModuleAlias, sProgramAlias, "GuiZoomFactorAliasStart" );
+				String sHexZoomFactorAlias = null;
+				IKernelConfigSectionEntryZZZ objEntry = objKernel.getParameterByProgramAlias(sModuleAlias, sProgramAlias, "GuiZoomFactorAliasStart" );
+				if(!objEntry.hasAnyValue()){
+					String serror = "Parameter existiert nicht in der Konfiguration: 'GuiZoomFactorAliasStart'";
+					System.out.println(ReflectCodeZZZ.getMethodCurrentName() + ": " +serror);
+					ExceptionZZZ ez = new ExceptionZZZ(serror,ExceptionZZZ.iERROR_CONFIGURATION_VALUE, this,  ReflectCodeZZZ.getMethodCurrentName());
+					throw ez;
+				}else{
+					sHexZoomFactorAlias = objEntry.getValue();
+				}
+						
 				HashMap<String,String>hmZoomFactor=this.getHashMapGuiZoomFactorAlias();
 				String sHexZoomFactorUsed = hmZoomFactor.get(sHexZoomFactorAlias);				
 				objIni.setVariable("GuiZoomFactorUsed", sHexZoomFactorUsed);
@@ -707,7 +775,18 @@ public class ApplicationTHM extends KernelUseObjectZZZ{
 			String sProgramAlias = "HexMapCentral";  //in TileTHM wäre das: this.getMapPanel().getProgramAlias();				
 			System.out.println(ReflectCodeZZZ.getMethodCurrentName() + ": Suche Modul: '" + sModuleAlias +"'/ Program: '" + sProgramAlias + "'/ Parameter: 'HexZoomFactorAliasStart'");
 
-			String sHexZoomFactorAlias = objKernel.getParameterByProgramAlias(sModuleAlias, sProgramAlias, "HexZoomFactorAliasStart" );
+			String sHexZoomFactorAlias = null;
+			IKernelConfigSectionEntryZZZ objEntry = objKernel.getParameterByProgramAlias(sModuleAlias, sProgramAlias, "HexZoomFactorAliasStart" );
+			if(!objEntry.hasAnyValue()){
+				String serror = "Parameter existiert nicht in der Konfiguration: 'HexZoomFactorAliasStart'";
+				System.out.println(ReflectCodeZZZ.getMethodCurrentName() + ": " +serror);
+				ExceptionZZZ ez = new ExceptionZZZ(serror,ExceptionZZZ.iERROR_CONFIGURATION_VALUE, this,  ReflectCodeZZZ.getMethodCurrentName());
+				throw ez;
+			}else{
+				sHexZoomFactorAlias = objEntry.getValue();
+			}
+			
+			
 			HashMap<String,String>hmZoomFactor=this.getHashMapHexZoomFactorAlias();
 			String sHexZoomFactorUsed = hmZoomFactor.get(sHexZoomFactorAlias);				
 			objIni.setVariable("HexZoomFactorUsed", sHexZoomFactorUsed);

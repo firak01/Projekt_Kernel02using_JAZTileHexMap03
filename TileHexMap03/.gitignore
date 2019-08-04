@@ -2,6 +2,9 @@
 /bin/
 /build/
 
+#Vom Projekt während der Ausführung generierte Dateien ausschliessen.
+/src/log4j.conf
+
 #In einem Projekt, das kein Web Projekt ist, den WebContent nicht übertragen.
 /WebContent/
 

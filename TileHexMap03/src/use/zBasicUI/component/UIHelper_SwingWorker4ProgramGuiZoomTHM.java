@@ -21,7 +21,7 @@ public class UIHelper_SwingWorker4ProgramGuiZoomTHM {
 		FileIniZZZ objFileConfig = objKernel.getFileConfigIni();
 			
 		String sGuiZoomFactorCurrent = ApplicationSingletonTHM.getInstance().getGuiZoomFactorCurrent();							
-		objFileConfig.setVariable("GuiZoomFactorUsed", sGuiZoomFactorCurrent);
+		objFileConfig.setVariable("GuiZoomFactorUsed", sGuiZoomFactorCurrent,true);//setze die Variable und "true" bewirkt, dass die sie benutzenden Formeln nicht mehr den Wert aus dem Cache holen.
 				
 	}
 	

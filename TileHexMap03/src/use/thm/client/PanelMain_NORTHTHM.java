@@ -697,7 +697,7 @@ public class PanelMain_NORTHTHM extends KernelJPanelCascadedZZZ{
 							public void run(){
 								try {							
 									ReportLogZZZ.write(ReportLogZZZ.DEBUG, ReflectCodeZZZ.getMethodCurrentName() + ": Updating MAP IN NEIGHBORPANEL");
-									ApplicationSingletonTHM.getInstance().setHexFieldSideLengthCurrent(0); //20180901: Damit sich auch die Größe der Sechsecke ändert. Deren Seitenlänge aus der ini-Formel neu Berechnen lassen.
+									ApplicationSingletonTHM.getInstance().setHexFieldSideLengthCurrent(0); //20180901: Die 0 bewirkt - Damit sich auch die Größe der Sechsecke ändert. Deren Seitenlänge aus der ini-Formel neu Berechnen lassen.
 									
 									//PROBLEM: Nachbarpanels updaten und neu zeichnen
 									PanelMain_CENTERTHM panelMap = (PanelMain_CENTERTHM) panel.searchPanelSub("CENTER");		

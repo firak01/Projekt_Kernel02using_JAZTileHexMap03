@@ -16,17 +16,13 @@ public class UIHelper_SwingWorker4ProgramMapZoomTHM {
 	}
 		
 	private static void construct(boolean bPlus) throws ExceptionZZZ{
-		//0. Dene GUI Zoom um +1 erhöhen
+		//0. Den GUI Zoom um +1 erhöhen
 		KernelSingletonTHM objKernel = KernelSingletonTHM.getInstance();
 		FileIniZZZ objFileConfig = objKernel.getFileConfigIni();
 	
 		//0. Hole den gerade in der Applikation für das GUI eingestellten ZoomFaktor. Diesen als Variable für die INI-Berechnungen zur Verfügung stellen
-		//String sGuiZoomFactorAliasCurrent = ApplicationSingletonTHM.getInstance().getGuiZoomFactorAliasCurrent();	
-		
-		String sMapZoomFactorCurrent = ApplicationSingletonTHM.getInstance().getHexZoomFactorCurrent();							
-		//objFileConfig.setVariable("MapZoomFactorUsed", sMapZoomFactorCurrent);
-		objFileConfig.setVariable("HexZoomFactorUsed", sMapZoomFactorCurrent);
-				
+		String sMapZoomFactorCurrent = ApplicationSingletonTHM.getInstance().getHexZoomFactorCurrent();									
+		objFileConfig.setVariable("HexZoomFactorUsed", sMapZoomFactorCurrent,true);//setze die Variable und "true" bewirkt, dass die sie benutzenden Formeln nicht mehr den Wert aus dem Cache holen. 				
 	}
 	
 	public static void zoomMinus() throws ExceptionZZZ{

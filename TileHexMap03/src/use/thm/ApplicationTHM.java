@@ -749,11 +749,13 @@ public class ApplicationTHM extends KernelUseObjectZZZ{
 				// "GuiZoomFactorUsed"
 				//... Zuerst den eingestellten ZoomFaktor holen UND als Variable hier speichern. Ansonsten wird ggfs. der zuletzt bei der Erstellung der Bilder (z.B bei der Variante) verwendete ZoomFaktor verwendet. //TODO GOON 20180727: Der wird noch aus der Ini.Datei ausgelesen. Demnächst aus Applikation-Einstellung.....
 				String sModuleAlias = this.getKernelObject().getApplicationKey(); //
-				String sProgramAlias = this.getKernelObject().getSystemNumber(); //Ist hier auf Applikationsebene (also "Modulübergreifend") eingerichtet.				
-				System.out.println(ReflectCodeZZZ.getMethodCurrentName() + ": Suche Modul: '" + sModuleAlias +"'/ Program: '" + sProgramAlias + "'/ Parameter: 'GuiZoomFactorAliasStart'");
-
+				//String sProgramAlias = this.getKernelObject().getSystemNumber(); //Ist hier auf Applikationsebene (also "Modulübergreifend") eingerichtet.				
+				//System.out.println(ReflectCodeZZZ.getMethodCurrentName() + ": Suche Modul: '" + sModuleAlias +"'/ Program: '" + sProgramAlias + "'/ Parameter: 'GuiZoomFactorAliasStart'");
+				System.out.println(ReflectCodeZZZ.getMethodCurrentName() + ": Suche Modul: '" + sModuleAlias + "'/ Parameter: 'GuiZoomFactorAliasStart'");
+				
 				String sHexZoomFactorAlias = null;
-				IKernelConfigSectionEntryZZZ objEntry = objKernel.getParameterByProgramAlias(sModuleAlias, sProgramAlias, "GuiZoomFactorAliasStart" );
+				//IKernelConfigSectionEntryZZZ objEntry = objKernel.getParameterByProgramAlias(sModuleAlias, sProgramAlias, "GuiZoomFactorAliasStart" );
+				IKernelConfigSectionEntryZZZ objEntry = objKernel.getParameterByModuleAlias(sModuleAlias, "GuiZoomFactorAliasStart");
 				if(!objEntry.hasAnyValue()){
 					String serror = "Parameter existiert nicht in der Konfiguration: 'GuiZoomFactorAliasStart'";
 					System.out.println(ReflectCodeZZZ.getMethodCurrentName() + ": " +serror);

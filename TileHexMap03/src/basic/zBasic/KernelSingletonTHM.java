@@ -36,6 +36,16 @@ public class KernelSingletonTHM extends KernelKernelZZZ{
 		}
 		return objKernelSingleton;	
 	}
+	
+	public static  KernelSingletonTHM getInstance(String[] saArg, String[] saFlagControl) throws ExceptionZZZ{
+		if(objKernelSingleton==null){
+			IKernelConfigZZZ objConfig = new ConfigTHM(saArg);						
+			objKernelSingleton = new KernelSingletonTHM(objConfig, saFlagControl);
+		}
+		return objKernelSingleton;	
+	}
+	
+	
 		
 	public static KernelSingletonTHM getInstance(String sSystemNumber, String sFileConfigPath, String sFileConfigName, String[] saFlagControl ) throws ExceptionZZZ{			
 		if(objKernelSingleton==null){

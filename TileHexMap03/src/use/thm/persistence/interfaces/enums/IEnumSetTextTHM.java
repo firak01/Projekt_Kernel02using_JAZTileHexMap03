@@ -4,19 +4,12 @@ import java.util.EnumSet;
 
 import basic.zBasic.persistence.interfaces.enums.IThiskeyProviderZZZ;
 import basic.zBasic.persistence.interfaces.enums.IThiskeyValueZZZ;
+import basic.zBasic.util.abstractEnum.IEnumSetZZZ;
 
-public interface IEnumSetTextTHM extends IThiskeyProviderZZZ<Long>{
-	
-	//Das bring ENUM von sich auch mit
-	public String getName();  //Das ist name() von Enum
-	public int getIndex();      //Das ist ordinal() von Enum
-	public String toString();
+public interface IEnumSetTextTHM extends IEnumSetZZZ, IThiskeyProviderZZZ<Long>{
 		
-	//Das sind meine Erweiterungen
+	//Das sind meine Erweiterungen, die über das von IEnumSetZZZ hinausgehen.
 	public String getShorttext();
 	public String getLongtext();
-	public String getDescription();
-	public int getPosition(); //das ist normalerweies order()+1
-	public EnumSet<?> getEnumSetUsed();
-	
+	public String getDescription();	
 }

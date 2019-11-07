@@ -177,6 +177,11 @@ public class ObjectTestMappedValue extends Key  implements Serializable, IOptimi
 		return this.key;
 	}
 
+	@Override
+	public String getName() {
+		return name();
+	}
+
     }//End inner class
     
 

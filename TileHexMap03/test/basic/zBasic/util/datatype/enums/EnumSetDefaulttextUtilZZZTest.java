@@ -9,10 +9,11 @@ import basic.zBasic.ExceptionZZZ;
 import basic.zBasic.util.abstractEnum.EnumSetDefaulttextTestTypeTHM;
 import basic.zBasic.util.abstractEnum.EnumSetTestFactoryTHM;
 import basic.zBasic.util.abstractEnum.IEnumSetFactoryZZZ;
+import basic.zBasic.util.abstractEnum.IEnumSetZZZ;
 import basic.zBasic.util.abstractList.HashMapExtendedZZZ;
 import basic.zBasic.util.datatype.enums.EnumSetMappedUtilZZZ;
 
-public class EnumSetDefaulttextUtilZZZTest<E>  extends TestCase{
+public class EnumSetDefaulttextUtilZZZTest  extends TestCase{
 	 private HashMapExtendedZZZ<String, EnumSetDefaulttextTestTypeTHM> hmTestGenerics = null;
 	 
 	    protected void setUp(){
@@ -146,12 +147,12 @@ public class EnumSetDefaulttextUtilZZZTest<E>  extends TestCase{
 	    	assertTrue("Prüfstring solllte als Ergebnis 'Test01' sein", "Test01".equals(sAbbreviation));
 	    	
 	    	@SuppressWarnings("unchecked")
-			Integer intPosition = EnumSetDefaulttextUtilZZZ.readEnumConstant_PositionValue((Class<IEnumSetTextTHM>) objClass, "TESTVALUE01");
+			Integer intPosition = EnumSetDefaulttextUtilZZZ.readEnumConstant_PositionValue((Class<IEnumSetZZZ>) objClass, "TESTVALUE01");
 	    	assertEquals("Prüfinteger solllte als Ergebnis 1 sein", intPosition.intValue(),1);
 
 	    	
 	    	@SuppressWarnings("unchecked")
-			Integer intIndex = EnumSetDefaulttextUtilZZZ.readEnumConstant_IndexValue((Class<IEnumSetTextTHM>) objClass, "TESTVALUE01");
+			Integer intIndex = EnumSetDefaulttextUtilZZZ.readEnumConstant_IndexValue((Class<IEnumSetZZZ>) objClass, "TESTVALUE01");
 	    	assertEquals("Prüfinteger solllte als Ergebnis 0 sein", intIndex.intValue(),0);
 	    	assertEquals("Prüfinteger solllte als Ergebnis dem ordinal - Wert entsprechen", intIndex.intValue(), intOrdinal.intValue());
 	    	assertEquals("Prüfinteger solllte als Ergebnis um 1 höher als der Index sein", intPosition.intValue(),intIndex.intValue()+1);	    	

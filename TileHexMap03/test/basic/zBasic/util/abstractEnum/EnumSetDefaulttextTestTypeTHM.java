@@ -46,8 +46,7 @@ import basic.zBasic.persistence.interfaces.enums.IThiskeyProviderZZZ;
 
 //##################################################
 //#### Folgende Methoden bring Enumeration von Hause aus mit:
- 
- public String getName(){
+  public String getName(){
 	   return super.name();
  }
  
@@ -59,6 +58,16 @@ import basic.zBasic.persistence.interfaces.enums.IThiskeyProviderZZZ;
  public int getIndex() {
  	return ordinal();
  }
+ 
+ //### Folgende Methoden sind zum komfortablen arbeiten gedacht.
+public int getPosition() {
+	return getIndex() + 1;
+}
+ 
+ //#### Methode aus IKeyProviderZZZ
+	public Long getThiskey() {
+		return this.lKey;
+	}
 
  //##################################################
  //#### Folgende Methoden holen die definierten Werte.
@@ -75,17 +84,6 @@ import basic.zBasic.persistence.interfaces.enums.IThiskeyProviderZZZ;
 	   return this.sDescription;
  }
  
- //#### Methode aus IKeyProviderZZZ
-	public Long getThiskey() {
-		return this.lKey;
-	}
-
- //### Folgende Methoden sind zum komfortablen arbeiten gedacht.
- public int getPosition() {
- 	return getIndex() + 1;
- }
-
-	
 	
  // the valueOfMethod <--- Translating from DB
  public static EnumSetDefaulttextTestTypeTHM fromShorttext(String s) {

@@ -8,8 +8,6 @@ import basic.zBasic.ExceptionZZZ;
 import basic.zBasic.ObjectZZZ;
 import basic.zBasic.ReflectCodeZZZ;
 import basic.zBasic.util.datatype.string.StringZZZ;
-import basic.zBasic.util.persistence.jdbc.JdbcDatabaseTypeZZZ;
-import basic.zBasic.util.persistence.jdbc.JdbcDriverClassTypeZZZ;
 import basic.zKernel.KernelZZZ;
 
 public class EnumSetTestFactoryTHM extends ObjectZZZ implements IEnumSetFactoryZZZ{

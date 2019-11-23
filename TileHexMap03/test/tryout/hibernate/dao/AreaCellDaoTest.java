@@ -13,8 +13,8 @@ import basic.zBasic.ExceptionZZZ;
 import basic.zBasic.persistence.SQLiteUtilZZZ;
 import basic.zBasic.util.abstractList.HashMapExtendedZZZ;
 import basic.zBasic.util.datatype.string.StringZZZ;
-import basic.zBasic.util.persistence.jdbc.JdbcDriverClassTypeZZZ;
 import basic.zBasic.util.persistence.jdbc.UrlLogicZZZ;
+import basic.zKernel.IKernelZZZ;
 import basic.zKernel.KernelZZZ;
 
 public class AreaCellDaoTest extends TestCase{
@@ -24,7 +24,7 @@ public class AreaCellDaoTest extends TestCase{
 	    protected void setUp(){
 	      
 		try {			
-	    	KernelZZZ objKernel = new KernelZZZ("THM", "01", "", "ZKernelConfigTileHexMap02Client.ini", (String[]) null);
+	    	IKernelZZZ objKernel = new KernelZZZ("THM", "01", "", "ZKernelConfigTileHexMap02Client.ini", (String[]) null);
 	    	//HibernateContextProviderSingletonTHM objContextHibernate = new HibernateContextProviderSingletonTHM(objKernel);
 	    	HibernateContextProviderSingletonTHM objContextHibernate = HibernateContextProviderSingletonTHM.getInstance(objKernel);
 	    	this.objContextHibernate = objContextHibernate;

@@ -13,8 +13,10 @@ import basic.zBasic.util.abstractEnum.IEnumSetMappedZZZ;
 import basic.zBasic.util.datatype.enums.EnumSetMappedUtilZZZ;
 import basic.zBasic.util.datatype.string.StringZZZ;
 import basic.zBasic.util.file.FileEasyZZZ;
-import basic.zBasic.util.persistence.jdbc.JdbcDatabaseTypeZZZ;
-import basic.zBasic.util.persistence.jdbc.JdbcDriverClassTypeZZZ;
+import basic.zBasic.util.persistence.jdbc.EnumSetJdbcDatabaseClassTypeUtilZZZ;
+import basic.zBasic.util.persistence.jdbc.EnumSetJdbcDriverClassTypeUtilZZZ;
+import basic.zBasic.util.persistence.jdbc.JdbcDatabaseMappedValueZZZ;
+import basic.zBasic.util.persistence.jdbc.JdbcDriverMappedValueZZZ;
 import basic.zBasic.util.persistence.jdbc.UrlLogicZZZ;
 
 import org.hibernate.cfg.Configuration;
@@ -81,7 +83,8 @@ public class SQLiteUtilZZZ  extends ObjectZZZ{
 //				} //end while
 			
 			//Verwende hier eine Methode aus EnumSetMappedUtitlityZZZ				
-			EnumSetMappedUtilZZZ objUtil = new EnumSetMappedUtilZZZ(JdbcDriverClassTypeZZZ.class);
+			//EnumSetMappedUtilZZZ objUtil = new EnumSetMappedUtilZZZ(JdbcDriverClassTypeZZZ.class);
+			EnumSetJdbcDriverClassTypeUtilZZZ objUtil = new EnumSetJdbcDriverClassTypeUtilZZZ(JdbcDriverMappedValueZZZ.getEnumClassStatic());
 			IEnumSetMappedZZZ driverType = objUtil.startsWithAnyAlias_EnumMappedObject(sDatabaseUrl);
 			if(driverType!=null){
 				String sDescription = driverType.getDescription(); //Die Description soll das sein, was in der URL steht..., darum..
@@ -89,8 +92,9 @@ public class SQLiteUtilZZZ  extends ObjectZZZ{
 			}
 							
 			//Vom Rest dann Enumeration Datenbankaliasse durchgehen.
-			objUtil = new EnumSetMappedUtilZZZ(JdbcDatabaseTypeZZZ.class);				
-			IEnumSetMappedZZZ databaseType = objUtil.startsWithAnyAlias_EnumMappedObject(sDatabaseUrl);
+			//objUtil = new EnumSetMappedUtilZZZ(JdbcDatabaseTypeZZZ.class);				
+			EnumSetJdbcDatabaseClassTypeUtilZZZ objUtil2 = new EnumSetJdbcDatabaseClassTypeUtilZZZ(JdbcDatabaseMappedValueZZZ.getEnumClassStatic());
+			IEnumSetMappedZZZ databaseType = objUtil2.startsWithAnyAlias_EnumMappedObject(sDatabaseUrl);
 			if(databaseType!=null){
 				String sDatabaseFound= databaseType.getAbbreviation();
 				  sDatabaseUrl = StringZZZ.rightback((UrlLogicZZZ.sURL_PROTOCOL_PERSISTENCE_SEPARATOR_PROTOCOL + sDatabaseUrl), sDatabaseFound+UrlLogicZZZ.sURL_PROTOCOL_PERSISTENCE_SEPARATOR_PROTOCOL);
